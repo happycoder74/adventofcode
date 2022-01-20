@@ -1,0 +1,7 @@
+data
+*.o
+*.exe
+*.stackdump
+*.txt
+*.x
+*.debug
