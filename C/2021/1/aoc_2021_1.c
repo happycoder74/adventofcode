@@ -1,34 +1,50 @@
 #include <stdio.h>
-#include <assert.h>
+#include <stdlib.h>
+#include "aoc_utils.h"
+
+int solve_part_1(GArray *data) {
+    gint i;
+    gint count = 0;
+    char *val1, *val2;
+
+    for (i = 1; i < data->len; i++) {
+        val1 = g_array_index(data, char *, i - 1);
+        val2 = g_array_index(data, char *, i);
+        if (atoi(val2) > atoi(val1)) {
+            count ++;
+        }
+    }
+    return count;
+}
+
+int solve_part_2(GArray *data) {
+    gint i;
+    gint count = 0;
+    char *val1, *val2;
+
+    for (i = 3; i < data->len; i++) {
+        val1 = g_array_index(data, char *, i - 3);
+        val2 = g_array_index(data, char *, i);
+        if (atoi(val2) > atoi(val1)) {
+            count ++;
+        }
+    }
+    return count;
+}
+
 
 int main(int argc, char **argv) {
-		assert(argc == 2 && "Must provide one argument");
+    GArray *data;
+    char *filename;
 
-		char line[10];
-		int numbers[2000];
-		FILE *fp = fopen(argv[1], "r");
+    if (argc > 1) {
+        filename = argv[1];
+    } else {
+        filename = "input.txt";
+    }
 
-		int i = 0;
-		while (fgets(line, 10, fp)) {
-				sscanf(line, "%d\n", &numbers[i++]);
-		}
+    data = get_input(filename, 2021, 1);
 
-		int count = 0;
-		for (int j = 0; j < i - 1; j++) {
-				if (numbers[j] < numbers[j + 1]) {
-						count++;
-				}
-		}
-
-		printf("Part 1: %d\n", count);
-
-		count = 0;
-		for (int j = 0; j < i - 3; j++) {
-				if (numbers[j] < numbers[j + 3]) {
-						count++;
-				}
-		}
-
-		printf("Part 2: %d\n", count);
-
+    TIMER_INT(1, solve_part_1(data));
+    TIMER_INT(2, solve_part_2(data));
 }
