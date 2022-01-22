@@ -5,3 +5,6 @@ data
 *.txt
 *.x
 *.debug
+.cookie
+*.pyc
+__pycache__
