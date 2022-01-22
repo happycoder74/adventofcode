@@ -4,7 +4,7 @@ from common import timer
 
 
 def get_input(filename):
-    path = os.path.join(os.path.dirname(__file__), "../../data/year/day")
+    path = os.path.join(os.path.dirname(__file__), "../../../data/year/day")
     with open(os.path.join(path, filename)) as fp:
         data = fp.read().strip().splitlines()
 

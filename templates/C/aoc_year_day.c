@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    data = get_input(filename);
+    data = get_input(filename, year, day);
 
     if (data) {
         TIMER_STR(1, solve_part_1(data));
