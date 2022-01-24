@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <glib.h>
+#include "aoc_utils.h"
+
+
+typedef struct {
+    int *data;
+    int len;
+} int_array;
+
+int_array *get_input_bare(char *fn, int year, int day) {
+    FILE *fp;
+    int i;
+    int_array *return_array;
+    char c;
+
+    char filename[1000];
+
+    snprintf(filename, 1000, "../../../data/%d/%02d/%s", year, day, fn);
+    if (!(fp = fopen(filename, "r"))) {
+        printf("Can not open '%s'\n", filename);
+        exit(1);
+    }
+
+    i = 0;
+    return_array = malloc(sizeof(int_array));
+    return_array->data = NULL;
+    while ((c = fgetc(fp)) != EOF) {
+        return_array->data = realloc(return_array->data, (i+1)*sizeof(int));
+        return_array->data[i++] = c - '0';
+    }
+
+    return_array->len = i;
+
+    fclose(fp);
+    return return_array;
+}
+
+char *solve_part_1(int_array *data, int step) {
+    int i, j;
+
+    int sum = 0;
+    char return_string[1000];
+
+    for (i = 0; i < data->len; i++) {
+        j = (i + step) % data->len;
+        if (data->data[i] == data->data[j]) {
+            sum += data->data[i];
+        }
+    }
+
+    snprintf(return_string, 1000, "%d", sum);
+    return strdup(return_string);
+}
+
+char *solve_part_2(int_array *data) {
+    return solve_part_1(data, data->len / 2);
+}
+
+int main(int argc, char **argv) {
+    char *filename;
+
+    if (argc > 1)
+        filename = argv[1];
+    else
+        filename = strdup("input.txt");
+    int_array *data;
+
+    data = get_input_bare(filename, 2017, 1);
+
+    TIMER_STR(1, solve_part_1(data, 1));
+    TIMER_STR(2, solve_part_2(data));
+
+    free(data->data);
+    free(data);
+
+    return 0;
+}
+
