@@ -35,7 +35,8 @@ char *solve_part_1(char *doorID) {
 char *solve_part_2(char *doorID) {
     const gchar *hashed;
     gint counter = 0, found = 0;
-    gint j, pos;
+    gint pos;
+    guint j;
     GChecksum *checksum;
     gchar *code;
     guchar to_hash[BUFSIZE];
