@@ -35,16 +35,16 @@ char *solve_part_1(char *doorID) {
 char *solve_part_2(char *doorID) {
     const gchar *hashed;
     gint counter = 0, found = 0;
-	gint j, pos;
+    gint j, pos;
     GChecksum *checksum;
-    gchar *code, *to_hash;
+    gchar *code;
+    gchar to_hash[BUFSIZE];
 
     printf("\nPart 2:\n");
     found = 0;
     counter = 0;
     code = g_strdup("________");
 
-    to_hash = g_malloc(BUFSIZE);
     while (found < 8) {
         g_snprintf(to_hash, BUFSIZE, "%s%d", doorID, counter++);
         checksum = g_checksum_new(G_CHECKSUM_MD5);
@@ -58,20 +58,20 @@ char *solve_part_2(char *doorID) {
                 }
             }
         }
-        if (((counter - 1) % 1000) == 0) {
+        if ((((counter - 1) % 1000) == 0) || (found == 8)) {
             for (j = 0; j < strlen(code); j++) {
                 if (code[j] == '_') {
                     printf("%x", (0 + rand() % 16));
                 } else {
-                    printf("%c", code[j]);
+                    printf("\033[1;33m%c\033[0m", code[j]);
                 }
             }
             printf("\r");
             fflush(stdout);
         }
         g_checksum_free(checksum);
-        printf("\n");
     }
+    printf("\n");
     return code;
 }
 
