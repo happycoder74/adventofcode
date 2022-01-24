@@ -1,29 +1,57 @@
+#include <glib.h>
 #include <stdio.h>
-#include <assert.h>
+#include <string.h>
+
+#include "aoc_utils.h"
+
+int solve_part_1(GArray *data) {
+    int level = 0;
+    int i = 0;
+    char *line;
+
+    line = g_array_index(data, char *, i);
+
+    for (i = 0; i < strlen(line); i++) {
+        if (line[i] == '(')
+            level += 1;
+        else if (line[i] == ')')
+            level -= 1;
+    }
+    return level;
+}
+
+int solve_part_2(GArray *data) {
+    int i = 0;
+    int level = 0;
+
+    char *line;
+
+    line = g_array_index(data, char *, i);
+    for (i = 0; i < strlen(line); i++) {
+        if (line[i] == '(')
+            level += 1;
+        else if (line[i] == ')')
+            level -= 1;
+        if (level < 0) return i + 1;
+    }
+    return 0;
+}
 
 int main(int argc, char **argv) {
-    assert(argc == 2 && "Must provide one argument");
+    GArray *data;
+    char *filename;
 
-    char character;
-    int level = 0;
-    FILE *fp = fopen(argv[1], "r");
-    int pos = 0;
-    int found_position = 0;
+    if (argc > 1)
+        filename = argv[1];
+    else
+        filename = g_strdup("input.txt");
 
-    while ((character = fgetc(fp)) != EOF) {
-        if (level >=0 && ! found_position)
-            pos++;
-        else if (!found_position)
-            found_position = 1;
-        if (character == '(')
-            level += 1;
-        else if (character == ')')
-            level -= 1;
+    data = get_input(filename, 2015, 1);
+    if (data) {
+        TIMER_INT(1, solve_part_1(data));
+        TIMER_INT(2, solve_part_2(data));
 
+        g_array_free(data, TRUE);
     }
-
-    printf("Part 1: %d\n", level);
-    printf("Part 2: %d\n", pos);
-
-
+    g_free(filename);
 }
