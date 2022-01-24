@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -O2 -flto -pedantic -Wall $(shell pkg-config --cflags glib-2.0) -I./include
+CFLAGS = -O2 -flto -pedantic -Wall -Wextra $(shell pkg-config --cflags glib-2.0) -I./include
 LDFLAGS = -lm $(shell pkg-config --libs glib-2.0)
 
 $(YEAR)/$(DAY): $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
@@ -16,3 +16,17 @@ lib/aoc_utils.o:	lib/aoc_utils.c include/aoc_utils.h
 
 run:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
 	( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY); cd ../.. )
+
+
+clean-executables:	
+	find 2* -type f \( -name "*.stackdump" -o -name "*.exe" \) -delete
+	find 2* -type f ! -name "*.?*" -delete
+
+clean-objects:
+	find . -type f -name "*.o" -delete
+
+clean-all:	clean-executables clean-objects
+
+clean:	clean-all
+
+
