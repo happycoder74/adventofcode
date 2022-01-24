@@ -4,6 +4,14 @@
 #include <glib.h>
 #include "aoc_utils.h"
 
+gint sort_function(gconstpointer a, gconstpointer b) {
+    int *int_a = (int *)a;
+    int *int_b = (int *)b;
+
+    return (*int_a) - (*int_b);
+}
+
+
 gint arr_index(gint *arr, gint value, gint length) {
     // Search for first occurance of value in array
     gint i;
@@ -19,7 +27,8 @@ gint arr_index(gint *arr, gint value, gint length) {
 
 char **transpose_array(GArray *data, gint *columns) {
     gchar **col_array;
-    gint i, row, col;
+    gint i, col;
+    guint row;
     char *line;
 
     (*columns) = strlen(g_array_index(data, char *, 0));
@@ -46,17 +55,17 @@ char **transpose_array(GArray *data, gint *columns) {
 }
 
 char* solve_part_1(GArray *data) {
-    gint i, row, col;
+    guint i;
+    gint col;
     gint columns;
-    gchar *line;
     gchar **col_array;
-    gchar *message;
+    GString *message;
     gint *count;
     gint max_index;
 
     // Allocation of memory for base arrays
     col_array = transpose_array(data, &columns);
-    message = g_new0(gchar, columns + 1);
+    message = g_string_new("");
 
     // Count characters in each column by using offset to 'a' as index. 
     // Add character at each max position to return string 'message'
@@ -66,12 +75,9 @@ char* solve_part_1(GArray *data) {
             count[col_array[col][i] - 'a']++;
         }
         max_index = arr_index(count, max(count, 26), 26);
-        message[col] = (gchar)(max_index + 'a');
+        message = g_string_append_c(message, (gchar)(max_index + 'a'));
         g_free(count);
     }
-
-    // Null terminate return string
-    message[columns] = '\0';
 
     /* Freeing up allocated memory */
     for (col = 0; col < columns; col++) {
@@ -79,13 +85,13 @@ char* solve_part_1(GArray *data) {
     }
     g_free(col_array);
 
-    return message;
+    return message->str;
 }
 
 char *solve_part_2(GArray *data) {
-    gint i, row, col;
+    guint i;
+    gint col;
     gint columns;
-    gchar *line;
     gchar **col_array;
     gchar *message;
     gint *count;
@@ -122,7 +128,6 @@ char *solve_part_2(GArray *data) {
 
 int main(int argc, char **argv) {
     GArray *data;
-    gint i;
     gchar *filename;
 
     if (argc > 1) {
@@ -131,7 +136,7 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    data = get_input(filename);
+    data = get_input(filename, 2016, 6);
     if (data) {
         TIMER_STR(1, solve_part_1(data));
         TIMER_STR(2, solve_part_2(data));
