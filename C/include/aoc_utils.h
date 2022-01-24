@@ -24,7 +24,7 @@
     } while (0)
 
 
-GArray *get_input(char *);
+GArray *get_input(char *, int, int);
 gint max(gint *, gint);
 gint min(gint *, gint);
 gint min_non_zero(gint *, gint);

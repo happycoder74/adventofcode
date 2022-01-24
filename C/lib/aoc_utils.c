@@ -3,18 +3,20 @@
 #include <stdio.h>
 
 
-GArray *get_input(char *filename) {
+GArray *get_input(char *filename, int year, int day) {
     FILE *fp;
     GArray *data;
     gchar *line = NULL;
     size_t line_length = 0;
-    gint i = 0;
     gchar *data_line;
-    gchar path[] = "../../../data/2016/6/";
+    gchar *path;
     gchar *file = NULL;
 
+    path = g_strdup_printf("../../../data/%d/%02d/", year, day);
     data = g_array_new(FALSE, FALSE, sizeof(char *));
     file = g_strconcat(path, filename, NULL);
+
+    g_print("%s\n", file);
 
     if (!(fp = fopen(file, "r"))) {
         printf("Can not open file!\n");
@@ -29,6 +31,7 @@ GArray *get_input(char *filename) {
     if (file) {
         g_free(file);
     }
+    g_free(path);
 
     return data;;
 }
@@ -68,5 +71,4 @@ gint min_non_zero(gint *arr, gint length) {
     }
     return min;
 }
-
 
