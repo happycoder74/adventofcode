@@ -27,6 +27,7 @@ def solve_part_2(data):
     return None
 
 
+@timer(part='main', title='Total elapsed', show_return=False)
 def main(filename):
     data = get_input(filename)
 
