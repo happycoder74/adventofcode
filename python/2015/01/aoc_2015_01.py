@@ -25,8 +25,8 @@ def solve_part_1(data):
 def solve_part_2(data):
     """ Solution for part 2 """
     for i, c in enumerate(data):
-        if data[:i].count("(") < data[:i].count(")"):
-            return i
+        if data[:i + 1].count("(") < data[:i + 1].count(")"):
+            return i + 1
     return None
 
 
