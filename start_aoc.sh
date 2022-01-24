@@ -60,7 +60,6 @@ check_dates() {
 			exit 1
 		fi
 	fi
-	day=$(printf "%02d" $day)
 }
 
 download_input() {
@@ -88,6 +87,7 @@ download_input() {
 
 
 make_templates() {
+	day=$(printf "%02d" $day)
 	language=$1
 	case $language in
 		python)
