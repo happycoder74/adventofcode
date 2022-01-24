@@ -11,27 +11,13 @@ force=0
 templates_only=0
 declare -a languages=("python" "C")
 
-while getopts ":hd:y:i:fc:t" arg; do
+while getopts ":hd:y:i:fl:c:t" arg; do
     case $arg in
         y) # Specify year to download
             year=${OPTARG}
-            if [ $year -lt 2015 -o $year -gt 2021 ]; then
-                echo "year must be between 2015 and 2021"
-                exit 1
-            fi
             ;;
         d) # Specify day to download
             day=${OPTARG}
-            if [ $day -lt 1 -o $day -gt 25 ]; then
-                echo "day must be between 1 and 25"
-                exit 1
-            fi
-            if [ $year -ge $current_year ]; then
-				if [ -a $day -gt $current_day ]; then
-					echo "Can not download day $day for $year yet."
-				    exit 1
-				fi
-            fi
             ;;
         c) # Specify alternative cookie file (with path)
             cookiefile=${OPTARG}
@@ -42,15 +28,40 @@ while getopts ":hd:y:i:fc:t" arg; do
         f) # Force download if input data already exists
             force=1
             ;;
-		t) # Make templates only
+        l) # Specify language for template
+			langspec=${OPTARG}
+			if [[ ! " ${languages[*]} " =~ " $langspec " ]]; then
+				echo "Language $langspec not yet supported"
+				exit 1
+			fi
+			;;
+        t) # Make templates only
 			templates_only=1
 			;;
-        h ) # Display help.
+        h) # Display help.
             usage
             exit 0
             ;;
     esac
 done
+
+check_dates() {
+	if [ $year -lt 2015 -o $year -gt 2021 ]; then
+		echo "year must be between 2015 and 2021"
+		exit 1
+	fi
+	if [ $day -lt 1 -o $day -gt 25 ]; then
+		echo "day must be between 1 and 25"
+		exit 1
+	fi
+	if [ $year -ge $current_year ]; then
+		if [ -a $day -gt $current_day ]; then
+			echo "Can not download day $day for $year yet."
+			exit 1
+		fi
+	fi
+	day=$(printf "%02d" $day)
+}
 
 download_input() {
 	data_directory="$install_path/data/$year/$day"
@@ -111,10 +122,21 @@ make_templates() {
 	fi
 }
 
+check_dates
+
 if [ $templates_only -eq 0 ]; then 
 	download_input
 fi
-for lang in "${languages[@]}"; do 
-	make_templates $lang
-done
+
+if [ -z $langspec ]; then
+	for lang in "${languages[@]}"; do 
+		make_templates $lang
+	done
+else
+	if [[ " ${languages[*]} " =~ " $langspec " ]]; then
+		make_templates $langspec
+	else
+		echo "Language $langspec not yet supported"
+	fi
+fi
 
