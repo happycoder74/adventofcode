@@ -4,8 +4,7 @@
 #include <glib.h>
 #include "aoc_utils.h"
 
-
-char* solve_part_1(GArray *data) {
+char *solve_part_1(GArray *data) {
     return NULL;
 }
 
@@ -13,13 +12,12 @@ char *solve_part_2(GArray *data) {
     return NULL;
 }
 
-
 int main(int argc, char **argv) {
     GArray *data;
     gchar *filename;
 
     if (argc > 1) {
-        filename = argv[1];
+        filename = g_strdup(argv[1]);
     } else {
         filename = g_strdup("input.txt");
     }
@@ -32,5 +30,5 @@ int main(int argc, char **argv) {
 
         g_array_free(data, TRUE);
     }
-
+    g_free(filename);
 }
