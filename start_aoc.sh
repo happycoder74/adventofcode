@@ -63,6 +63,8 @@ check_dates() {
 }
 
 download_input() {
+	corr_day=$day
+	day=$(printf "%02d" $day)
 	data_directory="$install_path/data/$year/$day"
 	if [ ! -v cookiefile ]; then
 		cookiefile="$install_path/.cookie"
@@ -82,7 +84,7 @@ download_input() {
 		exit 1
 	fi
 
-	curl --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$day/input
+	curl --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$corr_day/input
 }
 
 
