@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -O2 -flto -pedantic -Wall -Wextra $(shell pkg-config --cflags glib-2.0) -I./include
+CFLAGS = -O2 -flto -pedantic -Wall -Wextra -Wpedantic $(shell pkg-config --cflags glib-2.0) -I./include
 LDFLAGS = -lm $(shell pkg-config --libs glib-2.0)
 
 $(YEAR)/$(DAY): $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) ../data/$(YEAR)/$(DAY)/input.txt
@@ -20,7 +20,7 @@ run:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
 ../data/$(YEAR)/$(DAY)/input.txt $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c:	../start_aoc.sh
 	../start_aoc.sh -l C -y $(YEAR) -d $(DAY)
 
-clean-executables:	
+clean-executables:
 	find 2* -type f \( -name "*.stackdump" -o -name "*.exe" \) -delete
 	find 2* -type f ! -name "*.?*" -delete
 
