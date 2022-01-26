@@ -29,4 +29,12 @@ gint max(gint *, gint);
 gint min(gint *, gint);
 gint min_non_zero(gint *, gint);
 
+// String functions similar to methods of  python strings
+
+
+int str_count(char *, char, int, int);
+char *substr(char *, int, int);
+int str_startswith(char *, char *);
+int str_endswith(char *, char *);
+
 #endif

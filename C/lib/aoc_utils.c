@@ -1,6 +1,71 @@
 #include <glib.h>
 #include <aoc_utils.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+
+int str_count(char *str, char needle, int start, int end) {
+    int i;
+    int count = 0;
+    if (end < 0) {
+        end = (int)strlen(str) - 1 - end;
+    }
+    if (start < 0) {
+        start = (int)strlen(str) - 1 - start;
+    }
+
+    for (i = start; i < end; i++) {
+        if (needle == str[i]) {
+            count ++;
+        }
+    }
+    return count;
+}
+
+char *substr(char *str, int start, int end) {
+    char *substr;
+    int i;
+    if (end < 0) {
+        end = (int)strlen(str) - 1 + end + 1;
+    }
+    if (start < 0) {
+        start = (int)strlen(str) - 1 + start + 1;
+    }
+
+    assert(end <= (int)strlen(str));
+    assert(start >= 0);
+    assert(end >= 0);
+    assert(start < (int)strlen(str));
+    assert(start <= end);
+
+    substr = malloc(sizeof(char) * (end - start + 1));
+    for (i = 0; i < (end - start); i++) {
+        substr[i] = str[start + i];
+    }
+    substr[i] = '\0';
+    return substr;
+}
+
+int str_startswith(char *str, char *start_str) {
+    char *sstr;
+    int result;
+
+    sstr = substr(str, 0, strlen(start_str));
+    result = !strcmp(start_str, sstr);
+    free(sstr);
+    return result;
+}
+
+int str_endswith(char *str, char *end_str) {
+    char *sstr;
+    int result;
+
+    sstr = substr(str, -strlen(end_str), strlen(str));
+    result = !strcmp(end_str, sstr);
+    free(sstr);
+    return result;
+}
 
 
 GArray *get_input(char *filename, int year, int day) {
@@ -21,7 +86,7 @@ GArray *get_input(char *filename, int year, int day) {
     if (!(fp = fopen(file, "r"))) {
         printf("Can not open file!\n");
         return NULL;
-    } 
+    }
 
     while ((getline(&line, &line_length, fp)) != -1 ) {
         data_line = g_strstrip(g_strdup(line));
