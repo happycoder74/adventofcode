@@ -4,6 +4,59 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <ctype.h>
+
+// Note: This function returns a pointer to a substring of the original string.
+// If the given string was allocated dynamically, the caller must not overwrite
+// that pointer with the returned value, since the original pointer must be
+// deallocated using the same allocator with which it was allocated.  The return
+// value must NOT be deallocated using free() etc.
+char *str_trim(char *str) {
+  char *end;
+
+  // Trim leading space
+  while(isspace((unsigned char)*str)) str++;
+
+  if(*str == 0)  // All spaces?
+    return str;
+
+  // Trim trailing space
+  end = str + strlen(str) - 1;
+  while(end > str && isspace((unsigned char)*end)) end--;
+
+  // Write new null terminator character
+  end[1] = '\0';
+
+  return str;
+}
+
+
+char *str_join(const char *delimiter, char **str_list, size_t length) {
+    char *result;
+    int res_length;
+    size_t i;
+    char *ptr;
+
+    if (!*str_list) {
+        return  strdup("");
+    }
+
+    res_length = strlen(str_list[0]);
+
+    for (i = 1; (i < length) && (str_list[i] != NULL); i++) {
+        res_length += strlen(str_list[i]);
+    }
+    res_length += (length - 1) * strlen(delimiter) + 1;
+
+    result = malloc(sizeof(char) * res_length);
+    ptr = stpcpy(result, str_list[0]);
+    for (i = 1; (i < length) && (str_list[i] != NULL); i++) {
+        ptr = stpcpy(ptr, delimiter);
+        ptr = stpcpy(ptr, str_list[i]);
+    }
+    return result;
+}
+
 
 int str_count(char *str, char needle, int start, int end) {
     int i;
@@ -81,7 +134,9 @@ GArray *get_input(char *filename, int year, int day) {
     data = g_array_new(FALSE, FALSE, sizeof(char *));
     file = g_strconcat(path, filename, NULL);
 
+#ifdef DEBUG
     g_print("%s\n", file);
+#endif
 
     if (!(fp = fopen(file, "r"))) {
         printf("Can not open file!\n");
@@ -136,4 +191,6 @@ gint min_non_zero(gint *arr, gint length) {
     }
     return min;
 }
+
+
 
