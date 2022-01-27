@@ -63,8 +63,6 @@ check_dates() {
 }
 
 download_input() {
-	corr_day=$day
-	day=$(printf "%02d" $day)
 	data_directory="$install_path/data/$year/$day"
 	if [ ! -v cookiefile ]; then
 		cookiefile="$install_path/.cookie"
@@ -84,12 +82,11 @@ download_input() {
 		exit 1
 	fi
 
-	curl --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$corr_day/input
+	curl --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$((10#$day))/input
 }
 
 
 make_templates() {
-	day=$(printf "%02d" $day)
 	language=$1
 	case $language in
 		python)
@@ -114,12 +111,12 @@ make_templates() {
 		mkdir -p $directory
 	fi
 	if [ ! -e $directory/aoc_${year}_${day}.${file_ext} ]; then
-		sed -e "s/year/$year/g" -e "s/day/$day/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
+		sed -e "s/<YEAR>/$year/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
 	fi
 
 	if [ $language == "python" ]; then
 		if [ ! -e $directory/test_aoc_${year}_${day}.$file_ext ]; then
-			sed -e "s/year/$year/g" -e "s/day/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
+			sed -e "s/year/$year/g" -e "s/corr_day/$((10#$day))/g" -e "s/day/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
 		fi
 	fi
 }
