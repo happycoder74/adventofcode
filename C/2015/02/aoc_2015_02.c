@@ -6,7 +6,7 @@
 
 
 gint solve_part_1(GArray *data) {
-    gint i;
+    guint i;
     gchar *row;
     gint l, w, h;
     gint area = 0;
@@ -20,7 +20,7 @@ gint solve_part_1(GArray *data) {
 }
 
 gint solve_part_2(GArray *data) {
-    gint i;
+    guint i;
     gchar *row;
     gint l, w, h;
     gint ribbon = 0;
@@ -33,24 +33,31 @@ gint solve_part_2(GArray *data) {
     return ribbon;
 }
 
-
-int main(int argc, char **argv) {
+int solve_all(gchar *filename, int year, int day) {
     GArray *data;
-    gchar *filename;
 
-    if (argc > 1) {
-        filename = argv[1];
-    } else {
-        filename = g_strdup("input.txt");
-    }
-
-    data = get_input(filename, 2015, 2);
+    data = get_input(filename, year, day);
 
     if (data) {
-        TIMER_INT(1, solve_part_1(data));
-        TIMER_INT(2, solve_part_2(data));
+        TIMER(1, solve_part_1(data), INT, 1);
+        TIMER(2, solve_part_2(data), INT, 1);
 
         g_array_free(data, TRUE);
     }
 
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    gchar *filename;
+
+    if (argc > 1) {
+        filename = g_strdup(argv[1]);
+    } else {
+        filename = g_strdup("input.txt");
+    }
+
+    TIMER(0, solve_all(filename, 2015, 2), INT, 0);
+
+    g_free(filename);
 }

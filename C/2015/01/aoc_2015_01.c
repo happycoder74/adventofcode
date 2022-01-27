@@ -11,7 +11,7 @@ int solve_part_1(GArray *data) {
 
     line = g_array_index(data, char *, i);
 
-    for (i = 0; i < strlen(line); i++) {
+    for (i = 0; i < (int)strlen(line); i++) {
         if (line[i] == '(')
             level += 1;
         else if (line[i] == ')')
@@ -27,7 +27,7 @@ int solve_part_2(GArray *data) {
     char *line;
 
     line = g_array_index(data, char *, i);
-    for (i = 0; i < strlen(line); i++) {
+    for (i = 0; i < (int)strlen(line); i++) {
         if (line[i] == '(')
             level += 1;
         else if (line[i] == ')')
@@ -37,8 +37,20 @@ int solve_part_2(GArray *data) {
     return 0;
 }
 
-int main(int argc, char **argv) {
+int solve_all(gchar *filename, int year, int day) {
     GArray *data;
+
+    data = get_input(filename, year, day);
+    if (data) {
+        TIMER(1, solve_part_1(data), INT, 1);
+        TIMER(2, solve_part_2(data), INT, 1);
+
+        g_array_free(data, TRUE);
+    }
+
+    return 0;
+}
+int main(int argc, char **argv) {
     char *filename;
 
     if (argc > 1)
@@ -46,12 +58,6 @@ int main(int argc, char **argv) {
     else
         filename = g_strdup("input.txt");
 
-    data = get_input(filename, 2015, 1);
-    if (data) {
-        TIMER_INT(1, solve_part_1(data));
-        TIMER_INT(2, solve_part_2(data));
-
-        g_array_free(data, TRUE);
-    }
+    TIMER(0, solve_all(filename, 2015, 1), INT, 0);
     g_free(filename);
 }
