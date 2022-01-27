@@ -6,16 +6,20 @@
 
 #define BUFSIZE 128
 
-char *solve_part_1(char *doorID) {
+char *solve_part_1(GArray *data) {
     guchar to_hash[BUFSIZE];
     const gchar *hashed;
     gint counter = 0;
     gint found = 0;
     GChecksum *checksum;
     gchar *code;
+    gchar *doorID;
+
+    doorID = g_array_index(data, gchar *, 0);
 
     code = g_strdup("________");
     printf("Part 1:\n");
+    printf("%s\r", code);
     while (found < 8) {
         g_snprintf((gchar*)to_hash, BUFSIZE, "%s%d", doorID, counter++);
         checksum = g_checksum_new(G_CHECKSUM_MD5);
@@ -32,7 +36,7 @@ char *solve_part_1(char *doorID) {
     return code;
 }
 
-char *solve_part_2(char *doorID) {
+char *solve_part_2(GArray *data) {
     const gchar *hashed;
     gint counter = 0, found = 0;
     gint pos;
@@ -40,6 +44,9 @@ char *solve_part_2(char *doorID) {
     GChecksum *checksum;
     gchar *code;
     guchar to_hash[BUFSIZE];
+    char *doorID;
+
+    doorID = g_array_index(data, char *, 0);
 
     printf("\nPart 2:\n");
     found = 0;
@@ -77,17 +84,32 @@ char *solve_part_2(char *doorID) {
 }
 
 
-int main(int argc, char **argv) {
+int solve_all(char *filename, int year, int day) {
+    GArray *data;
 
-    gchar *doorID;
+    data = get_input(filename, year, day);
 
-    if (argc > 1) {
-        doorID = argv[1];
-    } else {
-        doorID = "abc";
+    if (data) {
+        TIMER(1, solve_part_1(data), STR, 1);
+        TIMER(2, solve_part_2(data), STR, 1);
+
+        g_array_free(data, TRUE);
     }
 
-    TIMER_STR(1, solve_part_1(doorID));
-    TIMER_STR(2, solve_part_2(doorID));
+    return 0;
+}
 
+int main(int argc, char **argv) {
+    gchar *filename;
+
+    if (argc > 1) {
+        filename = g_strdup(argv[1]);
+    } else {
+        filename = g_strdup("input.txt");
+    }
+
+    TIMER(0, solve_all(filename, 2016, 5), INT, 0);
+
+    g_free(filename);
+    return 0;
 }

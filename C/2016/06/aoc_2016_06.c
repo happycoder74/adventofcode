@@ -126,8 +126,20 @@ char *solve_part_2(GArray *data) {
 }
 
 
-int main(int argc, char **argv) {
+int solve_all(gchar *filename, int year, int day) {
     GArray *data;
+
+    data = get_input(filename, year, day);
+    if (data) {
+        TIMER_STR(1, solve_part_1(data), 1);
+        TIMER_STR(2, solve_part_2(data), 1);
+
+        g_array_free(data, TRUE);
+    }
+    return 0;
+}
+
+int main(int argc, char **argv) {
     gchar *filename;
 
     if (argc > 1) {
@@ -136,12 +148,6 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    data = get_input(filename, 2016, 6);
-    if (data) {
-        TIMER_STR(1, solve_part_1(data));
-        TIMER_STR(2, solve_part_2(data));
-
-        g_array_free(data, TRUE);
-    }
-
+    TIMER(0, solve_all(filename, 2016, 6), INT, 0);
+    g_free(filename);
 }
