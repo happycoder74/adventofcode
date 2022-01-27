@@ -19,7 +19,7 @@ char *solve_part_1(GArray *data) {
 
     code = g_strdup("________");
     printf("Part 1:\n");
-    printf("%s\r", code);
+    printf("\t%s\r", code);
     while (found < 8) {
         g_snprintf((gchar*)to_hash, BUFSIZE, "%s%d", doorID, counter++);
         checksum = g_checksum_new(G_CHECKSUM_MD5);
@@ -27,7 +27,7 @@ char *solve_part_1(GArray *data) {
         hashed = g_checksum_get_string(checksum);
         if (!g_ascii_strncasecmp(hashed, "00000", 5)) {
             code[found++] = hashed[5];
-            printf("%s\r", code);
+            printf("\t%s\r", code);
             fflush(stdout);
         }
         g_checksum_free(checksum);
@@ -67,9 +67,10 @@ char *solve_part_2(GArray *data) {
             }
         }
         if ((((counter - 1) % 1000) == 0) || (found == 8)) {
+            printf("\t");
             for (j = 0; j < strlen(code); j++) {
                 if (code[j] == '_') {
-                    printf("%x", (0 + rand() % 16));
+                    printf("\033[1;32m%x\033[0m", (0 + rand() % 16));
                 } else {
                     printf("\033[1;33m%c\033[0m", code[j]);
                 }
