@@ -3,10 +3,10 @@ Solutions for Advent of Code in different languages. Currently Python as main pl
 Currently migrating my python solutions from another repo, why not all source files are available yet.
 
 ## Year 2015
-47 ⭐, mainly Python
+47 ⭐ in Python 3.9, 4 ⭐ in C
 
 ## Year 2016
-16 ⭐. Python and C (with Glib)
+16 ⭐ in Python 3.9  |  10 ⭐ C (some with Glib)
 
 ## Year 2020
 14 ⭐, Python
