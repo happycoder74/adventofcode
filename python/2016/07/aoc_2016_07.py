@@ -1,15 +1,6 @@
-import os
 import re
 import sys
-from common import timer
-
-
-def get_input(filename):
-    path = os.path.join(os.path.dirname(__file__), "../../../data/2016/7")
-    with open(os.path.join(path, filename)) as fp:
-        data = fp.read().strip().splitlines()
-
-    return clean_input(data)
+from common import timer, get_input
 
 
 def clean_input(data):
@@ -64,7 +55,7 @@ def solve_part_2(data):
 
 
 def main(filename):
-    data = get_input(filename)
+    data = clean_input(get_input(filename, 2016, 7))
 
     part1 = solve_part_1(data)
     part2 = solve_part_2(data)
