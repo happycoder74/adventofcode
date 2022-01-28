@@ -116,7 +116,7 @@ make_templates() {
 
 	if [ $language == "python" ]; then
 		if [ ! -e $directory/test_aoc_${year}_${day}.$file_ext ]; then
-			sed -e "s/year/$year/g" -e "s/corr_day/$((10#$day))/g" -e "s/day/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
+			sed -e "s/<YEAR>/$year/g" -e "s/<CORR_DAY>/$((10#$day))/g" -e "s/<DAY>/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
 		fi
 	fi
 }
