@@ -19,7 +19,7 @@ def timer(part, show_result=True, title="", show_return=True):
                 print("".join([
                     f"{header}: ",
                     f'{result if result is not None and show_return else ""}',
-                    elapsed_time_str])
+                    "\t" if header == title else '', elapsed_time_str])
                 )
             return result
 
