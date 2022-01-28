@@ -1,14 +1,5 @@
-import os
 import sys
-from common import timer
-
-
-def get_input(filename):
-    path = os.path.join(os.path.dirname(__file__), "../../../data/year/day")
-    with open(os.path.join(path, filename)) as fp:
-        data = fp.read().strip().splitlines()
-
-    return clean_input(data)
+from common import timer, get_input
 
 
 def clean_input(data):
@@ -29,7 +20,7 @@ def solve_part_2(data):
 
 @timer(part='main', title='Total elapsed', show_return=False)
 def main(filename):
-    data = get_input(filename)
+    data = clean_input(get_input(filename, <YEAR>, <DAY>))
 
     part1 = solve_part_1(data)
     part2 = solve_part_2(data)
