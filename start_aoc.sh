@@ -17,7 +17,7 @@ while getopts ":hd:y:i:fl:c:t" arg; do
             year=${OPTARG}
             ;;
         d) # Specify day to download
-            day=${OPTARG}
+			day=$(printf "%02d" $((10#${OPTARG})))
             ;;
         c) # Specify alternative cookie file (with path)
             cookiefile=${OPTARG}
