@@ -2,7 +2,7 @@ import unittest
 import aoc_<YEAR>_<DAY> as a
 
 
-class Test_year_day(unittest.TestCase):
+class Test_<YEAR>_<DAY>(unittest.TestCase):
     def setUp(self):
         self.data = a.get_input("test_input.txt", <YEAR>, <CORR_DAY>)
 
