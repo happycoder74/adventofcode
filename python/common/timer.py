@@ -10,16 +10,20 @@ def timer(part, show_result=True, title="", show_return=True):
             result = f(*args, **kwargs)
             elapsed_time = time.perf_counter() - start_time
             if elapsed_time < 0.1:
-                elapsed_time_str = f"\t\t( {(elapsed_time * 1e3):.3f} ms )"
+                elapsed_time_str = (
+                    f"\r\033[35C( {(elapsed_time * 1e3):6.3f} ms )"
+                )
             else:
-                elapsed_time_str = f"\t\t( {elapsed_time:.3f} s )"
+                elapsed_time_str = (
+                    f"\r\033[35C( {elapsed_time:6.3f} s  )"
+                )
 
             if show_result:
                 header = title or f"Part {part} answer"
                 print("".join([
                     f"{header}: ",
                     f'{result if result is not None and show_return else ""}',
-                    "\t" if header == title else '', elapsed_time_str])
+                    elapsed_time_str])
                 )
             return result
 
