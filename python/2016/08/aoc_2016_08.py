@@ -1,16 +1,8 @@
-import os
 import re
 import sys
+import time
 import numpy as np
-from common import timer
-
-
-def get_input(filename):
-    path = os.path.join(os.path.dirname(__file__), "../../../data/2016/8")
-    with open(os.path.join(path, filename)) as fp:
-        data = fp.read().strip().splitlines()
-
-    return clean_input(data)
+from common import timer, get_input
 
 
 def clean_input(data):
@@ -32,7 +24,7 @@ def clean_input(data):
     return commands
 
 
-def create_display(data):
+def create_display(data, animate=False):
     arr = np.zeros((6, 50), dtype=int)
     for command, x, y in data:
         if command == 'rect':
@@ -41,6 +33,14 @@ def create_display(data):
             arr[:, x] = np.roll(arr[:, x], y)
         elif command == 'row':
             arr[x, :] = np.roll(arr[x, :], y)
+        if animate:
+            for row in arr:
+                print(''.join([
+                    chr(int('2593', 16)) if val == 1 else ' ' for val in row
+                ]))
+            print("\r\033[7A")
+        time.sleep(0.04)
+    print("\033[7B")
     return arr
 
 
@@ -48,23 +48,18 @@ def create_display(data):
 def solve_part_1(data):
     """Solution for part 1"""
 
-    return sum(sum(create_display(data)))
+    return sum(sum(create_display(data, animate=True)))
 
 
 @timer(part=2)
 def solve_part_2(data):
     """Solution for part 2"""
 
-    arr = create_display(data)
-
-    for row in arr:
-        print(''.join([chr(int('2593', 16)) if val == 1 else ' ' for val in row]))
-
-    return None
+    return chr(int('261D', 16))
 
 
 def main(filename):
-    data = get_input(filename)
+    data = clean_input(get_input(filename, 2016, 8))
 
     part1 = solve_part_1(data)
     part2 = solve_part_2(data)
