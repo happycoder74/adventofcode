@@ -10,12 +10,13 @@
         GTimer *timer = g_timer_new(); \
         int result = func; \
         g_timer_stop(timer); \
-        gdouble elapsed = g_timer_elapsed(timer, NULL); \
-		elapsed = elapsed > 0.1 ? elapsed : elapsed*1000; \
+        gdouble elapsed, elapsed_unit; \
+        elapsed = g_timer_elapsed(timer, NULL); \
+		elapsed_unit = elapsed > 0.1 ? elapsed : elapsed*1000; \
 		if (show_res) { \
-			printf("Part %d answer: %d\t\t( %.3lf %s)\n", part, result, elapsed, elapsed > 0.1? "s":"ms"); \
+			printf("Part %d answer: %d\t\t( %.3lf %s)\n", part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} else { \
-			printf("Time elapsed:\t\t\t( %.3lf %s)\n", elapsed, elapsed > 0.1? "s":"ms"); \
+			printf("Time elapsed:\t\t\t( %.3lf %s)\n", elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} \
         g_timer_destroy(timer); \
     } while (0)
@@ -25,12 +26,13 @@
         GTimer *timer = g_timer_new(); \
         gchar *result = func; \
         g_timer_stop(timer); \
-        gdouble elapsed = g_timer_elapsed(timer, NULL); \
-		elapsed = elapsed > 0.1 ? elapsed : elapsed*1000; \
+        gdouble elapsed, elapsed_unit; \
+        elapsed = g_timer_elapsed(timer, NULL); \
+		elapsed_unit = elapsed > 0.1 ? elapsed : elapsed*1000; \
 		if (show_res) { \
-			printf("Part %d answer: %s\t\t( %.3lf %s)\n", part, result, elapsed, elapsed > 0.1? "s":"ms"); \
+			printf("Part %d answer: %s\t\t( %.3lf %s)\n", part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} else { \
-			printf("Time elapsed:\t\t\t( %.3lf %s)\n", elapsed, elapsed > 0.1? "s":"ms"); \
+			printf("Time elapsed:\t\t\t( %.3lf %s)\n", elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} \
         g_timer_destroy(timer); \
     } while (0)
