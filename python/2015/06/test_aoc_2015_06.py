@@ -1,11 +1,11 @@
 import unittest
-import aoc_2015_6 as a
+import aoc_2015_06 as a
 
 
-class Test_2015_6(unittest.TestCase):
+class Test_2015_06(unittest.TestCase):
 
     def test_part_1(self):
-        data = a.get_input("test_input.txt")
+        data = a.clean_input(a.get_input("test_input.txt", 2015, 6))
         self.assertEqual(1000, a.solve_part_1(data))
 
     def test_part_2(self):
