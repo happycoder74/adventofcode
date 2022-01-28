@@ -1,2 +1,2 @@
 from .timer import timer
-from .io import Parser
+from .io import Parser, get_input

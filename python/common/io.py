@@ -4,7 +4,7 @@ import os
 class Parser(object):
     def __init__(self, year, day, filename="input.txt", data_directory=None):
         if not data_directory:
-            data_directory = f"../../data/{year}/{day}"
+            data_directory = f"../../data/{year}/{day:02d}"
 
         path = os.path.join(
             os.path.dirname(__file__), data_directory
@@ -13,7 +13,6 @@ class Parser(object):
         self.data = self.get_input(filename)
 
     def get_input(self, filename):
-        print(filename)
         with open(filename) as fp:
             data = fp.read().strip().splitlines()
         return data
@@ -23,3 +22,12 @@ class Parser(object):
             self.data = data
         else:
             return data
+
+
+def get_input(filename, year, day):
+    path = os.path.join(os.path.dirname(__file__),
+                        f"../../data/{year}/{day:02d}")
+    with open(os.path.join(path, filename)) as fp:
+        data = fp.read().strip().splitlines()
+
+    return data
