@@ -23,7 +23,10 @@ int solve_all(gchar *filename, int year, int day) {
 
         g_array_free(data, TRUE);
     }
+
+    return 0;
 }
+
 int main(int argc, char **argv) {
     gchar *filename;
 
