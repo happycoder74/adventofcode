@@ -4,7 +4,7 @@
 #include <glib.h>
 #include "aoc_utils.h"
 
-char *solve_part_0(GArray *data) {
+char *solve_part_1(GArray *data) {
     return NULL;
 }
 
