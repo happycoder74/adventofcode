@@ -13,3 +13,5 @@ data
 .cookie
 *.pyc
 __pycache__
+.coverage
+.coveragerc
