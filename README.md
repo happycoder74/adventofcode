@@ -34,4 +34,4 @@ Currently migrating my python solutions from another repo, why not all source fi
 ## Year 2021
 + 42 ⭐, Python
 + 8 ⭐ in C (day 1, 2, 7 and 18)
-+ 1 * in PHP (day 1)
++ 1 ⭐ in PHP (day 1)
