@@ -14,7 +14,7 @@ int_array *get_input_bare(char *fn, int year, int day) {
     FILE *fp;
     int i;
     int_array *return_array;
-    char c;
+    int c;
 
     char filename[1000];
 
@@ -27,7 +27,7 @@ int_array *get_input_bare(char *fn, int year, int day) {
     i = 0;
     return_array = malloc(sizeof(int_array));
     return_array->data = NULL;
-    while ((c = fgetc(fp)) != EOF) {
+    while (((c = fgetc(fp)) != EOF) && (c != '\n')) {
         return_array->data = realloc(return_array->data, (i+1)*sizeof(int));
         return_array->data[i++] = c - '0';
     }
@@ -38,11 +38,10 @@ int_array *get_input_bare(char *fn, int year, int day) {
     return return_array;
 }
 
-char *solve_part_1(int_array *data, int step) {
+int solve_part_1(int_array *data, int step) {
     int i, j;
 
     int sum = 0;
-    char return_string[1000];
 
     for (i = 0; i < data->len; i++) {
         j = (i + step) % data->len;
@@ -51,11 +50,10 @@ char *solve_part_1(int_array *data, int step) {
         }
     }
 
-    snprintf(return_string, 1000, "%d", sum);
-    return strdup(return_string);
+    return sum;
 }
 
-char *solve_part_2(int_array *data) {
+int solve_part_2(int_array *data) {
     return solve_part_1(data, data->len / 2);
 }
 
@@ -70,8 +68,8 @@ int main(int argc, char **argv) {
 
     data = get_input_bare(filename, 2017, 1);
 
-    TIMER_STR(1, solve_part_1(data, 1));
-    TIMER_STR(2, solve_part_2(data));
+    TIMER(1, solve_part_1(data, 1), INT, 1);
+    TIMER(2, solve_part_2(data), INT, 1);
 
     free(data->data);
     free(data);
