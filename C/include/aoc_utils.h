@@ -14,9 +14,9 @@
         elapsed = g_timer_elapsed(timer, NULL); \
 		elapsed_unit = elapsed > 0.1 ? elapsed : elapsed*1000; \
 		if (show_res) { \
-			printf("Part %d answer: %d\t\t( %.3lf %s)\n", part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
+			printf("Part %d answer: %d\r\033[35C( %6.3lf %s)\n", part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} else { \
-			printf("Time elapsed:\t\t\t( %.3lf %s)\n", elapsed_unit, elapsed > 0.1? "s":"ms"); \
+			printf("Time elapsed:\r\033[35C( %6.3lf %s)\n", elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} \
         g_timer_destroy(timer); \
     } while (0)
@@ -30,15 +30,17 @@
         elapsed = g_timer_elapsed(timer, NULL); \
 		elapsed_unit = elapsed > 0.1 ? elapsed : elapsed*1000; \
 		if (show_res) { \
-			printf("Part %d answer: %s\t\t( %.3lf %s)\n", part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
+			printf("Part %d answer:%s\r\033[35C( %6.3lf %s)\n", part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} else { \
-			printf("Time elapsed:\t\t\t( %.3lf %s)\n", elapsed_unit, elapsed > 0.1? "s":"ms"); \
+			printf("Time elapsed:\r\033[35C( %6.3lf %s)\n", elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} \
         g_timer_destroy(timer); \
     } while (0)
 
 
+
 GArray *get_input(char *, int, int);
+GArray *get_input_new(char *, int, int);
 gint max(gint *, gint);
 gint min(gint *, gint);
 gint min_non_zero(gint *, gint);

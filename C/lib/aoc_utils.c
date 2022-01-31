@@ -122,6 +122,37 @@ int str_endswith(char *str, char *end_str) {
 }
 
 
+GArray *get_input_new(char *filename, int year, int day) {
+    FILE *fp;
+    GArray *data;
+    gchar *line = NULL;
+    size_t line_length = 0;
+    gchar *data_line;
+    gchar *path;
+    gchar *file = NULL;
+
+    path = g_strdup_printf("../../../data/%d/%02d/", year, day);
+    data = g_array_new(TRUE, FALSE, sizeof(char *));
+    file = g_strconcat(path, filename, NULL);
+
+    if (!(fp = fopen(file, "r"))) {
+        printf("Can not open file!\n");
+        return NULL;
+    }
+
+    while ((getline(&line, &line_length, fp)) != -1 ) {
+        data_line = g_strstrip(g_strdup(line));
+        g_array_append_val(data, data_line);
+    }
+
+    if (file) {
+        g_free(file);
+    }
+    g_free(path);
+
+    return data;;
+}
+
 GArray *get_input(char *filename, int year, int day) {
     FILE *fp;
     GArray *data;
