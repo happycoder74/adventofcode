@@ -9,7 +9,7 @@ day=$current_day
 install_path="$HOME/projects/adventofcode"
 force=0
 templates_only=0
-declare -a languages=("python" "C")
+declare -a languages=("python" "C" "PHP")
 
 while getopts ":hd:y:i:fl:c:t" arg; do
     case $arg in
