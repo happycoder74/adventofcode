@@ -20,10 +20,14 @@ function timer($function, $args, $part, $title=NULL, $show_return=True) {
         $elapsed = $elapsed * 1000;
         $unit = "ms";
     }
-    if (! $title) {
+    if ($part > 0) {
         print("Part " . $part . " answer: " . $result);
         printf("\r\033[35C( %6.3f %-2s )\n", $elapsed, $unit);
+    } else {
+        printf("Total elapsed:\r\033[35C( %6.3f %-2s )\n", $elapsed, $unit);
     }
+
+    return $result;
 }
 
 ?>
