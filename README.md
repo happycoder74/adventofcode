@@ -18,20 +18,20 @@ Currently migrating my python solutions from another repo, why not all source fi
 + Modern C++
 
 ## Year 2015
-+ 47 ⭐ in Python 3.9 (all except day 22 and final part of day 25)
-+ 4 ⭐ in C (days 1 and 2)
++ 47 &#11088; in Python 3.9 (all except day 22 and final part of day 25)
++ 4 &#11088; in C (days 1 and 2)
 
 ## Year 2016
-+ 16 ⭐ in Python 3.9 (days 1 - 8)
-+ 10 ⭐ C (days 3, 5, 6, 7, 8)
++ 16 &#11088; in Python 3.9 (days 1 - 8)
++ 10 &#11088; C (days 3, 5, 6, 7, 8)
 
 ## Year 2017
-+ 2 ⭐ in C (day 1)
++ 2 &#11088; in C (day 1)
 
 ## Year 2020
-+ 14 ⭐Python (days 1 - 7)
++ 14 &#11088;Python (days 1 - 7)
 
 ## Year 2021
-+ 42 ⭐, Python
-+ 8 ⭐ in C (day 1, 2, 7 and 18)
-+ 1 ⭐ in PHP (day 1)
++ 42 &#11088;, Python
++ 10 &#11088; in C (day 1-3, 7 and 18)
++ 1 &#11088; in PHP (day 1)
