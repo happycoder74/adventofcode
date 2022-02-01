@@ -1,6 +1,6 @@
 <?php
-include_once 'common.php';
-
+require ('common.php');
+use function \Common\get_data; 
 
 function solve_part_1($data) {
     $inc = 0;
@@ -23,39 +23,14 @@ function solve_part_2($data) {
 }
 
 
-function main2($filename) {
-    $data = \Common\get_data($filename, 2021, 1);
-    \Common\timer('solve_part_1', [$data], 1);
-    \Common\timer('solve_part_2', [$data], 2);
-}
-
 function main($filename) {
-
     $data = get_data($filename, 2021, 1);
+    $part_1 = \Common\timer('solve_part_1', [$data], 1);
+    $part_2 = \Common\timer('solve_part_2', [$data], 2);
 
-    $start_time = microtime(true);
-    $res_1 = solve_part_1($data);
-    $time_1 = microtime(true) - $start_time;
-    $unit_1 = "s";
-    if ($time_1 < 0.1) {
-        $time_1 *= 1000;
-        $unit_1 = "ms";
-    }
-
-    $start_time = microtime(true);
-    $res_2 = solve_part_2($data);
-    $time_2 = microtime(true) - $start_time;
-    if ($time_2 < 0.1) {
-        $time_2 *= 1000;
-        $unit_2 = "ms";
-    }
-
-    print("Part 1 answer: " . $res_1);
-    printf("\033[25C( %6.3f %s )\n", $time_1, $unit_1);
-    print("Part 2 answer: " . $res_2);
-    printf("\033[25C( %6.3f %s )\n", $time_2, $unit_2);
-
+    return [$part_1, $part_2];
 }
+
 
 if ($argc > 1) {
     $fn = $argv[1];
@@ -63,6 +38,6 @@ if ($argc > 1) {
     $fn = "input.txt";
 }
 
-main2 ($fn);
+$result = \Common\timer('main',  [$fn], 0);
 
 ?>
