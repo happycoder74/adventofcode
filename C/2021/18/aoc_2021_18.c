@@ -306,8 +306,8 @@ int main(int argc, char **argv) {
     data = clean_data(get_input(filename, 2021, 18));
 
     if (data) {
-        TIMER_INT(1, solve_part_1(data));
-        TIMER_INT(2, solve_part_2(data));
+        TIMER_INT(1, solve_part_1(data), 1);
+        TIMER_INT(2, solve_part_2(data), 1);
 
         g_array_free(data, TRUE);
     }
