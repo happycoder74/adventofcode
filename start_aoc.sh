@@ -9,9 +9,11 @@ day=$current_day
 install_path="$HOME/projects/adventofcode"
 force=0
 templates_only=0
+silent=0
+
 declare -a languages=("python" "C" "PHP")
 
-while getopts ":hd:y:i:fl:c:t" arg; do
+while getopts ":hd:y:i:fl:c:ts" arg; do
     case $arg in
         y) # Specify year to download
             year=${OPTARG}
@@ -35,6 +37,9 @@ while getopts ":hd:y:i:fl:c:t" arg; do
 				exit 1
 			fi
 			;;
+		s) # Silent mode. No output
+			silent=1
+			;;
         t) # Make templates only
 			templates_only=1
 			;;
@@ -47,16 +52,22 @@ done
 
 check_dates() {
 	if [ $year -lt 2015 -o $year -gt 2021 ]; then
-		echo "year must be between 2015 and 2021"
+		if [ $silent -eq 0 ]; then
+			echo "year must be between 2015 and 2021"
+		fi
 		exit 1
 	fi
 	if [ $day -lt 1 -o $day -gt 25 ]; then
-		echo "day must be between 1 and 25"
+		if [ $silent -eq 0 ]; then
+			echo "day must be between 1 and 25"
+		fi
 		exit 1
 	fi
 	if [ $year -ge $current_year ]; then
 		if [ -a $day -gt $current_day ]; then
-			echo "Can not download day $day for $year yet."
+			if [ $silent -eq 0 ]; then
+				echo "Can not download day $day for $year yet."
+			fi
 			exit 1
 		fi
 	fi
@@ -73,12 +84,16 @@ download_input() {
 	[ -d $data_directory ] || ( mkdir -p $data_directory )
 
 	if [ -e "$data_directory/input.txt" -a $force -eq 0 -a $templates_only -eq 0 ]; then
-		echo "Puzzle input exists. Add option -f to force download" 
+		if [ $silent -eq 0 ]; then
+			echo "Puzzle input exists. Add option -f to force download" 
+		fi
 		return 
 	fi
 
 	if [ ! -e $cookiefile ]; then 
-		echo "No cookiefile found, unable to download"
+		if [ $silent -eq 0 ]; then
+			echo "No cookiefile found, unable to download"
+		fi
 		exit 1
 	fi
 
@@ -99,11 +114,13 @@ make_templates() {
 			file_ext=php
 			;;
 		*)
-			echo "Templates for $language is not yet defined"
+			if [ $silent -eq 0 ]; then
+				echo "Templates for $language is not yet defined"
+			fi
 			;;
 	esac
 
-	echo "Creating start templates for $language"
+	[ $silent -eq 0 ] && echo "Creating start templates for $language"
 
 	directory="$install_path/$language/$year/$day"
 	template_dir="$install_path/templates/$language"
@@ -135,7 +152,7 @@ else
 	if [[ " ${languages[*]} " =~ " $langspec " ]]; then
 		make_templates $langspec
 	else
-		echo "Language $langspec not yet supported"
+		[ $silent -eq 0 ] && echo "Language $langspec not yet supported"
 	fi
 fi
 
