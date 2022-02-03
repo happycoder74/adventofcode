@@ -1,3 +1,4 @@
+SHELL=/bin/bash
 PYTHONPATH=.
 
 $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py:
@@ -5,7 +6,8 @@ $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py:
 
 .PHONY: run test clean
 
-run: $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py ../data/$(YEAR)/$(DAY)/input.txt
+run: $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py 
+	test -f ../data/$(YEAR)/$(DAY)/input.txt || ../start_aoc.sh -y $(YEAR) -d $(DAY) -o 
 	@PYTHONPATH=$(PYTHONPATH) python3 $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py
 
 test:
