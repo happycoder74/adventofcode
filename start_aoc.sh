@@ -9,11 +9,12 @@ day=$current_day
 install_path="$HOME/projects/adventofcode"
 force=0
 templates_only=0
+input_only=0
 silent=0
 
 declare -a languages=("python" "C" "PHP")
 
-while getopts ":hd:y:i:fl:c:ts" arg; do
+while getopts ":hd:y:i:fl:c:tos" arg; do
     case $arg in
         y) # Specify year to download
             year=${OPTARG}
@@ -24,7 +25,7 @@ while getopts ":hd:y:i:fl:c:ts" arg; do
         c) # Specify alternative cookie file (with path)
             cookiefile=${OPTARG}
             ;;
-        i) # specify install path (default path is $HOME/projects/python/adventofcode)
+        i) # specify install path (default path is $HOME/projects/adventofcode)
             install_path=${OPTARG}
             ;;
         f) # Force download if input data already exists
@@ -37,11 +38,14 @@ while getopts ":hd:y:i:fl:c:ts" arg; do
 				exit 1
 			fi
 			;;
-		s) # Silent mode. No output
+        s) # Silent mode. No output
 			silent=1
 			;;
         t) # Make templates only
 			templates_only=1
+			;;
+        o) # Download input only
+			input_only=1
 			;;
         h) # Display help.
             usage
@@ -144,15 +148,16 @@ if [ $templates_only -eq 0 ]; then
 	download_input
 fi
 
-if [ -z $langspec ]; then
-	for lang in "${languages[@]}"; do 
-		make_templates $lang
-	done
-else
-	if [[ " ${languages[*]} " =~ " $langspec " ]]; then
-		make_templates $langspec
+if [ $input_only -eq 0 ]; then
+	if [ -z $langspec ]; then
+		for lang in "${languages[@]}"; do 
+			make_templates $lang
+		done
 	else
-		[ $silent -eq 0 ] && echo "Language $langspec not yet supported"
+		if [[ " ${languages[*]} " =~ " $langspec " ]]; then
+			make_templates $langspec
+		else
+			[ $silent -eq 0 ] && echo "Language $langspec not yet supported"
+		fi
 	fi
 fi
-
