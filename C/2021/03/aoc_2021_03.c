@@ -25,6 +25,37 @@ GArray *clean_input(GArray *data) {
 
 }
 
+int common_value(GArray *data, int position, int method) {
+    int sum = 0;
+    GArray *bitfield;
+    gdouble check;
+
+    for (guint i = 0; i < data->len; i++) {
+        bitfield = g_array_index(data, GArray *, i);
+        sum += g_array_index(bitfield, int, position);
+    }
+    check = (gdouble) sum / data->len;
+    if (method == 1) { // 1 = most, 0 = least
+        return check < 0.5;
+    } else {
+        return check >= 0.5;
+    }
+}
+
+GArray *reduce(GArray *data, int value, int position) {
+    GArray *reduced;
+    GArray *item;
+
+    reduced = g_array_new(TRUE, FALSE, sizeof(GArray *));
+    for (guint i = 0; i < data->len; i++) {
+        item = g_array_index(data, GArray *, i);
+        if (g_array_index(item, int, position) != value) {
+            g_array_append_val(reduced, item);
+        }
+    }
+    return reduced;
+}
+
 void print_bitfield(GArray *bitfield) {
     guint i;
     for (i = 0; i < bitfield->len; i++) {
@@ -69,122 +100,48 @@ int solve_part_1(GArray *data) {
 }
 
 
+int bitfield_sum(GArray *bitfield) {
+    int value = 0;
+    for (guint i = 0; i < bitfield->len; i++) {
+        int j = bitfield->len - 1 - i;
+        int val = g_array_index(bitfield, int, i);
+        value += val * (int)pow(2, j);
+    }
+
+    return value;
+}
+
 int solve_part_2(GArray *data) {
-    guint i;
     GArray *bitfield;
-    gint count;
     GArray *oxygen_generator;
     GArray *co2_scrubber;
-    GArray *to_remove;
 
-    oxygen_generator = g_array_new(TRUE, TRUE, sizeof(GArray *));
-    co2_scrubber = g_array_new(TRUE, TRUE, sizeof(GArray *));
     bitfield = g_array_index(data, GArray *, 0);
 
     int oxygen_generator_value;
     int co2_scrubber_value;
-    int value, c;
+    int value;
 
     guint digits = bitfield->len;
     for (guint j = 0; j < digits; j++) {
         if (j == 0) {
-            count = 0;
-            for (i = 0; i < data->len; i++) {
-                bitfield = g_array_index(data, GArray *, i);
-                count += g_array_index(bitfield, int, j);
-            }
-            for (i = 0; i < data->len; i++) {
-                bitfield = g_array_index(data, GArray *, i);
-                if (2.0 * count / (data->len) >= 1) {
-                    if (g_array_index(bitfield, int, j) == 1) {
-                        g_array_append_val(oxygen_generator, bitfield);
-                    } else {
-                        g_array_append_val(co2_scrubber, bitfield);
-                    }
-                } else {
-                    if (g_array_index(bitfield, int, j) == 0) {
-                        g_array_append_val(oxygen_generator, bitfield);
-                    } else {
-                        g_array_append_val(co2_scrubber, bitfield);
-                    }
-                }
-            }
+            value = common_value(data, j, 1);
+            oxygen_generator = reduce(data, value, j);
+            co2_scrubber = reduce(data, !value, j);
         } else {
-            to_remove = g_array_new(FALSE, FALSE, sizeof(guint));
-            count = 0;
-            for (i = 0; i < oxygen_generator->len; i++) {
-                bitfield = g_array_index(oxygen_generator, GArray *, i);
-                count += g_array_index(bitfield, int, j);
+            // Oxy generator:
+            if (oxygen_generator->len > 1) {
+                value = common_value(oxygen_generator, j, 1);
+                oxygen_generator = reduce(oxygen_generator, value, j);
             }
-            for (i = 0; i < oxygen_generator->len && oxygen_generator->len > 1; i++) {
-                bitfield = g_array_index(oxygen_generator, GArray *, i);
-                value = g_array_index(bitfield, int, j);
-                if (2.0 * count / oxygen_generator->len >=1) {
-                    if (value == 0) {
-                        g_array_append_val(to_remove, i);
-                    }
-                } else {
-                    if (value == 1) {
-                        g_array_append_val(to_remove, i);
-                    }
-                }
+            if (co2_scrubber->len > 1) {
+                value = common_value(co2_scrubber, j, 0);
+                co2_scrubber = reduce(co2_scrubber, value, j);
             }
-
-            for (c = to_remove->len - 1; c >= 0; c--) {
-                oxygen_generator = g_array_remove_index(
-                        oxygen_generator,
-                        g_array_index(to_remove, int, c)
-                        );
-            }
-            g_array_free(to_remove, TRUE);
-
-            to_remove = g_array_new(FALSE, FALSE, sizeof(int));
-            count = 0;
-            for (i = 0; i < co2_scrubber->len; i++) {
-                bitfield = g_array_index(co2_scrubber, GArray *, i);
-                count += g_array_index(bitfield, int, j);
-            }
-            for (i = 0; i < co2_scrubber->len && co2_scrubber->len > 1; i++) {
-                bitfield = g_array_index(co2_scrubber, GArray *, i);
-                if (2.0 * count / co2_scrubber->len >=1) {
-                    if (g_array_index(bitfield, int, j) == 1) {
-                        g_array_append_val(to_remove, i);
-                    }
-                } else {
-                    if (g_array_index(bitfield, int, j) == 0) {
-                        g_array_append_val(to_remove, i);
-                    }
-                }
-            }
-
-            for (c = to_remove->len - 1; c >= 0; c--) {
-                value = g_array_index(to_remove, int, c);
-                co2_scrubber = g_array_remove_index(
-                        co2_scrubber, value
-                        );
-            }
-            g_array_free(to_remove, TRUE);
         }
     }
-
-    oxygen_generator_value = 0;
-    bitfield = g_array_index(oxygen_generator, GArray *, 0);
-    for (i = 0; i < bitfield->len; i++) {
-        int j = bitfield->len - 1 - i;
-        int val = g_array_index(bitfield, int, i);
-        oxygen_generator_value += val * (int)pow(2, j);
-    }
-
-    co2_scrubber_value = 0;
-    bitfield = g_array_index(co2_scrubber, GArray *, 0);
-    for (i = 0; i < bitfield->len; i++) {
-        int j = bitfield->len - 1 - i;
-        int val = g_array_index(bitfield, int, i);
-        co2_scrubber_value += val * (int)pow(2, j);
-    }
-
-    g_array_free(oxygen_generator, TRUE);
-    g_array_free(co2_scrubber, TRUE);
+    oxygen_generator_value = bitfield_sum(g_array_index(oxygen_generator, GArray *, 0));
+    co2_scrubber_value = bitfield_sum(g_array_index(co2_scrubber, GArray *, 0));
 
     return oxygen_generator_value * co2_scrubber_value;
 }
