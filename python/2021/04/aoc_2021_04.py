@@ -75,8 +75,8 @@ def check_boards(number, boards, part):
 
 def clean_input(data):
     numbers = data[0]
-    data = data[1:]
-    data = [data[i+1:i+1+5] for i in range(0, len(data), 6)]
+    data = data[2:]
+    data = [data[i:i + 5] for i in range(0, len(data), 6)]
     data = [[d.split() for d in board] for board in data]
 
     boards = [Board(board, index) for index, board in enumerate(data)]
