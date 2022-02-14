@@ -161,8 +161,6 @@ int solve_all(gchar *filename, int year, int day) {
 
     if (data) {
         TIMER(1, solve_part_1(data), INT, 1);
-        g_array_free(data, TRUE);
-        data = clean_input(get_input(filename, year, day));
         TIMER(2, solve_part_2(data), INT, 1);
 
         g_array_free(data, TRUE);
