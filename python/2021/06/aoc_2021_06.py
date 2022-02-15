@@ -29,11 +29,12 @@ def lantern_fish_evolve(data, days):
     for num in data:
         school_of_fish[num] += 1
 
+    tail = 8
+    head = 6
     for day in range(0, days):
-        s0 = school_of_fish[0]
-        school_of_fish[0:8] = school_of_fish[1:9]
-        school_of_fish[8] = s0
-        school_of_fish[6] += s0
+        tail = (tail + 1) % 9
+        head = (head + 1) % 9
+        school_of_fish[head] += school_of_fish[tail]
 
     return sum(school_of_fish)
 
@@ -51,14 +52,19 @@ def solve_part_2(data):
     return lantern_fish_evolve(data, 256)
 
 
-@timer(part='main', title='Total elapsed', show_return=False)
-def main(filename):
-    data = clean_input(get_input(filename, 2021, 6))
-
+@timer(part='solve_all', title='Solution time', show_return=False)
+def solve(data):
     part1 = solve_part_1(data)
     part2 = solve_part_2(data)
 
     return part1, part2
+
+
+@timer(part='main', title='Total elapsed', show_return=False)
+def main(filename):
+    data = clean_input(get_input(filename, 2021, 6))
+
+    return solve(data)
 
 
 if __name__ == "__main__":
