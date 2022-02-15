@@ -35,8 +35,8 @@ unsigned long long  lantern_fish_evolve(GArray *data, gint days) {
     tail = 8;
     head = tail - 2;
     for (gint day = 1; day <= days; day++) {
-        tail = (1 + tail) % school_size;
-        head = (1 + head) % school_size;
+        tail = (1 + tail) == school_size ? 0 : 1 + tail;
+        head = (1 + head) == school_size ? 0 : 1 + head;
         school_of_fish[head] += school_of_fish[tail];
     }
 

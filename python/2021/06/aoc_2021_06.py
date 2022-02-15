@@ -32,8 +32,8 @@ def lantern_fish_evolve(data, days):
     tail = 8
     head = 6
     for day in range(0, days):
-        tail = (tail + 1) % 9
-        head = (head + 1) % 9
+        tail = 0 if (tail + 1) == 9 else (tail + 1)
+        head = 0 if (head + 1) == 9 else (head + 1)
         school_of_fish[head] += school_of_fish[tail]
 
     return sum(school_of_fish)
