@@ -33,5 +33,5 @@ Currently migrating my python solutions from another repo, why not all source fi
 
 ## Year 2021
 + 42 &#11088;, Python
-+ 15 &#11088; in C (day 1-5, 7, 8 part 1 and 18)
++ 17 &#11088; in C (day 1-7, 8 part 1 and 18)
 + 2 &#11088; in PHP (day 1)
