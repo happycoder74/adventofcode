@@ -227,7 +227,7 @@ gint min_non_zero(gint *arr, gint length) {
 
 Grid *grid_new(int rows, int columns) {
     Grid *grid = malloc(sizeof(Grid));
-    grid->grid = malloc(sizeof(int) * rows * columns);
+    grid->grid = calloc(sizeof(int),  rows * columns);
     grid->rows = rows;
     grid->columns = columns;
 
