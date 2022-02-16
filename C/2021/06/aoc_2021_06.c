@@ -20,11 +20,10 @@ GArray *clean_input(GArray *data) {
     return return_data;
 }
 
-
 unsigned long long  lantern_fish_evolve(GArray *data, gint days) {
     unsigned long long *school_of_fish;
     unsigned long long sum = 0;
-    const gint school_size = 9;
+    const guint school_size = 9;
     guint tail, head;
 
     school_of_fish = g_new0(unsigned long long, school_size);
@@ -40,7 +39,7 @@ unsigned long long  lantern_fish_evolve(GArray *data, gint days) {
         school_of_fish[head] += school_of_fish[tail];
     }
 
-    for (gint i = 0; i < school_size; i++) {
+    for (guint i = 0; i < school_size; i++) {
         sum += school_of_fish[i];
     }
 
