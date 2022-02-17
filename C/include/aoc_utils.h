@@ -1,9 +1,9 @@
 #ifndef __AOC_UTILS_H__
 #define __AOC_UTILS_H__
 
-#include <glib.h>
 #include <aoc_timer.h>
 #include <aoc_grid.h>
+#include <glib.h>
 
 typedef struct {
     int x;
@@ -38,4 +38,9 @@ char *substr(char *, int, int);
 int str_startswith(char *, char *);
 int str_endswith(char *, char *);
 
-#endif // __AOC_UTILS_H__
+#ifdef __MINGW32__
+size_t getline(char **, size_t *, FILE *);
+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
+#endif
+
+#endif

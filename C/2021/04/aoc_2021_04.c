@@ -180,4 +180,6 @@ int main(int argc, char **argv) {
 
     TIMER(0, solve_all(filename, 2021, 4), INT, 0);
     g_free(filename);
+
+    return 0;
 }
