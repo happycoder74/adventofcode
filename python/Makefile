@@ -8,7 +8,7 @@ $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py:
 .PHONY: run test clean
 
 run: $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py 
-	test -f ../data/$(YEAR)/$(DAY)/input.txt || ../start_aoc.sh -y $(YEAR) -d $(DAY) -o 
+	@test -f ../data/$(YEAR)/$(DAY)/input.txt || ../start_aoc.sh -y $(YEAR) -d $(DAY) -o 
 	@echo "Running AoC $(YEAR) - $(DAY)"
 	@echo "============================"
 	@PYTHONPATH=$(PYTHONPATH) python3 $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).py $(FILENAME)
