@@ -45,19 +45,13 @@ GArray *parse_data(GArray *data) {
     return instruction_list;
 }
 
-typedef struct {
-    int *data;
-    int rows;
-    int cols;
-} Grid;
-
 void init_area(Grid *grid, Instruction *instruction) {
     int row, col;
     int index;
     for (row = 0; row < instruction->value2; row++) {
         for (col = 0; col < instruction->value1; col++) {
-            index = row*grid->cols + col;
-            grid->data[index] = 1;
+            index = row*grid->columns + col;
+            grid->grid[index] = 1;
         }
     }
     return;
@@ -73,11 +67,11 @@ void rotate_col(Grid *grid, Instruction *instruction) {
 
     for (row = 0; row < grid->rows; row++) {
         i = (row  + instruction->value2) % grid->rows;
-        col_to_rotate[i] = grid->data[row*grid->cols + index];
+        col_to_rotate[i] = grid->grid[row*grid->columns + index];
     }
 
     for (row = 0; row < grid->rows; row++) {
-        grid->data[row*grid->cols + index] = col_to_rotate[row];
+        grid->grid[row*grid->columns + index] = col_to_rotate[row];
     }
 
     free(col_to_rotate);
@@ -89,15 +83,15 @@ void rotate_row(Grid *grid, Instruction *instruction) {
     int col;
     int i, index;
 
-    row_to_rotate = malloc(sizeof(int)*grid->cols);
-    index = instruction->value1 * grid->cols;
+    row_to_rotate = malloc(sizeof(int)*grid->columns);
+    index = instruction->value1 * grid->columns;
 
-    for (col = 0; col < grid->cols; col++) {
-        i = (col + instruction->value2) % grid->cols;
-        row_to_rotate[i] = grid->data[col + index];
+    for (col = 0; col < grid->columns; col++) {
+        i = (col + instruction->value2) % grid->columns;
+        row_to_rotate[i] = grid->grid[col + index];
     }
-    for (col = 0; col < grid->cols; col++) {
-        grid->data[col + index] = row_to_rotate[col];
+    for (col = 0; col < grid->columns; col++) {
+        grid->grid[col + index] = row_to_rotate[col];
     }
 
     free(row_to_rotate);
@@ -108,9 +102,9 @@ void grid_print(Grid *grid, int final) {
     int row, col, i;
 
     for (row = 0; row < grid->rows; row++) {
-        for (col = 0; col < grid->cols; col++) {
-            i = row*grid->cols + col;
-            printf("%s", grid->data[i] > 0 ? "\u2593": " ");
+        for (col = 0; col < grid->columns; col++) {
+            i = row*grid->columns + col;
+            printf("%s", grid->grid[i] > 0 ? "\u2593": " ");
         }
         printf("\n");
     }
@@ -128,8 +122,8 @@ int solve_part_1(GArray *data) {
 
     grid = malloc(sizeof(Grid));
     grid->rows = 6;
-    grid->cols = 50;
-    grid->data = malloc(sizeof(int) * (grid->rows * grid->cols));
+    grid->columns = 50;
+    grid->grid = malloc(sizeof(int) * (grid->rows * grid->columns));
 
     for (i = 0; i < data->len; i++) {
         instruction = g_array_index(data, Instruction *, i);
@@ -145,14 +139,14 @@ int solve_part_1(GArray *data) {
                 break;
         }
         grid_print(grid, 0);
-        usleep(50000);
+        usleep(10000);
     }
 
     int count = 0;
     for (row = 0; row < 6; row++) {
         for (col = 0; col < 50; col++) {
-            index = row*grid->cols + col;
-            count += grid->data[index];
+            index = row*grid->columns + col;
+            count += grid->grid[index];
         }
     }
 
