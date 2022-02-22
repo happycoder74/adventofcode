@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 usage() { echo "$0 usage:" && grep " .)\ " $0; exit 0; }
 
