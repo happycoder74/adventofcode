@@ -19,7 +19,6 @@ class Day(Puzzle):
         for num in self.data[1:]:
             number = number + SnailfishNumber(num)
 
-        print(number)
         return SnailfishNumber.magnitude(number)
 
     @timer(part=2)
