@@ -1,6 +1,6 @@
 CC = cc
 DEBUG=-g
-RELFLAGS= -O2 -flto
+RELFLAGS= -O2 
 GLIB_FLAGS != pkg-config --cflags glib-2.0
 CFLAGS = -pedantic -Wall -Wextra -Wpedantic $(GLIB_FLAGS) -I./include
 GLIB_LDFLAGS != pkg-config --libs glib-2.0
@@ -8,6 +8,8 @@ LDFLAGS = -lm $(GLIB_LDFLAGS)
 EXE = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
 OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o
 SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/aoc_utils.c
+INPUTFILE=input.txt
+TESTINPUTFILE=test_input.txt
 
 $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c include/aoc_utils.h
 	$(CC) $(RELFLAGS) $(CFLAGS) -o $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o -c $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c 
@@ -26,16 +28,17 @@ lib/aoc_utils.o:	lib/aoc_utils.c include/aoc_utils.h
 
 
 run:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) 
-	@test -f ../data/$(YEAR)/$(DAY)/input.txt || ../start_aoc.sh -y $(YEAR) -d $(DAY) -o
+	@test -f ../data/$(YEAR)/$(DAY)/input.txt || ../start_aoc.sh -y $(YEAR) -d $(DAY) -o 
+	@test -f $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c || ../start_aoc.sh -y $(YEAR) -d $(DAY) -l C -t
 	@echo "Running AoC $(YEAR) - $(DAY)"
 	@echo "============================"
-	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY); cd ../.. )
+	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY) $(INPUTFILE); cd ../.. )
 	@echo "============================"
 
-test:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) ../data/$(YEAR)/$(DAY)/test_input.txt
+test:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) ../data/$(YEAR)/$(DAY)/$(TESTINPUTFILE)
 	@echo "Running AoC $(YEAR) - $(DAY)"
 	@echo "============================"
-	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY) test_input.txt; cd ../.. )
+	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY) $(TESTINPUTFILE); cd ../.. )
 	@echo "============================"
 
 debug: clean-objs clean-exe
