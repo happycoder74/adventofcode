@@ -5,7 +5,7 @@
 #include "aoc_utils.h"
 
 int solve_part_1(GArray *data) {
-    gint i;
+    gint i = 0;
     gchar *line;
     int pos = 0, depth = 0;
     int value;
@@ -27,7 +27,7 @@ int solve_part_1(GArray *data) {
 }
 
 int solve_part_2(GArray *data) {
-    gint i;
+    gint i = 0;
     gchar *line;
     int pos = 0, depth = 0, aim = 0;
     int value;
