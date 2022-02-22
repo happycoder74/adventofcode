@@ -175,6 +175,7 @@ SFNumber *sf_number_explode(SFNumber *sn) {
 SFNumber *sf_number_reduce(SFNumber *sn) {
     int size, changed;
 
+    size = sn->size;
     changed = 1;
 
     while (changed) {
