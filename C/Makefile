@@ -1,8 +1,10 @@
 CC = cc
 DEBUG=-g
 RELFLAGS= -O2 -flto
-CFLAGS = -pedantic -Wall -Wextra -Wpedantic $(shell pkg-config --cflags glib-2.0) -I./include
-LDFLAGS = -lm $(shell pkg-config --libs glib-2.0)
+GLIB_FLAGS != pkg-config --cflags glib-2.0
+CFLAGS = -pedantic -Wall -Wextra -Wpedantic $(GLIB_FLAGS) -I./include
+GLIB_LDFLAGS != pkg-config --libs glib-2.0
+LDFLAGS = -lm $(GLIB_LDFLAGS)
 EXE = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
 OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o
 SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/aoc_utils.c
@@ -23,7 +25,8 @@ lib/aoc_utils.o:	lib/aoc_utils.c include/aoc_utils.h
 .PHONY:	templates run clean-all clean clean-all-executables clean-all-objects clean-objs
 
 
-run:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) ../data/$(YEAR)/$(DAY)/input.txt
+run:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) 
+	@test -f ../data/$(YEAR)/$(DAY)/input.txt || ../start_aoc.sh -y $(YEAR) -d $(DAY) -o
 	@echo "Running AoC $(YEAR) - $(DAY)"
 	@echo "============================"
 	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY); cd ../.. )
@@ -41,9 +44,6 @@ debug: clean-objs clean-exe
 templates:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c
 	 @../start_aoc.sh -l C -y $(YEAR) -d $(DAY) -t
 
-../data/$(YEAR)/$(DAY)/input.txt $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c:	../start_aoc.sh
-	../start_aoc.sh -f -l C -y $(YEAR) -d $(DAY)
-
 clean-all-executables:
 	find 2* -type f \( -name "*.stackdump" -o -name "*.exe" \) -delete
 	find 2* -type f ! -name "*.?*" -delete
@@ -60,5 +60,4 @@ clean-exe:
 
 clean-objs:
 	rm -f $(OBJS)
-
 
