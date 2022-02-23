@@ -3,6 +3,7 @@
 
 #include <glib.h>
 #include <aoc_timer.h>
+#include <aoc_grid.h>
 
 typedef struct {
     int x;
@@ -16,21 +17,12 @@ typedef struct {
     int stepy;
 } Line;
 
-typedef struct {
-    int *grid;
-    int rows;
-    int columns;
-} Grid;
-
 gboolean is_horisontal(Line);
 gboolean is_vertical(Line);
 void print_line(Line);
 Point point_difference(Point, Point);
 guint point_hash(gconstpointer);
 gboolean point_equal(gconstpointer, gconstpointer);
-Grid *grid_new(int rows, int columns);
-int grid_index(Grid *grid, int row, int column);
-void grid_index_set(Grid *grid, int row, int column, int value);
 
 GArray *get_input(char *, int, int);
 GArray *get_input_new(char *, int, int);
