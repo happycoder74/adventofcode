@@ -4,7 +4,8 @@ RELFLAGS= -O2
 GLIB_FLAGS != pkg-config --cflags glib-2.0
 CFLAGS = -pedantic -Wall -Wextra -Wpedantic $(GLIB_FLAGS) -I./include
 GLIB_LDFLAGS != pkg-config --libs glib-2.0
-LDFLAGS = -lm $(GLIB_LDFLAGS)
+AOC_LIB = -laoc
+LDFLAGS = -L./lib $(AOC_LIB) -lm $(GLIB_LDFLAGS) 
 EXE = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
 OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o
 SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/aoc_utils.c
@@ -14,12 +15,14 @@ TESTINPUTFILE=test_input.txt
 $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c include/aoc_utils.h
 	$(CC) $(RELFLAGS) $(CFLAGS) -o $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o -c $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c 
 
-$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY):	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o
-	$(CC) $(RELFLAGS) -o $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)  $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o $(LDFLAGS)
+$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY):	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o $(AOC_LIB)
+	$(CC) $(RELFLAGS) -o $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)  $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o $(LDFLAGS)
 	@[ ! -e $@.exe ] || mv $@.exe $@
 
-lib/aoc_utils.o:	lib/aoc_utils.c include/aoc_utils.h
-	$(CC) $(RELFLAGS) $(CFLAGS) -c -o lib/aoc_utils.o lib/aoc_utils.c 
+$(AOC_LIB):	lib/libaoc.a
+
+lib/libaoc.a: lib/*.c
+	cd lib && $(MAKE)
 
 ../data/$(YEAR)/$(DAY)/test_input.txt:
 	@echo "Need to generate a test_input.txt file for $(YEAR) day $(DAY)"
@@ -54,7 +57,10 @@ clean-all-executables:
 clean-all-objects:
 	find . -type f -name "*.o" -delete
 
-clean-all:	clean-all-executables clean-all-objects
+clean-all-libraries:
+	find . -type f -name "*.a" -delete
+
+clean-all:	clean-all-executables clean-all-objects clean-all-libraries
 
 clean: clean-exe clean-objs
 
