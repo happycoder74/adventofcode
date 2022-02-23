@@ -4,6 +4,10 @@
 #include <glib.h>
 #include "aoc_utils.h"
 
+GArray *clean_input(GArray *data) {
+    return data;
+}
+
 char *solve_part_1(GArray *data) {
     return NULL;
 }
@@ -15,7 +19,7 @@ char *solve_part_2(GArray *data) {
 int solve_all(gchar *filename, int year, int day) {
     GArray *data;
 
-    data = get_input(filename, year, day);
+    data = clean_input(get_input(filename, year, day));
 
     if (data) {
         TIMER(1, solve_part_1(data), STR, 1);
