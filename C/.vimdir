@@ -1,2 +1,0 @@
-let g:syntastic_c_include_dirs = ['~/projects/adventofcode/C/include']
-set path=.,~/projects/adventofcode/C/include,/usr/include,/usr/include/glib-2.0

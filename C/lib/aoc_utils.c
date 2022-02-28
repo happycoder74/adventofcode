@@ -1,10 +1,10 @@
-#include <glib.h>
 #include <aoc_utils.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
+#include <glib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* Note: This function returns a pointer to a substring of the original string.
 If the given string was allocated dynamically, the caller must not overwrite
@@ -13,33 +13,32 @@ deallocated using the same allocator with which it was allocated.  The return
 value must NOT be deallocated using free() etc. */
 
 char *str_trim(char *str) {
-  char *end;
+    char *end;
 
-  /* Trim leading space */
-  while(isspace((unsigned char)*str)) str++;
+    /* Trim leading space */
+    while (isspace((unsigned char)*str)) str++;
 
-  if(*str == 0)  /* All spaces? */
+    if (*str == 0) /* All spaces? */
+        return str;
+
+    /* Trim trailing space */
+    end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) end--;
+
+    /* Write new null terminator character */
+    end[1] = '\0';
+
     return str;
-
-  /* Trim trailing space */
-  end = str + strlen(str) - 1;
-  while(end > str && isspace((unsigned char)*end)) end--;
-
-  /* Write new null terminator character */
-  end[1] = '\0';
-
-  return str;
 }
 
-
 char *str_join(const char *delimiter, char **str_list, size_t length) {
-    char *result
+    char *result;
     int res_length;
     size_t i;
     char *ptr;
 
     if (!*str_list) {
-        return  strdup("");
+        return strdup("");
     }
 
     res_length = strlen(str_list[0]);
@@ -58,7 +57,6 @@ char *str_join(const char *delimiter, char **str_list, size_t length) {
     return result;
 }
 
-
 int str_count(char *str, char needle, int start, int end) {
     int i;
     int count = 0;
@@ -71,7 +69,7 @@ int str_count(char *str, char needle, int start, int end) {
 
     for (i = start; i < end; i++) {
         if (needle == str[i]) {
-            count ++;
+            count++;
         }
     }
     return count;
@@ -139,7 +137,7 @@ GArray *get_input_new(char *filename, int year, int day) {
         return NULL;
     }
 
-    while ((getline(&line, &line_length, fp)) != -1 ) {
+    while ((getline(&line, &line_length, fp)) != -1) {
         data_line = g_strstrip(g_strdup(line));
         g_array_append_val(data, data_line);
     }
@@ -149,7 +147,8 @@ GArray *get_input_new(char *filename, int year, int day) {
     }
     g_free(path);
 
-    return data;;
+    return data;
+    ;
 }
 
 GArray *get_input(char *filename, int year, int day) {
@@ -174,7 +173,7 @@ GArray *get_input(char *filename, int year, int day) {
         return NULL;
     }
 
-    while ((getline(&line, &line_length, fp)) != -1 ) {
+    while ((getline(&line, &line_length, fp)) != -1) {
         data_line = g_strstrip(g_strdup(line));
         g_array_append_val(data, data_line);
     }
@@ -184,7 +183,8 @@ GArray *get_input(char *filename, int year, int day) {
     }
     g_free(path);
 
-    return data;;
+    return data;
+    ;
 }
 
 gint max(gint *arr, gint length) {
@@ -254,7 +254,7 @@ size_t getline(char **lineptr, size_t *n, FILE *stream) {
         size = 128;
     }
     p = bufptr;
-    while(c != EOF) {
+    while (c != EOF) {
         if ((p - bufptr) > (size - 1)) {
             size = size + 128;
             bufptr = realloc(bufptr, size);
@@ -291,16 +291,13 @@ size_t getline(char **lineptr, size_t *n, FILE *stream) {
  * its definition is provided in case the compiler lowers other libcalls to
  * stpcpy.
  */
-char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-{
-	while ((*dest++ = *src++) != '\0')
-		/* nothing */;
-	return --dest;
+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
+    while ((*dest++ = *src++) != '\0') /* nothing */
+        ;
+    return --dest;
 }
 
 #endif
-
-
 
 void print_line(Line line) {
     Point diff;
@@ -308,21 +305,18 @@ void print_line(Line line) {
 
     diff = point_difference(line.p0, line.p1);
 
-    printf("Line from (%d, %d) to (%d, %d) - distance (%d, %d) - step (%d, %d)\n",
-            line.p0.x, line.p0.y,
-            line.p1.x, line.p1.y,
-            diff.x, diff.y,
-            line.stepx, line.stepy);
-    for (point = line.p0;
-            (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy));
-            point.x += line.stepx, point.y += line.stepy) {
+    printf(
+        "Line from (%d, %d) to (%d, %d) - distance (%d, %d) - step (%d, %d)\n",
+        line.p0.x, line.p0.y, line.p1.x, line.p1.y, diff.x, diff.y, line.stepx,
+        line.stepy);
+    for (point = line.p0; (point.x != (line.p1.x + line.stepx)) ||
+                          (point.y != (line.p1.y + line.stepy));
+         point.x += line.stepx, point.y += line.stepy) {
         printf("\t(%d, %d)\n", point.x, point.y);
     }
 
-
     return;
 }
-
 
 Point point_difference(Point p0, Point p1) {
     Point diff;
@@ -341,14 +335,9 @@ Point points_on_line(Line line) {
     return diff;
 }
 
-gboolean is_horisontal(Line line) {
-    return line.p0.y == line.p1.y;
-}
+gboolean is_horisontal(Line line) { return line.p0.y == line.p1.y; }
 
-gboolean is_vertical(Line line) {
-    return line.p0.x == line.p1.x;
-}
-
+gboolean is_vertical(Line line) { return line.p0.x == line.p1.x; }
 
 guint point_hash(gconstpointer p) {
     Point *point = (Point *)p;

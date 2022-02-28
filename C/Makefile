@@ -1,4 +1,4 @@
-CC = cc
+CC = clang
 DEBUG=-g
 RELFLAGS= -O2 
 GLIB_FLAGS != pkg-config --cflags glib-2.0

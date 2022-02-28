@@ -39,6 +39,7 @@ int str_startswith(char *, char *);
 int str_endswith(char *, char *);
 
 #ifdef __MINGW32__
+#include <stdio.h>
 size_t getline(char **, size_t *, FILE *);
 char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
 #endif
