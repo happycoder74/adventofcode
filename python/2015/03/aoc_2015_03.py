@@ -15,36 +15,30 @@ def clean_input(data):
     return data
 
 
+def solver(data, agents=1):
+    delta = {"^": (1, 0), "v": (-1, 0), "<": (0, -1), ">": (0, 1)}
+    pos = [(0, 0)] * agents
+    visited = set()
+    visited.add(pos[0])
+    for index, c in enumerate(data):
+        ind = index % agents
+        dd = delta[c]
+        pos[ind] = (pos[ind][0] + dd[0], pos[ind][1] + dd[1])
+        visited.add(pos[ind])
+        print(f"{index}, {ind} - ({pos[ind][1]}, {pos[ind][0]})")
+    return len(visited)
+
+
 @timer(part=1)
 def solve_part_1(data):
     """ Solution for part 1 """
-    delta = {"^": (1, 0), "v": (-1, 0), "<": (0, -1), ">": (0, 1)}
-    pos = (0, 0)
-    visited = set()
-    visited.add(pos)
-    for c in data:
-        dd = delta[c]
-        pos = (pos[0] + dd[0], pos[1] + dd[1])
-        visited.add(pos)
-
-    return len(visited)
+    return solver(data, 1)
 
 
 @timer(part=2)
 def solve_part_2(data):
     """Solution for part 2"""
-    delta = {"^": (1, 0), "v": (-1, 0), "<": (0, -1), ">": (0, 1)}
-    pos = [(0, 0), (0, 0)]
-    visited = [set(), set()]
-    for v, p in zip(visited, pos):
-        v.add(p)
-    for index, c in enumerate(data):
-        ind = index % 2
-        dd = delta[c]
-        pos[ind] = (pos[ind][0] + dd[0], pos[ind][1] + dd[1])
-        visited[ind].add(pos[ind])
-
-    return len(visited[0].union(visited[1]))
+    return solver(data, 2)
 
 
 @timer(part='main', title='Total elapsed', show_return=False)
