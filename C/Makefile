@@ -15,14 +15,14 @@ TESTINPUTFILE=test_input.txt
 $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c include/aoc_utils.h
 	$(CC) $(RELFLAGS) $(CFLAGS) -o $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o -c $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c 
 
-$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY):	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o $(AOC_LIB)
+$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY):	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/libaoc.a
 	$(CC) $(RELFLAGS) -o $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)  $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o $(LDFLAGS)
 	@[ ! -e $@.exe ] || mv $@.exe $@
 
 $(AOC_LIB):	lib/libaoc.a
 
-lib/libaoc.a: lib/*.c
-	cd lib && $(MAKE)
+lib/libaoc.a: lib/*.c include/*.h
+	@cd lib && $(MAKE)
 
 ../data/$(YEAR)/$(DAY)/test_input.txt:
 	@echo "Need to generate a test_input.txt file for $(YEAR) day $(DAY)"
