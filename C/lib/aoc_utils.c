@@ -122,7 +122,7 @@ int str_endswith(char *str, char *end_str) {
 GArray *get_input_new(char *filename, int year, int day) {
     FILE *fp;
     GArray *data;
-    gchar *line = NULL;
+    gchar line[10000];
     size_t line_length = 0;
     gchar *data_line;
     gchar *path;
@@ -137,7 +137,7 @@ GArray *get_input_new(char *filename, int year, int day) {
         return NULL;
     }
 
-    while ((getline(&line, &line_length, fp)) != -1) {
+    while (fgets(line, 10000, fp)) {
         data_line = g_strstrip(g_strdup(line));
         g_array_append_val(data, data_line);
     }
@@ -224,56 +224,49 @@ gint min_non_zero(gint *arr, gint length) {
 }
 
 #ifdef __MINGW32__
-size_t getline(char **lineptr, size_t *n, FILE *stream) {
-    char *bufptr = NULL;
-    char *p = bufptr;
-    size_t size;
-    int c;
+ssize_t getline(char **buf, size_t *bufsiz, FILE *fp) {
+	return getdelim(buf, bufsiz, '\n', fp);
+}
 
-    if (lineptr == NULL) {
-        return -1;
-    }
-    if (stream == NULL) {
-        return -1;
-    }
-    if (n == NULL) {
-        return -1;
-    }
-    bufptr = *lineptr;
-    size = *n;
+ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
+	char *ptr, *eptr;
 
-    c = fgetc(stream);
-    if (c == EOF) {
-        return -1;
-    }
-    if (bufptr == NULL) {
-        bufptr = malloc(128);
-        if (bufptr == NULL) {
-            return -1;
-        }
-        size = 128;
-    }
-    p = bufptr;
-    while (c != EOF) {
-        if ((p - bufptr) > (size - 1)) {
-            size = size + 128;
-            bufptr = realloc(bufptr, size);
-            if (bufptr == NULL) {
-                return -1;
-            }
-        }
-        *p++ = c;
-        if (c == '\n') {
-            break;
-        }
-        c = fgetc(stream);
-    }
 
-    *p++ = '\0';
-    *lineptr = bufptr;
-    *n = size;
+	if (*buf == NULL || *bufsiz == 0) {
+		*bufsiz = BUFSIZ;
+		if ((*buf = malloc(*bufsiz)) == NULL)
+			return -1;
+	}
 
-    return p - bufptr - 1;
+	for (ptr = *buf, eptr = *buf + *bufsiz;;) {
+		int c = fgetc(fp);
+		if (c == -1) {
+			if (feof(fp)) {
+				ssize_t diff = (ssize_t)(ptr - *buf);
+				if (diff != 0) {
+					*ptr = '\0';
+					return diff;
+				}
+			}
+			return -1;
+		}
+		*ptr++ = c;
+		if (c == delimiter) {
+			*ptr = '\0';
+			return ptr - *buf;
+		}
+		if (ptr + 2 >= eptr) {
+			char *nbuf;
+			size_t nbufsiz = *bufsiz * 2;
+			ssize_t d = ptr - *buf;
+			if ((nbuf = realloc(*buf, nbufsiz)) == NULL)
+				return -1;
+			*buf = nbuf;
+			*bufsiz = nbufsiz;
+			eptr = nbuf + nbufsiz;
+			ptr = nbuf + d;
+		}
+	}
 }
 
 /**

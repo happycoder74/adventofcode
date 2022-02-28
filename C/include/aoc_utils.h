@@ -40,8 +40,9 @@ int str_endswith(char *, char *);
 
 #ifdef __MINGW32__
 #include <stdio.h>
-size_t getline(char **, size_t *, FILE *);
-char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
+ssize_t getline(char **, size_t *, FILE *);
+ssize_t getdelim(char **, size_t *, int, FILE *);
+char *stpcpy(char *__restrict__, const char *__restrict__);
 #endif
 
 #endif
