@@ -19,7 +19,7 @@ Currently migrating my python solutions from another repo, why not all source fi
 
 ## Year 2015
 + 47 &#11088; in Python 3.9 (all except day 22 and final part of day 25)
-+ 4 &#11088; in C (days 1 and 2)
++ 6 &#11088; in C (days 1 - 3)
 
 ## Year 2016
 + 16 &#11088; in Python 3.9 (days 1 - 8)
