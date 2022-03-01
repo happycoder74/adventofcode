@@ -123,7 +123,7 @@ int solve_part_1(GArray *data) {
     grid = malloc(sizeof(Grid));
     grid->rows = 6;
     grid->columns = 50;
-    grid->grid = malloc(sizeof(int) * (grid->rows * grid->columns));
+    grid->grid = calloc((grid->rows * grid->columns), sizeof(int));
 
     for (i = 0; i < data->len; i++) {
         instruction = g_array_index(data, Instruction *, i);
