@@ -68,7 +68,7 @@
         elapsed = g_timer_elapsed(timer, NULL); \
 		elapsed_unit = elapsed > 0.1 ? elapsed : elapsed*1000; \
 		if (show_res) { \
-			printf("Part %d answer:%s\r\033[35C( %6.3lf %-2s )\n", \
+			printf("Part %d answer: %s\r\033[35C( %6.3lf %-2s )\n", \
                     part, result, elapsed_unit, elapsed > 0.1? "s":"ms"); \
 		} else { \
 			printf("Time elapsed:\r\033[35C( %6.3lf %-2s )\n",\
