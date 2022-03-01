@@ -67,7 +67,7 @@ char* solve_part_1(GArray *data) {
     col_array = transpose_array(data, &columns);
     message = g_string_new("");
 
-    // Count characters in each column by using offset to 'a' as index. 
+    // Count characters in each column by using offset to 'a' as index.
     // Add character at each max position to return string 'message'
     for (col = 0; col < columns; col++) {
         count = g_new0(gint, 26);
@@ -101,7 +101,7 @@ char *solve_part_2(GArray *data) {
     col_array = transpose_array(data, &columns);
     message = g_new0(gchar, columns + 1);
 
-    // Count characters in each column by using offset to 'a' as index. 
+    // Count characters in each column by using offset to 'a' as index.
     // Add character at each min position to return string 'message'
     for (col = 0; col < columns; col++) {
         count = g_new0(gint, 26);
@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
     gchar *filename;
 
     if (argc > 1) {
-        filename = argv[1];
+        filename = g_strdup(argv[1]);
     } else {
         filename = g_strdup("input.txt");
     }

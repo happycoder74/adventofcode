@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     char *filename;
 
     if (argc > 1)
-        filename = argv[1];
+        filename = strdup(argv[1]);
     else
         filename = strdup("input.txt");
     int_array *data;
@@ -73,6 +73,7 @@ int main(int argc, char **argv) {
 
     free(data->data);
     free(data);
+    free(filename);
 
     return 0;
 }
