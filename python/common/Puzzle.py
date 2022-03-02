@@ -4,7 +4,6 @@ from common import timer
 
 class Puzzle(object):
     def __init__(self, filename, year, day):
-        print(f"Reading {filename} from {year}/{day}")
         self.filename = filename
         self.year = year
         self.day = day
