@@ -16,3 +16,4 @@ data
 __pycache__
 .coverage
 .coveragerc
+compile_flags.txt
