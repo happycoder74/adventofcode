@@ -9,6 +9,7 @@ data
 *.stackdump
 *.txt
 *.x
+*.a
 *.debug
 .cookie
 *.pyc
