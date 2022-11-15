@@ -17,3 +17,5 @@ __pycache__
 .coverage
 .coveragerc
 compile_flags.txt
+*.obj
+a.out
