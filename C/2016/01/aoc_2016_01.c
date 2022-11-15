@@ -8,13 +8,6 @@ GArray *clean_input(GArray *data) {
     return data;
 }
 
-GArray *testfunc() {
-    GArray *retarray;
-
-    g_array_new(TRUE, TRUE, sizeof(int));
-
-    return NULL;
-}
 
 gint solution(GArray *data, gboolean part_two) {
     gchar **split_string;
