@@ -4,6 +4,7 @@
 #include <glib.h>
 
 void timer_func_str(int, gchar *(*solver)(GArray *), GArray *, int);
+void timer_func_int(int, int (*solver)(GArray *), GArray *, int);
 
 #define TIMER(part, func, TYPE, show_res) TIMER_##TYPE(part, func, show_res)
 
