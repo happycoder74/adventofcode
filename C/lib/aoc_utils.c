@@ -146,7 +146,6 @@ GArray *get_input_new(char *filename, int year, int day) {
     FILE *fp;
     GArray *data;
     gchar line[10000];
-    size_t line_length = 0;
     gchar *data_line;
     gchar *path;
     gchar *file = NULL;
