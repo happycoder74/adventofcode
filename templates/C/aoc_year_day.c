@@ -8,30 +8,28 @@ GArray *clean_input(GArray *data) {
     return data;
 }
 
-char *solve_part_1(GArray *data) {
+gpointer solve_part_1(AocData_t *data) {
     return NULL;
 }
 
-char *solve_part_2(GArray *data) {
+gpointer solve_part_2(AocData_t *data) {
     return NULL;
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+gpointer solve_all(AocData_t *data) {
 
-    data = clean_input(get_input(filename, year, day));
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    if (data) {
-        TIMER(1, solve_part_1(data), STR, 1);
-        TIMER(2, solve_part_2(data), STR, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
+    AocData_t *data;
     gchar *filename;
 
     if (argc > 1) {
@@ -40,6 +38,12 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, <YEAR>, <DAY>), INT, 0);
+    data = aoc_data_new(filename, <YEAR>, <DAY>);
     g_free(filename);
+
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }
