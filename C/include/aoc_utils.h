@@ -1,9 +1,10 @@
 #ifndef __AOC_UTILS_H__
 #define __AOC_UTILS_H__
 
-#include <aoc_timer.h>
 #include <aoc_grid.h>
 #include <glib.h>
+#include "aoc_timer.h"
+#include "aoc_types.h"
 
 typedef struct {
     int x;
@@ -16,6 +17,10 @@ typedef struct {
     int stepx;
     int stepy;
 } Line;
+
+// Allocation functions
+AocData_t *aoc_data_new(gchar *, int, int);
+void aoc_data_free(AocData_t *);
 
 gboolean is_horisontal(Line);
 gboolean is_vertical(Line);

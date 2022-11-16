@@ -6,6 +6,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+AocData_t *aoc_data_new(gchar *filename, int year, int day) {
+    AocData_t *data = g_new(AocData_t, 1);
+
+    data->filename = g_strdup(filename);
+    data->year = year;
+    data->day = day;
+
+    return data;
+}
+
+void aoc_data_free(AocData_t *data) {
+    if (data->filename) {
+        g_free(data->filename);
+    }
+
+    if (data->data) {
+        g_array_free(data->data, TRUE);
+    }
+    g_free(data);
+}
+
+
+
 /* Note: This function returns a pointer to a substring of the original string.
 If the given string was allocated dynamically, the caller must not overwrite
 that pointer with the returned value, since the original pointer must be
