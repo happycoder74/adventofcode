@@ -4,14 +4,14 @@
 #include <glib.h>
 #include "aoc_utils.h"
 
-int solve_part_1(GArray *data) {
+gpointer solve_part_1(AocData_t *data) {
     gint i = 0;
     gchar *line;
     int pos = 0, depth = 0;
     int value;
     char command[10] = {0};
 
-    while ((line = g_array_index(data, gchar *, i++)) != NULL) {
+    while ((line = g_array_index(data->data, gchar *, i++)) != NULL) {
         sscanf(line, "%s %d", command, &value);
         if (!strcmp(command, "forward")) {
             pos += value;
@@ -23,17 +23,17 @@ int solve_part_1(GArray *data) {
             depth -= value;
         }
     }
-    return depth * pos;
+    return g_strdup_printf("%d", depth * pos);
 }
 
-int solve_part_2(GArray *data) {
+gpointer solve_part_2(AocData_t *data) {
     gint i = 0;
     gchar *line;
     int pos = 0, depth = 0, aim = 0;
     int value;
     char command[10] = {0};
 
-    while ((line = g_array_index(data, gchar *, i++)) != NULL) {
+    while ((line = g_array_index(data->data, gchar *, i++)) != NULL) {
         sscanf(line, "%s %d", command, &value);
         if (!strcmp(command, "forward")) {
             pos += value;
@@ -46,25 +46,22 @@ int solve_part_2(GArray *data) {
             aim -= value;
         }
     }
-    return depth * pos;
+    return g_strdup_printf("%d", depth * pos);
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+gpointer solve_all(AocData_t *data) {
+    data->data = get_input_new(data->filename, data->year, data->day);
 
-    data = get_input_new(filename, year, day);
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
+    AocData_t *data;
     gchar *filename;
 
     if (argc > 1) {
@@ -73,6 +70,12 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2021, 2), INT, 0);
+    data = aoc_data_new(filename, 2021, 2);
     g_free(filename);
+
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }

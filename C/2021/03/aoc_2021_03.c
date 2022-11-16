@@ -71,21 +71,21 @@ void print_bitfields_all(GArray *bitfields) {
     }
 }
 
-int solve_part_1(GArray *data) {
+gpointer solve_part_1(AocData_t *data) {
     GArray *digits;
     gint gamma_rate, epsilon_rate;
-    GArray *bitfield = g_array_index(data, GArray *, 0);
+    GArray *bitfield = g_array_index(data->data, GArray *, 0);
     gint length = bitfield->len;
     digits = g_array_new(FALSE, FALSE, sizeof(int));
     gint count;
 
     for (gint j = 0; j < length; j++) {
         count = 0;
-        for (gint i = 0; i < (int)data->len; i++) {
-            bitfield = g_array_index(data, GArray *, i);
+        for (gint i = 0; i < (int)data->data->len; i++) {
+            bitfield = g_array_index(data->data, GArray *, i);
             count += g_array_index(bitfield, int, j);
         }
-        int value = (2 * count / data->len >= 1);
+        int value = (2 * count / data->data->len >= 1);
         g_array_append_val(digits, value);
     }
 
@@ -95,8 +95,8 @@ int solve_part_1(GArray *data) {
         gamma_rate += g_array_index(digits, int, i) * pow(2, j);
     }
 
-    epsilon_rate = gamma_rate ^ ((int)pow(2, bitfield->len) - 1); 
-    return gamma_rate * epsilon_rate;
+    epsilon_rate = gamma_rate ^ ((int)pow(2, bitfield->len) - 1);
+    return g_strdup_printf("%d", gamma_rate * epsilon_rate);
 }
 
 
@@ -111,12 +111,12 @@ int bitfield_sum(GArray *bitfield) {
     return value;
 }
 
-int solve_part_2(GArray *data) {
+gpointer solve_part_2(AocData_t *data) {
     GArray *bitfield;
-    GArray *oxygen_generator;
-    GArray *co2_scrubber;
+    GArray *oxygen_generator = NULL;
+    GArray *co2_scrubber = NULL;
 
-    bitfield = g_array_index(data, GArray *, 0);
+    bitfield = g_array_index(data->data, GArray *, 0);
 
     int oxygen_generator_value;
     int co2_scrubber_value;
@@ -125,9 +125,9 @@ int solve_part_2(GArray *data) {
     guint digits = bitfield->len;
     for (guint j = 0; j < digits; j++) {
         if (j == 0) {
-            value = common_value(data, j, 1);
-            oxygen_generator = reduce(data, value, j);
-            co2_scrubber = reduce(data, !value, j);
+            value = common_value(data->data, j, 1);
+            oxygen_generator = reduce(data->data, value, j);
+            co2_scrubber = reduce(data->data, !value, j);
         } else {
             // Oxy generator:
             if (oxygen_generator->len > 1) {
@@ -143,37 +143,24 @@ int solve_part_2(GArray *data) {
     oxygen_generator_value = bitfield_sum(g_array_index(oxygen_generator, GArray *, 0));
     co2_scrubber_value = bitfield_sum(g_array_index(co2_scrubber, GArray *, 0));
 
-    return oxygen_generator_value * co2_scrubber_value;
+    return g_strdup_printf("%d", oxygen_generator_value * co2_scrubber_value);
 }
 
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
-    gdouble elapsed;
-    gchar *unit;
+gpointer solve_all(AocData_t *data) {
 
-    GTimer *timer = g_timer_new();
-    data = clean_input(get_input(filename, year, day));
-    g_timer_stop(timer);
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    elapsed = g_timer_elapsed(timer, NULL);
-    unit = elapsed > 0.1 ? g_strdup("s") : g_strdup("ms");
-    elapsed = elapsed > 0.1 ? elapsed : elapsed * 1000;
-
-    g_timer_destroy(timer);
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_print("Input time:\r\033[35C( %6.3lf %s )\n", elapsed, unit);
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
+    AocData_t *data;
     gchar *filename;
 
     if (argc > 1) {
@@ -182,6 +169,12 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2021, 3), INT, 0);
+    data = aoc_data_new(filename, 2021, 3);
     g_free(filename);
+
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }

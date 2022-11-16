@@ -1,15 +1,16 @@
-#include <glib.h>
+#include "glib.h"
 #include <stdio.h>
 #include <string.h>
 
 #include "aoc_utils.h"
+#include "aoc_timer.h"
 
-int solve_part_1(GArray *data) {
+gpointer solve_part_1(AocData_t *data) {
     int level = 0;
     int i = 0;
     char *line;
 
-    line = g_array_index(data, char *, i);
+    line = g_array_index(data->data, char *, i);
 
     for (i = 0; i < (int)strlen(line); i++) {
         if (line[i] == '(')
@@ -17,47 +18,51 @@ int solve_part_1(GArray *data) {
         else if (line[i] == ')')
             level -= 1;
     }
-    return level;
+    return (gpointer)g_strdup_printf("%d", level);
 }
 
-int solve_part_2(GArray *data) {
+gpointer solve_part_2(AocData_t *data) {
     int i = 0;
     int level = 0;
 
     char *line;
 
-    line = g_array_index(data, char *, i);
+    line = g_array_index(data->data, char *, i);
     for (i = 0; i < (int)strlen(line); i++) {
         if (line[i] == '(')
             level += 1;
         else if (line[i] == ')')
             level -= 1;
-        if (level < 0) return i + 1;
+        if (level < 0)
+            return (gpointer)g_strdup_printf("%d", i + 1);
     }
-    return 0;
+    return NULL;
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+gpointer solve_all(AocData_t *data) {
 
-    data = get_input(filename, year, day);
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    data->data = get_input(data->filename, data->year, data->day);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
+
 int main(int argc, char **argv) {
-    char *filename;
+    AocData_t *data;
+    gchar *filename;
 
     if (argc > 1)
         filename = g_strdup(argv[1]);
     else
         filename = g_strdup("input.txt");
 
-    TIMER(0, solve_all(filename, 2015, 1), INT, 0);
+    data = aoc_data_new(filename, 2015, 1);
     g_free(filename);
+
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
 }

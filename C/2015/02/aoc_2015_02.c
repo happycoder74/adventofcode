@@ -5,7 +5,7 @@
 #include "aoc_utils.h"
 
 
-gint solve_part_1(GArray *data) {
+gchar *solve_part_1(GArray *data) {
     guint i;
     gchar *row;
     gint l, w, h;
@@ -16,10 +16,10 @@ gint solve_part_1(GArray *data) {
         sscanf(row, "%dx%dx%d", &l, &w, &h);
         area += 2*l*w + 2*w*h + 2*h*l + MIN(MIN(l*w, w*h), h*l);
     }
-    return area;
+    return g_strdup_printf("%d", area);
 }
 
-gint solve_part_2(GArray *data) {
+gchar *solve_part_2(GArray *data) {
     guint i;
     gchar *row;
     gint l, w, h;
@@ -30,7 +30,7 @@ gint solve_part_2(GArray *data) {
         sscanf(row, "%dx%dx%d", &l, &w, &h);
         ribbon += MIN(MIN(2*w + 2*l, 2*w + 2*h), 2*h + 2*l) + l*w*h;
     }
-    return ribbon;
+    return g_strdup_printf("%d", ribbon);
 }
 
 int solve_all(gchar *filename, int year, int day) {
@@ -39,8 +39,8 @@ int solve_all(gchar *filename, int year, int day) {
     data = get_input(filename, year, day);
 
     if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
+        timer_func_str(1, solve_part_1, data, 1);
+        timer_func_str(2, solve_part_2, data, 1);
 
         g_array_free(data, TRUE);
     }
