@@ -3,6 +3,7 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
+#include "aoc_timer.h"
 
 GArray *clean_input(GArray *data) {
     return data;
@@ -77,30 +78,29 @@ gint solution(GArray *data, gboolean part_two) {
 
 
 }
-gint solve_part_1(GArray *data) {
-    return solution(data, FALSE);
+
+gpointer solve_part_1(AocData_t *data) {
+    return g_strdup_printf("%d", solution(data->data, FALSE));
 }
 
-int solve_part_2(GArray *data) {
-    return solution(data, TRUE);
+gpointer solve_part_2(AocData_t *data) {
+    return g_strdup_printf("%d", solution(data->data, TRUE));
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+gpointer solve_all(AocData_t *data) {
 
-    data = clean_input(get_input(filename, year, day));
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
+    AocData_t *data;
     gchar *filename;
 
     if (argc > 1) {
@@ -109,6 +109,10 @@ int main(int argc, char **argv) {
         filename = g_strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2016, 1), INT, 0);
+    data = aoc_data_new(filename, 2016, 1);
     g_free(filename);
+
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
 }
