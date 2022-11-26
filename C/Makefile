@@ -7,8 +7,8 @@ GLIB_LDFLAGS != pkg-config --libs glib-2.0
 AOC_LIB = -laoc
 LDFLAGS = -L./lib $(AOC_LIB) -lm $(GLIB_LDFLAGS) 
 EXE = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
-OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o
-SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/aoc_utils.c
+OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/*.o
+SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/*.c
 INPUTFILE=input.txt
 TESTINPUTFILE=test_input.txt
 
@@ -44,10 +44,13 @@ test:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) ../data/$(YEAR)/$(DAY)/$(TESTINPUTFILE)
 	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY) $(TESTINPUTFILE); cd ../.. )
 	@echo "============================"
 
+$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c:
+	 @../start_aoc.sh -l C -y $(YEAR) -d $(DAY) -t
+
 debug: clean-objs clean-exe
 	$(CC) $(DEBUG) $(CFLAGS) -o $(EXE) $(SRCS) $(LDFLAGS)
 
-templates:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c
+templates:
 	 @../start_aoc.sh -l C -y $(YEAR) -d $(DAY) -t
 
 clean-all-executables:
