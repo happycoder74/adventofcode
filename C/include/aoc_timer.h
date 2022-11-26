@@ -5,8 +5,6 @@
 #include "aoc_types.h"
 
 void timer_func(int, gpointer (func)(AocData_t *), AocData_t *, gboolean);
-void timer_func_str(int, gchar *(func)(GArray *), GArray *, int);
-void timer_func_int(int, int(func)(GArray *), GArray *, int);
 
 #define TIMER(part, func, TYPE, show_res) TIMER_##TYPE(part, func, show_res)
 
