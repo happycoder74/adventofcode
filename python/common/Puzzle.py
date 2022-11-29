@@ -20,6 +20,7 @@ class Puzzle(object):
     def clean_input(self, data):
         return data
 
+    @timer(part='main', title='Total elapsed', show_return=False)
     def solve_all(self):
         part1 = self.solve_part_1()
         part2 = self.solve_part_2()
