@@ -3,10 +3,17 @@ from common import timer
 
 
 class Puzzle(object):
-    def __init__(self, filename, year, day):
+    def __init_subclass__(cls, year=None, day=None, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.year = year
+        cls.day = day
+
+    def __init__(self, year=None, day=None, filename=None):
         self.filename = filename
-        self.year = year
-        self.day = day
+        if year is not None:
+            self.year = year
+        if day is not None:
+            self.day = day
         self.data = self.clean_input(self.get_input())
 
     def get_input(self, mode=None):
@@ -15,9 +22,10 @@ class Puzzle(object):
         with open(os.path.join(path, self.filename)) as fp:
             data = fp.read().strip().splitlines()
 
-        return self.clean_input(data)
+        return data
 
-    def clean_input(self, data):
+    @staticmethod
+    def clean_input(data):
         return data
 
     @timer(part='main', title='Total elapsed', show_return=False)
