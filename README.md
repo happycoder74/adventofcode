@@ -22,6 +22,8 @@ Currently migrating my python solutions from another repo, why not all solutions
 + 18 &#11088; in [C](C/README.md)
 + 2 &#11088; in PHP (day 1)
 
+### Why taking on the Advent of Code
+An excellent way to learn new programming languages and to train and practice on old skills. My goal is to implement solutions as far as possible for a number of different programming languages. Some may never happen, but maybe I get the chance to learn something new. Most curious on Rust, Kotlin and Haskell. 
 
 ### Started but far from completed (may never be):
 + PHP
