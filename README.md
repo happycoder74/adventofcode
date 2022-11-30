@@ -14,6 +14,9 @@ Currently migrating my python solutions from another repo, why not all solutions
 ## Year 2017
 + 2 &#11088; in C (day 1)
 
+## Year 2019
++ 2 &#11088; in Python 
+
 ## Year 2020
 + 14 &#11088;Python (days 1 - 7)
 
