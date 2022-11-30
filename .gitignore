@@ -19,3 +19,5 @@ __pycache__
 compile_flags.txt
 *.obj
 a.out
+adventofcode.code-workspace
+.vscode
