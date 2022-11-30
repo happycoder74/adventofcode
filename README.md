@@ -1,25 +1,7 @@
 # Advent of Code
-<<<<<<< Updated upstream
+
 Solutions for Advent of Code in different languages. Currently Python as main platform. Using this for learning new languages and to recapture old knowledge in C.
 Currently migrating my python solutions from another repo, why not all solutions are available yet.
-=======
-Solutions for Advent of Code in different languages. Currently Python as main platform. 
-
-### Started but far from completed languages yet to be uploaded in this repo
-+ Bash
-
-### Upcoming languages to try out which I have not started yet:
-+ Rust
-+ Elixir
-+ Haskell
-+ Go
-+ JavaScript/TypeScript
-+ Java
-+ Kotlin
-+ Julia
-+ C#
-+ Modern C++
->>>>>>> Stashed changes
 
 ## Year 2015
 + 47 &#11088; in Python 3.9 (all except day 22 and final part of day 25)
@@ -56,5 +38,4 @@ Solutions for Advent of Code in different languages. Currently Python as main pl
 + Julia
 + C#
 + C++
-
 
