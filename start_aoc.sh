@@ -55,7 +55,7 @@ while getopts ":hd:y:i:fl:c:tos" arg; do
 done
 
 check_dates() {
-	if [ $year -lt 2015 -o $year -gt 2021 ]; then
+	if [ $year -lt 2015 -o $year -gt 2022 ]; then
 		if [ $silent -eq 0 ]; then
 			echo "year must be between 2015 and 2021"
 		fi
