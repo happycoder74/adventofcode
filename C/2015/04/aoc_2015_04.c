@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
+
+#include "glib.h"
 #include "aoc_utils.h"
 
-GArray *clean_input(GArray *data) {
-    return data;
-}
+GArray *clean_input(GArray *data) { return data; }
 
 gint solution_str(AocData_t *data, const gchar *cmp_string) {
     gint number = 0;
@@ -15,13 +14,12 @@ gint solution_str(AocData_t *data, const gchar *cmp_string) {
     const gchar *hashcode;
     gchar *base = g_array_index(data->data, char *, 0);
 
-    printf("%s\n", base);
     while (TRUE) {
         string = g_strdup_printf("%s%d", base, ++number);
         g_checksum_update(checksum, (guchar *)string, -1);
         hashcode = g_checksum_get_string(checksum);
         g_free(string);
-        if(strncmp(hashcode, cmp_string, strlen(cmp_string)) == 0) {
+        if (strncmp(hashcode, cmp_string, strlen(cmp_string)) == 0) {
             break;
         }
         g_checksum_reset(checksum);
@@ -36,7 +34,7 @@ gint solution_bin(AocData_t *data, const gchar *cmp_string) {
     GChecksum *checksum = g_checksum_new(G_CHECKSUM_MD5);
     guint8 hashcode[100];
     gsize length;
-    gboolean found= FALSE;
+    gboolean found = FALSE;
 
     gchar *base = g_array_index(data->data, char *, 0);
 
@@ -46,11 +44,13 @@ gint solution_bin(AocData_t *data, const gchar *cmp_string) {
         length = 100;
         g_checksum_get_digest(checksum, hashcode, &length);
         if (strlen(cmp_string) == 5) {
-            if((*(hashcode + 0) == 0) && *(hashcode + 1) == 0 && *(hashcode + 2) < 16) {
+            if ((*(hashcode + 0) == 0) && *(hashcode + 1) == 0 &&
+                *(hashcode + 2) < 16) {
                 found = TRUE;
             }
         } else {
-            if((*(hashcode + 0) == 0) && *(hashcode + 1) == 0 && *(hashcode + 2) == 0) {
+            if ((*(hashcode + 0) == 0) && *(hashcode + 1) == 0 &&
+                *(hashcode + 2) == 0) {
                 found = TRUE;
             }
         }
@@ -81,8 +81,8 @@ gpointer solve_all(AocData_t *data) {
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
     if (data->data) {
-        /* timer_func(1, solve_part_1_str, data, 1); */
-        /* timer_func(2, solve_part_2_str, data, 1); */
+        timer_func(1, solve_part_1_str, data, 1);
+        timer_func(2, solve_part_2_str, data, 1);
         timer_func(1, solve_part_1_bin, data, 1);
         timer_func(2, solve_part_2_bin, data, 1);
     }

@@ -1,23 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
+
+#include "glib.h"
 #include "aoc_utils.h"
 
-GArray *clean_input(GArray *data) {
-    return data;
-}
+#ifndef G_REGEX_MATCH_DEFAULT
+#define G_REGEX_MATCH_DEFAULT 0
+#endif
+
+GArray *clean_input(GArray *data) { return data; }
 
 gint count_matches(GRegex *pattern, gchar *string) {
     GMatchInfo *match_info;
     gint count = 0;
 
     g_regex_match(pattern, string, G_REGEX_MATCH_DEFAULT, &match_info);
-    while(g_match_info_matches(match_info)) {
+    while (g_match_info_matches(match_info)) {
         count++;
         g_match_info_next(match_info, NULL);
     }
-    g_match_info_free (match_info);
+    g_match_info_free(match_info);
 
     return count;
 }
@@ -74,7 +77,6 @@ gpointer solve_part_2(AocData_t *data) {
 gpointer solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
-
 
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
