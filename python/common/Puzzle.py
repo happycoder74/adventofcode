@@ -28,6 +28,21 @@ class Puzzle(object):
     def clean_input(data):
         return data
 
+    @staticmethod
+    def parse_input_groups(data):
+        groups = list()
+        group = list()
+        for row in data:
+            if row == '':
+                groups.append(group)
+                group = list()
+            else:
+                group.append(row)
+        if len(group) > 0:
+            groups.append(group)
+
+        return groups
+
     @timer(part='main', title='Total elapsed', show_return=False)
     def solve_all(self):
         part1 = self.solve_part_1()
