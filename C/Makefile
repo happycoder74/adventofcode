@@ -1,5 +1,5 @@
 CC = clang
-DEBUG=-g
+DEBUG=-g -DDEBUG
 RELFLAGS= -O2 
 GLIB_FLAGS != pkg-config --cflags glib-2.0
 CFLAGS = -pedantic -Wall -Wextra -Wpedantic $(GLIB_FLAGS) -I./include
