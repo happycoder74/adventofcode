@@ -16,7 +16,7 @@ class AocRunner(object):
     def run(self):
         class_list = self.get_classes()
         for year, cls in class_list:
-            print(f"Year {year}: {cls.__name__}")
+            print(f"Year {year} - {cls.__name__}")
             print("=================================")
             try:
                 cls(filename=self.filename).solve_all()
@@ -58,11 +58,17 @@ class AocRunner(object):
 if __name__ == "__main__":
     arg_year = None
     arg_day = None
+    filename = None
     if len(sys.argv) == 2:
         arg_year = sys.argv[1]
         arg_day = None
     if len(sys.argv) == 3:
         arg_year = sys.argv[1]
         arg_day = sys.argv[2]
-    runner = AocRunner(year=arg_year, day=arg_day)
+    if len(sys.argv) == 4:
+        arg_year = sys.argv[1]
+        arg_day = sys.argv[2]
+        filename = sys.argv[3]
+
+    runner = AocRunner(year=arg_year, day=arg_day, filename=filename)
     runner.run()
