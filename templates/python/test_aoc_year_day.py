@@ -1,5 +1,5 @@
 import unittest
-import aoc_<YEAR>_<DAY> as a
+from aoc_<YEAR>_<DAY> import Day<DAY> as a
 
 
 class Test_<YEAR>_<DAY>(unittest.TestCase):
