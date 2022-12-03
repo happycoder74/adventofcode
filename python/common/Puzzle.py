@@ -18,9 +18,15 @@ class Puzzle(object):
 
     def get_input(self, mode=None):
         path = os.path.join(os.path.dirname(__file__),
-                            f"../../data/{self.year}/{self.day:02d}")
-        with open(os.path.join(path, self.filename)) as fp:
-            data = fp.read().strip().splitlines()
+                            "..", "..", "data",
+                            f"{self.year}", f"{self.day:02d}")
+        try:
+            with open(os.path.join(path, self.filename)) as fp:
+                data = fp.read().strip().splitlines()
+        except FileNotFoundError:
+            print("Can not open file {}".format(os.path.join(path,
+                                                             self.filename)))
+            exit()
 
         return data
 
