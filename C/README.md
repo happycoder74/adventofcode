@@ -15,4 +15,6 @@ or to just build the solution:
 where `<year>` is pretty self explanatory and `<day>` is the number of the day (with leading zero for day 1 to 9, e.g `01`, `02` etc).
 
 ## 2022:
-Day 1 - &#11088;&#11088;
+| Day | Stars            | Timing Part 1 | Timing Part 2 |
+|:---:|:-----------------|--------------:|--------------:|
+|  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
