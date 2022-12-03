@@ -14,3 +14,5 @@ or to just build the solution:
 
 where `<year>` is pretty self explanatory and `<day>` is the number of the day (with leading zero for day 1 to 9, e.g `01`, `02` etc).
 
+## 2022:
+Day 1 - &#11088;&#11088;
