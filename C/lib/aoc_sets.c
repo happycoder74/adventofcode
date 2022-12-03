@@ -1,6 +1,5 @@
 #include <aoc_sets.h>
 
-
 Set *set_new(SetType settype) {
     Set *result;
 
@@ -16,24 +15,24 @@ Set *set_new_with_data(GArray *data, SetType settype) {
 
     switch (result->settype) {
         case SET_INT:
-            result->set = g_array_new(FALSE, FALSE, sizeof(int));
+	    result->set = g_hash_table_new(g_int_hash, g_int_equal);
             for (guint i = 0; i < data->len; i++) {
                 gint val = g_array_index(data, int, i);
-                g_array_append_val(result->set, val);
+                g_hash_table_add(result->set, GINT_TO_POINTER(val));
             }
             break;
         case SET_CHAR:
-            result->set = g_array_new(FALSE, FALSE, sizeof(char));
+	    result->set = g_hash_table_new(g_int_hash, g_int_equal);
             for (guint i = 0; i < data->len; i++) {
                 char val = g_array_index(data, char, i);
-                g_array_append_val(result->set, val);
+                g_hash_table_add(result->set, GINT_TO_POINTER(val));
             }
             break;
         case SET_STR:
-            result->set = g_array_new(FALSE, FALSE, sizeof(char *));
+            result->set = g_hash_table_new(g_str_hash, g_str_equal);
             for (guint i = 0; i < data->len; i++) {
                 char *val = g_strdup(g_array_index(data, char *, i));
-                g_array_append_val(result->set, val);
+                g_hash_table_add(result->set, val);
             }
             break;
         default:
@@ -44,7 +43,7 @@ Set *set_new_with_data(GArray *data, SetType settype) {
     return result;
 }
 
-Set *set_intersect(Set *set1, Set *set2) {
+/*Set *set_intersect(Set *set1, Set *set2) {
     Set *result;
 
     if (g_array_get_element_size(set1->set) != g_array_get_element_size(set2->set)) {
@@ -244,11 +243,11 @@ Set *set_union(Set *set1, Set *set2) {
     }
     return result;
 }
-
+*/
 
 void set_free(Set *set) {
     if (set) {
-        g_array_free(set->set, TRUE);
+        g_hash_table_destroy(set->set);
         g_free(set);
     }
 }

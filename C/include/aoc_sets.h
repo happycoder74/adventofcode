@@ -11,9 +11,8 @@ typedef enum {
 } SetType;
 
 typedef struct {
-    GArray *set;
+    GHashTable *set;
     SetType settype;
-
 } Set;
 
 Set *set_new_with_data(GArray *data, SetType settype);
