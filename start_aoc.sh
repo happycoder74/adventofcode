@@ -68,7 +68,7 @@ check_dates() {
 		exit 1
 	fi
 	if [ $year -ge $current_year ]; then
-		if [ -a $day -gt $current_day ]; then
+		if [ $day -gt $current_day ]; then
 			if [ $silent -eq 0 ]; then
 				echo "Can not download day $day for $year yet."
 			fi
