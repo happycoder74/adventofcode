@@ -8,13 +8,15 @@ class Puzzle(object):
         cls.year = year
         cls.day = day
 
-    def __init__(self, year=None, day=None, filename=None):
+    def __init__(self, year=None, day=None, filename=None, data=None):
         self.filename = filename
         if year is not None:
             self.year = year
         if day is not None:
             self.day = day
-        self.data = self.clean_input(self.get_input())
+        if data is None:
+            data = self.get_input()
+        self.data = self.clean_input(data)
 
     def get_input(self, mode=None):
         path = os.path.join(os.path.dirname(__file__),
