@@ -21,3 +21,4 @@ compile_flags.txt
 a.out
 adventofcode.code-workspace
 .vscode
+*.swp
