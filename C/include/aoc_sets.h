@@ -5,9 +5,12 @@
 
 typedef enum {
     SET_INT,
+    SET_LONG,
     SET_CHAR,
     SET_STR,
-    SET_REAL
+    SET_FLOAT,
+    SET_DOUBLE,
+    SET_COUNT
 } SetType;
 
 typedef struct {
@@ -19,9 +22,9 @@ Set *set_new_with_data(GArray *data, SetType settype);
 Set *set_intersect(Set *set1, Set *set2);
 Set *set_difference(Set *set1, Set *set2);
 Set *set_union(Set *set1, Set *set2);
+GArray *set_get_values(Set *set);
 
 void set_free(Set *set);
-int set_add(Set *set, gconstpointer v);
-
+int set_add(Set *set, gconstpointer value);
 
 #endif

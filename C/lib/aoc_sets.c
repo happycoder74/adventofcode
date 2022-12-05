@@ -52,6 +52,15 @@ Set *set_intersect(Set *set1, Set *set2) {
     guint length;
     guint i;
 
+    if (!set1 || !set2) {
+        g_printerr("NULL set given\n");
+    }
+
+    if (set1->settype != set2->settype) {
+        g_printerr("Not matching set types\n");
+        return NULL;
+    }
+
     result = set_new(set1->settype);
 
     switch (result->settype) {
@@ -76,7 +85,10 @@ Set *set_intersect(Set *set1, Set *set2) {
                 }
             }
             break;
-        case SET_REAL:
+        case SET_FLOAT:
+        case SET_DOUBLE:
+        case SET_LONG:
+            g_print("Not yet implemented\n");
         default:
             g_free(result);
             return NULL;
@@ -85,66 +97,85 @@ Set *set_intersect(Set *set1, Set *set2) {
     return result;
 }
 
-/* Set *set_difference(Set *set1, Set *set2) {
-    Set *result;
-    gboolean exists;
+static gchar *set_string_type(SetType settype) {
+    gchar *settypes[] = {
+        "int",
+        "long",
+        "char",
+        "string",
+        "float",
+        "double"
+    };
+    return settypes[settype];
+}
 
-    if (g_array_get_element_size(set1->set) != g_array_get_element_size(set2->set)) {
+GArray *set_get_values(Set *set) {
+    guint length;
+    guint i;
+    guint val;
+    GArray *return_array;
+    gpointer *keys;
+
+    keys = g_hash_table_get_keys_as_array(set->set, &length);
+    switch(set->settype) {
+        case SET_INT:
+            return_array = g_array_sized_new(FALSE, FALSE, sizeof(gint), length);
+            for (i = 0; i < length; i++) {
+                val = GPOINTER_TO_INT(keys[i]);
+                g_array_append_val(return_array, val);
+            }
+            break;
+        case SET_CHAR:
+            return_array = g_array_sized_new(FALSE, FALSE, sizeof(guint), length);
+            for (i = 0; i < length; i++) {
+                val = GPOINTER_TO_INT(keys[i]);
+                g_array_append_val(return_array, val);
+            }
+            break;
+        default:
+            g_print("Not yet implemented for type %s\n", set_string_type(set->settype));
+            return NULL;
+            break;
+    }
+    return return_array;
+}
+
+Set *set_difference(Set *set1, Set *set2) {
+    Set *result;
+    gpointer *keys;
+    gpointer key;
+    guint length;
+    guint i;
+
+
+    if (!set1 || !set2) {
+        g_printerr("NULL set given\n");
+    }
+
+    if (set1->settype != set2->settype) {
+        g_printerr("Not matching set types\n");
         return NULL;
     }
 
     result = set_new(set1->settype);
 
     switch (result->settype) {
-        case SET_INT:
-            result->set = g_array_new(FALSE, TRUE, sizeof(int));
-            for (guint i = 0; i < set1->set->len; i++) {
-                exists = FALSE;
-                gint val1 = g_array_index(set1->set, int, i);
-                for (guint j=0; j < set2->set->len; j++) {
-                    gint val2 = g_array_index(set2->set, int, j);
-                    if (val1 == val2) {
-                        exists = TRUE;
-                        break;
-                    }
-                }
-                if (!exists)
-                    g_array_append_val(result->set, val1);
-            }
-            break;
         case SET_CHAR:
-            result->set = g_array_new(FALSE, TRUE, sizeof(char));
-            for (guint i = 0; i < set1->set->len; i++) {
-                exists = FALSE;
-                char val1 = g_array_index(set1->set, char, i);
-                for (guint j=0; j < set2->set->len; j++) {
-                    char val2 = g_array_index(set2->set, char, j);
-                    if (val1 == val2) {
-                        exists = TRUE;
-                        break;
-                    }
+        case SET_INT:
+            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
+            keys = g_hash_table_get_keys_as_array(set1->set, &length);
+            for (i = 0; i < length; i++) {
+                key = keys[i];
+                if(!g_hash_table_contains(set2->set, key)) {
+                    g_hash_table_add(result->set, key);
                 }
-                if (!exists)
-                    g_array_append_val(result->set, val1);
             }
             break;
         case SET_STR:
-            result->set = g_array_new(FALSE, TRUE, sizeof(char *));
-            for (guint i = 0; i < set1->set->len; i++) {
-                exists = FALSE;
-                char * val1 = g_array_index(set1->set, char *, i);
-                for (guint j=0; j < set2->set->len; j++) {
-                    char * val2 = g_array_index(set2->set, char *, j);
-                    if (!g_strcmp0(val1, val2)) {
-                        exists = TRUE;
-                        break;
-                    }
-                }
-                if (!exists)
-                    g_array_append_val(result->set, val1);
-            }
-            break;
-        case SET_REAL:
+        case SET_FLOAT:
+        case SET_DOUBLE:
+        case SET_LONG:
+            g_print("Not yet implemented for set type %s\n", set_string_type(result->settype));
         default:
             g_free(result);
             return NULL;
@@ -153,7 +184,7 @@ Set *set_intersect(Set *set1, Set *set2) {
     return result;
 }
 
-int set_add_int(Set *set, int element) {
+/* int set_add_int(Set *set, int element) {
     int val;
 
     for (guint i = 0; i < set->set->len; i++) {
@@ -195,42 +226,54 @@ int set_add(Set *set, gconstpointer v) {
     }
 
 }
+*/
 
 Set *set_union(Set *set1, Set *set2) {
     Set *result;
+    gpointer *keys;
+    gpointer key;
+    guint length;
+    guint i;
+
+    if (!set1 || !set2) {
+        g_printerr("NULL set given\n");
+    }
+
+    if (set1->settype != set2->settype) {
+        g_printerr("Not matching set types\n");
+        return NULL;
+    }
 
     result = set_new(set1->settype);
 
     switch (result->settype) {
-        case SET_INT:
-            result->set = g_array_new(FALSE, TRUE, sizeof(int));
-            for (guint i = 0; i < set1->set->len; i++) {
-                int val = g_array_index(set1->set, int, i);
-                g_array_append_val(result->set, val);
-            }
-            for (guint i = 0; i < set2->set->len; i++) {
-                int val = g_array_index(set2->set, int, i);
-                set_add(result, GINT_TO_POINTER(val));
-            }
-            break;
         case SET_CHAR:
-            result->set = g_array_new(FALSE, TRUE, sizeof(char));
-            for (guint i = 0; i < set1->set->len; i++) {
-                char val = g_array_index(set1->set, char, i);
-                g_array_append_val(result->set, val);
+        case SET_INT:
+            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
+            keys = g_hash_table_get_keys_as_array(set1->set, &length);
+            for (i = 0; i < length; i++) {
+                key = keys[i];
+                g_hash_table_add(result->set, key);
             }
-            for (guint i = 0; i < set2->set->len; i++) {
-                char val = g_array_index(set2->set, char, i);
-                set_add(result, GINT_TO_POINTER(val));
+            keys = g_hash_table_get_keys_as_array(set2->set, &length);
+            for (i = 0; i < length; i++) {
+                if (!g_hash_table_contains(set1->set, keys[i])) {
+                    g_hash_table_add(result->set, keys[i]);
+                }
             }
             break;
+        case SET_STR:
+        case SET_FLOAT:
+        case SET_DOUBLE:
+        case SET_LONG:
+            g_print("Not yet implemented for set type %s\n", set_string_type(result->settype));
         default:
             g_free(result);
             return NULL;
     }
+
     return result;
 }
-*/
 
 void set_free(Set *set) {
     if (set) {
