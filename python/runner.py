@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
+import argparse
 import os
-import sys
 
 from importlib.machinery import SourceFileLoader
 
@@ -40,10 +41,14 @@ class AocRunner(object):
         for year in year:
             for day in days:
                 module = f"aoc_{year}_{day:02d}"
-                sourcefile = os.path.join(f"{year}", f"{day:02d}", f"{module}.py")
+                sourcefile = os.path.join(
+                    f"{year}", f"{day:02d}", f"{module}.py"
+                )
                 if os.path.exists(sourcefile):
                     try:
-                        puzzle = SourceFileLoader(module, sourcefile).load_module()
+                        puzzle = SourceFileLoader(
+                            module, sourcefile
+                        ).load_module()
                         try:
                             cls = getattr(puzzle, f"Day{day}")
                             class_list.append((year, cls))
@@ -56,19 +61,14 @@ class AocRunner(object):
 
 
 if __name__ == "__main__":
-    arg_year = None
-    arg_day = None
-    filename = None
-    if len(sys.argv) == 2:
-        arg_year = sys.argv[1]
-        arg_day = None
-    if len(sys.argv) == 3:
-        arg_year = sys.argv[1]
-        arg_day = sys.argv[2]
-    if len(sys.argv) == 4:
-        arg_year = sys.argv[1]
-        arg_day = sys.argv[2]
-        filename = sys.argv[3]
+    parser = argparse.ArgumentParser(
+        prog="runner.py", description="Run Advent of Code solutions"
+    )
+    parser.add_argument("filename", nargs="?", help="Filename to be used")
+    parser.add_argument("--test", help="Run test case", action="store_true")
+    parser.add_argument("-y", "--year", help="Year to be run")
+    parser.add_argument("-d", "--day", help="Year to be run")
 
-    runner = AocRunner(year=arg_year, day=arg_day, filename=filename)
+    args = parser.parse_args()
+    runner = AocRunner(year=args.year, day=args.day, filename=args.filename)
     runner.run()
