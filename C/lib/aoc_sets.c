@@ -10,27 +10,29 @@ Set *set_new(SetType settype) {
 }
 
 Set *set_new_with_data(GArray *data, SetType settype) {
-    Set *result = set_new(settype);
+    guint i;
+    Set *result;
+
+    result = set_new(settype);
     result->settype = settype;
 
     switch (result->settype) {
         case SET_INT:
-	    result->set = g_hash_table_new(g_int_hash, g_int_equal);
-            for (guint i = 0; i < data->len; i++) {
-                gint val = g_array_index(data, int, i);
-                g_hash_table_add(result->set, GINT_TO_POINTER(val));
-            }
-            break;
         case SET_CHAR:
-	    result->set = g_hash_table_new(g_int_hash, g_int_equal);
-            for (guint i = 0; i < data->len; i++) {
-                char val = g_array_index(data, char, i);
-                g_hash_table_add(result->set, GINT_TO_POINTER(val));
+            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
+            for (i = 0; i < data->len; i++) {
+                if (result->settype == SET_CHAR) {
+                    gchar val = g_array_index(data, gchar, i);
+                    g_hash_table_add(result->set, GUINT_TO_POINTER(val));
+                } else {
+                    gint val = g_array_index(data, gint, i);
+                    g_hash_table_add(result->set, GINT_TO_POINTER(val));
+                }
             }
             break;
         case SET_STR:
             result->set = g_hash_table_new(g_str_hash, g_str_equal);
-            for (guint i = 0; i < data->len; i++) {
+            for (i = 0; i < data->len; i++) {
                 char *val = g_strdup(g_array_index(data, char *, i));
                 g_hash_table_add(result->set, val);
             }
@@ -43,48 +45,34 @@ Set *set_new_with_data(GArray *data, SetType settype) {
     return result;
 }
 
-/*Set *set_intersect(Set *set1, Set *set2) {
+Set *set_intersect(Set *set1, Set *set2) {
     Set *result;
-
-    if (g_array_get_element_size(set1->set) != g_array_get_element_size(set2->set)) {
-        return NULL;
-    }
+    gpointer *keys;
+    gpointer key;
+    guint length;
+    guint i;
 
     result = set_new(set1->settype);
+
     switch (result->settype) {
         case SET_INT:
-            result->set = g_array_new(FALSE, TRUE, sizeof(int));
-            for (guint i = 0; i < set1->set->len; i++) {
-                int val1 = g_array_index(set1->set, int, i);
-                for (guint j = 0; j < set2->set->len; j++) {
-                    int val2 = g_array_index(set2->set, int, j);
-                    if ((val1) == (val2)) {
-                        g_array_append_val(result->set, val1);
-                    }
-                }
-            }
-            break;
         case SET_CHAR:
-            result->set = g_array_new(FALSE, TRUE, sizeof(char));
-            for (guint i = 0; i < set1->set->len; i++) {
-                char val1 = g_array_index(set1->set, char, i);
-                for (guint j = 0; j < set2->set->len; j++) {
-                    char val2 = g_array_index(set2->set, char, j);
-                    if ((val1) == (val2)) {
-                        g_array_append_val(result->set, val1);
-                    }
+            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
+            keys = g_hash_table_get_keys_as_array(set1->set, &length);
+            for (i = 0; i < length; i++) {
+                key = keys[i];
+                if(g_hash_table_contains(set2->set, key)) {
+                    g_hash_table_add(result->set, key);
                 }
             }
             break;
         case SET_STR:
-            result->set = g_array_new(FALSE, TRUE, sizeof(char *));
-            for (guint i = 0; i < set1->set->len; i++) {
-                char *val1 = g_array_index(set1->set, char *, i);
-                for (guint j = 0; j < set2->set->len; j++) {
-                    char *val2 = g_array_index(set2->set, char *, j);
-                    if (!g_strcmp0(val1, val2)) {
-                        g_array_append_val(result->set, val1);
-                    }
+            result->set = g_hash_table_new(g_str_hash, g_str_equal);
+            keys = g_hash_table_get_keys_as_array(set1->set, &length);
+            for (i = 0; i < length; i++) {
+                key = keys[i];
+                if(g_hash_table_contains(set2->set, key)) {
+                    g_hash_table_add(result->set, key);
                 }
             }
             break;
@@ -92,13 +80,12 @@ Set *set_new_with_data(GArray *data, SetType settype) {
         default:
             g_free(result);
             return NULL;
-
     }
 
     return result;
 }
 
-Set *set_difference(Set *set1, Set *set2) {
+/* Set *set_difference(Set *set1, Set *set2) {
     Set *result;
     gboolean exists;
 
