@@ -30,7 +30,6 @@ class Day7(Puzzle, year=2022, day=7):
             'files': list(),
             'size': 0
         }
-        print(self.root)
 
     def add_file(self, file_name, size):
         self.root[tuple(self.directories)]['files'].append((file_name, size))
