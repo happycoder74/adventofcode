@@ -4,16 +4,16 @@ Solutions for Advent of Code in different languages. Currently Python as main pl
 Currently migrating my python solutions from another repo, why not all solutions are available yet.
 
 ## Year 2022
-+ 12 &#11088; in Python
++ 18 &#11088; in Python
 + 4 &#11088; in [C](C/README.md)
 
 ## Year 2021
 + 42 &#11088; in Python
 + 18 &#11088; in [C](C/README.md)
++ 2 &#11088; in PHP (day 1)
 
 ## Year 2020
 + 14 &#11088;Python (days 1 - 7)
-+ 2 &#11088; in PHP (day 1)
 
 ## Year 2019
 + 2 &#11088; in Python 
