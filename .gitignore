@@ -23,3 +23,4 @@ adventofcode.code-workspace
 .vscode
 *.swp
 .idea
+*.swo
