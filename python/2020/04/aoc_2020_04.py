@@ -2,7 +2,7 @@ import sys
 from common import timer, Puzzle
 
 
-class Day04(Puzzle, year=2020, day=4):
+class Day4(Puzzle, year=2020, day=4):
     @staticmethod
     def clean_input(data):
         result = list()
@@ -109,4 +109,4 @@ if __name__ == "__main__":
     filename = "input.txt"
     if len(sys.argv) > 1:
         filename = sys.argv[1]
-    Day04(filename=filename).solve_all()
+    Day4(filename=filename).solve_all()
