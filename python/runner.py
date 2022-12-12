@@ -9,14 +9,14 @@ class AocRunner(object):
     def __init__(self, year=None, day=None, filename=None, data=None):
         self.year = year
         self.day = day
+        self.data = None
+        self.filename = None
         if filename is not None:
             self.filename = filename
         else:
             if data is None:
                 self.filename = "input.txt"
-                self.data = None
             else:
-                self.filename = None
                 self.data = data
                 print(f"{self.data=}")
 
@@ -77,7 +77,8 @@ if __name__ == "__main__":
     parser.add_argument("--data", help="Direct input of data")
 
     args = parser.parse_args()
-    data = args.data.split(",")
+    data = args.data.split(",") if args.data else None
+
     runner = AocRunner(year=args.year,
                        day=args.day,
                        filename=args.filename,
