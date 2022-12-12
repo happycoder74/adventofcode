@@ -132,12 +132,12 @@ make_templates() {
 		mkdir -p $directory
 	fi
 	if [ ! -e $directory/aoc_${year}_${day}.${file_ext} ]; then
-		sed -e "s/<YEAR>/$year/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
+		sed -e "s/<YEAR>/$year/g" -e "s/<0DAY>/$day/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
 	fi
 
 	if [ $language == "python" ]; then
 		if [ ! -e $directory/test_aoc_${year}_${day}.$file_ext ]; then
-			sed -e "s/<YEAR>/$year/g" -e "s/<CORR_DAY>/$((10#$day))/g" -e "s/<DAY>/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
+			sed -e "s/<YEAR>/$year/g" -e "s/<DAY>/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
 		fi
 	fi
 }
