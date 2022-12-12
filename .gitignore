@@ -25,3 +25,4 @@ adventofcode.code-workspace
 .idea
 *.swo
 .cookie*
+\#*.*
