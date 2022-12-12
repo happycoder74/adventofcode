@@ -6,13 +6,19 @@ from importlib.machinery import SourceFileLoader
 
 
 class AocRunner(object):
-    def __init__(self, year=None, day=None, filename=None):
+    def __init__(self, year=None, day=None, filename=None, data=None):
         self.year = year
         self.day = day
         if filename is not None:
             self.filename = filename
         else:
-            self.filename = "input.txt"
+            if data is None:
+                self.filename = "input.txt"
+                self.data = None
+            else:
+                self.filename = None
+                self.data = data
+                print(f"{self.data=}")
 
     def run(self):
         class_list = self.get_classes()
@@ -20,7 +26,7 @@ class AocRunner(object):
             print(f"Year {year} - {cls.__name__}")
             print("=================================")
             try:
-                cls(filename=self.filename).solve_all()
+                cls(filename=self.filename, data=self.data).solve_all()
             except ModuleNotFoundError:
                 print("Unable to import submodule")
             print("=================================")
@@ -68,7 +74,12 @@ if __name__ == "__main__":
     parser.add_argument("--test", help="Run test case", action="store_true")
     parser.add_argument("-y", "--year", help="Year to be run")
     parser.add_argument("-d", "--day", help="Year to be run")
+    parser.add_argument("--data", help="Direct input of data")
 
     args = parser.parse_args()
-    runner = AocRunner(year=args.year, day=args.day, filename=args.filename)
+    data = args.data.split(",")
+    runner = AocRunner(year=args.year,
+                       day=args.day,
+                       filename=args.filename,
+                       data=data)
     runner.run()
