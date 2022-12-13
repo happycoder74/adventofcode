@@ -2,6 +2,8 @@
 import argparse
 import os
 
+from common import timer
+
 from importlib.machinery import SourceFileLoader
 
 
@@ -20,6 +22,7 @@ class AocRunner(object):
                 self.data = data
                 print(f"{self.data=}")
 
+    @timer(part=0, title="Total run time", show_return=False)
     def run(self):
         class_list = self.get_classes()
         for year, cls in class_list:
