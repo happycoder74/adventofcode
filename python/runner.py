@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import os
+import sys
 
 from common import timer
 
@@ -50,11 +51,11 @@ class AocRunner(object):
         for year in year:
             for day in days:
                 module = f"aoc_{year}_{day:02d}"
-                sourcefile = os.path.join(
-                    f"{year}", f"{day:02d}", f"{module}.py"
-                )
+                sourcepath = os.path.join(f"{year}", f"{day:02d}")
+                sourcefile = os.path.join(sourcepath, f"{module}.py")
                 if os.path.exists(sourcefile):
                     try:
+                        sys.path.append(sourcepath)
                         puzzle = SourceFileLoader(
                             module, sourcefile
                         ).load_module()
@@ -65,6 +66,10 @@ class AocRunner(object):
                             print(f"No solution for day {day} for {year}")
                     except ModuleNotFoundError:
                         print(f"Unable to import submodule for {year} - {day}")
+                    finally:
+                        sys.path.remove(sourcepath)
+                else:
+                    print(f"{sourcefile=} not found")
         self.year = year
         return class_list
 
