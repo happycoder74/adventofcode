@@ -12,7 +12,8 @@ templates_only=0
 input_only=0
 silent=0
 
-declare -a languages=("python" "C" "PHP")
+#declare -a languages=("python" "C" "PHP")
+declare -a languages=("python" "C")
 
 while getopts ":hd:y:i:fl:c:tos" arg; do
     case $arg in

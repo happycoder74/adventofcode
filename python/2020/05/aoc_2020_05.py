@@ -2,10 +2,10 @@ import sys
 from common import timer, Puzzle
 
 
-class Day5(Puzzle, year=2020, day=5):
+class Day05(Puzzle, year=2020, day=5):
     @staticmethod
     def clean_input(data):
-        return sorted([Day5.find_id(row) for row in data])
+        return sorted([Day05.find_id(row) for row in data])
 
     @staticmethod
     def find_id(data: str):
@@ -29,4 +29,4 @@ if __name__ == "__main__":
     filename = "input.txt"
     if len(sys.argv) > 1:
         filename = sys.argv[1]
-    Day5(filename=filename).solve_all()
+    Day05(filename=filename).solve_all()

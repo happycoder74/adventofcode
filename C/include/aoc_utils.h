@@ -40,7 +40,7 @@ char *str_trim(char *str);
 char *str_join(const char *, char **, size_t);
 int str_count(char *, char, int, int);
 char *substr(char *, int, int);
-int str_startswith(char *, char *);
+int str_startswith(char *str, char *start_str);
 int str_endswith(char *, char *);
 
 #ifdef __MINGW32__

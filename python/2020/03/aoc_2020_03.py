@@ -1,8 +1,8 @@
 import sys
-from common import timer, get_input, Puzzle
+from common import timer, Puzzle
 
 
-class Day03(Puzzle):
+class Day03(Puzzle, year=2020, day=3):
     def clean_input(self, data):
         return [val for val in data]
 
@@ -62,5 +62,5 @@ if __name__ == "__main__":
     filename = "input.txt"
     if len(sys.argv) > 1:
         filename = sys.argv[1]
-    d = Day03(filename, 2020, 3)
+    d = Day03(filename=filename)
     d.solve_all()
