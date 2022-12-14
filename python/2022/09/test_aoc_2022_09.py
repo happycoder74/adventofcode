@@ -11,4 +11,4 @@ class Test_2022_09(unittest.TestCase):
 
     def test_part_2(self):
         self.day2 = Day9(filename="test_input_2.txt")
-        self.assertEqual(36, self.day.solve_part_2())
+        self.assertEqual(36, self.day2.solve_part_2())
