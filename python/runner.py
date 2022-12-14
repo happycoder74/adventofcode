@@ -60,10 +60,10 @@ class AocRunner(object):
                             module, sourcefile
                         ).load_module()
                         try:
-                            cls = getattr(puzzle, f"Day{day}")
+                            cls = getattr(puzzle, f"Day{day:02d}")
                             class_list.append((year, cls))
                         except AttributeError:
-                            print(f"No solution for day {day} for {year}")
+                            print(f"No solution for day {day:02d} for {year}")
                     except ModuleNotFoundError:
                         print(f"Unable to import submodule for {year} - {day}")
                     finally:
