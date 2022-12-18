@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -21,16 +20,3 @@ class Day01(Puzzle, year=2021, day=1):
     def solve_part_2(self):
         """ Solution for part 2 """
         return self.solution(window=3)
-
-    def solve_all(self):
-        part_1 = self.solve_part_1()
-        part_2 = self.solve_part_2()
-
-        return part_1, part_2
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day01(filename=filename)
