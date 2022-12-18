@@ -25,8 +25,24 @@ def timer(part, show_result=True, title="", show_return=True):
                     f'{result if result is not None and show_return else ""}',
                     elapsed_time_str])
                 )
-            return result
-
+            return (result, elapsed_time_str)
         return wrapper
-
     return decorator
+
+
+class Timer(object):
+    title: str
+    start_time: float
+
+    def __init__(self, title: str = None) -> None:
+        self.start_time = 0
+        self.title = f"{title} " if title is not None else ''
+
+    def __enter__(self) -> None:
+        self.start_time = time.perf_counter()
+
+    def __exit__(self, *info) -> None:
+        elapsed_time: float = time.perf_counter() - self.start_time
+        elapsed_time_unit: str = "ms" if elapsed_time <= 0.1 else "s"
+        elapsed_time = elapsed_time * (1e3 if elapsed_time <= 0.1 else 1)
+        print(f'{self.title}{elapsed_time:.3f} {elapsed_time_unit}')
