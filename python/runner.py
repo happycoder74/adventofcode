@@ -5,14 +5,26 @@ import sys
 
 from common import timer
 
-from importlib.machinery import SourceFileLoader
+import importlib
 
 
 class AocRunner(object):
-    def __init__(self, year=None, day=None, filename=None, data=None):
+    def __init__(self, year=None, day=None, exclude=None,
+                 filename=None, data=None):
         self.year = year
-        self.day = day
+        self.days = []
+        if day:
+            for d in day.split(","):
+                if "-" in d:
+                    self.days.extend(range(int(d.split("-")[0]),
+                                           int(d.split("-")[1]) + 1))
+                else:
+                    self.days.append(int(d))
         self.data = None
+        if exclude is not None:
+            self.exclude_day = [int(exclude)]
+        else:
+            self.exclude_day = []
         self.filename = None
         if filename is not None:
             self.filename = filename
@@ -38,8 +50,8 @@ class AocRunner(object):
 
     def get_classes(self):
         class_list = list()
-        if self.day is not None:
-            days = [int(self.day)]
+        if self.days:
+            days = self.days
         else:
             days = range(1, 26)
 
@@ -50,26 +62,30 @@ class AocRunner(object):
 
         for year in year:
             for day in days:
+                if day in self.exclude_day:
+                    continue
                 module = f"aoc_{year}_{day:02d}"
-                sourcepath = os.path.join(f"{year}", f"{day:02d}")
-                sourcefile = os.path.join(sourcepath, f"{module}.py")
-                if os.path.exists(sourcefile):
+                source_path = os.path.join(f"y{year}", f"d{day:02d}")
+                source_file = os.path.join(source_path, f"{module}.py")
+                if os.path.exists(source_file):
                     try:
-                        sys.path.append(sourcepath)
-                        puzzle = SourceFileLoader(
-                            module, sourcefile
-                        ).load_module()
+                        sys.path.append(source_path)
+                        puzzle = importlib.import_module(
+                            f"y{year}.d{day:02d}.{module}"
+                        )
                         try:
-                            cls = getattr(puzzle, f"Day{day:02d}")
-                            class_list.append((year, cls))
-                        except AttributeError:
+                            class_in_module = getattr(puzzle, f"Day{day:02d}")
+                            class_list.append((year, class_in_module))
+                        except AttributeError as e:
+                            print(e)
+                            print(dir(puzzle))
                             print(f"No solution for day {day:02d} for {year}")
                     except ModuleNotFoundError:
                         print(f"Unable to import submodule for {year} - {day}")
                     finally:
-                        sys.path.remove(sourcepath)
+                        sys.path.remove(source_path)
                 else:
-                    print(f"{sourcefile=} not found")
+                    print(f"{source_file=} not found")
         self.year = year
         return class_list
 
@@ -81,14 +97,18 @@ if __name__ == "__main__":
     parser.add_argument("filename", nargs="?", help="Filename to be used")
     parser.add_argument("--test", help="Run test case", action="store_true")
     parser.add_argument("-y", "--year", help="Year to be run")
-    parser.add_argument("-d", "--day", help="Year to be run")
+    parser.add_argument("-d", "--day", help="Day to be run")
+    parser.add_argument("-x", "--exclude_day", help="Exclude day from run")
     parser.add_argument("--data", help="Direct input of data")
 
     args = parser.parse_args()
     data = args.data.split(",") if args.data else None
+    if args.test:
+        args.filename = "test_input.txt"
 
     runner = AocRunner(year=args.year,
                        day=args.day,
+                       exclude=args.exclude_day,
                        filename=args.filename,
                        data=data)
     runner.run()
