@@ -1,9 +1,8 @@
-import sys
 from common import timer, Puzzle
 from collections import Counter
 
 
-class Day6(Puzzle, year=2022, day=6):
+class Day06(Puzzle, year=2022, day=6):
     @staticmethod
     def clean_input(data):
         return data[0]
@@ -24,10 +23,3 @@ class Day6(Puzzle, year=2022, day=6):
     def solve_part_2(self):
         """Solution for part 2"""
         return self.marker(self.data, 14)
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day6(filename=filename).solve_all()

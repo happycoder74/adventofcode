@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -8,7 +7,7 @@ def prio(char: str):
     return ord(char) - ord('a') + 1
 
 
-class Day3(Puzzle, year=2022, day=3):
+class Day03(Puzzle, year=2022, day=3):
     @staticmethod
     def clean_input(data):
         rucksacks = list()
@@ -47,10 +46,3 @@ class Day3(Puzzle, year=2022, day=3):
             prio_sum += prio(group_set.pop())
 
         return prio_sum
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day3(filename=filename).solve_all()

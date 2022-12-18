@@ -1,8 +1,7 @@
-import sys
 from common import timer, Puzzle
 
 
-class Day1(Puzzle, year=2022, day=1):
+class Day01(Puzzle, year=2022, day=1):
     @staticmethod
     def clean_input(data):
         return [int(n) if n != '' else n for n in data]
@@ -22,10 +21,3 @@ class Day1(Puzzle, year=2022, day=1):
         elves_list = list(map(sum, Puzzle.parse_input_groups(self.data)))
         elves_list.sort(reverse=True)
         return sum(elves_list[0:3])
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day1(filename=filename).solve_all()

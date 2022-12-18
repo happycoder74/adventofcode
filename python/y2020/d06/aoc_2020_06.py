@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -37,10 +36,3 @@ class Day06(Puzzle, year=2020, day=6):
             questions.append(q_set)
 
         return sum([len(s) for s in questions])
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day06(filename=filename).solve_all()

@@ -1,5 +1,5 @@
 import unittest
-from aoc_2020_05 import Day05
+from aoc_2020_05 import Day05 as Day
 
 
 class Test_2020_05(unittest.TestCase):
@@ -10,7 +10,7 @@ class Test_2020_05(unittest.TestCase):
             "BBFFBBFRLL",
             "FBFBBFFRLR"
         ]
-        self.day = Day05(data=data)
+        self.day = Day(data=data)
 
     def test_part_1(self):
         self.assertEqual(820, self.day.solve_part_1())

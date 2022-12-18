@@ -1,8 +1,7 @@
-import sys
 from common import timer, Puzzle
 
 
-class Day7(Puzzle, year=2022, day=7):
+class Day07(Puzzle, year=2022, day=7):
     def __init__(self, filename=None, data=None):
         super().__init__(filename=filename, data=data)
         self.root = {}
@@ -59,10 +58,3 @@ class Day7(Puzzle, year=2022, day=7):
 
         return (min(subdir['size'] for subdir in self.root.values()
                     if subdir['size'] >= delete_space))
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day7(filename=filename).solve_all()

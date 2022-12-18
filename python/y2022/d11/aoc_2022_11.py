@@ -1,4 +1,3 @@
-import sys
 from functools import reduce
 from operator import mul
 from common import timer, Puzzle
@@ -74,7 +73,9 @@ class Day11(Puzzle, year=2022, day=11):
         self.monkeys = list()
 
         for group in self.data:
-            monkey: Monkey = Monkey(group=group, id=len(self.monkeys), reliever=reliever)
+            monkey: Monkey = Monkey(group=group,
+                                    id=len(self.monkeys),
+                                    reliever=reliever)
             self.monkeys.append(monkey)
         lcm = reduce(mul, [monkey.divisor for monkey in self.monkeys])
         for monkey in self.monkeys:
@@ -113,10 +114,3 @@ class Day11(Puzzle, year=2022, day=11):
             return self.solve(rounds=10000, divisor=1)
         except KeyboardInterrupt:
             print(max([max(monkey.items) for monkey in self.monkeys]))
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day11(filename=filename).solve_all()

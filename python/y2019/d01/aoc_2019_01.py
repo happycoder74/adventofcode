@@ -1,8 +1,7 @@
-import sys
 from common import timer, Puzzle
 
 
-class Day1(Puzzle, year=2019, day=1):
+class Day01(Puzzle, year=2019, day=1):
     @staticmethod
     def clean_input(data):
         return [int(d) for d in data]
@@ -13,7 +12,7 @@ class Day1(Puzzle, year=2019, day=1):
         if fuel < 0:
             return 0
         else:
-            return fuel + Day1.calc_fuel(fuel)
+            return fuel + Day01.calc_fuel(fuel)
 
     @timer(part=1)
     def solve_part_1(self):
@@ -26,13 +25,6 @@ class Day1(Puzzle, year=2019, day=1):
         sum_fuel = 0
         for mass in self.data:
             fuel = int(mass / 3) - 2
-            sum_fuel += fuel + Day1.calc_fuel(fuel)
+            sum_fuel += fuel + Day01.calc_fuel(fuel)
 
         return sum_fuel
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day1(filename=filename).solve_all()

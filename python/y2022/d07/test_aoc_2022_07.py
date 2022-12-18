@@ -1,10 +1,10 @@
 import unittest
-from aoc_2022_07 import Day7
+from aoc_2022_07 import Day07 as Day
 
 
 class Test_2022_07(unittest.TestCase):
     def setUp(self):
-        self.day = Day7(filename="test_input.txt")
+        self.day = Day(filename="test_input.txt")
 
     def test_part_1(self):
         self.assertEqual(95437, self.day.solve_part_1())

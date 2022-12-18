@@ -1,8 +1,7 @@
-import sys
 from common import timer, Puzzle
 
 
-class Day4(Puzzle, year=2022, day=4):
+class Day04(Puzzle, year=2022, day=4):
     @staticmethod
     def clean_input(data):
         elves = list()
@@ -43,10 +42,3 @@ class Day4(Puzzle, year=2022, day=4):
                 overlaps += 1
 
         return overlaps
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day4(filename=filename).solve_all()

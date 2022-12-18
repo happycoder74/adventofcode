@@ -1,10 +1,9 @@
 import copy
 import os
-import sys
 from common import timer, Puzzle
 
 
-class Day5(Puzzle, year=2022, day=5):
+class Day05(Puzzle, year=2022, day=5):
     def get_input(self, mode=None):
         path = os.path.join(os.path.dirname(__file__),
                             "..", "..", "..", "data",
@@ -76,10 +75,3 @@ class Day5(Puzzle, year=2022, day=5):
             if len(stack) > 0:
                 message += stack[-1]
         return message
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day5(filename=filename).solve_all()

@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -38,17 +37,10 @@ class Day10(Puzzle, year=2022, day=10):
         x = 1
         for cycle, instruction in enumerate(self.data):
             sprite_position = [x - 1, x, x + 1]
-            if  (cycle % 40) in sprite_position:
+            if (cycle % 40) in sprite_position:
                 self.crt[cycle] = "\u2591"
             if isinstance(instruction, int):
                 x += instruction
 
         self.print_crt()
         return None
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day10(filename=filename).solve_all()

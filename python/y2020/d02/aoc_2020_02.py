@@ -1,5 +1,4 @@
 import re
-import sys
 from common import timer, Puzzle
 
 
@@ -33,10 +32,3 @@ class Day02(Puzzle, year=2020, day=2):
                 found += 1
 
         return found
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day02(filename=filename)

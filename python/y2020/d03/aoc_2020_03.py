@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -56,11 +55,3 @@ class Day03(Puzzle, year=2020, day=3):
             product *= match
 
         return product
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    d = Day03(filename=filename)
-    d.solve_all()

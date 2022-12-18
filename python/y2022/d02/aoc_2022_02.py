@@ -1,8 +1,7 @@
-import sys
 from common import timer, Puzzle
 
 
-class Day2(Puzzle, year=2022, day=2):
+class Day02(Puzzle, year=2022, day=2):
     @staticmethod
     def clean_input(data):
         draws = list()
@@ -41,10 +40,3 @@ class Day2(Puzzle, year=2022, day=2):
         for d in self.data:
             points += p[col.index(d[1])] + shape_points[req_shape[str(d)]]
         return points
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day2(filename=filename).solve_all()

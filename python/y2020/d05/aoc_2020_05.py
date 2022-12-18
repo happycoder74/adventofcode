@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -23,10 +22,3 @@ class Day05(Puzzle, year=2020, day=5):
         seats = self.data
         all_seats = set(range(seats[0], seats[-1] + 1))
         return all_seats.difference(seats).pop()
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day05(filename=filename).solve_all()

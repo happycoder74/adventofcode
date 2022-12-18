@@ -1,4 +1,3 @@
-import sys
 from common import timer, Puzzle
 
 
@@ -124,10 +123,3 @@ class Day04(Puzzle, year=2020, day=4):
                 valid += 1
 
         return valid
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day04(filename=filename).solve_all()

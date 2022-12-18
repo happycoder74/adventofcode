@@ -1,8 +1,7 @@
-import sys
 from common import timer, Puzzle
 
 
-class Day8(Puzzle, year=2022, day=8):
+class Day08(Puzzle, year=2022, day=8):
     @staticmethod
     def clean_input(data):
         return_list = list()
@@ -102,10 +101,3 @@ class Day8(Puzzle, year=2022, day=8):
                                        scenic_score_tree[2] *
                                        scenic_score_tree[3])
         return max_scenic_score
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    Day8(filename=filename).solve_all()
