@@ -25,7 +25,7 @@ def timer(part, show_result=True, title="", show_return=True):
                     f'{result if result is not None and show_return else ""}',
                     elapsed_time_str])
                 )
-            return (result, elapsed_time_str)
+            return result
         return wrapper
     return decorator
 
