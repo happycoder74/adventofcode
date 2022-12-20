@@ -1,5 +1,5 @@
-import os
 from common import timer
+from pathlib import Path
 
 
 class Puzzle(object):
@@ -19,16 +19,26 @@ class Puzzle(object):
         self.data = self.clean_input(data)
 
     def get_input(self, mode=None):
-        path = os.path.join(os.path.dirname(__file__),
-                            "..", "..", "data",
-                            f"{self.year}", f"{self.day:02d}")
+        if self.filename is None or self.filename == "test_input.txt":
+            if self.filename:
+                fn = self.filename
+            else:
+                fn = "input.txt"
+            filename = (
+                Path(__file__).parent.parent.parent /
+                Path("data") /
+                Path(f"{self.year}") /
+                Path(f"{self.day:02d}") /
+                Path(fn)
+            )
+        else:
+            filename = self.filename
         try:
-            with open(os.path.join(path, self.filename)) as fp:
+            with open(filename) as fp:
                 data = fp.read().strip().splitlines()
         except FileNotFoundError:
-            print("Can not open file {}".format(os.path.join(path,
-                                                             self.filename)))
-            exit()
+            print("Can not open file {}".format(filename))
+            exit(-1)
 
         return data
 
@@ -41,7 +51,7 @@ class Puzzle(object):
         groups = list()
         group = list()
         for row in data:
-            if row == '':
+            if row == "":
                 groups.append(group)
                 group = list()
             else:
@@ -51,7 +61,7 @@ class Puzzle(object):
 
         return groups
 
-    @timer(part='main', title='Total elapsed', show_return=False)
+    @timer(part="main", title="Total elapsed", show_return=False)
     def solve_all(self):
         part1 = self.solve_part_1()
         part2 = self.solve_part_2()
