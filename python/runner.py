@@ -10,7 +10,7 @@ import importlib
 
 class AocRunner(object):
     def __init__(self, year=None, day=None, exclude=None,
-                 filename=None, data=None):
+                 filename=None, data=None, test=False):
         self.year = year
         self.days = []
         if day:
@@ -29,9 +29,9 @@ class AocRunner(object):
         if filename is not None:
             self.filename = filename
         else:
-            if data is None:
-                self.filename = "input.txt"
-            else:
+            if test:
+                self.filename = "test_input.txt"
+            elif data is not None:
                 self.data = data
                 print(f"{self.data=}")
 
@@ -103,12 +103,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     data = args.data.split(",") if args.data else None
-    if args.test:
-        args.filename = "test_input.txt"
 
     runner = AocRunner(year=args.year,
                        day=args.day,
                        exclude=args.exclude_day,
                        filename=args.filename,
-                       data=data)
+                       data=data,
+                       test=args.test)
     runner.run()
