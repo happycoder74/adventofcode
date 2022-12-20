@@ -1,3 +1,4 @@
+import os
 import unittest
 from aoc_2020_04 import Day04 as Day
 
@@ -6,8 +7,8 @@ class Test_2020_04(unittest.TestCase):
     def setUp(self):
         self.filename = [
             "test_input.txt",
-            "test_input_invalid.txt",
-            "test_input_valid.txt"
+            "../data/2020/04/test_input_invalid.txt",
+            "../data/2020/04/test_input_valid.txt",
         ]
 
     def test_part_1(self):
