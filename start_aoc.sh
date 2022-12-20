@@ -129,6 +129,9 @@ make_templates() {
 
 	directory="$install_path/$language/$year/$day"
 	template_dir="$install_path/templates/$language"
+	if [ $language == "python" ]; then
+        directory="$install_path/$language/y$year/d$day"
+    fi
 	if [ ! -e $directory ]; then
 		mkdir -p $directory
 	fi
