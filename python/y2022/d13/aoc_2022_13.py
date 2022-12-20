@@ -1,4 +1,4 @@
-import ast
+import json
 import itertools
 from common import timer, Puzzle
 import functools
@@ -7,7 +7,7 @@ import functools
 class Day13(Puzzle, year=2022, day=13):
     @staticmethod
     def clean_input(data):
-        return_data = [ast.literal_eval(d) if d != '' else '' for d in data]
+        return_data = [json.loads(d) if d != '' else '' for d in data]
         return Puzzle.parse_input_groups(return_data)
 
     @staticmethod
@@ -44,8 +44,6 @@ class Day13(Puzzle, year=2022, day=13):
         for i, (n1, n2) in enumerate(self.data, start=1):
             if (Day13.compare(n1, n2) == 1):
                 right_order_indices.append(i)
-        print(f"{right_order_indices=}")
-        print(self.data[0])
         return sum(right_order_indices)
 
     @timer(part=2)
@@ -61,3 +59,22 @@ class Day13(Puzzle, year=2022, day=13):
 
         return (sorted_list.index([[2]]) + 1) * (sorted_list.index([[6]]) + 1)
 
+    @timer(part=2, title="Alt part 2 solution")
+    def solve_part2_b(self):
+        index2 = 1
+        index6 = 2
+        for row in self.data:
+            for num in row:
+                if Day13.compare([[2]], num) < 0:
+                    index2 += 1
+                if Day13.compare([[6]], num) < 0:
+                    index6 += 1
+
+        return index2 * index6
+
+    @timer(part='main', title='Total elapsed', show_return=False)
+    def solve_all(self):
+        part1 = self.solve_part_1()
+        part2 = self.solve_part_2()
+        part2b = self.solve_part2_b()
+        return part1, part2, part2b
