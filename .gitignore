@@ -26,3 +26,4 @@ adventofcode.code-workspace
 *.swo
 .cookie*
 \#*.*
+*.dll
