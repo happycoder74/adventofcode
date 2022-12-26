@@ -11,6 +11,7 @@ force=0
 templates_only=0
 input_only=0
 silent=0
+CURL_AGENT="-A \"github.com/happycoder74/adventofcode/start_aoc.sh\""
 
 #declare -a languages=("python" "C" "PHP")
 declare -a languages=("python" "C")
@@ -102,7 +103,7 @@ download_input() {
 		exit 1
 	fi
 
-	curl --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$((10#$day))/input
+	curl $CURL_AGENT --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$((10#$day))/input
 }
 
 
