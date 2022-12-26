@@ -1,10 +1,9 @@
 # Advent of Code
 
 Solutions for [Advent of Code](https://adventofcode.com) in different languages. Currently [Python](https://www.python.org) as main platform. Using this for learning new languages and to recapture old knowledge in C.
-Currently migrating my python solutions from another repo, why not all solutions are available yet.
 
 ## Year 2022
-+ 18 &#11088; in [Python](python/README.md)
++ 28 &#11088; in [Python](python/README.md)
 + 4 &#11088; in [C](C/README.md)
 
 ## Year 2021
