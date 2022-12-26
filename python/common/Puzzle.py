@@ -1,3 +1,4 @@
+import sys
 from common import timer
 from pathlib import Path
 
@@ -8,17 +9,17 @@ class Puzzle(object):
         cls.year = year
         cls.day = day
 
-    def __init__(self, year=None, day=None, filename=None, data=None):
+    def __init__(self, year=None, day=None, filename=None, data=None, stripped=True):
         self.filename = filename
         if year is not None:
             self.year = year
         if day is not None:
             self.day = day
         if data is None:
-            data = self.get_input()
+            data = self.get_input(stripped=stripped)
         self.data = self.clean_input(data)
 
-    def get_input(self, mode=None):
+    def get_input(self, mode=None, stripped=True):
         if self.filename is None or self.filename == "test_input.txt":
             if self.filename:
                 fn = self.filename
@@ -35,10 +36,13 @@ class Puzzle(object):
             filename = self.filename
         try:
             with open(filename) as fp:
-                data = fp.read().strip().splitlines()
+                if stripped:
+                    data = fp.read().strip().splitlines()
+                else:
+                    data = fp.read().splitlines()
         except FileNotFoundError:
             print("Can not open file {}".format(filename))
-            exit(-1)
+            sys.exit(-1)
 
         return data
 
