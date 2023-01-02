@@ -9,7 +9,9 @@ class Puzzle(object):
         cls.year = year
         cls.day = day
 
-    def __init__(self, year=None, day=None, filename=None, data=None, stripped=True):
+    def __init__(
+        self, year=None, day=None, filename=None, data=None, stripped=True
+    ):
         self.filename = filename
         if year is not None:
             self.year = year
@@ -26,11 +28,11 @@ class Puzzle(object):
             else:
                 fn = "input.txt"
             filename = (
-                Path(__file__).parent.parent.parent /
-                Path("data") /
-                Path(f"{self.year}") /
-                Path(f"{self.day:02d}") /
-                Path(fn)
+                Path(__file__).parent.parent.parent
+                / Path("data")
+                / Path(f"{self.year}")
+                / Path(f"{self.day:02d}")
+                / Path(fn)
             )
         else:
             filename = self.filename
@@ -64,6 +66,10 @@ class Puzzle(object):
             groups.append(group)
 
         return groups
+
+    @staticmethod
+    def parse_int_input(data):
+        return [int(d) for d in data]
 
     @timer(part="main", title="Total elapsed", show_return=False)
     def solve_all(self):
