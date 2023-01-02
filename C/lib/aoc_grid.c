@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <aoc_grid.h>
+#include "aoc_grid.h"
 
 Grid *grid_new(int rows, int columns) {
     Grid *grid = (Grid *)malloc(sizeof(Grid));
