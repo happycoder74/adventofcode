@@ -1,12 +1,12 @@
 from collections import deque
-from typing import Iterable
+from typing import Iterable, List
 
 from common import Puzzle, timer
 
 
 class Day20(Puzzle, year=2022, day=20):
     @staticmethod
-    def clean_input(data: Iterable[str]) -> list[int]:
+    def clean_input(data: Iterable[str]) -> List[int]:
         return [int(d) for d in data]
 
     def mix(self, rounds=1) -> int:
