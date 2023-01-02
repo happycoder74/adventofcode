@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <stdlib.h>
-#include <aoc_grid.h>
+#include "aoc_grid.h"
 
 Grid *grid_new(int rows, int columns) {
     Grid *grid = malloc(sizeof(Grid));
