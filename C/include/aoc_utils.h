@@ -29,8 +29,9 @@ Point point_difference(Point, Point);
 guint point_hash(gconstpointer);
 gboolean point_equal(gconstpointer, gconstpointer);
 
-GArray *get_input(char *, int, int);
-GArray *get_input_new(char *, int, int);
+GSList *get_input_list(char *filename, int year, int day);
+GArray *get_input(char *filename, int year, int day);
+GArray *get_input_new(char *filename, int year, int day);
 gint max(gint *, gint);
 gint min(gint *, gint);
 gint min_non_zero(gint *, gint);

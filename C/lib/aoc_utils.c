@@ -41,7 +41,7 @@ char *str_trim(char *str) {
     /* Trim leading space */
     while (isspace((unsigned char)*str)) str++;
 
-    if (*str == 0) /* All spaces? */
+    if (*str == '\0') /* All spaces? */
         return str;
 
     /* Trim trailing space */
@@ -142,6 +142,34 @@ int str_endswith(char *str, char *end_str) {
     return result;
 }
 
+GSList *get_input_list(char *filename, int year, int day) {
+    FILE *fp;
+    GSList *data = NULL;
+    gchar *line = NULL;
+    size_t line_length = 0;
+    gchar *data_line;
+    gchar *path;
+    gchar *file = NULL;
+
+    path = g_strdup_printf("../../../data/%d/%02d/", year, day);
+    file = g_strconcat(path, filename, NULL);
+
+    if (!(fp = fopen(file, "r"))) {
+        printf("Can not open file!\n");
+        return NULL;
+    }
+
+    while ((getline(&line, &line_length, fp)) != -1) {
+        data_line = str_trim(strdup(line));
+        data = g_slist_prepend(data, data_line);
+    }
+
+    g_free(file);
+    g_free(path);
+
+    return g_slist_reverse(data);
+}
+
 GArray *get_input_new(char *filename, int year, int day) {
     FILE *fp;
     GArray *data;
@@ -160,7 +188,7 @@ GArray *get_input_new(char *filename, int year, int day) {
     }
 
     while (fgets(line, 10000, fp)) {
-        data_line = g_strstrip(g_strdup(line));
+        data_line = str_trim(strdup(line));
         g_array_append_val(data, data_line);
     }
 
@@ -196,7 +224,7 @@ GArray *get_input(char *filename, int year, int day) {
     }
 
     while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = g_strstrip(g_strdup(line));
+        data_line = str_trim(strdup(line));
         g_array_append_val(data, data_line);
     }
 
