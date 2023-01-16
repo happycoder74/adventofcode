@@ -4,7 +4,7 @@ LOCAL_CFLAGS = -I../include
 CFLAGS = -g $(LOCAL_CFLAGS) $(GLIB_CFLAGS)
 ARFLAGS = rcs
 
-$(OUTPUTFILE):	aoc_utils.o aoc_grid.o aoc_sets.o aoc_timer.o
+$(OUTPUTFILE):	aoc_utils.o aoc_grid.o aoc_sets.o aoc_timer.o aoc_string.o
 	$(AR) $(ARFLAGS) $@ $?
 	ranlib $@
 

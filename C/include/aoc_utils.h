@@ -6,12 +6,14 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 
-typedef struct {
+#define g_array_length(X) (X->len)
+
+typedef struct point {
     int x;
     int y;
 } Point;
 
-typedef struct {
+typedef struct line {
     Point p0;
     Point p1;
     int stepx;
@@ -19,8 +21,13 @@ typedef struct {
 } Line;
 
 // Allocation functions
-AocData_t *aoc_data_new(gchar *, int, int);
-void aoc_data_free(AocData_t *);
+AocData_t *aoc_data_new(gchar *filename, int year, int day);
+size_t aoc_data_length(AocData_t *data);
+gboolean aoc_data_hasdata(AocData_t *data);
+GArray *aoc_data_data(AocData_t *data);
+AocData_t *aoc_data_set_data(AocData_t *aoc, GArray *data);
+void aoc_data_free(AocData_t *data);
+AocData_t *aoc_data_new2(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *));
 
 gboolean is_horisontal(Line);
 gboolean is_vertical(Line);

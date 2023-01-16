@@ -12,8 +12,8 @@ Grid *grid_new(int rows, int columns) {
 }
 
 void grid_free(Grid *grid) {
-    g_free(grid->grid);
-    g_free(grid);
+    free(grid->grid);
+    free(grid);
 }
 
 Grid *grid_copy(const Grid *grid) {
