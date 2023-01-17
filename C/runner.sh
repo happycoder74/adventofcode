@@ -51,18 +51,23 @@ run_case() {
     done
 }
 
+check_platform() {
+    [ uname == FreeBSD ]
+}
 
-PARSED_ARGUMENTS=$(getopt -a -n runner -o -:d:f:hty --long test,help,year:,day:,file: -- "$@")
-VALID_ARGUMENTS=$?
-if [ "$VALID_ARGUMENTS" != "0" ]; then
-    usage
-fi
 
-#echo "PARSED_ARGUMENTS is $PARSED_ARGUMENTS"
-eval set -- "$PARSED_ARGUMENTS"
+get_arguments() {
+    PARSED_ARGUMENTS=$(getopt -a -n runner -o -:d:f:hty --long test,help,year:,day:,file: -- "$@")
+    VALID_ARGUMENTS=$?
+    if [ "$VALID_ARGUMENTS" != "0" ]; then
+        usage
+    fi
 
-while :
-do
+    #echo "PARSED_ARGUMENTS is $PARSED_ARGUMENTS"
+    eval set -- "$PARSED_ARGUMENTS"
+
+    while :
+    do
     case $1 in
         -h | --help)
             usage
@@ -85,8 +90,16 @@ do
             usage
             ;;
     esac
-done
+    done
+}
 
-run_case
+if [ ! check_platform ]
+then
+    get_arguments
+    run_case
+else
+    echo "Runner script is not supported on $(uname)"
+    echo "Use make run YEAR=<YEAR> DAY=<DAY> instead"
+fi
 
 
