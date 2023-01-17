@@ -52,7 +52,7 @@ run_case() {
 }
 
 check_platform() {
-    [ uname == FreeBSD ]
+    [ $(uname) == "FreeBSD" ]
 }
 
 
@@ -93,9 +93,9 @@ get_arguments() {
     done
 }
 
-if [ ! check_platform ]
+if [ check_platform ]
 then
-    get_arguments
+    get_arguments $@
     run_case
 else
     echo "Runner script is not supported on $(uname)"
