@@ -1,9 +1,7 @@
 #ifndef __AOC_STRING_H__
 #define __AOC_STRING_H__
 
-#include <aoc_grid.h>
-#include <glib.h>
-#include "aoc_types.h"
+#include <stdlib.h>
 
 // String functions similar to methods of  python strings
 char *str_trim(char *str);
