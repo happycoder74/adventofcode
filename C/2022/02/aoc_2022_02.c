@@ -3,6 +3,7 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) {
     return data;
@@ -32,7 +33,7 @@ int get_requested(int row, int col) {
     return -1;
 }
 
-gpointer solve_part_1(AocData_t *data) {
+void *solve_part_1(AocData_t *data) {
     int shape_points[3] = {1, 2, 3};
     int col, row;
     int points[3][3] = {
@@ -53,10 +54,10 @@ gpointer solve_part_1(AocData_t *data) {
         sum_points += points[row][col] + shape_points[col];
     }
 
-    return g_strdup_printf("%d", sum_points);
+    return strdup_printf("%d", sum_points);
 }
 
-gpointer solve_part_2(AocData_t *data) {
+void *solve_part_2(AocData_t *data) {
     int shape_points[3] = {1, 2, 3};
     int col, row;
     unsigned int i;
@@ -71,10 +72,10 @@ gpointer solve_part_2(AocData_t *data) {
         sum_points += points[col] + shape_points[get_requested(row, col)];
     }
 
-    return g_strdup_printf("%d", sum_points);
+    return strdup_printf("%d", sum_points);
 }
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
@@ -88,16 +89,16 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+    char *filename;
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
     data = aoc_data_new(filename, 2022, 2);
-    g_free(filename);
+    free(filename);
 
     timer_func(0, solve_all, data, 0);
 
