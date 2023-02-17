@@ -22,7 +22,7 @@ $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY):	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/libao
 $(AOC_LIB):	lib/libaoc.a
 
 lib/libaoc.a: lib/*.c include/*.h
-	@cd lib && $(MAKE)
+	@cd lib && ($(MAKE) CC=$(CC))
 
 ../data/$(YEAR)/$(DAY)/test_input.txt:
 	@echo "Need to generate a test_input.txt file for $(YEAR) day $(DAY)"
@@ -65,11 +65,14 @@ clean-all-libraries:
 
 clean-all:	clean-all-executables clean-all-objects clean-all-libraries
 
-clean: clean-exe clean-objs
+clean: clean-exe clean-objs clean-libs
 
 clean-exe:
 	rm -f $(EXE) 
 
 clean-objs:
 	rm -f $(OBJS)
+
+clean-libs:
+	cd lib && $(MAKE) clean
 
