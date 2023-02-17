@@ -10,7 +10,7 @@ int str_count(char *, char, int, int);
 char *substr(char *, int, int);
 int str_startswith(char *str, char *start_str);
 int str_endswith(char *, char *);
-char *strdup_printf(char *format, ...);
+char *strdup_printf(const char *format, ...);
 
 #ifdef __MINGW32__
 #include <stdio.h>

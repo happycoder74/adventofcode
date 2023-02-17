@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <ctype.h>
-#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,7 +48,7 @@ char *str_join(const char *delimiter, char **str_list, size_t length) {
     }
     res_length += (length - 1) * strlen(delimiter) + 1;
 
-    result = malloc(sizeof(char) * res_length);
+    result = (char *)malloc(sizeof(char) * res_length);
     ptr = stpcpy(result, str_list[0]);
     for (i = 1; (i < length) && (str_list[i] != NULL); i++) {
         ptr = stpcpy(ptr, delimiter);
@@ -92,7 +91,7 @@ char *substr(char *str, int start, int end) {
     assert(start < (int)strlen(str));
     assert(start <= end);
 
-    substr = malloc(sizeof(char) * (end - start + 1));
+    substr = (char *)malloc(sizeof(char) * (end - start + 1));
     for (i = 0; i < (end - start); i++) {
         substr[i] = str[start + i];
     }
@@ -120,7 +119,7 @@ int str_endswith(char *str, char *end_str) {
     return result;
 }
 
-char *strdup_printf(char *format, ...) {
+char *strdup_printf(const char *format, ...) {
     va_list args;
     char *string;
     int length;
