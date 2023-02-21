@@ -52,7 +52,7 @@ run_case() {
 }
 
 check_platform() {
-    [ $(uname) == "FreeBSD" ]
+    [ $(uname) != "FreeBSD" ]
 }
 
 
