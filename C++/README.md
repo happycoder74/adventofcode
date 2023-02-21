@@ -6,7 +6,7 @@ However, sometimes it is nice to get a little lazy and you stare with owe at the
 
 While I try to learn the benefits and caveats of C++ I also decided to take on the challenge to learn CMake, why this part of the repo is built using CMake. Will be interesting.
 
-## 2019:
+## 2017:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; |               |               |
