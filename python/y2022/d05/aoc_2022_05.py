@@ -1,22 +1,8 @@
 import copy
-import os
 from common import timer, Puzzle
 
 
-class Day05(Puzzle, year=2022, day=5):
-    def get_input(self, mode=None):
-        path = os.path.join(os.path.dirname(__file__),
-                            "..", "..", "..", "data",
-                            f"{self.year}", f"{self.day:02d}")
-        try:
-            with open(os.path.join(path, self.filename)) as fp:
-                data = fp.read().splitlines()
-        except FileNotFoundError:
-            print("Can not open file {}".format(os.path.join(path,
-                                                             self.filename)))
-            exit()
-
-        return data
+class Day05(Puzzle, year=2022, day=5, stripped=False):
 
     @staticmethod
     def clean_input(data):
