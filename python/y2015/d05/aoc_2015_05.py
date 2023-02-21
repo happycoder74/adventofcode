@@ -1,71 +1,51 @@
 import re
-import sys
-from common import timer, get_input
+from common import timer, Puzzle
 
 
-def clean_input(data):
-    return data
+class Day05(Puzzle, year=2015, day=5):
+    @staticmethod
+    def clean_input(data) -> bool:
+        return data
 
+    @staticmethod
+    def check_wovels(line) -> bool:
+        return len(re.findall(r"[aeiou]", line)) >= 3
 
-def check_wovels(line):
-    return len(re.findall(r"[aeiou]", line)) >= 3
+    @staticmethod
+    def check_dbl_letter(line) -> bool:
+        return len(re.findall(r"(.)\1", line)) > 0
 
+    @staticmethod
+    def check_invalid(line) -> bool:
+        pattern = r"(ab|cd|pq|xy)"
+        return len(re.findall(pattern, line)) == 0
 
-def check_dbl_letter(line):
-    return len(re.findall(r"(.)\1", line)) > 0
+    @staticmethod
+    def check_pairs(line) -> bool:
+        pattern = r"([a-z][a-z])\w*\1"
+        return len(re.findall(pattern, line)) > 0
 
+    @staticmethod
+    def check_repeat(line) -> bool:
+        pattern = r"(.)\w\1"
+        return len(re.findall(pattern, line)) > 0
 
-def check_invalid(line):
-    pattern = r"(ab|cd|pq|xy)"
-    return len(re.findall(pattern, line)) == 0
+    @staticmethod
+    def is_nice(line) -> bool:
+        return (Day05.check_wovels(line)
+                and Day05.check_dbl_letter(line)
+                and Day05.check_invalid(line))
 
+    @staticmethod
+    def is_nice_2(line) -> bool:
+        return (Day05.check_pairs(line) and Day05.check_repeat(line))
 
-def check_pairs(line):
-    pattern = r"([a-z][a-z])\w*\1"
-    return len(re.findall(pattern, line)) > 0
+    @timer(part=1)
+    def solve_part_1(self) -> int:
+        """Solution for part 1"""
+        return len([1 for line in self.data if Day05.is_nice(line)])
 
-
-def check_repeat(line):
-    pattern = r"(.)\w\1"
-    return len(re.findall(pattern, line)) > 0
-
-
-@timer(part=1)
-def solve_part_1(data):
-    """Solution for part 1"""
-    valid_lines = 0
-    for line in data:
-        if (
-            check_wovels(line)
-            and check_dbl_letter(line)
-            and check_invalid(line)
-        ):
-            valid_lines += 1
-    return valid_lines
-
-
-@timer(part=2)
-def solve_part_2(data):
-    """Solution for part 2"""
-    valid_lines = 0
-    for line in data:
-        if check_pairs(line) and check_repeat(line):
-            valid_lines += 1
-    return valid_lines
-
-
-@timer(part='main', title='Total elapsed', show_return=False)
-def main(filename):
-    data = clean_input(get_input(filename, 2015, 5))
-
-    part1 = solve_part_1(data)
-    part2 = solve_part_2(data)
-
-    return part1, part2
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    main(filename)
+    @timer(part=2)
+    def solve_part_2(self) -> int:
+        """Solution for part 2"""
+        return len([1 for line in self.data if Day05.is_nice_2(line)])
