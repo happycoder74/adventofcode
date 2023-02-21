@@ -7,7 +7,6 @@ data
 *.o
 *.exe
 *.stackdump
-*.txt
 *.x
 *.a
 *.debug
