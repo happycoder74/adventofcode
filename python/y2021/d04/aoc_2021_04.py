@@ -1,6 +1,5 @@
-import sys
 import numpy as np
-from common import timer, get_input
+from common import timer, Puzzle
 
 ##################################################################
 # Messy solution since it is a merge between two different files #
@@ -60,7 +59,7 @@ class Board:
 def check_boards(number, boards, part):
     if part == 1:
         "return true if Winner is found"
-        for index, board in enumerate(boards):
+        for board in boards:
             if board.check_board(int(number), part):
                 return board
         return False
@@ -73,59 +72,41 @@ def check_boards(number, boards, part):
     return None
 
 
-def clean_input(data):
-    numbers = data[0]
-    data = data[2:]
-    data = [data[i:i + 5] for i in range(0, len(data), 6)]
-    data = [[d.split() for d in board] for board in data]
+class Day04(Puzzle, year=2021, day=4):
+    @staticmethod
+    def clean_input(data):
+        numbers = data[0]
+        data = data[2:]
+        data = [data[i:i + 5] for i in range(0, len(data), 6)]
+        data = [[d.split() for d in board] for board in data]
 
-    boards = [Board(board, index) for index, board in enumerate(data)]
-    return (numbers, boards)
+        boards = [
+            Board(board, index) for index, board in enumerate(data)
+        ]
+        return (numbers, boards)
 
+    @timer(part=1)
+    def solve_part_1(self):
+        """Solution for part 1"""
+        numbers = self.data[0]
+        boards = self.data[1]
 
-@timer(part=1)
-def solve_part_1(data):
-    """Solution for part 1"""
-    numbers = data[0]
-    boards = data[1]
+        for number in numbers.split(','):
+            board = check_boards(number, boards, part=1)
+            if(board):
+                break
 
-    for number in numbers.split(','):
-        board = check_boards(number, boards, part=1)
-        if(board):
-            break
+        return board.sum_board(part=1) * int(number)
 
-    return board.sum_board(part=1) * int(number)
+    @timer(part=2)
+    def solve_part_2(self):
+        """Solution for part 2"""
+        numbers = self.data[0]
+        boards = self.data[1]
 
+        for number in numbers.split(","):
+            winner = check_boards(number, boards, part=2)
+            if len(boards) == 0:
+                break
 
-@timer(part=2)
-def solve_part_2(data):
-    """Solution for part 2"""
-    numbers = data[0]
-    boards = data[1]
-
-    for number in numbers.split(","):
-        winner = check_boards(number, boards, part=2)
-        if len(boards) == 0:
-            break
-
-    return winner.sum_board(part=2) * int(number)
-
-
-@timer(part='main', title='Total elapsed', show_return=False)
-def main(filename):
-    data = clean_input(get_input(filename, 2021, 4))
-    part1 = solve_part_1(data)
-
-    # Some procedure in part 1 modifies the input data.
-    # Need to look into this in the future.
-    data = clean_input(get_input(filename, 2021, 4))
-    part2 = solve_part_2(data)
-
-    return part1, part2
-
-
-if __name__ == "__main__":
-    filename = "input.txt"
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    main(filename)
+        return winner.sum_board(part=2) * int(number)
