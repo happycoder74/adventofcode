@@ -85,7 +85,6 @@ class AocRunner(object):
                             class_list.append((year, class_in_module))
                         except AttributeError as e:
                             print(e)
-                            print(dir(puzzle))
                             print(f"No solution for day {day:02d} for {year}")
                     except ModuleNotFoundError:
                         print(f"Unable to import submodule for {year} - {day}")
