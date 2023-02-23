@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     if (argc > 1)
         filename = argv[1];
     else
-        filename = "../../../data/2017/01/input.txt";
+        filename = "../../../../data/2017/01/input.txt";
 
     data = aoc::get_input_bare(filename, 2017, 1);
 
