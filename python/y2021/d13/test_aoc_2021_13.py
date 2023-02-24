@@ -7,7 +7,4 @@ class Test_2021_13(unittest.TestCase):
         self.day = Day13(filename="test_input.txt")
 
     def test_part_1(self):
-        self.assertEqual(None, self.day.solve_part_1())
-
-    def test_part_2(self):
-        self.assertEqual(None, self.day.solve_part_2())
+        self.assertEqual(17, self.day.solve_part_1())
