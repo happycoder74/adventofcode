@@ -13,7 +13,6 @@ input_only=0
 silent=0
 CURL_AGENT="-A \"github.com/happycoder74/adventofcode/start_aoc.sh\""
 
-#declare -a languages=("python" "C" "PHP")
 declare -a languages=("python" "C" "C++")
 
 while getopts ":hd:y:i:fl:c:tos" arg; do

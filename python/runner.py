@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 import argparse
+import importlib
 import os
 import sys
 
+from typing import Any
+
 from common import timer
 
-import importlib
 
 
 class AocRunner(object):
-    def __init__(self, year=None, day=None, exclude=None,
-                 filename=None, data=None, test=False):
-        self.year = year
-        self.days = []
+    def __init__(self, year: str|None = None, day: str|None = None,
+                 exclude: int|None = None, filename: str|None = None,
+                 data: list[Any]|None = None, test: bool = False):
+        if year is not None:
+            self.year = year
+        else:
+            year = "2022"
+        self.days: list[Any] = []
         if day:
             for d in day.split(","):
                 if "-" in d:
@@ -20,7 +26,7 @@ class AocRunner(object):
                                            int(d.split("-")[1]) + 1))
                 else:
                     self.days.append(int(d))
-        self.data = None
+        self.data: list[Any]|None = None
         if exclude is not None:
             self.exclude_day = [int(exclude)]
         else:
@@ -37,7 +43,7 @@ class AocRunner(object):
 
     @timer(part=0, title="Total run time", show_return=False)
     def run(self):
-        class_list = self.get_classes()
+        class_list: Any = self.get_classes()
         for year, cls in class_list:
             print(f"Year {year} - {cls.__name__}")
             print("=================================")
@@ -48,19 +54,20 @@ class AocRunner(object):
             print("=================================")
             print("")
 
-    def get_classes(self):
-        class_list = list()
+    def get_classes(self) -> list[Any]:
+        class_list: list[Any] = list()
+        self.year: str
         if self.days:
             days = self.days
         else:
             days = range(1, 26)
 
         if self.year is not None:
-            year = [int(self.year)]
+            year_list = [int(self.year)]
         else:
-            year = range(2015, 2023)
+            year_list = range(2015, 2023)
 
-        for year in year:
+        for year in year_list:
             for day in days:
                 if day in self.exclude_day:
                     continue
@@ -78,7 +85,6 @@ class AocRunner(object):
                             class_list.append((year, class_in_module))
                         except AttributeError as e:
                             print(e)
-                            print(dir(puzzle))
                             print(f"No solution for day {day:02d} for {year}")
                     except ModuleNotFoundError:
                         print(f"Unable to import submodule for {year} - {day}")

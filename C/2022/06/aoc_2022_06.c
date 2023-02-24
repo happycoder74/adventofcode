@@ -3,18 +3,18 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
-#include "aoc_sets.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) {
     return data;
 }
 
-gint marker(GArray *data, guint window) {
-    guint i, j;
-    gchar *string;
-    gchar *chunk;
+gint marker(GArray *data, unsigned int window) {
+    unsigned int i, j;
+    char *string;
+    char *chunk;
 
-    chunk = (gchar *)calloc((size_t)window + 1, sizeof(char));
+    chunk = (char *)calloc((size_t)window + 1, sizeof(char));
     string = g_array_index(data, char *, 0);
     for (i = 0; i < strlen(string) - window; i++) {
         chunk[0] = '\0';
@@ -37,15 +37,15 @@ gint marker(GArray *data, guint window) {
     return 0;
 
 }
-gpointer solve_part_1(AocData_t *data) {
-    return g_strdup_printf("%d", marker(data->data, 4));
+void *solve_part_1(AocData_t *data) {
+    return strdup_printf("%d", marker(data->data, 4));
 }
 
-gpointer solve_part_2(AocData_t *data) {
-    return g_strdup_printf("%d", marker(data->data, 14));
+void *solve_part_2(AocData_t *data) {
+    return strdup_printf("%d", marker(data->data, 14));
 }
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
@@ -59,12 +59,12 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+    char *filename;
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
     data = aoc_data_new(filename, 2022, 6);

@@ -1,18 +1,16 @@
 import unittest
-import aoc_2021_14 as a
+from aoc_2021_14 import Day14 as Day
 
 
 class Test_2021_14(unittest.TestCase):
     def setUp(self):
-        self.data = a.clean_input(
-            a.get_input("test_input.txt", 2021, 14)
-        )
+        self.day = Day(filename="test_input.txt")
 
     def test_part_1(self):
         answer = "NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB"
-        self.assertEqual(1588, a.solve_part_1(self.data))
-        self.assertEqual(answer, a.solve_part_1(self.data, 4))
+        self.assertEqual(1588, self.day.solve_part_1())
+        self.assertEqual(answer, self.day.solve_part_1(4))
 
     def test_part_2(self):
-        self.assertEqual(1588, a.solve_part_2(self.data, 10))
-        self.assertEqual(2188189693529, a.solve_part_2(self.data))
+        self.assertEqual(1588, self.day.solve_part_2(10))
+        self.assertEqual(2188189693529, self.day.solve_part_2())

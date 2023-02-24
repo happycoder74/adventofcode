@@ -29,7 +29,7 @@ class Day13(Puzzle, year=2021, day=13):
         folded: list
         if direction == "y":
             folded = [
-                [0 for i in range(len(self.paper[0]))] for j in range(position)
+                [0 for _ in range(len(self.paper[0]))] for _ in range(position)
             ]
             for j in range(0, min(position, (len(self.paper) - position - 1))):
                 for i in range(len(self.paper[0])):
@@ -39,7 +39,7 @@ class Day13(Puzzle, year=2021, day=13):
                     )
         elif direction == "x":
             folded = [
-                [0 for i in range(position)] for j in range(len(self.paper))
+                [0 for _ in range(position)] for _ in range(len(self.paper))
             ]
             for j in range(len(self.paper)):
                 for i in range(

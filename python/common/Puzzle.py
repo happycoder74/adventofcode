@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 class Puzzle(object):
-    def __init_subclass__(cls, year=None, day=None, **kwargs):
+    def __init_subclass__(cls, year=None, day=None, stripped=True, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.year = year
         cls.day = day

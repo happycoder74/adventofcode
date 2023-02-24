@@ -1,12 +1,14 @@
 OUTPUTFILE=libaoc.a
 GLIB_CFLAGS != pkg-config --cflags glib-2.0
 LOCAL_CFLAGS = -I../include
-CFLAGS = -g $(LOCAL_CFLAGS) $(GLIB_CFLAGS)
+CFLAGS = -O2 $(LOCAL_CFLAGS) $(GLIB_CFLAGS)
 ARFLAGS = rcs
 
-$(OUTPUTFILE):	aoc_utils.o aoc_grid.o aoc_sets.o aoc_timer.o
+OBJS := $(patsubst %.c,%.o,$(wildcard *.c))
+
+$(OUTPUTFILE): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $?
 	ranlib $@
 
 clean: 
-	rm -f *.o libaoc.a
+	rm -f *.o libaoc.a *.dll
