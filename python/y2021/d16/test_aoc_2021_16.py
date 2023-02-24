@@ -1,5 +1,5 @@
 import unittest
-import aoc_2021_16 as a
+from aoc_2021_16 import Day16 as Day
 
 
 class Test_2021_16(unittest.TestCase):
@@ -26,7 +26,4 @@ class Test_2021_16(unittest.TestCase):
         ]
 
         for d, ans in zip(data, answers):
-            self.assertEqual(ans, a.solve_part_1(d))
-
-    def test_part_2(self):
-        self.assertEqual(None, a.solve_part_2(self.data))
+            self.assertEqual(ans, Day(data=[d]).solve_part_1())
