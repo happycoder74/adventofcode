@@ -1,0 +1,8 @@
+*.cmake
+CMakeCache.txt
+CMakeFiles
+.ninja*
+build.ninja
+Makefile
+build
+.cache
