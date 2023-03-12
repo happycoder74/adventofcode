@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 size_t aoc_data_length(AocData_t *data) {
     if(data) {
@@ -138,8 +139,8 @@ GArray *get_input(char *filename, int year, int day) {
     gchar *data_line;
     gchar *path;
     gchar *file = NULL;
-
-    path = g_strdup_printf("../../../data/%d/%02d/", year, day);
+    char wd[255];
+    path = g_strdup_printf("../../data/%d/%02d/", year, day);
     data = g_array_new(FALSE, FALSE, sizeof(char *));
     file = g_strconcat(path, filename, NULL);
 
@@ -148,7 +149,8 @@ GArray *get_input(char *filename, int year, int day) {
 #endif
 
     if (!(fp = fopen(file, "r"))) {
-        printf("Can not open file!\n");
+        printf("Can not open file! (%s)\nCurrent working directory = %s\n",
+               file, getcwd(wd ,255));
         return NULL;
     }
 
