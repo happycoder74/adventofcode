@@ -3,3 +3,4 @@ concepts
 *.cmake
 CMakeFiles
 glib.tags
+/build*
