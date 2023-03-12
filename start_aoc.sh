@@ -11,8 +11,9 @@ force=0
 templates_only=0
 input_only=0
 silent=0
+CURL_AGENT="-A \"github.com/happycoder74/adventofcode/start_aoc.sh\""
 
-declare -a languages=("python" "C" "PHP")
+declare -a languages=("python" "C" "C++")
 
 while getopts ":hd:y:i:fl:c:tos" arg; do
     case $arg in
@@ -55,7 +56,7 @@ while getopts ":hd:y:i:fl:c:tos" arg; do
 done
 
 check_dates() {
-	if [ $year -lt 2015 -o $year -gt 2021 ]; then
+	if [ $year -lt 2015 -o $year -gt 2022 ]; then
 		if [ $silent -eq 0 ]; then
 			echo "year must be between 2015 and 2021"
 		fi
@@ -68,7 +69,7 @@ check_dates() {
 		exit 1
 	fi
 	if [ $year -ge $current_year ]; then
-		if [ -a $day -gt $current_day ]; then
+		if [ $day -gt $current_day ]; then
 			if [ $silent -eq 0 ]; then
 				echo "Can not download day $day for $year yet."
 			fi
@@ -101,7 +102,7 @@ download_input() {
 		exit 1
 	fi
 
-	curl --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$((10#$day))/input
+	curl $CURL_AGENT --insecure -o "$data_directory/input.txt" --cookie "session=$(cat $cookiefile)" https://adventofcode.com/$year/day/$((10#$day))/input
 }
 
 
@@ -114,6 +115,9 @@ make_templates() {
 		C)
 			file_ext=c
 			;;
+        C++)
+            file_ext=cpp
+            ;;
 		PHP)
 			file_ext=php
 			;;
@@ -128,16 +132,19 @@ make_templates() {
 
 	directory="$install_path/$language/$year/$day"
 	template_dir="$install_path/templates/$language"
+	if [ $language == "python" ]; then
+        directory="$install_path/$language/y$year/d$day"
+    fi
 	if [ ! -e $directory ]; then
 		mkdir -p $directory
 	fi
 	if [ ! -e $directory/aoc_${year}_${day}.${file_ext} ]; then
-		sed -e "s/<YEAR>/$year/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
+		sed -e "s/<YEAR>/$year/g" -e "s/<0DAY>/$day/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
 	fi
 
 	if [ $language == "python" ]; then
 		if [ ! -e $directory/test_aoc_${year}_${day}.$file_ext ]; then
-			sed -e "s/<YEAR>/$year/g" -e "s/<CORR_DAY>/$((10#$day))/g" -e "s/<DAY>/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
+			sed -e "s/<YEAR>/$year/g" -e "s/<DAY>/$day/g" $template_dir/test_aoc_year_day.${file_ext} > $directory/test_aoc_${year}_${day}.${file_ext}
 		fi
 	fi
 }

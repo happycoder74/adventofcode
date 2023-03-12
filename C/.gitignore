@@ -2,3 +2,4 @@ concepts
 .gdb_history
 *.cmake
 CMakeFiles
+glib.tags

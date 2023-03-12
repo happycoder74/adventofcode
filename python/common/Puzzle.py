@@ -1,25 +1,77 @@
-import os
+import sys
 from common import timer
+from pathlib import Path
 
 
 class Puzzle(object):
-    def __init__(self, filename, year, day):
+    def __init_subclass__(cls, year=None, day=None, stripped=True, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.year = year
+        cls.day = day
+
+    def __init__(
+        self, year=None, day=None, filename=None, data=None, stripped=True
+    ):
         self.filename = filename
-        self.year = year
-        self.day = day
-        self.data = self.clean_input(self.get_input())
+        if year is not None:
+            self.year = year
+        if day is not None:
+            self.day = day
+        if data is None:
+            data = self.get_input(stripped=stripped)
+        self.data = self.clean_input(data)
 
-    def get_input(self, mode=None):
-        path = os.path.join(os.path.dirname(__file__),
-                            f"../../data/{self.year}/{self.day:02d}")
-        with open(os.path.join(path, self.filename)) as fp:
-            data = fp.read().strip().splitlines()
+    def get_input(self, mode=None, stripped=True):
+        if self.filename is None or self.filename == "test_input.txt":
+            if self.filename:
+                fn = self.filename
+            else:
+                fn = "input.txt"
+            filename = (
+                Path(__file__).parent.parent.parent
+                / Path("data")
+                / Path(f"{self.year}")
+                / Path(f"{self.day:02d}")
+                / Path(fn)
+            )
+        else:
+            filename = self.filename
+        try:
+            with open(filename) as fp:
+                if stripped:
+                    data = fp.read().strip().splitlines()
+                else:
+                    data = fp.read().splitlines()
+        except FileNotFoundError:
+            print("Can not open file {}".format(filename))
+            sys.exit(-1)
 
-        return self.clean_input(data)
-
-    def clean_input(self, data):
         return data
 
+    @staticmethod
+    def clean_input(data):
+        return data
+
+    @staticmethod
+    def parse_input_groups(data):
+        groups = list()
+        group = list()
+        for row in data:
+            if row == "":
+                groups.append(group)
+                group = list()
+            else:
+                group.append(row)
+        if len(group) > 0:
+            groups.append(group)
+
+        return groups
+
+    @staticmethod
+    def parse_int_input(data):
+        return [int(d) for d in data]
+
+    @timer(part="main", title="Total elapsed", show_return=False)
     def solve_all(self):
         part1 = self.solve_part_1()
         part2 = self.solve_part_2()

@@ -6,12 +6,14 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 
-typedef struct {
+#define g_array_length(X) (X->len)
+
+typedef struct point {
     int x;
     int y;
 } Point;
 
-typedef struct {
+typedef struct line {
     Point p0;
     Point p1;
     int stepx;
@@ -19,8 +21,13 @@ typedef struct {
 } Line;
 
 // Allocation functions
-AocData_t *aoc_data_new(gchar *, int, int);
-void aoc_data_free(AocData_t *);
+AocData_t *aoc_data_new(gchar *filename, int year, int day);
+size_t aoc_data_length(AocData_t *data);
+gboolean aoc_data_hasdata(AocData_t *data);
+GArray *aoc_data_data(AocData_t *data);
+AocData_t *aoc_data_set_data(AocData_t *aoc, GArray *data);
+void aoc_data_free(AocData_t *data);
+AocData_t *aoc_data_new2(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *));
 
 gboolean is_horisontal(Line);
 gboolean is_vertical(Line);
@@ -29,8 +36,9 @@ Point point_difference(Point, Point);
 guint point_hash(gconstpointer);
 gboolean point_equal(gconstpointer, gconstpointer);
 
-GArray *get_input(char *, int, int);
-GArray *get_input_new(char *, int, int);
+GSList *get_input_list(char *filename, int year, int day);
+GArray *get_input(char *filename, int year, int day);
+GArray *get_input_new(char *filename, int year, int day);
 gint max(gint *, gint);
 gint min(gint *, gint);
 gint min_non_zero(gint *, gint);
@@ -40,7 +48,7 @@ char *str_trim(char *str);
 char *str_join(const char *, char **, size_t);
 int str_count(char *, char, int, int);
 char *substr(char *, int, int);
-int str_startswith(char *, char *);
+int str_startswith(char *str, char *start_str);
 int str_endswith(char *, char *);
 
 #ifdef __MINGW32__

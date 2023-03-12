@@ -7,7 +7,6 @@ data
 *.o
 *.exe
 *.stackdump
-*.txt
 *.x
 *.a
 *.debug
@@ -19,3 +18,14 @@ __pycache__
 compile_flags.txt
 *.obj
 a.out
+adventofcode.code-workspace
+.vscode
+*.swp
+.idea
+*.swo
+.cookie*
+\#*.*
+*.dll
+python/.flake8
+python/.pre-commit-config.yaml
+python/pyproject.toml

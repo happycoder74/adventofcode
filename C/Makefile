@@ -1,5 +1,5 @@
 CC = clang
-DEBUG=-g
+DEBUG=-g -DDEBUG
 RELFLAGS= -O2 
 GLIB_FLAGS != pkg-config --cflags glib-2.0
 CFLAGS = -pedantic -Wall -Wextra -Wpedantic $(GLIB_FLAGS) -I./include
@@ -7,8 +7,8 @@ GLIB_LDFLAGS != pkg-config --libs glib-2.0
 AOC_LIB = -laoc
 LDFLAGS = -L./lib $(AOC_LIB) -lm $(GLIB_LDFLAGS) 
 EXE = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY)
-OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/aoc_utils.o
-SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/aoc_utils.c
+OBJS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/*.o
+SRCS = $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c lib/*.c
 INPUTFILE=input.txt
 TESTINPUTFILE=test_input.txt
 
@@ -22,7 +22,7 @@ $(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY):	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).o lib/libao
 $(AOC_LIB):	lib/libaoc.a
 
 lib/libaoc.a: lib/*.c include/*.h
-	@cd lib && $(MAKE)
+	@cd lib && ($(MAKE) CC=$(CC))
 
 ../data/$(YEAR)/$(DAY)/test_input.txt:
 	@echo "Need to generate a test_input.txt file for $(YEAR) day $(DAY)"
@@ -44,10 +44,13 @@ test:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY) ../data/$(YEAR)/$(DAY)/$(TESTINPUTFILE)
 	@( cd $(YEAR)/$(DAY);  ./aoc_$(YEAR)_$(DAY) $(TESTINPUTFILE); cd ../.. )
 	@echo "============================"
 
+$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c:
+	 @../start_aoc.sh -l C -y $(YEAR) -d $(DAY) -t
+
 debug: clean-objs clean-exe
 	$(CC) $(DEBUG) $(CFLAGS) -o $(EXE) $(SRCS) $(LDFLAGS)
 
-templates:	$(YEAR)/$(DAY)/aoc_$(YEAR)_$(DAY).c
+templates:
 	 @../start_aoc.sh -l C -y $(YEAR) -d $(DAY) -t
 
 clean-all-executables:
@@ -62,11 +65,14 @@ clean-all-libraries:
 
 clean-all:	clean-all-executables clean-all-objects clean-all-libraries
 
-clean: clean-exe clean-objs
+clean: clean-exe clean-objs clean-libs
 
 clean-exe:
 	rm -f $(EXE) 
 
 clean-objs:
 	rm -f $(OBJS)
+
+clean-libs:
+	cd lib && $(MAKE) clean
 
