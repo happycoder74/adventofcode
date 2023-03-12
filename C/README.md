@@ -4,6 +4,16 @@ Stepping up the game a notch for me! After finding the Advent of Code and runnin
 
 Due to some laziness I am utilizing GLib at least to start with. My goal is to finish the puzzles using plain old C and the functions provided by the standard library. Let's see how it goes :-)
 
+Possible to build using CMake. Builds with pre-defined custom targets for each day. 
+To build run
+```cmake -B build .```
+
+To run a specific day, for example Day 1 2021 run:
+```cd build
+make run_2021_01
+```
+
+
 A messy Makefile is included which allows to run or test the solutions from the adventofcode/C direcory using the command:
 
 ```make run YEAR=<year> DAY=<day>``` or ```make test YEAR=<year> DAY=<day>```
