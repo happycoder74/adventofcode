@@ -148,7 +148,7 @@ GArray *get_input(char *filename, int year, int day) {
 #endif
 
     if (!(fp = fopen(file, "r"))) {
-        printf("Can not open file!\n");
+        printf("Can not open file (%s)!\n" ,file);
         return NULL;
     }
 
