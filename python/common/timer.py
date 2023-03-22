@@ -5,21 +5,23 @@ from typing import Callable, Any
 
 TFunc = Callable[..., Any]
 
-def timer(part: str|int, show_result: bool = True, title: str = "", 
+
+def timer(part: str | int, show_result: bool = True, title: str = "",
           show_return: bool = True) -> Callable[..., TFunc]:
     def decorator(f: TFunc) -> TFunc:
         @wraps(f)
         def wrapper(*args, **kwargs) -> Any:
+            position = 35
             start_time = time.perf_counter()
             result = f(*args, **kwargs)
             elapsed_time = time.perf_counter() - start_time
             if elapsed_time < 0.1:
                 elapsed_time_str = (
-                    f"\r\033[35C( {(elapsed_time * 1e3):6.3f} ms )"
+                    f"\r\033[{position}C( {(elapsed_time * 1e3):6.3f} ms )"
                 )
             else:
                 elapsed_time_str = (
-                    f"\r\033[35C( {elapsed_time:6.3f} s  )"
+                    f"\r\033[{position}C( {elapsed_time:6.3f} s  )"
                 )
 
             if show_result:
@@ -38,7 +40,7 @@ class Timer(object):
     title: str
     start_time: float
 
-    def __init__(self, title: str|None = None) -> None:
+    def __init__(self, title: str | None = None) -> None:
         self.start_time = 0
         self.title = f"{title} " if title is not None else ''
 

@@ -1,4 +1,6 @@
 concepts
 .gdb_history
-tags
+*.cmake
+CMakeFiles
 glib.tags
+/build*

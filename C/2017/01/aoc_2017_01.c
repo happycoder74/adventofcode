@@ -18,7 +18,7 @@ int_array *get_input_bare(char *fn, int year, int day) {
 
     char filename[1000];
 
-    snprintf(filename, 1000, "../../../data/%d/%02d/%s", year, day, fn);
+    snprintf(filename, 1000, "../../data/%d/%02d/%s", year, day, fn);
     if (!(fp = fopen(filename, "r"))) {
         printf("Can not open '%s'\n", filename);
         exit(1);
