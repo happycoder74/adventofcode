@@ -31,3 +31,4 @@ python/pyproject.toml
 .cache
 .*~undo-tree~
 *~
+venv
