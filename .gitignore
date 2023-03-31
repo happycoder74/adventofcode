@@ -30,3 +30,5 @@ python/.flake8
 python/.pre-commit-config.yaml
 python/pyproject.toml
 .cache
+.*~undo-tree~
+*~
