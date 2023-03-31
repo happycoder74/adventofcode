@@ -75,7 +75,10 @@ int main(int argc, char **argv) {
     data = aoc_data_new(filename, 2022, 1);
     free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", 2022, 1);
     timer_func(0, solve_all, data, 0);
+    printf("================================================\n");
 
     aoc_data_free(data);
 
