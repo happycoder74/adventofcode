@@ -1,4 +1,4 @@
-#include <aoc_utils.h>
+#include "aoc_utils.h"
 #include <assert.h>
 #include <ctype.h>
 #include <glib.h>
