@@ -1,5 +1,7 @@
 # Advent of Code in C
 
+[![CMake](https://github.com/happycoder74/adventofcode/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/happycoder74/adventofcode/actions/workflows/cmake.yml)
+
 Stepping up the game a notch for me! After finding the Advent of Code and running the 2021 challenge in Python I am now trying to solve the problems using C, my old go-to language which has not been used a lot lately. 
 
 Due to some laziness I am utilizing GLib at least to start with. My goal is to finish the puzzles using plain old C and the functions provided by the standard library. Let's see how it goes :-)

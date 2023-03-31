@@ -3,7 +3,6 @@
 !*.*
 !.*
 !Makefile
-data
 *.o
 *.exe
 *.stackdump

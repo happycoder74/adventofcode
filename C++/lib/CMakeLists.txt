@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.22)
 project(aoc++)
 add_library(aoc++ 
 	aoc_io.cpp
