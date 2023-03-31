@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(aoc_main)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
 set(AOC_YEARS
 	2015 2016 2017 2018 2019 2020 2021 2022
 	)
@@ -14,15 +19,15 @@ set(CMAKE_BUILD_TYPE Release)
 set(AOC_LIB_SOURCES
 	${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_string.c
-	${CMAKE_SOURCE_DIR}/lib/aoc_timer.c)
+	${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
+	${CMAKE_SOURCE_DIR}/lib/aoc_hash.c
+)
 
 set(RELEASE_COMPILE_OPTIONS
-	-std=gnu99
 	-O2
 	)
 
 set(DEBUG_COMPILE_OPTIONS
-	-std=gnu99
 	-g3
 	-fsanitize-address
 	)
