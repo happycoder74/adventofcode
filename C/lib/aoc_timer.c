@@ -15,7 +15,7 @@ void timer_func(int part, gpointer (func)(AocData_t *), AocData_t *aocdata, gboo
                 part, result, elapsed_unit, elapsed > 0.1 ? "s":"ms");
 
     } else {
-        g_print("Time elapsed:\r\033[35C( %6.3lf %-2s)\n",
+        g_print("Time elapsed:\r\033[35C( %6.3lf %-2s )\n",
                 elapsed_unit, elapsed > 0.1 ? "s":"ms");
     }
 
