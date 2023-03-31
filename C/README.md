@@ -15,16 +15,13 @@ To run a specific day, for example Day 1 2021 run:
 make run_2021_01
 ```
 
+Or to run a specific year, for example 2021, run:
+```
+cd build
+make run_2021
+```
 
-A messy Makefile is included which allows to run or test the solutions from the adventofcode/C direcory using the command:
-
-```make run YEAR=<year> DAY=<day>``` or ```make test YEAR=<year> DAY=<day>```
-
-or to just build the solution:
-
-```make YEAR=<year> DAY=<day>```
-
-where `<year>` is pretty self explanatory and `<day>` is the number of the day (with leading zero for day 1 to 9, e.g `01`, `02` etc).
+Replace ```make``` above with whatever build system you choose to use in CMake
 
 ## 2022:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
