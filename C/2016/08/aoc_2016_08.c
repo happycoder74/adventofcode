@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #include "aoc_utils.h"
-
+#include "aoc_string.h"
 
 enum command_type {INIT, ROW, COL};
 
@@ -139,7 +139,6 @@ int solve_part_1(GArray *data) {
                 break;
         }
         grid_print(grid, 0);
-        usleep(10000);
     }
 
     int count = 0;
