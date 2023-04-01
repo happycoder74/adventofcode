@@ -3,7 +3,7 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
-
+#include "aoc_string.h"
 
 typedef struct {
     int *data;

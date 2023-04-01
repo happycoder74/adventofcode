@@ -4,6 +4,7 @@
 
 #include "glib.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 gint fuel_cost(gint fuel) {
     fuel = (fuel / 3) - 2;
@@ -69,9 +70,9 @@ int main(int argc, char **argv) {
     char *filename;
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
     data = aoc_data_new(filename, 2019, 1);
