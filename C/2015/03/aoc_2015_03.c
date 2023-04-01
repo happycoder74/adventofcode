@@ -84,18 +84,19 @@ int main(int argc, char **argv) {
     AocData_t *data;
     gchar *filename;
 
-    if (argc > 1) {
+    const int year = 2015;
+    const int day = 3;
+    if (argc > 1)
         filename = g_strdup(argv[1]);
-    } else {
+    else
         filename = g_strdup("input.txt");
-    }
 
-    data = aoc_data_new(filename, 2015, 3);
+    data = aoc_data_new(filename, year, day);
     g_free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
-
-    return 0;
 }
