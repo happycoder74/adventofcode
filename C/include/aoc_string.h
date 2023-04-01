@@ -1,7 +1,9 @@
 #ifndef __AOC_STRING_H__
 #define __AOC_STRING_H__
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 // String functions similar to methods of  python strings
 char *str_trim(char *str);
@@ -12,12 +14,10 @@ int str_startswith(char *str, char *start_str);
 int str_endswith(char *, char *);
 char *strdup_printf(const char *format, ...);
 
-#ifdef __MINGW32__
-#include <stdio.h>
-ssize_t getline(char **, size_t *, FILE *);
-ssize_t getdelim(char **, size_t *, int, FILE *);
+intmax_t getline(char **, size_t *, FILE *);
+intmax_t getdelim(char **, size_t *, int, FILE *);
 char *stpcpy(char *__restrict__, const char *__restrict__);
-#endif
+char *strdup(const char *str);
 
 #endif /* __AOC_STRING_H__ */
 

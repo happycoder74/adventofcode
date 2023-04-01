@@ -6,6 +6,16 @@
 #include <stdarg.h>
 
 #include "aoc_string.h"
+
+char *strdup(const char *s) {
+    size_t size = strlen(s) + 1;
+    char *p = malloc(size);
+    if (p) {
+        memcpy(p, s, size);
+    }
+    return p;
+}
+
 /* Note: This function returns a pointer to a substring of the original string.
 If the given string was allocated dynamically, the caller must not overwrite
 that pointer with the returned value, since the original pointer must be
@@ -137,8 +147,6 @@ char *strdup_printf(const char *format, ...) {
     return string;
 }
 
-#ifdef __MINGW32__
-
 /**
  * stpcpy - copy a string from src to dest returning a pointer to the new end
  *          of dest, including src's %NUL-terminator. May overrun dest.
@@ -160,5 +168,4 @@ char *stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
     return --dest;
 }
 
-#endif
 

@@ -2,7 +2,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-  
+#include <stddef.h>
+
 typedef struct entry {
     char *key;
     void *object;
@@ -58,7 +59,7 @@ bool aoc_hash_table_insert(aoc_hash_table *ht, const char *key, void *obj) {
 
     entry *e = malloc(sizeof(*e));
     e->object = obj;
-    e->key = strdup(key);
+    memcpy(e->key, key, strlen(key) + 1);
 
     // insert our entry
     e->next = ht->elements[index];

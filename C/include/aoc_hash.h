@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef uint64_t (*hashfunction) (const char *key, size_t);
 typedef struct _aoc_hash_table aoc_hash_table;

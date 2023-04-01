@@ -7,6 +7,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "aoc_string.h"
+
 size_t aoc_data_length(AocData_t *data) {
     if(data) {
         if (data->data)
