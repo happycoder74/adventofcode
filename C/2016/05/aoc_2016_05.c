@@ -66,7 +66,7 @@ char *solve_part_2(GArray *data) {
                 }
             }
         }
-        if ((((counter - 1) % 1000) == 0) || (found == 8)) {
+        if ((((counter - 1) % 100000) == 0) || (found == 8)) {
             printf("\t");
             for (j = 0; j < strlen(code); j++) {
                 if (code[j] == '_') {
