@@ -4,6 +4,7 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -32,7 +33,7 @@ GArray *aoc_data_data(AocData_t *data) {
     return NULL;
 }
 
-gboolean aoc_data_hasdata(AocData_t *data) {
+bool aoc_data_hasdata(AocData_t *data) {
     if(data) {
         if (data->data)
             return TRUE;
@@ -41,9 +42,9 @@ gboolean aoc_data_hasdata(AocData_t *data) {
 }
 
 AocData_t *aoc_data_new(gchar *filename, int year, int day) {
-    AocData_t *data = g_new(AocData_t, 1);
+    AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
-    data->filename = g_strdup(filename);
+    data->filename = strdup(filename);
     data->year = year;
     data->day = day;
 
@@ -51,9 +52,9 @@ AocData_t *aoc_data_new(gchar *filename, int year, int day) {
 }
 
 AocData_t *aoc_data_new2(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *)) {
-    AocData_t *data = g_new(AocData_t, 1);
+    AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
-    data->filename = g_strdup(filename);
+    data->filename = strdup(filename);
     data->year = year;
     data->day = day;
 
@@ -63,13 +64,13 @@ AocData_t *aoc_data_new2(gchar *filename, int year, int day, GArray *(*clean_fun
 
 void aoc_data_free(AocData_t *data) {
     if (data->filename) {
-        g_free(data->filename);
+        free(data->filename);
     }
 
     if (data->data) {
         g_array_free(data->data, TRUE);
     }
-    g_free(data);
+    free(data);
 }
 
 
@@ -83,8 +84,8 @@ GSList *get_input_list(char *filename, int year, int day) {
     gchar *path;
     gchar *file = NULL;
 
-    path = g_strdup_printf("../../../data/%d/%02d/", year, day);
-    file = g_strconcat(path, filename, NULL);
+    path = strdup_printf("../../../data/%d/%02d/", year, day);
+    file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
         printf("Can not open file!\n");
@@ -110,9 +111,9 @@ GArray *get_input_new(char *filename, int year, int day) {
     gchar *path;
     gchar *file = NULL;
 
-    path = g_strdup_printf("../../../data/%d/%02d/", year, day);
+    path = strdup_printf("../../../data/%d/%02d/", year, day);
     data = g_array_new(TRUE, FALSE, sizeof(char *));
-    file = g_strconcat(path, filename, NULL);
+    file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
         printf("Can not open file!\n");
@@ -125,9 +126,9 @@ GArray *get_input_new(char *filename, int year, int day) {
     }
 
     if (file) {
-        g_free(file);
+        free(file);
     }
-    g_free(path);
+    free(path);
 
     return data;
     ;
@@ -142,9 +143,9 @@ GArray *get_input(char *filename, int year, int day) {
     gchar *path;
     gchar *file = NULL;
     char wd[255];
-    path = g_strdup_printf("../../data/%d/%02d/", year, day);
+    path = strdup_printf("../../data/%d/%02d/", year, day);
     data = g_array_new(FALSE, FALSE, sizeof(char *));
-    file = g_strconcat(path, filename, NULL);
+    file = strconcat(path, filename);
 
 #ifdef DEBUG
     g_print("%s\n", file);
@@ -162,12 +163,11 @@ GArray *get_input(char *filename, int year, int day) {
     }
 
     if (file) {
-        g_free(file);
+        free(file);
     }
-    g_free(path);
+    free(path);
 
     return data;
-    ;
 }
 
 gint max(gint *arr, gint length) {
@@ -194,9 +194,9 @@ gint min(gint *arr, gint length) {
     return min;
 }
 
-gint min_non_zero(gint *arr, gint length) {
-    gint min = length;
-    gint i;
+int min_non_zero(int *arr, int length) {
+    int min = length;
+    int i;
 
     for (i = 0; i < length; i++) {
         if ((arr[i] < min) && (arr[i] != 0)) {
@@ -290,9 +290,9 @@ Point points_on_line(Line line) {
     return diff;
 }
 
-gboolean is_horisontal(Line line) { return line.p0.y == line.p1.y; }
+bool is_horisontal(Line line) { return line.p0.y == line.p1.y; }
 
-gboolean is_vertical(Line line) { return line.p0.x == line.p1.x; }
+bool is_vertical(Line line) { return line.p0.x == line.p1.x; }
 
 guint point_hash(gconstpointer p) {
     Point *point = (Point *)p;
@@ -306,4 +306,14 @@ gboolean point_equal(gconstpointer pp1, gconstpointer pp2) {
     p1 = (Point *)pp1;
     p2 = (Point *)pp2;
     return (p1->x == p2->x) && (p1->y == p2->y);
+}
+
+
+char *_basename(const char *path, const char pathsep) {
+    char *s = strrchr(path, pathsep);
+    if (!s) {
+        return strdup(path);
+    } else {
+        return strdup(s + 1);
+    }
 }
