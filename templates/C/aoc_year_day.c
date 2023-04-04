@@ -8,15 +8,15 @@ GArray *clean_input(GArray *data) {
     return data;
 }
 
-gpointer solve_part_1(AocData_t *data) {
+void *solve_part_1(AocData_t *data) {
     return NULL;
 }
 
-gpointer solve_part_2(AocData_t *data) {
+void *solve_part_2(AocData_t *data) {
     return NULL;
 }
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
@@ -30,17 +30,21 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+    char *filename;
 
+    const int year = <YEAR>;
+    const int day = <DAY>;
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    data = aoc_data_new(filename, <YEAR>, <DAY>);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
