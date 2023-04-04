@@ -1,9 +1,11 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "glib.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 #ifndef G_REGEX_MATCH_DEFAULT
 #define G_REGEX_MATCH_DEFAULT 0
@@ -11,9 +13,9 @@
 
 GArray *clean_input(GArray *data) { return data; }
 
-gint count_matches(GRegex *pattern, gchar *string) {
+uint32_t count_matches(GRegex *pattern, char *string) {
     GMatchInfo *match_info;
-    gint count = 0;
+    uint32_t count = 0;
 
     g_regex_match(pattern, string, G_REGEX_MATCH_DEFAULT, &match_info);
     while (g_match_info_matches(match_info)) {
@@ -25,11 +27,11 @@ gint count_matches(GRegex *pattern, gchar *string) {
     return count;
 }
 
-gpointer solve_part_1(AocData_t *data) {
+void *solve_part_1(AocData_t *data) {
     GRegex *regex_wovel, *regex_double_letter, *regex_invalid;
     int count = 0;
-    guint i;
-    gchar *line;
+    size_t i;
+    char *line;
 
     regex_wovel = g_regex_new("[aeiou]", 0, 0, NULL);
     regex_double_letter = g_regex_new("(.)\\1", 0, 0, NULL);
@@ -48,20 +50,20 @@ gpointer solve_part_1(AocData_t *data) {
     g_regex_unref(regex_double_letter);
     g_regex_unref(regex_invalid);
 
-    return g_strdup_printf("%d", count);
+    return strdup_printf("%d", count);
 }
 
-gpointer solve_part_2(AocData_t *data) {
+void *solve_part_2(AocData_t *data) {
     GRegex *regex_pairs, *regex_repeat;
-    int count = 0;
-    guint i;
+    uint32_t count = 0;
+    size_t i;
     gchar *line;
 
     regex_pairs = g_regex_new("([a-z][a-z])\\w*\\1", 0, 0, NULL);
     regex_repeat = g_regex_new("(.)\\w\\1", 0, 0, NULL);
 
     for (i = 0; i < data->data->len; i++) {
-        line = g_array_index(data->data, gchar *, i);
+        line = g_array_index(data->data, char *, i);
         if ((count_matches(regex_pairs, line) > 0) &&
             (count_matches(regex_repeat, line) > 0)) {
             count++;
@@ -71,10 +73,10 @@ gpointer solve_part_2(AocData_t *data) {
     g_regex_unref(regex_pairs);
     g_regex_unref(regex_repeat);
 
-    return g_strdup_printf("%d", count);
+    return strdup_printf("%d", count);
 }
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
@@ -88,17 +90,26 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+    char *filename;
+
+    char *sourcefile;
+    int year, day;
+
+    sourcefile = basename(__FILE__);
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    data = aoc_data_new(filename, 2015, 5);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

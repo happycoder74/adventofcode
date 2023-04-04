@@ -1,24 +1,28 @@
+#include <corecrt.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "glib.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) { return data; }
 
-gint solution_str(AocData_t *data, const gchar *cmp_string) {
-    gint number = 0;
+int solution_str(AocData_t *data, const char *cmp_string) {
+    int number = 0;
     GChecksum *checksum = g_checksum_new(G_CHECKSUM_MD5);
-    gchar *string = NULL;
-    const gchar *hashcode;
-    gchar *base = g_array_index(data->data, char *, 0);
+    char *string = NULL;
+    const char *hashcode;
+    char *base = g_array_index(data->data, char *, 0);
 
     while (TRUE) {
-        string = g_strdup_printf("%s%d", base, ++number);
+        string = strdup_printf("%s%d", base, ++number);
         g_checksum_update(checksum, (guchar *)string, -1);
         hashcode = g_checksum_get_string(checksum);
-        g_free(string);
+        free(string);
         if (strncmp(hashcode, cmp_string, strlen(cmp_string)) == 0) {
             break;
         }
@@ -28,15 +32,15 @@ gint solution_str(AocData_t *data, const gchar *cmp_string) {
     return number;
 }
 
-gint solution_bin(AocData_t *data, const gchar *cmp_string) {
-    gchar string[100];
-    gint number = 0;
+int solution_bin(AocData_t *data, const char *cmp_string) {
+    char string[100];
+    int number = 0;
     GChecksum *checksum = g_checksum_new(G_CHECKSUM_MD5);
-    guint8 hashcode[100];
-    gsize length;
-    gboolean found = FALSE;
+    uint8_t hashcode[100];
+    size_t length;
+    bool found = FALSE;
 
-    gchar *base = g_array_index(data->data, char *, 0);
+    char *base = g_array_index(data->data, char *, 0);
 
     while (!found) {
         sprintf(string, "%s%d", base, ++number);
@@ -60,23 +64,23 @@ gint solution_bin(AocData_t *data, const gchar *cmp_string) {
     return number;
 }
 
-gpointer solve_part_1_str(AocData_t *data) {
-    return g_strdup_printf("%d", solution_str(data, "00000"));
+void *solve_part_1_str(AocData_t *data) {
+    return strdup_printf("%d", solution_str(data, "00000"));
 }
 
-gpointer solve_part_2_str(AocData_t *data) {
-    return g_strdup_printf("%d", solution_str(data, "000000"));
+void *solve_part_2_str(AocData_t *data) {
+    return strdup_printf("%d", solution_str(data, "000000"));
 }
 
-gpointer solve_part_1_bin(AocData_t *data) {
-    return g_strdup_printf("%d", solution_bin(data, "00000"));
+void *solve_part_1_bin(AocData_t *data) {
+    return strdup_printf("%d", solution_bin(data, "00000"));
 }
 
-gpointer solve_part_2_bin(AocData_t *data) {
-    return g_strdup_printf("%d", solution_bin(data, "000000"));
+void *solve_part_2_bin(AocData_t *data) {
+    return strdup_printf("%d", solution_bin(data, "000000"));
 }
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
@@ -92,17 +96,26 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+    char *filename;
+
+    char *sourcefile;
+    int year, day;
+
+    sourcefile = basename(__FILE__);
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    data = aoc_data_new(filename, 2015, 4);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
