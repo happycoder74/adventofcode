@@ -18,6 +18,7 @@ intmax_t getline(char **, size_t *, FILE *);
 intmax_t getdelim(char **, size_t *, int, FILE *);
 char *stpcpy(char *__restrict__, const char *__restrict__);
 char *strdup(const char *str);
+char *strconcat(const char *str1, const char *str2);
 
 #endif /* __AOC_STRING_H__ */
 

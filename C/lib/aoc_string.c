@@ -16,6 +16,17 @@ char *strdup(const char *s) {
     return p;
 }
 
+char *strconcat(const char *s1, const char *s2) {
+    char *return_string = (char *)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
+    char *pointer;
+
+    pointer = stpcpy(return_string, s1);
+    stpcpy(pointer, s2);
+
+    return return_string;
+}
+
+
 /* Note: This function returns a pointer to a substring of the original string.
 If the given string was allocated dynamically, the caller must not overwrite
 that pointer with the returned value, since the original pointer must be
