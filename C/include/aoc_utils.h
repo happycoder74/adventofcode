@@ -33,11 +33,20 @@ AocData_t *aoc_data_new2(gchar *filename, int year, int day, GArray *(*clean_fun
 
 bool is_horisontal(Line);
 bool is_vertical(Line);
+bool is_parallel(Line, Line);
 void print_line(Line);
+void line_print(Line line);
+Line line_new(Point, Point);
+Point point_new(int, int);
+Point *line_intersection(Line line1, Line line2, Point *intersection_point);
+void line_array_print(GArray *lines);
 Point point_difference(Point, Point);
 guint point_hash(gconstpointer);
 gboolean point_equal(gconstpointer, gconstpointer);
-
+int point_manhattan_distance(Point, Point);
+int point_distance(Point, Point);
+bool point_on_line(Point p, Line line);
+ 
 GSList *get_input_list(char *filename, int year, int day);
 GArray *get_input(char *filename, int year, int day);
 GArray *get_input_new(char *filename, int year, int day);

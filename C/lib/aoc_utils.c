@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <glib.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -145,7 +146,11 @@ GArray *get_input(char *filename, int year, int day) {
     char wd[255];
     path = strdup_printf("../../data/%d/%02d/", year, day);
     data = g_array_new(FALSE, FALSE, sizeof(char *));
-    file = strconcat(path, filename);
+    if (!strcmp(filename, "input.txt")) {
+        file = strconcat(path, filename);
+    } else {
+        file = filename;
+    }
 
 #ifdef DEBUG
     g_print("%s\n", file);
@@ -290,9 +295,26 @@ Point points_on_line(Line line) {
     return diff;
 }
 
+int point_manhattan_distance(Point p0,  Point p1) {
+    return abs(p0.x - p1.x) + abs(p0.y - p1.y);
+}
+
+int point_distance(Point p0,  Point p1) {
+    return sqrt((p0.x - p1.x)*(p0.x - p1.x) + (p0.y - p1.y)*(p0.y - p1.y));
+}
+
 bool is_horisontal(Line line) { return line.p0.y == line.p1.y; }
 
 bool is_vertical(Line line) { return line.p0.x == line.p1.x; }
+
+bool is_parallel(Line line1, Line line2) {
+    if (((line1.p0.x - line1.p1.x) == 0) && ((line2.p0.x - line2.p1.x) == 0))
+        return TRUE;
+    if (((line1.p0.y - line1.p1.y) == 0) && ((line2.p0.y - line2.p1.y) == 0))
+        return TRUE;
+    return FALSE;
+
+}
 
 guint point_hash(gconstpointer p) {
     Point *point = (Point *)p;
@@ -315,5 +337,88 @@ char *_basename(const char *path, const char pathsep) {
         return strdup(path);
     } else {
         return strdup(s + 1);
+    }
+}
+
+void line_print(Line line) {
+    printf(
+        "(%d, %d) to (%d, %d)\n",
+        line.p0.x, line.p0.y, line.p1.x, line.p1.y);
+}
+
+Line line_new(Point p0, Point p1) {
+    Line line;
+    line.p0 = p0;
+    line.p1 = p1;
+    line.stepx = p1.x - p0.x;
+    line.stepy = p1.y - p0.y;
+    return line;
+}
+
+Point point_new(int x, int y) {
+    Point point;
+
+    point.x = x;
+    point.y = y;
+
+    return point;
+}
+
+Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
+    float u, t;
+    int x1, x2, x3, x4;
+    int y1, y2, y3, y4;
+
+    if (is_parallel(line1, line2))
+        return NULL;
+
+    x1 = line1.p0.x;
+    y1 = line1.p0.y;
+    x2 = line1.p1.x;
+    y2 = line1.p1.y;
+    x3 = line2.p0.x;
+    y3 = line2.p0.y;
+    x4 = line2.p1.x;
+    y4 = line2.p1.y;
+
+    t = (float)((x1 - x3)*(y3 - y4) - (y1 - y3)*(x3 - x4)) / 
+        (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
+    
+    u = (float)((x1 - x3)*(y1 - y2) - (y1 - y3)*(x1 - x2)) / 
+        (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
+
+    #ifndef NDEBUG
+    printf("t = %f, u = %f\n", t, u);
+    #endif /* ifdef ndef NDEBUG */
+
+    if (!((0 <= t) && (t <= 1.0)) || !((0 <= u) && (u <= 1.0))) {
+        return NULL;
+    }
+
+    intersection_point->x = x1 + t*(x2 - x1);
+    intersection_point->y = y1 + t*(y2 - y1);
+
+    return intersection_point;
+}
+
+void line_array_print(GArray *lines) {
+    for (guint i = 0; i < lines->len; i++) {
+        line_print(g_array_index(lines, Line, i));
+    }
+}
+
+bool point_on_line(Point p, Line line) {
+    // int d1 = sqrt(pow(p.x - line.p0.x, 2) + pow(p.y - line.p0.y, 2));
+    // int d2 = sqrt(pow(p.x - line.p1.x, 2) + pow(p.y - line.p0.y, 2));
+    // int d = sqrt(pow(line.p1.x - line.p0.x, 2) + pow(line.p1.y - line.p0.y, 2));
+    // printf("Distance diff: %d\n", d1+d2 - d);
+    // return d == d1 + d2;
+    if (is_vertical(line)) {
+        return ((MIN(line.p0.y, line.p1.y) <= p.y) && (p.y <= MAX(line.p0.y, line.p1.y)) && (line.p0.x == p.x));
+    } else if (is_horisontal(line)) {
+        return ((MIN(line.p0.x, line.p1.x) <= p.x) && (p.x <= MAX(line.p0.x, line.p1.x)) && (line.p0.y == p.y)); 
+    } else {
+        int y = (line.p1.y - line.p0.y) / (line.p1.x - line.p0.x) * (p.x - line.p0.x) + line.p0.y;
+        return p.y == y;
     }
 }
