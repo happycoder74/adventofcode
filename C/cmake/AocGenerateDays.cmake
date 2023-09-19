@@ -11,8 +11,7 @@ function (AOC_GENERATE YEAR DAY)
 	target_compile_options(
 		aoc_${YEAR}_${DAY}
 		PUBLIC
-		"$<$<CONFIG:RELEASE>:${RELEASE_COMPILE_OPTIONS}>"
-		"$<$<CONFIG:DEBUG>:${DEBUG_COMPILE_OPTIONS}>"
+        -Wall -Wextra -Wpedantic -Werror -Wno-error=unused -Wno-error=unused-parameter -Wno-error=unused-variable
 		)
 	add_custom_target(run_${YEAR}_${DAY}
 		COMMAND aoc_${YEAR}_${DAY}
