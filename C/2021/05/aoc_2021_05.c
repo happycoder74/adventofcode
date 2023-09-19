@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) {
     gchar *dataline;
@@ -30,28 +32,6 @@ GArray *clean_input(GArray *data) {
     return return_data;
 }
 
-gboolean is_diagonal (Line line) {
-    return (!is_horisontal(line)) && (!is_vertical(line));
-}
-
-void print_point(Point p) {
-    g_print("Point (%d, %d)\n", p.x, p.y);
-    return;
-}
-
-gboolean point_eq(Point p1, Point p2) {
-    return (p1.x == p2.x) && (p1.y == p2.y);
-}
-
-Point *point_dup(Point p) {
-    Point *point;
-    point = g_new(Point, 1);
-    point->x = p.x;
-    point->y = p.y;
-
-    return point;
-}
-
 int mark_points(GHashTable *hashtable, Line line, gboolean diagonal) {
     Point point;
     int value;
@@ -72,29 +52,21 @@ int mark_points(GHashTable *hashtable, Line line, gboolean diagonal) {
         } else {
             value = 1;
         }
-        key = point_dup(point);
+        key = point_new_m(point.x, point.y);
         g_hash_table_insert(hashtable, key, GINT_TO_POINTER(value));
     }
 
     return count;
 }
 
-GHashTable *create_points_hash_table() {
-    GHashTable *hashtable;
-
-    hashtable = g_hash_table_new(point_hash, point_equal);
-
-    return hashtable;
-}
-
-int solve_problem(GArray *data, gboolean diagonal) {
+void *solve_problem(GArray *data, gboolean diagonal) {
     GHashTable *hashtable;
     Line line;
     GHashTableIter iter;
     int count;
     gpointer key, value;
 
-    hashtable = create_points_hash_table();
+    hashtable = g_hash_table_new(point_hash, point_equal);
 
     for (guint i = 0; i < data->len; i++) {
         line = g_array_index(data, Line, i);
@@ -110,40 +82,52 @@ int solve_problem(GArray *data, gboolean diagonal) {
 
     g_hash_table_unref(hashtable);
 
-    return count;
-}
-int solve_part_1(GArray *data) {
-    return solve_problem(data, FALSE);
+    return strdup_printf("%d", count);
 }
 
-int solve_part_2(GArray *data) {
-    return solve_problem(data, TRUE);
+void *solve_part_1(AocData_t *data) {
+    return solve_problem(data->data, FALSE);
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+void *solve_part_2(AocData_t *data) {
+    return solve_problem(data->data, TRUE);
+}
 
-    data = clean_input(get_input(filename, year, day));
+void *solve_all(AocData_t *data) {
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
+    AocData_t *data;
     gchar *filename;
 
+    gchar *sourcefile = basename(__FILE__);
+    int year, day;
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
+
+
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2021, 5), INT, 0);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
+
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }

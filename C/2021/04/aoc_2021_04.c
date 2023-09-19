@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 typedef struct {
     int board[5][5];
@@ -12,8 +14,8 @@ typedef struct {
 void print_board(Board *);
 
 GArray *clean_input(GArray *data) {
-    gchar *line;
-    gchar **split_line;
+    char *line;
+    char **split_line;
     GArray *boards;
     GArray *numbers;
     int value;
@@ -35,11 +37,11 @@ GArray *clean_input(GArray *data) {
     g_array_append_val(return_data, numbers);
 
     i = 2;
-    for (guint b = 2; b + 2 < data->len; b += 6) {
+    for (size_t b = 2; b + 2 < data->len; b += 6) {
         board = g_new(Board, 1);
         board->hits = 0;
-        for (gint j = 0; j < 5; j++) {
-            gint index = j + b;
+        for (int j = 0; j < 5; j++) {
+            int index = j + b;
             line = g_array_index(data, char *, index);
             sscanf(line, "%d %d %d %d %d",
                     &(board->board[j][0]), &(board->board[j][1]),
@@ -54,7 +56,7 @@ GArray *clean_input(GArray *data) {
     return return_data;
 }
 
-gboolean check_board(Board *board, int number) {
+bool check_board(Board *board, int number) {
     for (int row = 0; row < 5; row++) {
         for (int col = 0; col < 5; col++) {
             if (board->board[row][col] == number) {
@@ -103,34 +105,34 @@ void print_board(Board *board) {
     }
 }
 
-int solve_part_1(GArray *data) {
+void *solve_part_1(AocData_t *data) {
     Board *board;
-    GArray *numbers = g_array_index(data, GArray *, 0);
-    GArray *boards = g_array_index(data, GArray *, 1);
+    GArray *numbers = g_array_index(data->data, GArray *, 0);
+    GArray *boards = g_array_index(data->data, GArray *, 1);
 
     for (guint i = 0; i < numbers->len; i++) {
         int number = g_array_index(numbers, int, i);
         for (guint b = 0; b < boards->len; b++) {
             board = g_array_index(boards, Board *, b);
             if (check_board(board, number)) {
-                return sum_board(board) * number;
+                return strdup_printf("%d", sum_board(board) * number);
             }
         }
     }
 
-    return 0;
+    return strdup_printf("");
 }
 
-int solve_part_2(GArray *data) {
+void *solve_part_2(AocData_t *data) {
     Board *board;
-    GArray *numbers = g_array_index(data, GArray *, 0);
-    GArray *boards = g_array_index(data, GArray *, 1);
+    GArray *numbers = g_array_index(data->data, GArray *, 0);
+    GArray *boards = g_array_index(data->data, GArray *, 1);
     GArray *winners = g_array_new(FALSE, FALSE, sizeof(int));
     int winner;
     int number;
-    int winner_sum;
+    int winner_sum = 0;
 
-    guint i = 0;
+    size_t i = 0;
     while ((boards->len > 0) && (i < numbers->len)) {
         number = g_array_index(numbers, int, i++);
         for (guint b = 0; b < boards->len; b++) {
@@ -151,35 +153,45 @@ int solve_part_2(GArray *data) {
             winners = g_array_new(FALSE, FALSE, sizeof(int));
         }
     }
-    return winner_sum;
+    return strdup_printf("%d", winner_sum);
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+void *solve_all(AocData_t *data) {
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    data = clean_input(get_input(filename, year, day));
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+    char *filename;
+
+    char *sourcefile;
+    int year, day;
+
+    sourcefile = basename(__FILE__);
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2021, 4), INT, 0);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
+
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
 
     return 0;
 }

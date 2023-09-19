@@ -3,7 +3,9 @@
 #include <string.h>
 #include <glib.h>
 #include <assert.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) {
     gchar **split_string;
@@ -46,38 +48,50 @@ unsigned long long  lantern_fish_evolve(GArray *data, gint days) {
     return sum;
 }
 
-unsigned long long solve_part_1(GArray *data) {
-    return lantern_fish_evolve(data, 80);
+void *solve_part_1(AocData_t *data) {
+    return strdup_printf("%llu", lantern_fish_evolve(data->data, 80));
 }
 
-unsigned long long solve_part_2(GArray *data) {
-    return lantern_fish_evolve(data, 256);
+void *solve_part_2(AocData_t *data) {
+    return strdup_printf("%llu", lantern_fish_evolve(data->data, 256));
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+void *solve_all(AocData_t *data) {
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    data = clean_input(get_input(filename, year, day));
-
-    if (data) {
-        TIMER(1, solve_part_1(data), ULONG, 1);
-        TIMER(2, solve_part_2(data), ULONG, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
+
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+    char *filename;
+
+    char *sourcefile = basename(__FILE__);
+    int year, day;
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
+
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2021, 6), INT, 0);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
+
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }

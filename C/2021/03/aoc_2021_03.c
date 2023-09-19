@@ -1,19 +1,21 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include "aoc_utils.h"
 #include <math.h>
+#include "aoc_utils.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) {
-    gchar *line;
+    char *line;
     GArray *bitfields;
-    guint i, j, len;
+    size_t i, j, len;
 
     bitfields = g_array_sized_new(TRUE, FALSE, sizeof(GArray *), data->len);
 
     for (i = 0; i < data->len; i++) {
-        line = g_array_index(data, gchar *, i);
+        line = g_array_index(data, char *, i);
         len = strlen(line);
         GArray *bitfield = g_array_new(TRUE, FALSE, sizeof(int));
         for (j = 0; j < len; j++) {
@@ -30,7 +32,7 @@ int common_value(GArray *data, int position, int method) {
     int sum = 0;
     GArray *bitfield;
     gdouble check;
-    guint i;
+    size_t i;
 
     for (i = 0; i < data->len; i++) {
         bitfield = g_array_index(data, GArray *, i);
@@ -47,7 +49,7 @@ int common_value(GArray *data, int position, int method) {
 GArray *reduce(GArray *data, int value, int position) {
     GArray *reduced;
     GArray *item;
-    guint i;
+    size_t i;
 
     reduced = g_array_new(TRUE, FALSE, sizeof(GArray *));
     for (i = 0; i < data->len; i++) {
@@ -60,32 +62,32 @@ GArray *reduce(GArray *data, int value, int position) {
 }
 
 void print_bitfield(GArray *bitfield) {
-    guint i;
+    size_t i;
     for (i = 0; i < bitfield->len; i++) {
         int val = g_array_index(bitfield, int, i);
-        g_print("%d ", val);
+        printf("%d ", val);
     }
-    g_print("\n");
+    printf("\n");
 }
 
 void print_bitfields_all(GArray *bitfields) {
-    guint i;
+    size_t i;
     for (i = 0; i < bitfields->len; i++) {
         print_bitfield(g_array_index(bitfields, GArray *, i));
     }
 }
 
-gpointer solve_part_1(AocData_t *data) {
+void *solve_part_1(AocData_t *data) {
     GArray *digits;
-    gint gamma_rate, epsilon_rate;
+    uint32_t gamma_rate, epsilon_rate;
     GArray *bitfield = g_array_index(data->data, GArray *, 0);
-    gint length = bitfield->len;
+    size_t length = bitfield->len;
     digits = g_array_new(FALSE, FALSE, sizeof(int));
-    gint count, i, j;
+    size_t count, i, j;
 
     for (j = 0; j < length; j++) {
         count = 0;
-        for (i = 0; i < (int)data->data->len; i++) {
+        for (i = 0; i < data->data->len; i++) {
             bitfield = g_array_index(data->data, GArray *, i);
             count += g_array_index(bitfield, int, j);
         }
@@ -94,19 +96,19 @@ gpointer solve_part_1(AocData_t *data) {
     }
 
     gamma_rate = 0;
-    for (i = 0; i < (int)digits->len; i++) {
+    for (i = 0; i < digits->len; i++) {
         gint j = digits->len - 1 - i;
         gamma_rate += g_array_index(digits, int, i) * pow(2, j);
     }
 
     epsilon_rate = gamma_rate ^ ((int)pow(2, bitfield->len) - 1);
-    return g_strdup_printf("%d", gamma_rate * epsilon_rate);
+    return strdup_printf("%d", gamma_rate * epsilon_rate);
 }
 
 
 int bitfield_sum(GArray *bitfield) {
     int value = 0;
-    guint i;
+    size_t i;
 
     for (i = 0; i < bitfield->len; i++) {
         int j = bitfield->len - 1 - i;
@@ -117,7 +119,7 @@ int bitfield_sum(GArray *bitfield) {
     return value;
 }
 
-gpointer solve_part_2(AocData_t *data) {
+void *solve_part_2(AocData_t *data) {
     GArray *bitfield;
     GArray *oxygen_generator = NULL;
     GArray *co2_scrubber = NULL;
@@ -127,9 +129,9 @@ gpointer solve_part_2(AocData_t *data) {
     int oxygen_generator_value;
     int co2_scrubber_value;
     int value;
-    guint j;
+    size_t j;
 
-    guint digits = bitfield->len;
+    size_t digits = bitfield->len;
     for (j = 0; j < digits; j++) {
         if (j == 0) {
             value = common_value(data->data, j, 1);
@@ -150,11 +152,11 @@ gpointer solve_part_2(AocData_t *data) {
     oxygen_generator_value = bitfield_sum(g_array_index(oxygen_generator, GArray *, 0));
     co2_scrubber_value = bitfield_sum(g_array_index(co2_scrubber, GArray *, 0));
 
-    return g_strdup_printf("%d", oxygen_generator_value * co2_scrubber_value);
+    return strdup_printf("%d", oxygen_generator_value * co2_scrubber_value);
 }
 
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
     data->data = clean_input(get_input(data->filename, data->year, data->day));
 
@@ -168,17 +170,26 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+    char *filename;
+
+    char *sourcefile;
+    int year, day;
+
+    sourcefile = basename(__FILE__);
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    data = aoc_data_new(filename, 2021, 3);
-    g_free(filename);
+    data = aoc_data_new(filename, year, day);
+    free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
