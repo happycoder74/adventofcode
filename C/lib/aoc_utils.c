@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "aoc_string.h"
+#include "glibconfig.h"
 
 size_t aoc_data_length(AocData_t *data) {
     if(data) {
@@ -303,24 +304,21 @@ int point_distance(Point p0,  Point p1) {
     return sqrt((p0.x - p1.x)*(p0.x - p1.x) + (p0.y - p1.y)*(p0.y - p1.y));
 }
 
-bool is_horisontal(Line line) { return line.p0.y == line.p1.y; }
-
-bool is_vertical(Line line) { return line.p0.x == line.p1.x; }
-
-bool is_parallel(Line line1, Line line2) {
-    if (((line1.p0.x - line1.p1.x) == 0) && ((line2.p0.x - line2.p1.x) == 0))
-        return TRUE;
-    if (((line1.p0.y - line1.p1.y) == 0) && ((line2.p0.y - line2.p1.y) == 0))
-        return TRUE;
-    return FALSE;
-
+void point_print(Point p) {
+    g_print("Point (%d, %d)\n", p.x, p.y);
+    return;
 }
 
 guint point_hash(gconstpointer p) {
     Point *point = (Point *)p;
-    gchar *str = g_strdup_printf("(%d,%d)", point->x, point->y);
+    guint64 *int_hash = g_new(guint64, 1);
+    *int_hash = point->x;
+    *int_hash <<= sizeof(UINT_MAX) * 4;
+    *int_hash ^= point->y;
 
-    return g_str_hash(str);
+    guint return_value = g_int64_hash(int_hash);
+    g_free(int_hash);
+    return return_value;
 }
 
 gboolean point_equal(gconstpointer pp1, gconstpointer pp2) {
@@ -338,6 +336,25 @@ char *_basename(const char *path, const char pathsep) {
     } else {
         return strdup(s + 1);
     }
+}
+
+bool is_horisontal(Line line) { return line.p0.y == line.p1.y; }
+
+bool is_vertical(Line line) { return line.p0.x == line.p1.x; }
+
+bool is_parallel(Line line1, Line line2) {
+    if (((line1.p0.x - line1.p1.x) == 0) && ((line2.p0.x - line2.p1.x) == 0))
+        return TRUE;
+    if (((line1.p0.y - line1.p1.y) == 0) && ((line2.p0.y - line2.p1.y) == 0))
+        return TRUE;
+    return FALSE;
+
+}
+
+bool is_diagonal(Line line) {
+    if(is_vertical(line))
+        return FALSE;
+    return (abs((line.p1.y - line.p0.y) / (line.p1.x - line.p0.x)) == 1);
 }
 
 void line_print(Line line) {
@@ -362,6 +379,14 @@ Point point_new(int x, int y) {
     point.y = y;
 
     return point;
+}
+
+Point *point_new_m(int x, int y) {
+    Point *p = g_new(Point, 1);
+    p->x = x;
+    p->y = y;
+
+    return p;
 }
 
 Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
@@ -421,4 +446,8 @@ bool point_on_line(Point p, Line line) {
         int y = (line.p1.y - line.p0.y) / (line.p1.x - line.p0.x) * (p.x - line.p0.x) + line.p0.y;
         return p.y == y;
     }
+}
+
+int line_length(Line line) {
+    return point_distance(line.p0, line.p1);
 }
