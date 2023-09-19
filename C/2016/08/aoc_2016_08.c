@@ -1,9 +1,10 @@
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
 #include <unistd.h>
-
+#include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
 
@@ -15,7 +16,7 @@ typedef struct {
     gint value2;
 } Instruction;
 
-GArray *parse_data(GArray *data) {
+GArray *clean_input(GArray *data) {
     gchar *line;
     guint i;
     Instruction *instruction;
@@ -104,7 +105,10 @@ void grid_print(Grid *grid, int final) {
     for (row = 0; row < grid->rows; row++) {
         for (col = 0; col < grid->columns; col++) {
             i = row*grid->columns + col;
-            printf("%s", grid->grid[i] > 0 ? "\u2593": " ");
+            if (grid->grid[i] > 0)
+                printf("%c", 219);
+            else
+                printf(" ");
         }
         printf("\n");
     }
@@ -114,7 +118,7 @@ void grid_print(Grid *grid, int final) {
         printf("\n");
     }
 }
-int solve_part_1(GArray *data) {
+void *solve_part_1(AocData_t *data) {
     Grid *grid;
     guint i;
     int row, col, index;
@@ -125,8 +129,8 @@ int solve_part_1(GArray *data) {
     grid->columns = 50;
     grid->grid = calloc((grid->rows * grid->columns), sizeof(int));
 
-    for (i = 0; i < data->len; i++) {
-        instruction = g_array_index(data, Instruction *, i);
+    for (i = 0; i < data->data->len; i++) {
+        instruction = g_array_index(data->data, Instruction *, i);
         switch(instruction->command) {
             case INIT:
                 init_area(grid, instruction);
@@ -151,40 +155,49 @@ int solve_part_1(GArray *data) {
 
     grid_print(grid, 1);
 
-    return count;
+    return strdup_printf("%d", count);
 }
 
-char *solve_part_2() {
-    return strdup("\u261D");
+void *solve_part_2(AocData_t *data) {
+    return strdup("See above");
 }
 
 
-int solve_all(char *filename, int year, int day) {
-    GArray *data;
+void *solve_all(AocData_t *data) {
+    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    data = parse_data(get_input(filename, year, day));
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(), STR, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
+    AocData_t *data;
     gchar *filename;
 
+    gchar *sourcefile = basename(__FILE__);
+    int year, day;
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
+
+
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        filename = strdup(argv[1]);
     } else {
-        filename = g_strdup("input.txt");
+        filename = strdup("input.txt");
     }
 
-    TIMER(0, solve_all(filename, 2016, 8), INT, 0);
-
+    data = aoc_data_new(filename, year, day);
     free(filename);
 
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }
