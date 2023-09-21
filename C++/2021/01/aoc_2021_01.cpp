@@ -44,10 +44,7 @@ int main(int argc, char **argv) {
     const int year = 2021;
     const int day = 1;
 
-    if (argc > 1)
-        filename = argv[1];
-    else
-        filename = "../../../../data/2021/01/input.txt";
+    filename = argc > 1 ? argv[1] : "input.txt";
 
     data = aoc::get_input_list<int>(filename, year, day);
 

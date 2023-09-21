@@ -1,29 +1,39 @@
 #include <cstdint>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <fmt/core.h>
 
-std::string get_line_data(const char *filename, uint16_t year, uint8_t day) {
+std::string get_line_data(std::string filename, uint16_t year, uint8_t day) {
     std::string line_data;
-    std::string inputfile;
     std::ifstream ifs;
-    inputfile = fmt::format("/home/yy11510/projects/adventofcode/data/{}/{:02d}/{}",
-            year, day, filename);
-    std::cout << "Reading from '" << inputfile << "'" << "\n";
-    ifs = std::ifstream(inputfile);
+    std::string fn;
+    std::string path(std::format("/home/yy11510/projects/adventofcode/data/{}/{:02d}/", year, day));
+    if (std::string(filename) == "input.txt") {
+        fn = path + filename;
+    } else {
+        fn = filename;
+    }
+    ifs = std::ifstream(fn);
     std::getline(ifs, line_data);
     return line_data;
 }
 
 
 int main(int argc, char **argv) {
-    int16_t level = 0;
-    uint16_t counter = 0;
+    std::int16_t level = 0;
+    std::uint16_t counter = 0;
     bool basement_found = false;
+    std::string filename;
+
+    if (argc > 1) {
+        filename = argv[1];
+    } else {
+        filename = "input.txt";
+    }
 
 
-    std::string line = get_line_data("input.txt", 2015, 1);
+    std::string line = get_line_data(filename, 2015, 1);
 
     for (auto ch: line) {
         ch == '(' ? level++ : level--;
