@@ -3,7 +3,7 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
-#include "glibconfig.h"
+#include "aoc_string.h"
 
 GArray *clean_input(GArray *data) {
     GArray *return_array = g_array_new(FALSE, TRUE, sizeof(int));
@@ -30,13 +30,13 @@ int intcode(GArray *instructions) {
         op2 = g_array_index(instructions, int, i + 2);
         switch(op) {
             case 1:
-                g_array_index(instructions, int, dest) = 
+                g_array_index(instructions, int, dest) =
                     g_array_index(instructions, int, op1) +
                     g_array_index(instructions, int, op2);
                 i += 4;
                 break;
             case 2:
-                g_array_index(instructions, int, dest) = 
+                g_array_index(instructions, int, dest) =
                     g_array_index(instructions, int, op1) *
                     g_array_index(instructions, int, op2);
                 i += 4;
@@ -70,7 +70,7 @@ void *solve_part_2(AocData_t *data) {
             instructions = g_array_copy(data->data);
             g_array_index(instructions, int, 1) = verb;
             g_array_index(instructions, int, 2) = noun;
-            
+
             return_value = intcode(instructions);
             if (return_value == 19690720) {
                 g_array_free(instructions, TRUE);

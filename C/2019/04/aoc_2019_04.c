@@ -4,6 +4,7 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 
 bool check_rules(int number, int part) {
@@ -56,7 +57,7 @@ GArray *clean_input(GArray *data) {
 
     g_array_append_val(return_array, start);
     g_array_append_val(return_array, end);
-    
+
     return return_array;
 }
 
