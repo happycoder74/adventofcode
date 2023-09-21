@@ -15,8 +15,8 @@ pkg_search_module(GLIB REQUIRED glib-2.0)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)
 
-set(CMAKE_BUILD_TYPE Release)
 set(AOC_LIB_SOURCES
+    ${CMAKE_SOURCE_DIR}/lib/aoc_array.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_string.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
