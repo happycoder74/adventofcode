@@ -5,6 +5,7 @@
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
 // static bool point_is_equal(Point p0, Point p1) {
 //     return ((p0.x == p1.x) && (p0.y == p1.y));
@@ -18,7 +19,7 @@ GArray *clean_input(GArray *data) {
         Point p0, p1;
         Line segment;
         gchar direction;
-        gint length; 
+        gint length;
         gchar *p;
 
         gchar *input = g_array_index(data, gchar *, i);
@@ -116,7 +117,7 @@ void *solve_part_2(AocData_t *data) {
     GHashTable *line_stepmap[2];
     int signal = 0, min_signal = INT_MAX;
     GArray *intersections;
- 
+
     lines[0] = g_array_index(data->data, GArray *, 0);
     lines[1] = g_array_index(data->data, GArray *, 1);
 
@@ -146,7 +147,7 @@ void *solve_part_2(AocData_t *data) {
                 curr = point_new_m(curr->x + step.x, curr->y + step.y);
                 steps += 1;
                 g_hash_table_insert(line_stepmap[wire], curr, GINT_TO_POINTER(steps));
-                g_hash_table_add(line_coords[wire], curr); 
+                g_hash_table_add(line_coords[wire], curr);
             }
         }
 
@@ -158,7 +159,7 @@ void *solve_part_2(AocData_t *data) {
     for (guint i = 0; i < intersections->len; i++) {
         Point *intersection_point = g_array_index(intersections, Point *, i);
 
-        signal = GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[0], intersection_point)) + 
+        signal = GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[0], intersection_point)) +
                  GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[1], intersection_point));
         min_signal = MIN(signal, min_signal);
     }
