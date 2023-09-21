@@ -6,7 +6,6 @@
 #include "aoc_array.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
-#include "io.h"
 
 AocArray *clean_input(AocArray *data) {
     GArray *return_data = aoc_int_array_new();
