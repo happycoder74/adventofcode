@@ -81,7 +81,7 @@ check_dates() {
 download_input() {
 	data_directory="$install_path/data/$year/$day"
 	if [ ! -v cookiefile ]; then
-		cookiefile="$install_path/.cookie"
+		cookiefile="$install_path/data/.cookie"
 	fi
 
 	# Create directory and data_directory if they do not already exist
