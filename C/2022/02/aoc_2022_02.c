@@ -42,7 +42,7 @@ void *solve_part_1(AocData_t *data) {
         {6, 0, 3}
     };
 
-    unsigned int i;
+    size_t i;
     char *draw;
 
     int sum_points = 0;
@@ -60,7 +60,7 @@ void *solve_part_1(AocData_t *data) {
 void *solve_part_2(AocData_t *data) {
     int shape_points[3] = {1, 2, 3};
     int col, row;
-    unsigned int i;
+    size_t i;
     int sum_points = 0;
     int points[3] = {0, 3, 6};
     char *draw;
@@ -77,7 +77,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
+    data->data = clean_input(aoc_data_data(data));
 
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
@@ -91,8 +91,13 @@ int main(int argc, char **argv) {
     AocData_t *data;
     char *filename;
 
-    const int year = 2022;
-    const int day = 2;
+    int year, day;
+    char *sourcefile;
+
+    sourcefile = basename(__FILE__);
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    free(sourcefile);
+
     if (argc > 1) {
         filename = strdup(argv[1]);
     } else {
