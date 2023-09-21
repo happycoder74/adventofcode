@@ -50,6 +50,7 @@ AocData_t *aoc_data_new(gchar *filename, int year, int day) {
     data->year = year;
     data->day = day;
 
+    data->data = get_input(filename, year, day);
     return data;
 }
 
@@ -146,7 +147,7 @@ GArray *get_input(char *filename, int year, int day) {
     gchar *file = NULL;
     char wd[255];
     path = strdup_printf("../../data/%d/%02d/", year, day);
-    data = g_array_new(FALSE, FALSE, sizeof(char *));
+    data = g_array_new(TRUE, TRUE, sizeof(char *));
     if (!strcmp(filename, "input.txt")) {
         file = strconcat(path, filename);
     } else {
@@ -169,7 +170,7 @@ GArray *get_input(char *filename, int year, int day) {
     }
 
     if (file) {
-        free(file);
+        //free(file);
     }
     free(path);
 
@@ -406,10 +407,10 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     x4 = line2.p1.x;
     y4 = line2.p1.y;
 
-    t = (float)((x1 - x3)*(y3 - y4) - (y1 - y3)*(x3 - x4)) / 
+    t = (float)((x1 - x3)*(y3 - y4) - (y1 - y3)*(x3 - x4)) /
         (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
-    
-    u = (float)((x1 - x3)*(y1 - y2) - (y1 - y3)*(x1 - x2)) / 
+
+    u = (float)((x1 - x3)*(y1 - y2) - (y1 - y3)*(x1 - x2)) /
         (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
 
     #ifndef NDEBUG
@@ -441,7 +442,7 @@ bool point_on_line(Point p, Line line) {
     if (is_vertical(line)) {
         return ((MIN(line.p0.y, line.p1.y) <= p.y) && (p.y <= MAX(line.p0.y, line.p1.y)) && (line.p0.x == p.x));
     } else if (is_horisontal(line)) {
-        return ((MIN(line.p0.x, line.p1.x) <= p.x) && (p.x <= MAX(line.p0.x, line.p1.x)) && (line.p0.y == p.y)); 
+        return ((MIN(line.p0.x, line.p1.x) <= p.x) && (p.x <= MAX(line.p0.x, line.p1.x)) && (line.p0.y == p.y));
     } else {
         int y = (line.p1.y - line.p0.y) / (line.p1.x - line.p0.x) * (p.x - line.p0.x) + line.p0.y;
         return p.y == y;
