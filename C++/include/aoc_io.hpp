@@ -37,7 +37,6 @@ std::vector<T> get_input_list(std::string fn, int year, int day) {
     return return_data;
 }
 template<>
-
 inline std::vector<int> get_input_list(std::string fn, int year, int day) {
     std::ifstream ifs;
     std::string line;
@@ -49,8 +48,9 @@ inline std::vector<int> get_input_list(std::string fn, int year, int day) {
         for (auto dir = path.begin(); *dir != "C++" && dir != path.end(); dir++) {
             datapath /= *dir;
         }
-        datapath = datapath / "data" / std::to_string(year) / std::to_string(day) / fn;
+        datapath = datapath / "data" / std::to_string(year) / std::format("{:02d}", day) / fn;
         ifs.open(datapath);
+        std::cout << datapath << std::endl;
     } else {
         ifs.open(fn);
     }
