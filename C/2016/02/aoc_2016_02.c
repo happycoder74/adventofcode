@@ -18,40 +18,42 @@ typedef enum {
 
 typedef struct {
     KeyPadLayout layout;
-    int rows;
-    int columns;
+    unsigned int rows;
+    unsigned int columns;
     Directions_t directions[4];
     char **keys;
     char *code;
-    int *pos;
+    unsigned int *pos;
 } KeyPad_t;
 
 #define NOT_FOUND -1
-int command_get_index(char *commands, char command) {
+unsigned int command_get_index(char *commands, char command) {
     char needle[2];
     sprintf(needle, "%c", command);
     const char *p = strstr(commands, needle);
     if (p) {
-        return (int)(p - commands);
+        return (unsigned int)(p - commands);
     }
     return NOT_FOUND;
 }
 
 KeyPad_t *keypad_init(KeyPadLayout layout) {
     KeyPad_t *keypad = NULL;
-    int i, j, index;
+    unsigned int i, j, index;
     char *keys[] = {"123456789", "0010002340567890ABC000D00"};
 
     keypad = (KeyPad_t *)calloc(1, sizeof(KeyPad_t));
     keypad->layout = layout;
     keypad->code = NULL;
-    keypad->pos = (int *)calloc(2, sizeof(int));
+    keypad->pos = (unsigned int *)calloc(2, sizeof(unsigned int));
+    keypad->rows = 0;
+    keypad->columns = 0;
     if (layout == KP_STD) {
         keypad->rows = 3;
         keypad->columns = 3;
         keypad->pos[0] = 1;
         keypad->pos[1] = 1;
-    } else if (layout == KP_ALT) {
+    } else {
         keypad->rows= 5;
         keypad->columns = 5;
         keypad->pos[0] = 0;
@@ -60,7 +62,7 @@ KeyPad_t *keypad_init(KeyPadLayout layout) {
 
     keypad->keys = (char **)malloc(sizeof(char *) * keypad->rows);
     for (i = 0; i < keypad->rows; i++) {
-        keypad->keys[i] = (char *)malloc(sizeof(char)*keypad->columns);
+        keypad->keys[i] = (char *)calloc(keypad->columns, sizeof(char));
         for (j = 0; j < keypad->columns; j++) {
             index = (j + i*keypad->columns);
             keypad->keys[i][j] = keys[layout][index];
@@ -80,7 +82,7 @@ KeyPad_t *keypad_init(KeyPadLayout layout) {
 }
 
 void keypad_destroy(KeyPad_t *keypad) {
-    for (int i = 0; i < keypad->rows; i++) {
+    for (unsigned int i = 0; i < keypad->rows; i++) {
         free(keypad->keys[i]);
     }
     free(keypad->keys);
@@ -89,10 +91,10 @@ void keypad_destroy(KeyPad_t *keypad) {
     free(keypad);
 }
 
-char keypad_digit(KeyPad_t *keypad, int *pos) {
+char keypad_digit(KeyPad_t *keypad, unsigned int *pos) {
     char digit;
-    if ((pos[0] >= 0) && (pos[0] <= keypad->columns - 1) &&
-        (pos[1] >= 0) && (pos[1] <= keypad->rows - 1)) {
+    if ((pos[0] <= keypad->columns - 1) &&
+        (pos[1] <= keypad->rows - 1)) {
         digit = keypad->keys[pos[1]][pos[0]];
         if (digit != '0') {
             return digit;
@@ -101,10 +103,10 @@ char keypad_digit(KeyPad_t *keypad, int *pos) {
     return 0;
 }
 
-int *keypad_key(KeyPad_t *keypad, char key) {
+unsigned int *keypad_key(KeyPad_t *keypad, char key) {
     Directions_t diff;
-    int pos[2];
-    int index;
+    unsigned int pos[2];
+    unsigned int index;
 
     index = command_get_index("UDLR", key);
 
