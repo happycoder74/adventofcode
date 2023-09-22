@@ -1,10 +1,11 @@
 #include <limits.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
 #include "aoc_utils.h"
+#include "aoc_timer.h"
+#include "aoc_array.h"
 #include "aoc_string.h"
 
 // static bool point_is_equal(Point p0, Point p1) {
@@ -12,24 +13,24 @@
 // }
 
 
-GArray *clean_input(GArray *data) {
-    GArray *lines_array = g_array_new(FALSE, FALSE, sizeof(Line *));
+AocArrayPtr clean_input(AocArrayPtr data) {
+    AocArrayPtr lines_array = aoc_array_new(sizeof(Line *));
 
     for (guint i = 0; i < data->len; i++) {
         Point p0, p1;
         Line segment;
-        gchar direction;
-        gint length;
-        gchar *p;
+        char direction;
+        int length;
+        char *p;
 
-        gchar *input = g_array_index(data, gchar *, i);
-        GArray *line = g_array_new(FALSE, FALSE, sizeof(Line));
+        char *input = (char *)aoc_array_index(data, i);
+        AocArrayPtr line = aoc_array_new(sizeof(Line));
 
-        gchar **steps = g_strsplit(input, ",", 0);
+        char **steps = g_strsplit(input, ",", 0);
 
         p0.x = 0;
         p0.y = 0;
-        for(gint step = 0; steps[step] != NULL; step++) {
+        for(int step = 0; steps[step] != NULL; step++) {
             direction = steps[step][0];
             p = steps[step] + 1;
             length = atoi(p);
@@ -53,11 +54,11 @@ GArray *clean_input(GArray *data) {
             }
             segment.p0 = p0;
             segment.p1 = p1;
-            g_array_append_val(line, segment);
+            aoc_array_append(line, &segment);
             p0.x = p1.x;
             p0.y = p1.y;
         }
-        g_array_append_val(lines_array, line);
+        aoc_array_append(lines_array, &line);
     }
 
     return lines_array;
@@ -65,9 +66,9 @@ GArray *clean_input(GArray *data) {
 
 void *solve_part_1(AocData_t *data) {
     guint i, j;
-    GArray *intersection_points = g_array_new(TRUE, TRUE, sizeof(Point));
-    GArray *lines1 = g_array_index(data->data, GArray *, 0);
-    GArray *lines2 = g_array_index(data->data, GArray *, 1);
+    AocArrayPtr intersection_points = aoc_array_new(sizeof(Point));
+    AocArrayPtr lines1 = aoc_array_index(data->data, 0);
+    AocArrayPtr lines2 = aoc_array_index(data->data, 1);
     Line line1, line2;
 
     for (i = 0; i < lines1->len; i++) {
@@ -92,11 +93,11 @@ void *solve_part_1(AocData_t *data) {
         min_distance = MIN(point_manhattan_distance(point, starting_point), min_distance);
     }
 
-    return g_strdup_printf("%d", min_distance);
+    return strdup_printf("%d", min_distance);
 }
 
-GArray *set_intersection(GHashTable *table1, GHashTable *table2) {
-    GArray *result = g_array_new(TRUE, TRUE, sizeof(Point *));
+AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
+    AocArrayPtr result = aoc_array_new(sizeof(Point *));
     gpointer *keys;
     Point *key;
     guint length;
@@ -105,21 +106,21 @@ GArray *set_intersection(GHashTable *table1, GHashTable *table2) {
     for(guint i = 0; i < length; i++) {
         key = keys[i];
         if(g_hash_table_contains(table2, key)) {
-            g_array_append_val(result, key);
+            aoc_array_append(result, &key);
         }
     }
     return result;
 }
 
 void *solve_part_2(AocData_t *data) {
-    GArray *lines[2];
+    AocArrayPtr lines[2];
     GHashTable *line_coords[2];
     GHashTable *line_stepmap[2];
     int signal = 0, min_signal = INT_MAX;
-    GArray *intersections;
+    AocArrayPtr intersections;
 
-    lines[0] = g_array_index(data->data, GArray *, 0);
-    lines[1] = g_array_index(data->data, GArray *, 1);
+    lines[0] = g_array_index(data->data, AocArrayPtr , 0);
+    lines[1] = g_array_index(data->data, AocArrayPtr , 1);
 
     line_coords[0] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
     line_coords[1] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
@@ -174,8 +175,6 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
-
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
@@ -186,18 +185,15 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
     const int year = 2019;
     const int day = 3;
-    if (argc > 1) {
-        filename = strdup(argv[1]);
-    } else {
-        filename = strdup("input.txt");
-    }
 
-    data = aoc_data_new(filename, year, day);
-    free(filename);
+    if (argc > 1) {
+        data = aoc_data_new_clean(argv[1], year, day, clean_input);
+    } else {
+        data = aoc_data_new_clean("input.txt", year, day, clean_input);
+    }
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
