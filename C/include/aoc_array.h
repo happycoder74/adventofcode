@@ -25,6 +25,6 @@ void aoc_array_free(AocArrayPtr);
 // String (char *) array function macros
 #define aoc_str_array_new()             (aoc_array_new(sizeof(char *)))
 #define aoc_str_array_index(arr, index) (g_array_index(arr, char *, index))
-#define aoc_str_array_append(arr, val)  (g_array_append_vals(arr, &(value), 1))
+#define aoc_str_array_append(arr, val)  (g_array_append_vals(arr, &(val), 1))
 
 #endif // !__AOC_ARRAY_H__
