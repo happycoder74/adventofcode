@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
+#include <libgen.h>
 #include "aoc_utils.h"
+#include "aoc_timer.h"
+#include "aoc_array.h"
 
-GArray *clean_input(GArray *data) {
+AocArrayPtr clean_input(AocArrayPtr data) {
     return data;
 }
 
@@ -30,18 +32,18 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    const int year = <YEAR>;
-    const int day = <DAY>;
+    char sourcefile[100];
+    int year, day;
+
+    strcpy(sourcefile, basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new_clean(argv[1], year, day, NULL);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
@@ -51,3 +53,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
