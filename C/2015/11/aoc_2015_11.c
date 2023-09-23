@@ -1,8 +1,8 @@
-#include <glib.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_timer.h"
+#include <libgen.h>
 
 GArray *clean_input(GArray *data) {
     return data;
@@ -100,13 +100,13 @@ void solve(char *password) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    char *password = g_array_index(data->data, gchar *, 0);
+    char *password = aoc_str_array_index(data->data, 0);
     solve(password);
     return strdup_printf("%s", password);
 }
 
 void *solve_part_2(AocData_t *data) {
-    char *password = g_array_index(data->data, gchar *, 0);
+    char *password = aoc_str_array_index(data->data, 0);
 
     password_next(password);
     solve(password);
@@ -128,23 +128,18 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    char *sourcefile;
+    char sourcefile[100];
     int year, day;
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new_clean(argv[1], year, day, NULL);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
@@ -154,3 +149,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+

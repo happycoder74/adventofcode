@@ -1,3 +1,4 @@
+#include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,10 +9,6 @@
 #include "aoc_timer.h"
 
 
-void point_destroy(void *data) {
-    free(data);
-}
-
 int solver(AocArrayPtr data, uint32_t agents) {
     char *line;
     GHashTable *visited;
@@ -21,14 +18,14 @@ int solver(AocArrayPtr data, uint32_t agents) {
     Point *key;
 
     position = (Point *)calloc(agents, sizeof(Point));
-    visited = g_hash_table_new_full(point_hash, point_equal, point_destroy, NULL);
+    visited = g_hash_table_new_full(point_hash, point_equal, free, NULL);
 
     key = (Point *)calloc(1, sizeof(Point));
     key->x = position[position_index].x;
     key->y = position[position_index].y;
     g_hash_table_add(visited, key);
 
-    line = aoc_array_index(data, 0);
+    line = aoc_str_array_index(data, 0);
     for (size_t c = 0; c < strlen(line); c++) {
         position_index = c % agents;
         switch(line[c]) {
@@ -81,17 +78,16 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char *sourcefile;
+    char sourcefile[100];
     int year, day;
 
-    sourcefile = aoc_basename(__FILE__);
+    strcpy(sourcefile, basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
         data = aoc_data_new_clean(argv[1], year, day, NULL);
-    }else {
-        data = aoc_data_new_clean("input.txt", year, day, NULL);
+    } else {
+        data = aoc_data_new("input.txt", year, day);
     }
 
     printf("================================================\n");
@@ -102,3 +98,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+

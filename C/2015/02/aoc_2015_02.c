@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_array.h"
 
 void *solve_part_1(AocData_t *data) {
     size_t i;
@@ -14,7 +14,7 @@ void *solve_part_1(AocData_t *data) {
     int area = 0;
 
     for (i = 0; i < data->data->len; i++) {
-        row = g_array_index(data->data, char *, i);
+        row = aoc_str_array_index(data->data, i);
         sscanf(row, "%dx%dx%d", &l, &w, &h);
         area += 2*l*w + 2*w*h + 2*h*l + MIN(MIN(l*w, w*h), h*l);
     }
@@ -28,7 +28,7 @@ void *solve_part_2(AocData_t *data) {
     int ribbon = 0;
 
     for (i = 0; i < data->data->len; i++) {
-        row = g_array_index(data->data, char *, i);
+        row = aoc_str_array_index(data->data, i);
         sscanf(row, "%dx%dx%d", &l, &w, &h);
         ribbon += MIN(MIN(2*w + 2*l, 2*w + 2*h), 2*h + 2*l) + l*w*h;
     }

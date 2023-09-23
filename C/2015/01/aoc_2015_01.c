@@ -1,11 +1,11 @@
-#include "aoc_types.h"
-#include "glib.h"
 #include <stdio.h>
 #include <string.h>
 #include <libgen.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_array.h"
 
 
 void *solve_part_1(AocData_t *data) {
@@ -13,7 +13,7 @@ void *solve_part_1(AocData_t *data) {
     size_t i = 0;
     char *line;
 
-    line = g_array_index(data->data, char *, i);
+    line = aoc_str_array_index(data->data, i);
 
     for (i = 0; i < strlen(line); i++) {
         if (line[i] == '(')
@@ -31,7 +31,7 @@ void *solve_part_2(AocData_t *data) {
 
     char *line;
 
-    line = g_array_index(data->data, char *, i);
+    line = aoc_str_array_index(data->data, i);
 
     for (i = 0; i < strlen(line); i++) {
         if (line[i] == '(')
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
     if (argc > 1) {
         data = aoc_data_new_clean(argv[1], year, day, NULL);
     } else {
-        data = aoc_data_new_clean("input.txt", year, day, NULL);
+        data = aoc_data_new("input.txt", year, day);
     }
 
     printf("================================================\n");
