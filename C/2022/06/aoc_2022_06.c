@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include <libgen.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
-
-GArray *clean_input(GArray *data) {
-    return data;
-}
+#include "aoc_timer.h"
 
 int marker(GArray *data, size_t window) {
     size_t i, j;
@@ -32,11 +30,9 @@ int marker(GArray *data, size_t window) {
         }
     }
     free(chunk);
-
-
     return 0;
-
 }
+
 void *solve_part_1(AocData_t *data) {
     return strdup_printf("%d", marker(data->data, 4));
 }
@@ -47,41 +43,31 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    data->data = clean_input(aoc_data_data(data));
-
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
-
     return NULL;
 }
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
-
     int year, day;
-    char *sourcefile;
+    char sourcefile[100];
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
-
     return 0;
 }
