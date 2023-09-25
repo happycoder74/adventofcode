@@ -16,7 +16,6 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)
 
 set(AOC_LIB_SOURCES
-    ${CMAKE_SOURCE_DIR}/lib/aoc_array.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_string.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
