@@ -58,7 +58,6 @@ int max(int *, int);
 int min(int *, int);
 // End of legacy support functions
 
-// Updated replacement functions
 int int_array_max(int *, int);
 int int_array_min(int *, int);
 int min_non_zero(int *, int);
@@ -80,6 +79,7 @@ char *stpcpy(char *__restrict__, const char *__restrict__);
 
 // Other utility functions and macros
 char *basename(const char *);
+char *basename_new(const char *);
 #define aoc_basename(X)         (basename_new(X))
 
 #endif

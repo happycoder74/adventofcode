@@ -169,6 +169,30 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     return data;
 }
 
+gint max(gint *arr, gint length) {
+    gint max = arr[0];
+    gint i;
+
+    for (i = 1; i < length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+gint min(gint *arr, gint length) {
+    gint min = arr[0];
+    gint i;
+
+    for (i = 1; i < length; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    return min;
+}
+
 gint int_array_max(gint *arr, gint length) {
     gint max = arr[0];
     gint i;
@@ -199,30 +223,6 @@ int min_non_zero(int *arr, int length) {
 
     for (i = 0; i < length; i++) {
         if ((arr[i] < min) && (arr[i] != 0)) {
-            min = arr[i];
-        }
-    }
-    return min;
-}
-
-gint max(gint *arr, gint length) {
-    gint max = arr[0];
-    gint i;
-
-    for (i = 1; i < length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
-        }
-    }
-    return max;
-}
-
-gint min(gint *arr, gint length) {
-    gint min = arr[0];
-    gint i;
-
-    for (i = 1; i < length; i++) {
-        if (arr[i] < min) {
             min = arr[i];
         }
     }
