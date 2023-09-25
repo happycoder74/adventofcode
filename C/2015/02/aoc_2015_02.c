@@ -1,12 +1,10 @@
-#include <corecrt.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
 void *solve_part_1(AocData_t *data) {
     size_t i;
@@ -15,7 +13,7 @@ void *solve_part_1(AocData_t *data) {
     int area = 0;
 
     for (i = 0; i < data->data->len; i++) {
-        row = g_array_index(data->data, char *, i);
+        row = aoc_str_array_index(data->data, i);
         sscanf(row, "%dx%dx%d", &l, &w, &h);
         area += 2*l*w + 2*w*h + 2*h*l + MIN(MIN(l*w, w*h), h*l);
     }
@@ -29,7 +27,7 @@ void *solve_part_2(AocData_t *data) {
     int ribbon = 0;
 
     for (i = 0; i < data->data->len; i++) {
-        row = g_array_index(data->data, char *, i);
+        row = aoc_str_array_index(data->data, i);
         sscanf(row, "%dx%dx%d", &l, &w, &h);
         ribbon += MIN(MIN(2*w + 2*l, 2*w + 2*h), 2*h + 2*l) + l*w*h;
     }
@@ -37,7 +35,6 @@ void *solve_part_2(AocData_t *data) {
 }
 
 void *solve_all(AocData_t *data) {
-    data->data = get_input(data->filename, data->year, data->day);
 
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
@@ -49,23 +46,18 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    char *sourcefile;
+    char sourcefile[20];
     int year, day;
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
