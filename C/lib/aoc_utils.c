@@ -42,25 +42,14 @@ bool aoc_data_hasdata(AocData_t *data) {
     return FALSE;
 }
 
-AocData_t *aoc_data_new(gchar *filename, int year, int day) {
+AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
     data->filename = strdup(filename);
     data->year = year;
     data->day = day;
 
-    data->data = get_input(filename, year, day);
-    return data;
-}
-
-AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArrayPtr (*clean_function)(AocArrayPtr)) {
-    AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
-
-    data->filename = strdup(filename);
-    data->year = year;
-    data->day = day;
-
-    if (clean_function) {
+    if(clean_function) {
         data->data = clean_function(get_input(filename, year, day));
     } else {
         data->data = get_input(filename, year, day);
@@ -128,7 +117,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
 
     while (fgets(line, 10000, fp)) {
         data_line = str_trim(strdup(line));
-        aoc_array_append(data, data_line);
+        g_array_append_val(data, data_line);
     }
 
     if (file) {
@@ -172,9 +161,10 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         aoc_str_array_append(data, data_line);
     }
 
-    if (file) {
-        //free(file);
+    if (file != filename) {
+        free(file);
     }
+
     free(path);
 
     return data;
