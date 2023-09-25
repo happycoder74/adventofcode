@@ -6,7 +6,6 @@
 #include "aoc_types.h"
 #include "aoc_array.h"
 
-
 void *solve_part_1(AocData_t *data) {
     int level = 0;
     size_t i = 0;
@@ -57,14 +56,14 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char sourcefile[100];
+    char sourcefile[20];
     int year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new_clean(argv[1], year, day, NULL);
+        data = aoc_data_new(argv[1], year, day);
     } else {
         data = aoc_data_new("input.txt", year, day);
     }
@@ -77,4 +76,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-

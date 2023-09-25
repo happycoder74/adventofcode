@@ -7,13 +7,14 @@
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_array.h"
 
 int solution_str(AocData_t *data, const char *cmp_string) {
     int number = 0;
     GChecksum *checksum = g_checksum_new(G_CHECKSUM_MD5);
     char *string = NULL;
     const char *hashcode;
-    char *base = g_array_index(data->data, char *, 0);
+    char *base = aoc_str_array_index(data->data, 0);
 
     while (TRUE) {
         string = strdup_printf("%s%d", base, ++number);
@@ -37,7 +38,7 @@ int solution_bin(AocData_t *data, const char *cmp_string) {
     size_t length;
     bool found = FALSE;
 
-    char *base = g_array_index(data->data, char *, 0);
+    char *base = aoc_str_array_index(data->data, 0);
 
     while (!found) {
         sprintf(string, "%s%d", base, ++number);
@@ -95,12 +96,11 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char *sourcefile;
+    char sourcefile[20];
     int year, day;
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
         data = aoc_data_new(argv[1], year, day);
