@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     char sourcefile[100];
     int year, day;
 
-    strcpy(sourcefile, basename(__FILE__));
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
