@@ -43,24 +43,18 @@ bool aoc_data_hasdata(AocData_t *data) {
     return FALSE;
 }
 
-AocData_t *aoc_data_new(gchar *filename, int year, int day) {
+AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
     data->filename = strdup(filename);
     data->year = year;
     data->day = day;
 
-    return data;
-}
-
-AocData_t *aoc_data_new2(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *)) {
-    AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
-
-    data->filename = strdup(filename);
-    data->year = year;
-    data->day = day;
-
-    data->data = clean_function(get_input(filename, year, day));
+    if(clean_function) {
+        data->data = clean_function(get_input(filename, year, day));
+    } else {
+        data->data = get_input(filename, year, day);
+    }
     return data;
 }
 
@@ -406,10 +400,10 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     x4 = line2.p1.x;
     y4 = line2.p1.y;
 
-    t = (float)((x1 - x3)*(y3 - y4) - (y1 - y3)*(x3 - x4)) / 
+    t = (float)((x1 - x3)*(y3 - y4) - (y1 - y3)*(x3 - x4)) /
         (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
-    
-    u = (float)((x1 - x3)*(y1 - y2) - (y1 - y3)*(x1 - x2)) / 
+
+    u = (float)((x1 - x3)*(y1 - y2) - (y1 - y3)*(x1 - x2)) /
         (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
 
     #ifndef NDEBUG
@@ -441,7 +435,7 @@ bool point_on_line(Point p, Line line) {
     if (is_vertical(line)) {
         return ((MIN(line.p0.y, line.p1.y) <= p.y) && (p.y <= MAX(line.p0.y, line.p1.y)) && (line.p0.x == p.x));
     } else if (is_horisontal(line)) {
-        return ((MIN(line.p0.x, line.p1.x) <= p.x) && (p.x <= MAX(line.p0.x, line.p1.x)) && (line.p0.y == p.y)); 
+        return ((MIN(line.p0.x, line.p1.x) <= p.x) && (p.x <= MAX(line.p0.x, line.p1.x)) && (line.p0.y == p.y));
     } else {
         int y = (line.p1.y - line.p0.y) / (line.p1.x - line.p0.x) * (p.x - line.p0.x) + line.p0.y;
         return p.y == y;
