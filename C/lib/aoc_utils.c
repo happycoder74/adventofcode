@@ -104,11 +104,11 @@ GArray *get_input_new(char *filename, int year, int day) {
     GArray *data;
     gchar line[10000];
     gchar *data_line;
-    gchar *path;
+    gchar path[255];
     gchar *file = NULL;
 
-    path = strdup_printf("../../../data/%d/%02d/", year, day);
-    data = g_array_new(TRUE, FALSE, sizeof(char *));
+    sprintf(path, "../../data/%d/%02d/", year, day);
+    data = g_array_new(TRUE, TRUE, sizeof(char *));
     file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
@@ -124,7 +124,6 @@ GArray *get_input_new(char *filename, int year, int day) {
     if (file) {
         free(file);
     }
-    free(path);
 
     return data;
     ;
@@ -323,7 +322,32 @@ gboolean point_equal(gconstpointer pp1, gconstpointer pp2) {
 }
 
 
-char *_basename(const char *path, const char pathsep) {
+// Legacy function to be removed later
+char *basename(const char *path) {
+#if (defined (__WIN32__) && !(defined __MINGW32__))
+    char pathsep = '\\';
+#else
+    char pathsep = '/';
+#endif
+    char *ptr = strrchr(path, pathsep);
+    if (!ptr)
+        return strdup(path);
+    return strdup(ptr + 1);
+}
+
+char *basename_new(const char *path) {
+#if (defined (__WIN32__) && !(defined __MINGW32__))
+    char pathsep = '\\';
+#else
+    char pathsep = '/';
+#endif
+    char *ptr = strrchr(path, pathsep);
+    if (!ptr)
+        return (char *)path;
+    return (ptr + 1);
+}
+
+char *_aoc_basename(const char *path, const char pathsep) {
     char *s = strrchr(path, pathsep);
     if (!s) {
         return strdup(path);

@@ -2,9 +2,8 @@
 #define __AOC_UTILS_H__
 
 #include <stdbool.h>
-#include <libgen.h>
-
 #include "aoc_types.h"
+#include "aoc_timer.h"
 
 typedef struct point {
     int x;
@@ -73,6 +72,7 @@ char *stpcpy(char *__restrict__, const char *__restrict__);
 #endif
 
 // Other utility functions and macros
-#define aoc_basename(X)         (basename(X))
+char *basename(const char *);
+#define aoc_basename(X)         (basename_new(X))
 
 #endif
