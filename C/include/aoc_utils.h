@@ -75,6 +75,7 @@ char *stpcpy(char *__restrict__, const char *__restrict__);
 
 // Other utility functions and macros
 char *basename(const char *);
+char *basename_new(const char *);
 #define aoc_basename(X)         (basename_new(X))
 
 #endif
