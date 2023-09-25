@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-
+#include "aoc_timer.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
-#include "aoc_timer.h"
+#include "aoc_array.h"
 
 #ifndef G_REGEX_MATCH_DEFAULT
 #define G_REGEX_MATCH_DEFAULT 0
@@ -36,7 +35,7 @@ void *solve_part_1(AocData_t *data) {
     regex_invalid = g_regex_new("(ab|cd|pq|xy)", 0, 0, NULL);
 
     for (i = 0; i < data->data->len; i++) {
-        line = g_array_index(data->data, char *, i);
+        line = aoc_str_array_index(data->data, i);
         if ((count_matches(regex_wovel, line) >= 3) &&
             (count_matches(regex_double_letter, line) > 0) &&
             (count_matches(regex_invalid, line) == 0)) {
@@ -55,13 +54,13 @@ void *solve_part_2(AocData_t *data) {
     GRegex *regex_pairs, *regex_repeat;
     uint32_t count = 0;
     size_t i;
-    gchar *line;
+    char *line;
 
     regex_pairs = g_regex_new("([a-z][a-z])\\w*\\1", 0, 0, NULL);
     regex_repeat = g_regex_new("(.)\\w\\1", 0, 0, NULL);
 
     for (i = 0; i < data->data->len; i++) {
-        line = g_array_index(data->data, char *, i);
+        line = aoc_str_array_index(data->data, i);
         if ((count_matches(regex_pairs, line) > 0) &&
             (count_matches(regex_repeat, line) > 0)) {
             count++;
@@ -87,14 +86,14 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char sourcefile[100];
+    char sourcefile[20];
     int year, day;
 
-    strcpy(sourcefile, basename(__FILE__));
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new_clean(argv[1], year, day, NULL);
+        data = aoc_data_new(argv[1], year, day);
     } else {
         data = aoc_data_new("input.txt", year, day);
     }

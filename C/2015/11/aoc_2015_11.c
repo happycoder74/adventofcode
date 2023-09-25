@@ -1,12 +1,8 @@
 #include <stdbool.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 #include "aoc_timer.h"
-#include <libgen.h>
-
-GArray *clean_input(GArray *data) {
-    return data;
-}
 
 char password_next_letter(char letter) {
     char next_letter;
@@ -101,6 +97,7 @@ void solve(char *password) {
 
 void *solve_part_1(AocData_t *data) {
     char *password = aoc_str_array_index(data->data, 0);
+
     solve(password);
     return strdup_printf("%s", password);
 }
@@ -116,8 +113,6 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
-
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
@@ -129,14 +124,14 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char sourcefile[100];
+    char sourcefile[20];
     int year, day;
 
-    strcpy(sourcefile, basename(__FILE__));
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new_clean(argv[1], year, day, NULL);
+        data = aoc_data_new(argv[1], year, day);
     } else {
         data = aoc_data_new("input.txt", year, day);
     }

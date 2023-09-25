@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_array.h"
 #include "aoc_timer.h"
-
 
 int solver(AocArrayPtr data, uint32_t agents) {
     char *line;
@@ -77,7 +75,7 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char sourcefile[100];
+    char sourcefile[20];
     int year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));

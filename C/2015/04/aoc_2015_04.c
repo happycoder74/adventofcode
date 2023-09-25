@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <glib.h>
-
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
@@ -18,7 +16,7 @@ int solution_str(AocData_t *data, const char *cmp_string) {
 
     while (TRUE) {
         string = strdup_printf("%s%d", base, ++number);
-        g_checksum_update(checksum, (guchar *)string, -1);
+        g_checksum_update(checksum, (unsigned char *)string, -1);
         hashcode = g_checksum_get_string(checksum);
         free(string);
         if (strncmp(hashcode, cmp_string, strlen(cmp_string)) == 0) {
@@ -42,7 +40,7 @@ int solution_bin(AocData_t *data, const char *cmp_string) {
 
     while (!found) {
         sprintf(string, "%s%d", base, ++number);
-        g_checksum_update(checksum, (guchar *)string, -1);
+        g_checksum_update(checksum, (unsigned char *)string, -1);
         length = 100;
         g_checksum_get_digest(checksum, hashcode, &length);
         if (strlen(cmp_string) == 5) {
