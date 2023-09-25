@@ -1,6 +1,4 @@
 #include "aoc_utils.h"
-#include <assert.h>
-#include <ctype.h>
 #include <glib.h>
 #include <math.h>
 #include <stdio.h>
@@ -9,6 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "aoc_array.h"
 #include "aoc_string.h"
 #include "glibconfig.h"
 
@@ -20,7 +19,7 @@ size_t aoc_data_length(AocData_t *data) {
     return 0;
 }
 
-AocData_t *aoc_data_set_data(AocData_t *aoc, GArray *data) {
+AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
         aoc->data = data;
         return aoc;
@@ -28,7 +27,7 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, GArray *data) {
     return NULL;
 }
 
-GArray *aoc_data_data(AocData_t *data) {
+AocArrayPtr aoc_data_data(AocData_t *data) {
     if(data) {
         return data->data;
     }
@@ -64,7 +63,7 @@ void aoc_data_free(AocData_t *data) {
     }
 
     if (data->data) {
-        g_array_free(data->data, TRUE);
+        g_array_free((GArray *)data->data, TRUE);
     }
     free(data);
 }
@@ -99,9 +98,9 @@ GSList *get_input_list(char *filename, int year, int day) {
     return g_slist_reverse(data);
 }
 
-GArray *get_input_new(char *filename, int year, int day) {
+AocArrayPtr get_input_new(char *filename, int year, int day) {
     FILE *fp;
-    GArray *data;
+    AocArrayPtr data;
     gchar line[10000];
     gchar *data_line;
     gchar path[255];
@@ -129,9 +128,9 @@ GArray *get_input_new(char *filename, int year, int day) {
     ;
 }
 
-GArray *get_input(char *filename, int year, int day) {
+AocArrayPtr get_input(char *filename, int year, int day) {
     FILE *fp;
-    GArray *data;
+    AocArrayPtr data;
     gchar *line = NULL;
     size_t line_length = 0;
     gchar *data_line;
@@ -139,7 +138,7 @@ GArray *get_input(char *filename, int year, int day) {
     gchar *file = NULL;
     char wd[255];
     path = strdup_printf("../../data/%d/%02d/", year, day);
-    data = g_array_new(FALSE, FALSE, sizeof(char *));
+    data = aoc_str_array_new();
     if (!strcmp(filename, "input.txt")) {
         file = strconcat(path, filename);
     } else {
@@ -158,12 +157,13 @@ GArray *get_input(char *filename, int year, int day) {
 
     while ((getline(&line, &line_length, fp)) != -1) {
         data_line = str_trim(strdup(line));
-        g_array_append_val(data, data_line);
+        aoc_str_array_append(data, data_line);
     }
 
-    if (file) {
+    if (file != filename) {
         free(file);
     }
+
     free(path);
 
     return data;
@@ -182,6 +182,30 @@ gint max(gint *arr, gint length) {
 }
 
 gint min(gint *arr, gint length) {
+    gint min = arr[0];
+    gint i;
+
+    for (i = 1; i < length; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    return min;
+}
+
+gint int_array_max(gint *arr, gint length) {
+    gint max = arr[0];
+    gint i;
+
+    for (i = 1; i < length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+gint int_array_min(gint *arr, gint length) {
     gint min = arr[0];
     gint i;
 
