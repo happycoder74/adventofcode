@@ -1,17 +1,16 @@
-#include "glib.h"
 #include <stdio.h>
 #include <string.h>
-
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_array.h"
 
 void *solve_part_1(AocData_t *data) {
     int level = 0;
     size_t i = 0;
     char *line;
 
-    line = g_array_index(data->data, char *, i);
+    line = aoc_str_array_index(data->data, i);
 
     for (i = 0; i < strlen(line); i++) {
         if (line[i] == '(')
@@ -28,7 +27,7 @@ void *solve_part_2(AocData_t *data) {
 
     char *line;
 
-    line = g_array_index(data->data, char *, i);
+    line = aoc_str_array_index(data->data, i);
     for (i = 0; i < strlen(line); i++) {
         if (line[i] == '(')
             level += 1;
@@ -42,7 +41,6 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    data->data = get_input(data->filename, data->year, data->day);
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
@@ -53,23 +51,18 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    char *sourcefile;
+    char sourcefile[20];
     int year, day;
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
@@ -79,4 +72,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
