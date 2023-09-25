@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include <libgen.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"

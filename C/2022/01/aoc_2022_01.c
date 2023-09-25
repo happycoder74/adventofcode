@@ -1,19 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 #include <glib.h>
 #include "aoc_array.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
 
 AocArray *clean_input(AocArray *data) {
-    GArray *return_data = aoc_int_array_new();
+    GArray *return_data = g_array_new(TRUE, TRUE, sizeof(int));
     char *row;
     size_t i = 0;
     uint32_t elf_sum = 0;
     for (i = 0; i < aoc_array_length(data); i++) {
-        row = (char *)aoc_array_index(data, i);
+        row = g_array_index(data, char *, i);
         if (strlen(row) > 0) {
             elf_sum += strtoul(row, NULL, 0);
         } else {
@@ -36,7 +35,7 @@ int sort_int_desc(const void *a, const void *b) {
 
 void *solve_part_1(AocData_t *data) {
     g_array_sort(data->data, sort_int_desc);
-    return strdup_printf("%d", (int *)aoc_array_index(data->data, 0));
+    return strdup_printf("%d", g_array_index(data->data, int, 0));
 }
 
 void *solve_part_2(AocData_t *data) {

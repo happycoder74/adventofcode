@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libgen.h>
 #include <glib.h>
 
 #include "aoc_utils.h"
@@ -37,7 +36,7 @@ void *solve_part_1(AocData_t *data) {
     regex_invalid = g_regex_new("(ab|cd|pq|xy)", 0, 0, NULL);
 
     for (i = 0; i < data->data->len; i++) {
-        line = aoc_str_array_index(data->data, i);
+        line = g_array_index(data->data, char *, i);
         if ((count_matches(regex_wovel, line) >= 3) &&
             (count_matches(regex_double_letter, line) > 0) &&
             (count_matches(regex_invalid, line) == 0)) {
@@ -62,7 +61,7 @@ void *solve_part_2(AocData_t *data) {
     regex_repeat = g_regex_new("(.)\\w\\1", 0, 0, NULL);
 
     for (i = 0; i < data->data->len; i++) {
-        line = aoc_str_array_index(data->data, i);
+        line = g_array_index(data->data, char *, i);
         if ((count_matches(regex_pairs, line) > 0) &&
             (count_matches(regex_repeat, line) > 0)) {
             count++;

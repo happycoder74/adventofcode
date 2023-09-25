@@ -5,7 +5,6 @@
 #include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_timer.h"
-#include "aoc_array.h"
 #include "aoc_string.h"
 
 // static bool point_is_equal(Point p0, Point p1) {
@@ -13,8 +12,8 @@
 // }
 
 
-AocArrayPtr clean_input(AocArrayPtr data) {
-    AocArrayPtr lines_array = aoc_array_new(sizeof(Line *));
+GArray *clean_input(GArray *data) {
+    GArray *lines_array = g_array_new(TRUE, TRUE, sizeof(Line *));
 
     for (guint i = 0; i < data->len; i++) {
         Point p0, p1;
@@ -23,8 +22,8 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         int length;
         char *p;
 
-        char *input = (char *)aoc_array_index(data, i);
-        AocArrayPtr line = aoc_array_new(sizeof(Line));
+        char *input = g_array_index(data, char *, i);
+        GArray *line = g_array_new(TRUE, TRUE, sizeof(Line));
 
         char **steps = g_strsplit(input, ",", 0);
 
@@ -54,11 +53,11 @@ AocArrayPtr clean_input(AocArrayPtr data) {
             }
             segment.p0 = p0;
             segment.p1 = p1;
-            aoc_array_append(line, &segment);
+            g_array_append_val(line, segment);
             p0.x = p1.x;
             p0.y = p1.y;
         }
-        aoc_array_append(lines_array, &line);
+        g_array_append_val(lines_array, line);
     }
 
     return lines_array;
@@ -66,9 +65,9 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
 void *solve_part_1(AocData_t *data) {
     guint i, j;
-    AocArrayPtr intersection_points = aoc_array_new(sizeof(Point));
-    AocArrayPtr lines1 = aoc_array_index(data->data, 0);
-    AocArrayPtr lines2 = aoc_array_index(data->data, 1);
+    GArray *intersection_points = g_array_new(TRUE, TRUE, sizeof(Point));
+    GArray *lines1 = g_array_index(data->data, GArray *, 0);
+    GArray *lines2 = g_array_index(data->data, GArray *, 1);
     Line line1, line2;
 
     for (i = 0; i < lines1->len; i++) {
@@ -96,8 +95,8 @@ void *solve_part_1(AocData_t *data) {
     return strdup_printf("%d", min_distance);
 }
 
-AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
-    AocArrayPtr result = aoc_array_new(sizeof(Point *));
+GArray *set_intersection(GHashTable *table1, GHashTable *table2) {
+    GArray *result = g_array_new(TRUE, TRUE, sizeof(Point *));
     gpointer *keys;
     Point *key;
     guint length;
@@ -106,21 +105,21 @@ AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
     for(guint i = 0; i < length; i++) {
         key = keys[i];
         if(g_hash_table_contains(table2, key)) {
-            aoc_array_append(result, &key);
+            g_array_append_val(result, key);
         }
     }
     return result;
 }
 
 void *solve_part_2(AocData_t *data) {
-    AocArrayPtr lines[2];
+    GArray *lines[2];
     GHashTable *line_coords[2];
     GHashTable *line_stepmap[2];
     int signal = 0, min_signal = INT_MAX;
-    AocArrayPtr intersections;
+    GArray *intersections;
 
-    lines[0] = g_array_index(data->data, AocArrayPtr , 0);
-    lines[1] = g_array_index(data->data, AocArrayPtr , 1);
+    lines[0] = g_array_index(data->data, GArray *, 0);
+    lines[1] = g_array_index(data->data, GArray *, 1);
 
     line_coords[0] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
     line_coords[1] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
