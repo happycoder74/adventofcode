@@ -52,6 +52,13 @@ bool point_on_line(Point p, Line line);
 GSList *get_input_list(char *filename, int year, int day);
 GArray * get_input(char *filename, int year, int day);
 GArray * get_input_new(char *filename, int year, int day);
+
+// Legacy support functions
+int max(int *, int);
+int min(int *, int);
+// End of legacy support functions
+
+// Updated replacement functions
 int int_array_max(int *, int);
 int int_array_min(int *, int);
 int min_non_zero(int *, int);

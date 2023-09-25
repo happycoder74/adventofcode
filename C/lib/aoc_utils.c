@@ -205,6 +205,30 @@ int min_non_zero(int *arr, int length) {
     return min;
 }
 
+gint max(gint *arr, gint length) {
+    gint max = arr[0];
+    gint i;
+
+    for (i = 1; i < length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+gint min(gint *arr, gint length) {
+    gint min = arr[0];
+    gint i;
+
+    for (i = 1; i < length; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    return min;
+}
+
 #ifdef __MINGW32__
 ssize_t getline(char **buf, size_t *bufsiz, FILE *fp) {
 	return getdelim(buf, bufsiz, '\n', fp);
