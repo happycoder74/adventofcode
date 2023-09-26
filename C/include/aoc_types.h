@@ -1,13 +1,13 @@
 #ifndef _AOC_TYPES_H_
 #define _AOC_TYPES_H_
 
-#include "aoc_sets.h"
+#include "aoc_array.h"
 
 typedef struct {
-    gchar *filename;
-    gint year;
-    gint day;
-    GArray *data;
+    char *filename;
+    int year;
+    int day;
+    AocArrayPtr data;
 } AocData_t;
 
 #endif
