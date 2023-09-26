@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
+#include "aoc_array.h"
+#include "aoc_timer.h"
 
 int is_valid_i(int a, int b, int c) {
     return (a + b > c) && (b + c > a) && (c + a > b);
@@ -15,69 +17,73 @@ int is_valid(char *sides) {
     return is_valid_i(a, b, c);
 }
 
-int solve_part_1(GArray *data) {
+void *solve_part_1(AocData_t *data) {
     int count;
-    guint i;
+    unsigned int i;
 
     count = 0;
-    for (i = 0; i < data->len; i++) {
-        if(is_valid(g_array_index(data, char *, i))) {
+    for (i = 0; i < data->data->len; i++) {
+        if(is_valid(aoc_str_array_index(data->data, i))) {
             count++;
         }
     }
-    return count;
+    return strdup_printf("%d", count);
 }
 
-int solve_part_2(GArray *data) {
+void *solve_part_2(AocData_t *data) {
     int *int_array[3];
-    guint i, j;
+    unsigned int i, j;
     int count = 0;
     for (i = 0; i < 3; i++) {
-        int_array[i] = malloc(sizeof(int) * data->len);
+        int_array[i] = malloc(sizeof(int) * data->data->len);
     }
 
-    for (i = 0; i < data->len; i++) {
-        sscanf(g_array_index(data, char *, i), "%d %d %d",
+    for (i = 0; i < data->data->len; i++) {
+        sscanf(aoc_str_array_index(data->data, i), "%d %d %d",
                 &int_array[0][i], &int_array[1][i], &int_array[2][i]);
     }
 
     for (j = 0; j < 3; j++) {
-        for (i = 0; i < data->len - 2; i += 3) {
+        for (i = 0; i < data->data->len - 2; i += 3) {
             if (is_valid_i(int_array[j][i], int_array[j][i + 1], int_array[j][i + 2]))
                 count++;
         }
     }
 
 
-    return count;
+    return strdup_printf("%d", count);
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+void *solve_all(AocData_t *data) {
 
-    data = get_input(filename, year, day);
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    TIMER(0, solve_all(filename, 2016, 3), INT, 0);
-    g_free(filename);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
 
     return 0;
 }

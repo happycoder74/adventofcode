@@ -1,95 +1,88 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_timer.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
 
-GArray *clean_input(GArray *data) {
-    return data;
-}
-
-
-gint solution(GArray *data, gboolean part_two) {
-    gchar **split_string;
-    gint i;
-    gint *pos;
-    gint *current;
+int solution(AocArrayPtr data, gboolean part_two) {
+    char **split_string;
+    int i;
+    int *pos;
+    int *current;
     GHashTable *locations;
-    GArray *directions;
+    AocArrayPtr directions;
     typedef struct {
-        gchar direction;
-        gint steps;
+        char direction;
+        int steps;
     } step_t;
 
-    step_t *step = g_new(step_t, 1);
+    step_t *step = (step_t *)malloc(sizeof(step_t));
 
-    directions = g_array_new(TRUE, TRUE, sizeof(int *));
+    directions = aoc_array_new(sizeof(int *));
     locations = g_hash_table_new(g_str_hash, g_str_equal);
-    pos = g_new(gint, 2);
+    pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 1;
     pos[1] = 0;
-    g_array_append_val(directions, pos);
-    pos = g_new(gint, 2);
+    aoc_str_array_append(directions, pos);
+    pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 0;
     pos[1] = 1;
-    g_array_append_val(directions, pos);
-    pos = g_new(gint, 2);
+    aoc_str_array_append(directions, pos);
+    pos = (int *)malloc(sizeof(int)*2);
     pos[0] = -1;
     pos[1] = 0;
-    g_array_append_val(directions, pos);
-    pos = g_new(gint, 2);
+    aoc_str_array_append(directions, pos);
+    pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 0;
     pos[1] = -1;
-    g_array_append_val(directions, pos);
+    aoc_str_array_append(directions, pos);
 
-    pos = g_new(gint, 2);
+    pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 0;
     pos[1] = 0;
 
-
     if (part_two) {
-        g_hash_table_add(locations, g_strdup_printf("(%d, %d)", pos[0], pos[1]));
+        g_hash_table_add(locations, strdup_printf("(%d, %d)", pos[0], pos[1]));
     }
-    split_string = g_strsplit(g_array_index(data, char *, 0), ", ", 0);
+    split_string = g_strsplit(aoc_str_array_index(data, 0), ", ", 0);
     int index = 0;
     int s = 0;
-    step = g_new(step_t, 1);
+    step = (step_t *)malloc(sizeof(step_t));
     for (i = 0; split_string[i] != NULL; i++) {
         sscanf(split_string[i], "%c%d", &step->direction, &step->steps);
         index = index + (step->direction == 'R' ? 1 : -1);
         index = (index >= 0 ? index % 4 : 4 + (index % -4));
-        current = g_array_index(directions, gint *, index);
+        current = (int *)aoc_str_array_index(directions, index);
         for (s = 0; s < step->steps; s++) {
             pos[0] = pos[0] + current[0];
             pos[1] = pos[1] + current[1];
             if (part_two) {
-                if (g_hash_table_contains(locations, g_strdup_printf("(%d, %d)", pos[0], pos[1]))) {
+                if (g_hash_table_contains(locations, strdup_printf("(%d, %d)", pos[0], pos[1]))) {
                     return abs(pos[0]) + abs(pos[1]);
                 }
-                g_hash_table_add(locations, g_strdup_printf("(%d, %d)", pos[0], pos[1]));
+                g_hash_table_add(locations, strdup_printf("(%d, %d)", pos[0], pos[1]));
             }
         }
     }
-    g_free(step);
-    g_array_free(directions, TRUE);
+    free(step);
+    aoc_array_free(directions);
 
     return abs(pos[0] + pos[1]);
 
 
 }
 
-gpointer solve_part_1(AocData_t *data) {
-    return g_strdup_printf("%d", solution(data->data, FALSE));
+void *solve_part_1(AocData_t *data) {
+    return strdup_printf("%d", solution(data->data, FALSE));
 }
 
-gpointer solve_part_2(AocData_t *data) {
-    return g_strdup_printf("%d", solution(data->data, TRUE));
+void *solve_part_2(AocData_t *data) {
+    return strdup_printf("%d", solution(data->data, TRUE));
 }
 
-gpointer solve_all(AocData_t *data) {
-
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
+void *solve_all(AocData_t *data) {
 
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
@@ -101,18 +94,24 @@ gpointer solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    data = aoc_data_new(filename, 2016, 1);
-    g_free(filename);
-
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
+
+    return 0;
 }

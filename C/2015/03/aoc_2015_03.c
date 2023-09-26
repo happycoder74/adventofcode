@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
     if (argc > 1) {
         data = aoc_data_new(argv[1], year, day);
     } else {
-        data = aoc_data_new("input.txt", year, day);
+        data = aoc_data_new_clean("input.txt", year, day, NULL);
     }
 
     printf("================================================\n");

@@ -2,63 +2,69 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_timer.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
 
 #define BUFSIZE 128
 
-char *solve_part_1(GArray *data) {
-    guchar to_hash[BUFSIZE];
-    const gchar *hashed;
-    gint counter = 0;
-    gint found = 0;
+void *solve_part_1(AocData_t *data) {
+    unsigned char to_hash[BUFSIZE];
+    const char *hashed;
+    int counter = 0;
+    int found = 0;
+    char code[] = "________";
+    char *doorID;
+    int count = 0;
     GChecksum *checksum;
-    gchar *code;
-    gchar *doorID;
 
-    doorID = g_array_index(data, gchar *, 0);
+    doorID = aoc_str_array_index(data->data, 0);
 
-    code = g_strdup("________");
     printf("Part 1:\n");
     printf("\t%s\r", code);
-    while (found < 8) {
-        g_snprintf((gchar*)to_hash, BUFSIZE, "%s%d", doorID, counter++);
+    while ((found < 8) && (count < 5)){
+        g_snprintf((char*)to_hash, BUFSIZE, "%s%d", doorID, counter++);
         checksum = g_checksum_new(G_CHECKSUM_MD5);
-        g_checksum_update(checksum, to_hash, strlen((const gchar*)to_hash));
+        g_checksum_update(checksum, to_hash, strlen((const char *)to_hash));
         hashed = g_checksum_get_string(checksum);
-        if (!g_ascii_strncasecmp(hashed, "00000", 5)) {
+        if (((hashed[0] == '0') &&
+            (hashed[1] == '0') &&
+            (hashed[2] == '0') &&
+            (hashed[3] == '0') &&
+            (hashed[4] == '0'))) {
             code[found++] = hashed[5];
             printf("\t%s\r", code);
             fflush(stdout);
         }
-        g_checksum_free(checksum);
     }
     printf("\n");
-    return code;
+    return strdup_printf("%s (%d)", code, counter);
 }
 
-char *solve_part_2(GArray *data) {
-    const gchar *hashed;
-    gint counter = 0, found = 0;
-    gint pos;
-    guint j;
+void *solve_part_2(AocData_t *data) {
+    const char *hashed;
+    int counter = 0, found = 0;
+    int pos;
+    unsigned int j;
     GChecksum *checksum;
-    gchar *code;
-    guchar to_hash[BUFSIZE];
+    char code[] = "________";
+    unsigned char to_hash[BUFSIZE];
     char *doorID;
 
-    doorID = g_array_index(data, char *, 0);
+    doorID = aoc_str_array_index(data->data, 0);
 
     printf("\nPart 2:\n");
     found = 0;
     counter = 0;
-    code = g_strdup("________");
 
     while (found < 8) {
-        g_snprintf((gchar *)to_hash, BUFSIZE, "%s%d", doorID, counter++);
+        g_snprintf((char *)to_hash, BUFSIZE, "%s%d", doorID, counter++);
         checksum = g_checksum_new(G_CHECKSUM_MD5);
-        g_checksum_update(checksum, to_hash, strlen((const gchar *)to_hash));
+        g_checksum_update(checksum, to_hash, strlen((const char *)to_hash));
         hashed = g_checksum_get_string(checksum);
-        if (!g_ascii_strncasecmp(hashed, "00000", 5)) {
+        if (!strncasecmp(hashed, "00000", 5)) {
             if ((pos = g_ascii_digit_value(hashed[5])) != -1) {
                 if ((pos < 8) && (code[pos] == '_')) {
                     found++;
@@ -81,36 +87,39 @@ char *solve_part_2(GArray *data) {
         g_checksum_free(checksum);
     }
     printf("\n");
-    return code;
+    return strdup(code);
 }
 
+void *solve_all(AocData_t *data) {
 
-int solve_all(char *filename, int year, int day) {
-    GArray *data;
-
-    data = get_input(filename, year, day);
-
-    if (data) {
-        TIMER(1, solve_part_1(data), STR, 1);
-        TIMER(2, solve_part_2(data), STR, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    TIMER(0, solve_all(filename, 2016, 5), INT, 0);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
 
-    g_free(filename);
+    aoc_data_free(data);
+
     return 0;
 }
