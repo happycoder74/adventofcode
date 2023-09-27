@@ -8,6 +8,7 @@ typedef GArray* AocArrayPtr;
 
 // General array functions
 #define aoc_array_new(s)                (g_array_new(TRUE, TRUE, s))
+#define aoc_array_sized_new(s, _size)   (g_array_sized_new(TRUE, TRUE, s, _size))
 #define aoc_array_length(arr)           ((arr)->len)
 #define aoc_array_free(arr)             (g_array_free(arr, FALSE));
 
