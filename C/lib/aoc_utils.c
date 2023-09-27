@@ -11,14 +11,6 @@
 #include "aoc_string.h"
 #include "glibconfig.h"
 
-size_t aoc_data_length(AocData_t *data) {
-    if(data) {
-        if (data->data)
-            return data->data->len;
-    }
-    return 0;
-}
-
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
         aoc->data = data;
@@ -27,20 +19,12 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-AocArrayPtr aoc_data_data(AocData_t *data) {
-    if(data) {
-        return data->data;
-    }
-    return NULL;
-}
-
-bool aoc_data_hasdata(AocData_t *data) {
-    if(data) {
-        if (data->data)
-            return TRUE;
-    }
-    return FALSE;
-}
+// AocArrayPtr aoc_data_data(AocData_t *data) {
+//     if(data) {
+//         return data->data;
+//     }
+//     return NULL;
+// }
 
 AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
