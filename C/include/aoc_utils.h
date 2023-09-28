@@ -7,18 +7,6 @@
 // aoc_timer.h included for legacy support
 #include "aoc_timer.h"
 
-typedef struct point {
-    int x;
-    int y;
-} Point;
-
-typedef struct line {
-    Point p0;
-    Point p1;
-    int stepx;
-    int stepy;
-} Line;
-
 // AoC Data Structure macros
 #define aoc_data_new(filename, year, day)       (aoc_data_new_clean(filename, year, day, NULL))
 #define aoc_data_get(arr)                      (((arr)->data != NULL) && (arr != NULL) ? ((arr)->data) : NULL)
