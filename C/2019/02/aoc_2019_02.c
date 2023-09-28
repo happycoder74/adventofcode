@@ -4,16 +4,17 @@
 #include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
-GArray *clean_input(GArray *data) {
-    GArray *return_array = g_array_new(FALSE, TRUE, sizeof(int));
-    gchar **instructions = g_strsplit(g_array_index(data, char *, 0), ",", 0);
-    gchar **p = instructions;
-    gint opcode;
+AocArrayPtr clean_input(AocArrayPtr data) {
+    AocArrayPtr return_array = aoc_array_new(sizeof(int));
+    char **instructions = g_strsplit(aoc_str_array_index(data, 0), ",", 0);
+    char **p = instructions;
+    int opcode;
 
     while(*p) {
         opcode = atoi(*p);
-        g_array_append_val(return_array, opcode);
+        aoc_int_array_append(return_array, opcode);
         p++;
     }
     g_strfreev(instructions);
@@ -21,94 +22,92 @@ GArray *clean_input(GArray *data) {
     return return_array;
 }
 
-int intcode(GArray *instructions) {
-    gint i = 0;
+int intcode(AocArrayPtr instructions) {
+    int i = 0;
     int dest, op, op1, op2;
-    while((op = g_array_index(instructions, int, i)) != 99) {
-        dest = g_array_index(instructions, int, i + 3);
-        op1 = g_array_index(instructions, int, i + 1);
-        op2 = g_array_index(instructions, int, i + 2);
+    while((op = aoc_int_array_index(instructions, i)) != 99) {
+        dest = aoc_int_array_index(instructions, i + 3);
+        op1 = aoc_int_array_index(instructions, i + 1);
+        op2 = aoc_int_array_index(instructions, i + 2);
         switch(op) {
             case 1:
-                g_array_index(instructions, int, dest) =
-                    g_array_index(instructions, int, op1) +
-                    g_array_index(instructions, int, op2);
+                aoc_int_array_index(instructions, dest) =
+                    aoc_int_array_index(instructions, op1) +
+                    aoc_int_array_index(instructions, op2);
                 i += 4;
                 break;
             case 2:
-                g_array_index(instructions, int, dest) =
-                    g_array_index(instructions, int, op1) *
-                    g_array_index(instructions, int, op2);
+                aoc_int_array_index(instructions, dest) =
+                    aoc_int_array_index(instructions, op1) *
+                    aoc_int_array_index(instructions, op2);
                 i += 4;
                 break;
             default:
                 return 0;
         }
     }
-    return g_array_index(instructions, int, 0);
+    return aoc_int_array_index(instructions, 0);
 
 }
 
 void *solve_part_1(AocData_t *data) {
-    GArray *instructions = g_array_copy(data->data);
+    AocArrayPtr instructions = aoc_array_sized_new(sizeof(int), aoc_data_length(data));
+    memcpy(instructions->data, aoc_data_get(data)->data, aoc_data_length(data) * sizeof(int));
     int return_value;
 
-    g_array_index(instructions, int, 1) = 12;
-    g_array_index(instructions, int, 2) = 2;
+    aoc_int_array_index(instructions, 1) = 12;
+    aoc_int_array_index(instructions, 2) = 2;
 
     return_value = intcode(instructions);
-    g_array_free(instructions, TRUE);
-    return g_strdup_printf("%d", return_value);
+    aoc_array_free(instructions);
+    return strdup_printf("%d", return_value);
 }
 
 void *solve_part_2(AocData_t *data) {
-    GArray *instructions = NULL;
+    AocArrayPtr instructions = NULL;
     int return_value;
 
     for (int verb = 0; verb < 100; verb++) {
         for (int noun = 0; noun < 100; noun++) {
-            instructions = g_array_copy(data->data);
-            g_array_index(instructions, int, 1) = verb;
-            g_array_index(instructions, int, 2) = noun;
+            instructions = aoc_array_sized_new(sizeof(int), aoc_data_length(data));
+            memcpy(instructions->data, aoc_data_get(data)->data, aoc_data_length(data) * sizeof(int));
+            aoc_int_array_index(instructions, 1) = verb;
+            aoc_int_array_index(instructions, 2) = noun;
 
             return_value = intcode(instructions);
             if (return_value == 19690720) {
-                g_array_free(instructions, TRUE);
-                return g_strdup_printf("%d", 100*verb + noun);
+                aoc_array_free(instructions);
+                return strdup_printf("%d", 100*verb + noun);
             }
+            aoc_array_free(instructions);
         }
      }
 
-    g_array_free(instructions, TRUE);
+    aoc_array_free(instructions);
     return NULL;
 }
 
 void *solve_all(AocData_t *data) {
 
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
-
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
-        timer_func(2, solve_part_2, data, 1);
-    }
-
-    return NULL;
+        timer_func(2, solve_part_2, data, 1); } return NULL;
 }
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    const int year = 2019;
-    const int day = 2;
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new_clean(argv[1], year, day, clean_input);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
