@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+// String function macros
+#define aoc_str_split(_string, _delimiter, _max_tokens)      (g_strsplit(_string, _delimiter, _max_tokens))
+
 // String functions similar to methods of  python strings
 // more to come later
 char *str_trim(char *str);
