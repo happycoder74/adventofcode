@@ -34,7 +34,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     char **split_line;
     char *line;
     line = aoc_str_array_index(data, 0);
-    split_line = g_strsplit(line, ",", -1);
+    split_line = aoc_str_split(line, ",", -1);
     int i, value;
 
     result = aoc_array_new(sizeof(int));

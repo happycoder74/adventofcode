@@ -26,7 +26,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         char *input = aoc_str_array_index(data, i);
         AocArrayPtr line = aoc_array_new(sizeof(Line));
 
-        char **steps = g_strsplit(input, ",", 0);
+        char **steps = aoc_str_split(input, ",", 0);
 
         p0.x = 0;
         p0.y = 0;
@@ -59,6 +59,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
             p0.y = p1.y;
         }
         aoc_array_append(lines_array, line);
+        aoc_str_freev(steps);
     }
 
     return lines_array;
