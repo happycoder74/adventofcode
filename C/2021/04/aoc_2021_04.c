@@ -50,6 +50,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     }
 
     aoc_array_append(return_data, boards);
+    aoc_str_freev(split_line);
 
     return return_data;
 }

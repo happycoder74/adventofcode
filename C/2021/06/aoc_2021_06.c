@@ -1,47 +1,47 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include <assert.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
-GArray *clean_input(GArray *data) {
-    gchar **split_string;
-    GArray *return_data = g_array_new(TRUE, FALSE, sizeof(int));
-    gint value;
-    split_string = g_strsplit(g_array_index(data, gchar *, 0), ",", -1);
-    for (gint i = 0; split_string[i] != NULL; i++) {
+AocArrayPtr clean_input(AocArrayPtr data) {
+    char **split_string;
+    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    int value;
+    split_string = g_strsplit(aoc_str_array_index(data, 0), ",", -1);
+    for (int i = 0; split_string[i] != NULL; i++) {
         sscanf(split_string[i], "%d", &value);
-        g_array_append_val(return_data, value);
+        aoc_int_array_append(return_data, value);
     }
 
-    g_strfreev(split_string);
-    g_array_unref(data);
+    aoc_str_freev(split_string);
+    aoc_array_free(data);
     return return_data;
 }
 
-unsigned long long  lantern_fish_evolve(GArray *data, gint days) {
-    unsigned long long *school_of_fish;
-    unsigned long long sum = 0;
-    const guint school_size = 9;
-    guint tail, head;
+uint64_t  lantern_fish_evolve(AocArrayPtr data, int days) {
+    uint64_t *school_of_fish;
+    uint64_t sum = 0;
+    const unsigned int school_size = 9;
+    unsigned int tail, head;
 
-    school_of_fish = g_new0(unsigned long long, school_size);
-    for (guint i = 0; i < data->len; i++) {
-        school_of_fish[g_array_index(data, int, i)] += 1;
+    school_of_fish = (uint64_t *)calloc(school_size, sizeof(uint64_t));
+    for (unsigned int i = 0; i < data->len; i++) {
+        school_of_fish[aoc_int_array_index(data, i)] += 1;
     }
 
     tail = 8;
     head = tail - 2;
-    for (gint day = 1; day <= days; day++) {
+    for (int day = 1; day <= days; day++) {
         tail = (1 + tail) == school_size ? 0 : 1 + tail;
         head = (1 + head) == school_size ? 0 : 1 + head;
         school_of_fish[head] += school_of_fish[tail];
     }
 
-    for (guint i = 0; i < school_size; i++) {
+    for (unsigned int i = 0; i < school_size; i++) {
         sum += school_of_fish[i];
     }
 
@@ -57,35 +57,27 @@ void *solve_part_2(AocData_t *data) {
 }
 
 void *solve_all(AocData_t *data) {
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
-    }
-
-    return NULL;
+    } return NULL;
 }
-
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    char *sourcefile = basename(__FILE__);
+    char sourcefile[20];
     int year, day;
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new_clean(argv[1], year, day, clean_input);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
