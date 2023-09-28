@@ -3,6 +3,8 @@
 #include <glib.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
+#include "aoc_array.h"
 
 int sort_function(const void *a, const void *b) {
     int *int_a = (int *)a;
