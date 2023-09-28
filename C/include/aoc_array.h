@@ -17,8 +17,8 @@
 
 #define aoc_int_array_append(_arr, _val)    \
   do {                                      \
-    int value = _val;                       \
-    g_array_append_vals(_arr, &(value), 1); \
+    int _value = _val;                       \
+    g_array_append_vals(_arr, &(_value), 1); \
   } while (0)
 
 #define aoc_int_array_sort(_arr, func)      (g_array_sort(_arr, func))
