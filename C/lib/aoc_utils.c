@@ -322,7 +322,7 @@ guint point_hash(gconstpointer p) {
     return return_value;
 }
 
-gboolean point_equal(gconstpointer pp1, gconstpointer pp2) {
+int point_equal(gconstpointer pp1, gconstpointer pp2) {
     Point *p1, *p2;
     p1 = (Point *)pp1;
     p2 = (Point *)pp2;
