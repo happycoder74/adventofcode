@@ -19,5 +19,7 @@ char *stpcpy(char *__restrict__, const char *__restrict__);
 char *strdup(const char *str);
 char *strconcat(const char *str1, const char *str2);
 
+void aoc_str_freev(char **);
+
 #endif /* __AOC_STRING_H__ */
 
