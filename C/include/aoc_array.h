@@ -24,6 +24,30 @@
 
 #define aoc_int_array_sort(_arr, func)       (g_array_sort(_arr, func))
 
+// int64_t array function macros
+#define aoc_int64_array_new()                 (aoc_array_new(sizeof(int64_t)))
+#define aoc_int64_array_index(_arr, _index)   (g_array_index(_arr, int64_t, _index))
+
+#define aoc_int64_array_append(_arr, _val)    \
+  do {                                       \
+    int64_t _value = _val;                       \
+    g_array_append_vals(_arr, &(_value), 1); \
+  } while (0)
+
+#define aoc_int64_array_sort(_arr, func)      (g_array_sort(_arr, func))
+
+// uint64_t array function macros
+#define aoc_uint64_array_new()                 (aoc_array_new(sizeof(uint64_t)))
+#define aoc_uint64_array_index(_arr, _index)   (g_array_index(_arr, uint64_t, _index))
+
+#define aoc_uint64_array_append(_arr, _val)    \
+  do {                                       \
+    uint64_t _value = _val;                       \
+    g_array_append_vals(_arr, &(_value), 1); \
+  } while (0)
+
+#define aoc_uint64_array_sort(_arr, func)      (g_array_sort(_arr, func))
+//
 // String (char *) array function macros
 #define aoc_str_array_new()                  (aoc_array_new(sizeof(char *)))
 #define aoc_str_array_index(_arr, _index)    (g_array_index(_arr, char *, _index))
