@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
+#include <stdint.h>
 #include "aoc_array.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"

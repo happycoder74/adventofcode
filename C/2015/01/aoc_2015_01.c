@@ -11,7 +11,7 @@ void *solve_part_1(AocData_t *data) {
     size_t i = 0;
     char *line;
 
-    line = aoc_str_array_index(data->data, i);
+    line = aoc_str_array_index(aoc_data_get(data), i);
 
     for (i = 0; i < strlen(line); i++) {
         if (line[i] == '(')
@@ -29,7 +29,7 @@ void *solve_part_2(AocData_t *data) {
 
     char *line;
 
-    line = aoc_str_array_index(data->data, i);
+    line = aoc_str_array_index(aoc_data_get(data), i);
 
     for (i = 0; i < strlen(line); i++) {
         if (line[i] == '(')
@@ -44,7 +44,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
