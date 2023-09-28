@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +37,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 int mark_points(GHashTable *hashtable, Line line, gboolean diagonal) {
     Point point;
     int value;
-    gpointer old_value;
+    void *old_value;
     int count = 0;
     Point *key;
 
@@ -49,23 +50,23 @@ int mark_points(GHashTable *hashtable, Line line, gboolean diagonal) {
             point.x += line.stepx, point.y += line.stepy) {
         if(g_hash_table_lookup_extended(hashtable, &point, NULL, &old_value)) {
             count++;
-            value = GPOINTER_TO_INT(old_value) + 1;
+            value = (int)(int64_t)(old_value) + 1;
         } else {
             value = 1;
         }
         key = point_new_m(point.x, point.y);
-        g_hash_table_insert(hashtable, key, GINT_TO_POINTER(value));
+        g_hash_table_insert(hashtable, key, (void *)(int64_t)(value));
     }
 
     return count;
 }
 
-void *solve_problem(AocArrayPtr data, gboolean diagonal) {
+void *solve_problem(AocArrayPtr data, int diagonal) {
     GHashTable *hashtable;
     Line line;
     GHashTableIter iter;
     int count;
-    gpointer key, value;
+    void *key, *value;
 
     hashtable = g_hash_table_new(point_hash, point_equal);
 
@@ -77,7 +78,7 @@ void *solve_problem(AocArrayPtr data, gboolean diagonal) {
     count = 0;
     g_hash_table_iter_init(&iter, hashtable);
     while(g_hash_table_iter_next(&iter, &key, &value)) {
-        if (GPOINTER_TO_INT(value) > 1)
+        if ((int)(int64_t)(value) > 1)
             count++;
     }
 

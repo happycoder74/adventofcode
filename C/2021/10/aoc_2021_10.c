@@ -21,10 +21,10 @@ GHashTable *init_brackets(void) {
 GHashTable *init_points(const int *point_array) {
     GHashTable *points;
     points = g_hash_table_new(g_str_hash, g_str_equal);
-    g_hash_table_insert(points, ")", GINT_TO_POINTER(point_array[0]));
-    g_hash_table_insert(points, "]", GINT_TO_POINTER(point_array[1]));
-    g_hash_table_insert(points, "}", GINT_TO_POINTER(point_array[2]));
-    g_hash_table_insert(points, ">", GINT_TO_POINTER(point_array[3]));
+    g_hash_table_insert(points, ")", (void *)(int64_t)(point_array[0]));
+    g_hash_table_insert(points, "]", (void *)(int64_t)(point_array[1]));
+    g_hash_table_insert(points, "}", (void *)(int64_t)(point_array[2]));
+    g_hash_table_insert(points, ">", (void *)(int64_t)(point_array[3]));
 
     return points;
 }
@@ -50,14 +50,14 @@ void *solve_part_1(AocData_t *data) {
             } else {
                 last_bracket = g_queue_peek_tail(stack);
                 if(strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
-                    error_points += GPOINTER_TO_INT(g_hash_table_lookup(points, key));
+                    error_points += (int)(int64_t)(g_hash_table_lookup(points, key));
                     break;
                 } else {
                     last_bracket = g_queue_pop_tail(stack);
                 }
             }
         }
-        g_queue_free_full(stack, g_free);
+        g_queue_free_full(stack, free);
     }
     g_hash_table_destroy(brackets);
     g_hash_table_destroy(points);
@@ -117,7 +117,7 @@ void *solve_part_2(AocData_t *data) {
             }
             aoc_int64_array_append(result, complete_points);
         }
-        g_queue_free_full(stack, g_free);
+        g_queue_free_full(stack, free);
     }
     g_hash_table_destroy(brackets);
     g_hash_table_destroy(points);

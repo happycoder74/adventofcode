@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -99,11 +100,11 @@ void *solve_part_1(AocData_t *data) {
 
 AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
     AocArrayPtr result = aoc_array_new(sizeof(Point *));
-    gpointer *keys;
+    Point **keys;
     Point *key;
     unsigned int length;
 
-    keys = g_hash_table_get_keys_as_array(table1, &length);
+    keys = (Point **)g_hash_table_get_keys_as_array(table1, &length);
     for(unsigned int i = 0; i < length; i++) {
         key = keys[i];
         if(g_hash_table_contains(table2, key)) {
@@ -123,8 +124,8 @@ void *solve_part_2(AocData_t *data) {
     lines[0] = (AocArrayPtr)aoc_array_index(aoc_data_get(data), 0);
     lines[1] = (AocArrayPtr)aoc_array_index(aoc_data_get(data), 1);
 
-    line_coords[0] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
-    line_coords[1] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
+    line_coords[0] = g_hash_table_new_full(point_hash, point_equal, free, NULL);
+    line_coords[1] = g_hash_table_new_full(point_hash, point_equal, free, NULL);
 
     // Using the same keys as line_coords why no free function is needed
     line_stepmap[0] = g_hash_table_new_full(point_hash, point_equal, NULL, NULL);
@@ -148,7 +149,7 @@ void *solve_part_2(AocData_t *data) {
             for (unsigned int j = 0; j < length; j++) {
                 curr = point_new_m(curr->x + step.x, curr->y + step.y);
                 steps += 1;
-                g_hash_table_insert(line_stepmap[wire], curr, GINT_TO_POINTER(steps));
+                g_hash_table_insert(line_stepmap[wire], curr, (void *)(int64_t)(steps));
                 g_hash_table_add(line_coords[wire], curr);
             }
         }
@@ -161,8 +162,8 @@ void *solve_part_2(AocData_t *data) {
     for (unsigned int i = 0; i < intersections->len; i++) {
         Point *intersection_point = (Point *)aoc_array_index(intersections, i);
 
-        signal = GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[0], intersection_point)) +
-                 GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[1], intersection_point));
+        signal = (int)(int64_t)(g_hash_table_lookup(line_stepmap[0], intersection_point)) +
+                 (int)(int64_t)(g_hash_table_lookup(line_stepmap[1], intersection_point));
         min_signal = MIN(signal, min_signal);
     }
 

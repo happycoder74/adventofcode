@@ -29,14 +29,14 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 int common_value(AocArrayPtr data, int position, int method) {
     int sum = 0;
     AocArrayPtr bitfield;
-    gdouble check;
+    double check;
     size_t i;
 
-    for (i = 0; i < data->len; i++) {
+    for (i = 0; i < aoc_array_length(data); i++) {
         bitfield = aoc_array_index(data, i);
         sum += aoc_int_array_index(bitfield, position);
     }
-    check = (gdouble) sum / data->len;
+    check = (double) sum / aoc_array_length(data);
     if (method == 1) { // 1 = most, 0 = least
         return check < 0.5;
     } else {

@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -104,7 +105,7 @@ GHashTable **decode_signal(char *signal) {
         char *part = (char *)aoc_array_index(signal_parts, j);
         for(size_t k = 0; k < strlen(part); k++) {
             letter_key = part[k];
-            g_hash_table_add(set, GUINT_TO_POINTER(letter_key));
+            g_hash_table_add(set, (void *)(uint64_t)(letter_key));
         }
         aoc_array_append(signal_sets, set);
     }
@@ -155,7 +156,7 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
         set = g_hash_table_new(g_direct_hash, g_direct_equal);
         for(size_t k = 0; k < strlen(parts[j]); k++) {
             letter_key = parts[j][k];
-            g_hash_table_add(set, GUINT_TO_POINTER(letter_key));
+            g_hash_table_add(set, (void *)(uint64_t)(letter_key));
         }
         aoc_array_append(signal_sets, set);
         j++;
@@ -183,7 +184,7 @@ void *solve_part_1(AocData_t *data) {
     char *val;
     int count = 0;
     for (size_t i = 0; i < aoc_data_length(data); i++) {
-        split_line = (gchar **)aoc_array_index(aoc_data_get(data), i);
+        split_line = (char **)aoc_array_index(aoc_data_get(data), i);
         output_value = aoc_str_split(g_strstrip(split_line[1]), " ", -1);
 
         int j = 0;

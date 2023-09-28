@@ -221,7 +221,7 @@ SFNumber *sf_number_add(SFNumber *sn1, SFNumber *sn2) {
     return result;
 }
 
-SFNumber *sf_number_from_string(unsigned char *sf_string) {
+SFNumber *sf_number_from_string(char *sf_string) {
     int i;
     int size = 0;
 
@@ -256,7 +256,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
     numbers = aoc_array_sized_new(sizeof(SFNumber *), aoc_array_length(data));
     for (i = 0; i < data->len; i++){
-        sn = sf_number_from_string((guchar *) aoc_str_array_index(data, i));
+        sn = sf_number_from_string((char *) aoc_str_array_index(data, i));
         aoc_str_array_append(numbers, sn);
     }
 
