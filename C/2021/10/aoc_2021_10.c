@@ -1,14 +1,12 @@
-#include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
 
-GArray *clean_input(GArray *data) {
-    return data;
-}
-
-GHashTable *init_brackets() {
+GHashTable *init_brackets(void) {
     GHashTable *brackets;
     brackets = g_hash_table_new(g_str_hash, g_str_equal);
 
@@ -31,27 +29,27 @@ GHashTable *init_points(const int *point_array) {
     return points;
 }
 
-int solve_part_1(GArray *data) {
+void *solve_part_1(AocData_t *data) {
     GQueue *stack;
     GHashTable *brackets, *points;
-    gchar *line;
-    gint error_points = 0;
+    char *line;
+    int error_points = 0;
     const int point_array[] = {3, 57, 1197, 25137};
 
     brackets = init_brackets();
     points = init_points(point_array);
 
-    for(guint j = 0; j < data->len; j++) {
+    for(unsigned int j = 0; j < aoc_data_length(data); j++) {
         stack = g_queue_new();
-        line = g_array_index(data, gchar *, j);
-        for(guint i = 0; i < strlen(line); i++) {
-            gchar *key = g_strdup_printf("%c", line[i]);
-            gchar *last_bracket;
+        line = aoc_str_array_index(aoc_data_get(data), j);
+        for(unsigned int i = 0; i < strlen(line); i++) {
+            char *key = strdup_printf("%c", line[i]);
+            char *last_bracket;
             if (g_hash_table_contains(brackets, key)) {
                 g_queue_push_tail(stack, key);
             } else {
                 last_bracket = g_queue_peek_tail(stack);
-                if(strcmp(key, (gchar *)g_hash_table_lookup(brackets, last_bracket))) {
+                if(strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
                     error_points += GPOINTER_TO_INT(g_hash_table_lookup(points, key));
                     break;
                 } else {
@@ -63,49 +61,49 @@ int solve_part_1(GArray *data) {
     }
     g_hash_table_destroy(brackets);
     g_hash_table_destroy(points);
-    return error_points;
+    return strdup_printf("%d", error_points);
 }
 
-static gint long_compare(gconstpointer a, gconstpointer b) {
-    long v_a = *(long *)a;
-    long v_b = *(long *)b;
+static int int64_compare(const void *a, const void *b) {
+    int64_t v_a = *(int64_t *)a;
+    int64_t v_b = *(int64_t *)b;
 
     if (v_a == v_b) {
         return 0;
     } else {
-        return (gint)((v_a - v_b) / (labs(v_a - v_b)));
+        return (int)((v_a - v_b) / (llabs(v_a - v_b)));
 
     }
 }
 
-long solve_part_2(GArray *data) {
+void *solve_part_2(AocData_t *data) {
     GQueue *stack;
     GHashTable *brackets, *points;
-    gchar *line;
-    gboolean valid;
-    gchar *key;
-    gchar *last_bracket;
-    glong complete_points;
-    GArray *result;
+    char *line;
+    int8_t valid;
+    char *key;
+    char *last_bracket;
+    int64_t complete_points;
+    AocArrayPtr result;
     const int point_array[] = {1, 2, 3, 4};
 
 
     brackets = init_brackets();
     points = init_points(point_array);
 
-    result = g_array_new(FALSE, FALSE, sizeof(glong));
-    for(guint j = 0; j < data->len; j++) {
+    result = aoc_int64_array_new();
+    for(unsigned int j = 0; j < aoc_data_length(data); j++) {
         complete_points = 0;
         valid = TRUE;
         stack = g_queue_new();
-        line = g_array_index(data, gchar *, j);
-        for(guint i = 0; i < strlen(line); i++) {
-            key = g_strdup_printf("%c", line[i]);
+        line = aoc_str_array_index(aoc_data_get(data), j);
+        for(unsigned int i = 0; i < strlen(line); i++) {
+            key = strdup_printf("%c", line[i]);
             if (g_hash_table_contains(brackets, key)) {
                 g_queue_push_tail(stack, key);
             } else {
                 last_bracket = g_queue_peek_tail(stack);
-                if(strcmp(key, (gchar *)g_hash_table_lookup(brackets, last_bracket))) {
+                if(strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
                     valid = FALSE;
                     break;
                 } else {
@@ -115,43 +113,49 @@ long solve_part_2(GArray *data) {
         }
         if (valid) {
             while ((last_bracket = g_queue_pop_tail(stack))) {
-                complete_points = complete_points * 5 + GPOINTER_TO_INT(g_hash_table_lookup(points, g_hash_table_lookup(brackets, last_bracket)));
+                complete_points = complete_points * 5 + (int64_t)(g_hash_table_lookup(points, g_hash_table_lookup(brackets, last_bracket)));
             }
-            g_array_append_val(result, complete_points);
+            aoc_int64_array_append(result, complete_points);
         }
         g_queue_free_full(stack, g_free);
     }
     g_hash_table_destroy(brackets);
     g_hash_table_destroy(points);
-    g_array_sort(result, long_compare);
+    aoc_int64_array_sort(result, int64_compare);
 
-    return g_array_index(result, long, result->len / 2);
+    return strdup_printf("%lld", aoc_int64_array_index(result, aoc_array_length(result) / 2));
 }
 
-long solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+void *solve_all(AocData_t *data) {
 
-    data = clean_input(get_input(filename, year, day));
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), LONG, 1);
-
-        g_array_free(data, TRUE);
+    if (aoc_data_get(data)) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    TIMER(0, solve_all(filename, 2021, 10), INT, 0);
-    g_free(filename);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }
