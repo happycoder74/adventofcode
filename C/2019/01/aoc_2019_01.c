@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "glib.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
-gint fuel_cost(gint fuel) {
+int fuel_cost(int fuel) {
     fuel = (fuel / 3) - 2;
     if (fuel < 0) {
         return 0;
@@ -15,68 +15,71 @@ gint fuel_cost(gint fuel) {
     }
 }
 
-GArray *clean_data(GArray *data) {
-    GArray *return_data = g_array_new(FALSE, FALSE, sizeof(gint));
-    guint i;
-    guint val;
+AocArrayPtr clean_data(AocArrayPtr data) {
+    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    unsigned int i;
+    unsigned int val;
 
     for (i = 0; i < data->len; i++) {
-        val = atoi(g_array_index(data, char *, i));
-        g_array_append_val(return_data, val);
+        val = atoi(aoc_str_array_index(data, i));
+        aoc_int_array_append(return_data, val);
     }
     return return_data;
 }
 
-gpointer solve_part_1(AocData_t *data) {
-    guint i;
-    guint fuel = 0;
-    gint val;
+void *solve_part_1(AocData_t *data) {
+    unsigned int i;
+    unsigned int fuel = 0;
+    int val;
 
-    for (i = 0; i < data->data->len; i++) {
-        val = g_array_index(data->data, int, i);
+    for (i = 0; i < aoc_data_length(data); i++) {
+        val = aoc_int_array_index(data->data, i);
         fuel += (val / 3) - 2;
     }
-    return g_strdup_printf("%d", fuel);
+    return strdup_printf("%d", fuel);
 }
 
-gpointer solve_part_2(AocData_t *data) {
-    guint i;
-    gint val;
-    guint fuel = 0;
-    guint sum_fuel = 0;
+void *solve_part_2(AocData_t *data) {
+    unsigned int i;
+    int val;
+    unsigned int fuel = 0;
+    unsigned int sum_fuel = 0;
 
-    for (i = 0; i < data->data->len; i++) {
-        val = g_array_index(data->data, int, i);
+    for (i = 0; i < aoc_data_length(data); i++) {
+        val = aoc_int_array_index(aoc_data_get(data), i);
         fuel = (val / 3) - 2;
         sum_fuel += fuel + fuel_cost(fuel);
     }
-    return g_strdup_printf("%d", sum_fuel);
+    return strdup_printf("%d", sum_fuel);
 }
 
-gpointer solve_all(AocData_t *data) {
+void *solve_all(AocData_t *data) {
 
-    data->data = clean_data(get_input(data->filename, data->year, data->day));
-
-    if (data) {
+    if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        data = aoc_data_new_clean(argv[1], year, day, clean_data);
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new_clean("input.txt", year, day, clean_data);
     }
 
-    data = aoc_data_new(filename, 2019, 1);
-    g_free(filename);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

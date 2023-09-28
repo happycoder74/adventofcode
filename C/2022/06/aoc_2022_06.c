@@ -1,18 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 
-int marker(GArray *data, size_t window) {
+int marker(AocArrayPtr data, size_t window) {
     size_t i, j;
     char *string;
     char *chunk;
 
     chunk = (char *)calloc((size_t)window + 1, sizeof(char));
-    string = g_array_index(data, char *, 0);
+    string = aoc_str_array_index(data, 0);
     for (i = 0; i < strlen(string) - window; i++) {
         chunk[0] = '\0';
         for (j = 0; j < window; j++) {

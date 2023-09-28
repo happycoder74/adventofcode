@@ -2,31 +2,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_string.h"
 
-
-int solve_part_1(GArray *data) {
+void *solve_part_1(AocData_t *aoc_data) {
     GError *regex_error = NULL;
     GMatchInfo *matchInfo, *hypernetInfo, *abba_hn_info;
-    gchar *str;
-    guint i;
-    gint count = 0;
-    gchar *matchStr, *hypernetStr;
-    gboolean ok;
+    char *str;
+    unsigned int i;
+    int count = 0;
+    char *matchStr, *hypernetStr;
+    short ok;
+
+    AocArrayPtr data = aoc_data_get(aoc_data);
 
     GRegex *abba = g_regex_new("(.)((?!\\1).)\\2\\1", 0, 0, &regex_error);
     if (regex_error) {
-        g_print("Error in pattern\n%s\n", regex_error->message);
-        exit(1);
+        fprintf(stderr, "Error in pattern\n%s\n", regex_error->message);
+        exit(EXIT_FAILURE);
     }
     GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &regex_error);
     if (regex_error) {
-        g_print("Error in pattern\n%s\n", regex_error->message);
-        exit(1);
+        fprintf(stderr, "Error in pattern\n%s\n", regex_error->message);
+        exit(EXIT_FAILURE);
     }
 
     for (i = 0; i < data->len; i++) {
-        str = g_array_index(data, char *, i);
+        str = aoc_str_array_index(data, i);
         g_regex_match(abba, str, 0, &matchInfo);
         g_regex_match(hypernet, str, 0, &hypernetInfo);
         ok = g_match_info_matches (matchInfo);
@@ -43,11 +46,11 @@ int solve_part_1(GArray *data) {
                     }
                     g_match_info_next(hypernetInfo, &regex_error);
                     if (hypernetStr)
-                        g_free(hypernetStr);
+                        free(hypernetStr);
                 }
             }
             if(matchStr)
-                g_free(matchStr);
+                free(matchStr);
 
             g_match_info_next (matchInfo, &regex_error);
             if (!ok)
@@ -60,28 +63,28 @@ int solve_part_1(GArray *data) {
     g_regex_unref(abba);
     g_regex_unref(hypernet);
 
-    return count;
+    return strdup_printf("%d", count);
 }
 
-int solve_part_2(GArray *data) {
+void *solve_part_2(AocData_t *aoc_data) {
     char *string;
     int count;
     GError *err = NULL;
     GMatchInfo *abaInfo, *hypernetInfo;
     char *aba_str, *hypernet_str, *supernet_str;
     char bab_str[4];
-    int i;
 
+    AocArrayPtr data = aoc_data_get(aoc_data);
 
     GRegex *aba = g_regex_new("(?=((\\w)((?!\\2)\\w)\\2))", 0, 0, &err);
     GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &err);
     count = 0;
 
-    for (i = 0; i < (int)data->len; i++) {
-        string = g_array_index(data, char *, i);
+    for (unsigned int i = 0; i < data->len; i++) {
+        string = aoc_str_array_index(data, i);
         g_regex_match(hypernet, string, 0, &hypernetInfo);
 
-        hypernet_str = g_strdup("");
+        hypernet_str = strdup("");
         while (g_match_info_matches(hypernetInfo)) {
             hypernet_str = g_strjoin("", hypernet_str, g_match_info_fetch(hypernetInfo, 1), NULL);
             g_match_info_next(hypernetInfo, &err);
@@ -101,35 +104,39 @@ int solve_part_2(GArray *data) {
         free(supernet_str);
         free(hypernet_str);
     }
-    return count;
+    return strdup_printf("%d", count);
 }
 
+void *solve_all(AocData_t *data) {
 
-int solve_all(char *filename, int year, int day) {
-    GArray *data;
-
-    data = get_input(filename, year, day);
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
+    if (data->data) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
     }
 
-    return 0;
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = argv[1];
+        data = aoc_data_new(argv[1], year, day);
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    TIMER(0, solve_all(filename, 2016, 7), INT, 0);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
 
     return 0;
 }

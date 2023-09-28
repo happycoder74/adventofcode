@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include "aoc_array.h"
 #include "aoc_utils.h"
 #include "aoc_timer.h"
 #include "aoc_string.h"
@@ -12,18 +13,18 @@
 // }
 
 
-GArray *clean_input(GArray *data) {
-    GArray *lines_array = g_array_new(TRUE, TRUE, sizeof(Line *));
+AocArrayPtr clean_input(AocArrayPtr data) {
+    AocArrayPtr lines_array = aoc_array_new(sizeof(Line *));
 
-    for (guint i = 0; i < data->len; i++) {
+    for (unsigned int i = 0; i < data->len; i++) {
         Point p0, p1;
         Line segment;
         char direction;
         int length;
         char *p;
 
-        char *input = g_array_index(data, char *, i);
-        GArray *line = g_array_new(TRUE, TRUE, sizeof(Line));
+        char *input = aoc_str_array_index(data, i);
+        AocArrayPtr line = aoc_array_new(sizeof(Line));
 
         char **steps = g_strsplit(input, ",", 0);
 
@@ -53,73 +54,73 @@ GArray *clean_input(GArray *data) {
             }
             segment.p0 = p0;
             segment.p1 = p1;
-            g_array_append_val(line, segment);
+            aoc_line_array_append(line, segment);
             p0.x = p1.x;
             p0.y = p1.y;
         }
-        g_array_append_val(lines_array, line);
+        aoc_array_append(lines_array, line);
     }
 
     return lines_array;
 }
 
 void *solve_part_1(AocData_t *data) {
-    guint i, j;
-    GArray *intersection_points = g_array_new(TRUE, TRUE, sizeof(Point));
-    GArray *lines1 = g_array_index(data->data, GArray *, 0);
-    GArray *lines2 = g_array_index(data->data, GArray *, 1);
+    unsigned int i, j;
+    AocArrayPtr intersection_points = aoc_array_new(sizeof(Point));
+    AocArrayPtr lines1 = aoc_array_index(aoc_data_get(data), 0);
+    AocArrayPtr lines2 = aoc_array_index(aoc_data_get(data), 1);
     Line line1, line2;
 
     for (i = 0; i < lines1->len; i++) {
         for(j = 0; j < lines2->len; j++) {
             Point intersection_point;
-            line1 = g_array_index(lines1, Line, i);
-            line2 = g_array_index(lines2, Line, j);
+            line1 = aoc_line_array_index(lines1, i);
+            line2 = aoc_line_array_index(lines2, j);
 
             if(line_intersection(line1, line2, &intersection_point)) {
                 #ifndef NDEBUG
                 printf("(%d, %d)\n", intersection_point.x, intersection_point.y);
                 #endif
-                g_array_append_val(intersection_points, intersection_point);
+                aoc_point_array_append(intersection_points, intersection_point);
             }
         }
     }
 
     int min_distance = INT_MAX;
-    Point starting_point = point_new(0, 0);
+    Point starting_point = {0, 0};
     for (i = 1; i < intersection_points->len; i++) {
-        Point point = g_array_index(intersection_points, Point, i);
+        Point point = aoc_point_array_index(intersection_points, i);
         min_distance = MIN(point_manhattan_distance(point, starting_point), min_distance);
     }
 
     return strdup_printf("%d", min_distance);
 }
 
-GArray *set_intersection(GHashTable *table1, GHashTable *table2) {
-    GArray *result = g_array_new(TRUE, TRUE, sizeof(Point *));
+AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
+    AocArrayPtr result = aoc_array_new(sizeof(Point *));
     gpointer *keys;
     Point *key;
-    guint length;
+    unsigned int length;
 
     keys = g_hash_table_get_keys_as_array(table1, &length);
-    for(guint i = 0; i < length; i++) {
+    for(unsigned int i = 0; i < length; i++) {
         key = keys[i];
         if(g_hash_table_contains(table2, key)) {
-            g_array_append_val(result, key);
+            aoc_array_append(result, key);
         }
     }
     return result;
 }
 
 void *solve_part_2(AocData_t *data) {
-    GArray *lines[2];
+    AocArrayPtr lines[2];
     GHashTable *line_coords[2];
     GHashTable *line_stepmap[2];
     int signal = 0, min_signal = INT_MAX;
-    GArray *intersections;
+    AocArrayPtr intersections;
 
-    lines[0] = g_array_index(data->data, GArray *, 0);
-    lines[1] = g_array_index(data->data, GArray *, 1);
+    lines[0] = (AocArrayPtr)aoc_array_index(aoc_data_get(data), 0);
+    lines[1] = (AocArrayPtr)aoc_array_index(aoc_data_get(data), 1);
 
     line_coords[0] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
     line_coords[1] = g_hash_table_new_full(point_hash, point_equal, g_free, NULL);
@@ -128,14 +129,14 @@ void *solve_part_2(AocData_t *data) {
     line_stepmap[0] = g_hash_table_new_full(point_hash, point_equal, NULL, NULL);
     line_stepmap[1] = g_hash_table_new_full(point_hash, point_equal, NULL, NULL);
 
-    for (guint wire = 0; wire < 2; wire++) {
+    for (unsigned int wire = 0; wire < 2; wire++) {
         Point *curr = point_new_m(0, 0);
-        guint steps = 0;
+        unsigned int steps = 0;
         Point step;
 
-        for (guint i = 0; i < lines[wire]->len; i++) {
-            Line line = g_array_index(lines[wire], Line, i);
-            guint length = line_length(line);
+        for (unsigned int i = 0; i < lines[wire]->len; i++) {
+            Line line = aoc_line_array_index(lines[wire], i);
+            unsigned int length = line_length(line);
             if (is_horisontal(line))  {
                 step.x = (line.p1.x - line.p0.x) / (int)length;
                 step.y = 0;
@@ -143,7 +144,7 @@ void *solve_part_2(AocData_t *data) {
                 step.x = 0;
                 step.y = (line.p1.y - line.p0.y) / (int)length;
             }
-            for (guint j = 0; j < length; j++) {
+            for (unsigned int j = 0; j < length; j++) {
                 curr = point_new_m(curr->x + step.x, curr->y + step.y);
                 steps += 1;
                 g_hash_table_insert(line_stepmap[wire], curr, GINT_TO_POINTER(steps));
@@ -156,8 +157,8 @@ void *solve_part_2(AocData_t *data) {
     // g_hash_table_foreach(line_coords[0], print_coords, NULL);
     intersections = set_intersection(line_coords[0], line_coords[1]);
 
-    for (guint i = 0; i < intersections->len; i++) {
-        Point *intersection_point = g_array_index(intersections, Point *, i);
+    for (unsigned int i = 0; i < intersections->len; i++) {
+        Point *intersection_point = (Point *)aoc_array_index(intersections, i);
 
         signal = GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[0], intersection_point)) +
                  GPOINTER_TO_INT(g_hash_table_lookup(line_stepmap[1], intersection_point));
@@ -169,7 +170,7 @@ void *solve_part_2(AocData_t *data) {
     g_hash_table_destroy(line_stepmap[0]);
     g_hash_table_destroy(line_stepmap[1]);
 
-    return g_strdup_printf("%d", min_signal);
+    return strdup_printf("%d", min_signal);
 }
 
 void *solve_all(AocData_t *data) {
