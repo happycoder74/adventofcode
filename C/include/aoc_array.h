@@ -2,6 +2,7 @@
 #define __AOC_ARRAY_H__
 
 #include <glib.h>
+#include <stdint.h>
 
 // General array functions
 #define aoc_array_new(_s)                    (g_array_new(TRUE, TRUE, _s))
@@ -23,6 +24,42 @@
   } while (0)
 
 #define aoc_int_array_sort(_arr, func)       (g_array_sort(_arr, func))
+
+// Char array function macros
+#define aoc_char_array_new()                  (aoc_array_new(sizeof(char)))
+#define aoc_char_array_index(_arr, _index)    (g_array_index(_arr, char, _index))
+
+#define aoc_char_array_append(_arr, _val)     \
+  do {                                       \
+    char _value = _val;                       \
+    g_array_append_vals(_arr, &(_value), 1); \
+  } while (0)
+
+#define aoc_char_array_sort(_arr, func)       (g_array_sort(_arr, func))
+
+// int32_t array function macros
+#define aoc_int32_array_new()                 (aoc_array_new(sizeof(int32_t)))
+#define aoc_int32_array_index(_arr, _index)   (g_array_index(_arr, int32_t, _index))
+
+#define aoc_int32_array_append(_arr, _val)    \
+  do {                                       \
+    int32_t _value = _val;                       \
+    g_array_append_vals(_arr, &(_value), 1); \
+  } while (0)
+
+#define aoc_int32_array_sort(_arr, func)      (g_array_sort(_arr, func))
+
+// uint32_t array function macros
+#define aoc_uint32_array_new()                 (aoc_array_new(sizeof(uint32_t)))
+#define aoc_uint32_array_index(_arr, _index)   (g_array_index(_arr, uint32_t, _index))
+
+#define aoc_uint32_array_append(_arr, _val)    \
+  do {                                       \
+    uint32_t _value = _val;                       \
+    g_array_append_vals(_arr, &(_value), 1); \
+  } while (0)
+
+#define aoc_uint32_array_sort(_arr, func)      (g_array_sort(_arr, func))
 
 // int64_t array function macros
 #define aoc_int64_array_new()                 (aoc_array_new(sizeof(int64_t)))
