@@ -17,7 +17,7 @@
 AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr lines_array = aoc_array_new(sizeof(Line *));
 
-    for (unsigned int i = 0; i < data->len; i++) {
+    for (unsigned int i = 0; i < aoc_array_length(data); i++) {
         Point p0, p1;
         Line segment;
         char direction;
@@ -73,8 +73,8 @@ void *solve_part_1(AocData_t *data) {
     AocArrayPtr lines2 = aoc_array_index(aoc_data_get(data), 1);
     Line line1, line2;
 
-    for (i = 0; i < lines1->len; i++) {
-        for(j = 0; j < lines2->len; j++) {
+    for (i = 0; i < aoc_array_length(lines1); i++) {
+        for(j = 0; j < aoc_array_length(lines2); j++) {
             Point intersection_point;
             line1 = aoc_line_array_index(lines1, i);
             line2 = aoc_line_array_index(lines2, j);
@@ -90,7 +90,7 @@ void *solve_part_1(AocData_t *data) {
 
     int min_distance = INT_MAX;
     Point starting_point = {0, 0};
-    for (i = 1; i < intersection_points->len; i++) {
+    for (i = 1; i < aoc_array_length(intersection_points); i++) {
         Point point = aoc_point_array_index(intersection_points, i);
         min_distance = MIN(point_manhattan_distance(point, starting_point), min_distance);
     }
@@ -136,7 +136,7 @@ void *solve_part_2(AocData_t *data) {
         unsigned int steps = 0;
         Point step;
 
-        for (unsigned int i = 0; i < lines[wire]->len; i++) {
+        for (unsigned int i = 0; i < aoc_array_length(lines[wire]); i++) {
             Line line = aoc_line_array_index(lines[wire], i);
             unsigned int length = line_length(line);
             if (is_horisontal(line))  {
@@ -159,7 +159,7 @@ void *solve_part_2(AocData_t *data) {
     // g_hash_table_foreach(line_coords[0], print_coords, NULL);
     intersections = set_intersection(line_coords[0], line_coords[1]);
 
-    for (unsigned int i = 0; i < intersections->len; i++) {
+    for (unsigned int i = 0; i < aoc_array_length(intersections); i++) {
         Point *intersection_point = (Point *)aoc_array_index(intersections, i);
 
         signal = (int)(int64_t)(g_hash_table_lookup(line_stepmap[0], intersection_point)) +

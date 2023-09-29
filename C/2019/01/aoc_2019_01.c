@@ -20,7 +20,7 @@ AocArrayPtr clean_data(AocArrayPtr data) {
     unsigned int i;
     unsigned int val;
 
-    for (i = 0; i < data->len; i++) {
+    for (i = 0; i < aoc_array_length(data); i++) {
         val = atoi(aoc_str_array_index(data, i));
         aoc_int_array_append(return_data, val);
     }

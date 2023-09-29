@@ -12,7 +12,7 @@ int find_min(AocArrayPtr array) {
     unsigned int i;
 
     min = aoc_int_array_index(array, 0);
-    for (i = 1; i < array->len; i++) {
+    for (i = 1; i < aoc_array_length(array); i++) {
         min = MIN(min, aoc_int_array_index(array, i));
     }
     return min;
@@ -23,7 +23,7 @@ int find_max(AocArrayPtr array) {
     unsigned int i;
 
     max = aoc_int_array_index(array, 0);
-    for (i = 1; i < array->len; i++) {
+    for (i = 1; i < aoc_array_length(array); i++) {
         max = MAX(max, aoc_int_array_index(array, i));
     }
     return max;
@@ -53,13 +53,13 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 int calc_fuel(AocArrayPtr data, int position, int part) {
     if (part == 1) {
         int sum = 0;
-        for (unsigned int i = 0; i < data->len; i++) {
+        for (unsigned int i = 0; i < aoc_array_length(data); i++) {
             sum += abs(aoc_int_array_index(data, i) - position);
         }
         return sum;
     } else {
         int sum = 0;
-        for (unsigned int i = 0; i < data->len; i++) {
+        for (unsigned int i = 0; i < aoc_array_length(data); i++) {
             int d = abs(aoc_int_array_index(data, i) - position);
             for (int j = 0; j <= d; j++) {
                 sum += j;

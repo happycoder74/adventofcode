@@ -29,7 +29,7 @@ uint64_t  lantern_fish_evolve(AocArrayPtr data, int days) {
     unsigned int tail, head;
 
     school_of_fish = (uint64_t *)calloc(school_size, sizeof(uint64_t));
-    for (unsigned int i = 0; i < data->len; i++) {
+    for (unsigned int i = 0; i < aoc_array_length(data); i++) {
         school_of_fish[aoc_int_array_index(data, i)] += 1;
     }
 

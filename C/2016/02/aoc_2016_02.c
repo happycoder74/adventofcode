@@ -138,9 +138,9 @@ char *keypad_get_code(KeyPad_t *keypad, AocArrayPtr data) {
     unsigned int i;
     unsigned int data_length;
 
-    data_length = data->len;
+    data_length = aoc_array_length(data);
     keypad->code = (char *)calloc(data_length + 1, sizeof(char));
-    for (i = 0; i < data->len; i++) {
+    for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
         keypad->code[i] = keypad_keystring(keypad, line);
     }

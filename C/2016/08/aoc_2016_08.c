@@ -23,9 +23,9 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     Instruction *instruction;
     AocArrayPtr instruction_list;
 
-    instruction_list = aoc_array_sized_new(sizeof(Instruction *), data->len);
+    instruction_list = aoc_array_sized_new(sizeof(Instruction *), aoc_array_length(data));
 
-    for (i = 0; i < data->len; i++) {
+    for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
         if(g_strstr_len(line, 4, "rect")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
@@ -130,7 +130,7 @@ void *solve_part_1(AocData_t *data) {
     grid->columns = 50;
     grid->grid = calloc((grid->rows * grid->columns), sizeof(int));
 
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         instruction = g_array_index(data->data, Instruction *, i);
         switch(instruction->command) {
             case INIT:

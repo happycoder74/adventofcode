@@ -42,7 +42,7 @@ void *solve_part_1(AocData_t *data) {
 
     int sum_points = 0;
 
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         draw = aoc_str_array_index(data->data, i);
         row = draw[0] - 'A';
         col = draw[2] - 'X';
@@ -60,7 +60,7 @@ void *solve_part_2(AocData_t *data) {
     int points[3] = {0, 3, 6};
     char *draw;
 
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         draw = aoc_str_array_index(data->data, i);
         row = draw[0] - 'A';
         col = draw[2] - 'X';

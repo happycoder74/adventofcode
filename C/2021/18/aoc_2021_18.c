@@ -255,7 +255,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     SFNumber *sn;
 
     numbers = aoc_array_sized_new(sizeof(SFNumber *), aoc_array_length(data));
-    for (i = 0; i < data->len; i++){
+    for (i = 0; i < aoc_array_length(data); i++){
         sn = sf_number_from_string((char *) aoc_str_array_index(data, i));
         aoc_str_array_append(numbers, sn);
     }

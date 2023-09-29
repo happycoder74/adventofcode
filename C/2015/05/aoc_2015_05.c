@@ -35,7 +35,7 @@ void *solve_part_1(AocData_t *data) {
     regex_double_letter = g_regex_new("(.)\\1", 0, 0, NULL);
     regex_invalid = g_regex_new("(ab|cd|pq|xy)", 0, 0, NULL);
 
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
         if ((count_matches(regex_wovel, line) >= 3) &&
             (count_matches(regex_double_letter, line) > 0) &&
@@ -60,7 +60,7 @@ void *solve_part_2(AocData_t *data) {
     regex_pairs = g_regex_new("([a-z][a-z])\\w*\\1", 0, 0, NULL);
     regex_repeat = g_regex_new("(.)\\w\\1", 0, 0, NULL);
 
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
         if ((count_matches(regex_pairs, line) > 0) &&
             (count_matches(regex_repeat, line) > 0)) {

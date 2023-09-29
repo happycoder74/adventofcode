@@ -34,7 +34,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     return return_data;
 }
 
-int mark_points(GHashTable *hashtable, Line line, gboolean diagonal) {
+int mark_points(GHashTable *hashtable, Line line, int diagonal) {
     Point point;
     int value;
     void *old_value;

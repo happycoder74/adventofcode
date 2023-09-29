@@ -6,7 +6,7 @@
 #include "aoc_array.h"
 #include "aoc_string.h"
 
-int solution(AocArrayPtr data, gboolean part_two) {
+int solution(AocArrayPtr data, int part_two) {
     char **split_string;
     int i;
     int *pos;
