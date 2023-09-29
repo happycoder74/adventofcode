@@ -26,5 +26,5 @@ GArray *set_get_values(Set *set);
 
 void set_free(Set *set);
 int set_add(Set *set, gconstpointer value);
-
+void set_print(Set *);
 #endif

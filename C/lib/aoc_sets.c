@@ -1,16 +1,21 @@
-#include <aoc_sets.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "aoc_sets.h"
+#include "aoc_types.h"
+#include "aoc_array.h"
 
 Set *set_new(SetType settype) {
     Set *result;
 
-    result = g_new(Set, 1);
+    result = (Set *)malloc(sizeof(Set));
     result->settype = settype;
 
     return result;
 }
 
-Set *set_new_with_data(GArray *data, SetType settype) {
-    guint i;
+Set *set_new_with_data(AocArrayPtr data, SetType settype) {
+    uint32_t i;
     Set *result;
 
     result = set_new(settype);
@@ -20,25 +25,25 @@ Set *set_new_with_data(GArray *data, SetType settype) {
         case SET_INT:
         case SET_CHAR:
             result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
-            for (i = 0; i < data->len; i++) {
+            for (i = 0; i < aoc_array_length(data); i++) {
                 if (result->settype == SET_CHAR) {
-                    gchar val = g_array_index(data, gchar, i);
-                    g_hash_table_add(result->set, GUINT_TO_POINTER(val));
+                    char val = aoc_char_array_index(data, i);
+                    g_hash_table_add(result->set, (void *)(int64_t)(val));
                 } else {
-                    gint val = g_array_index(data, gint, i);
-                    g_hash_table_add(result->set, GINT_TO_POINTER(val));
+                    int val = aoc_int_array_index(data, i);
+                    g_hash_table_add(result->set, (void *)(int64_t)(val));
                 }
             }
             break;
         case SET_STR:
             result->set = g_hash_table_new(g_str_hash, g_str_equal);
-            for (i = 0; i < data->len; i++) {
-                char *val = g_strdup(g_array_index(data, char *, i));
+            for (i = 0; i < aoc_array_length(data); i++) {
+                char *val = strdup(aoc_str_array_index(data, i));
                 g_hash_table_add(result->set, val);
             }
             break;
         default:
-            g_free(result);
+            free(result);
             return NULL;
             break;
     }
@@ -47,17 +52,18 @@ Set *set_new_with_data(GArray *data, SetType settype) {
 
 Set *set_intersect(Set *set1, Set *set2) {
     Set *result;
-    gpointer *keys;
-    gpointer key;
-    guint length;
-    guint i;
+    void **keys;
+    void *key;
+    uint32_t length;
+    uint32_t i;
 
     if (!set1 || !set2) {
-        g_printerr("NULL set given\n");
+        fprintf(stderr, "NULL set given\n");
+        return NULL;
     }
 
     if (set1->settype != set2->settype) {
-        g_printerr("Not matching set types\n");
+        fprintf(stderr, "Not matching set types\n");
         return NULL;
     }
 
@@ -85,12 +91,9 @@ Set *set_intersect(Set *set1, Set *set2) {
                 }
             }
             break;
-        case SET_FLOAT:
-        case SET_DOUBLE:
-        case SET_LONG:
-            g_print("Not yet implemented\n");
         default:
-            g_free(result);
+            fprintf(stderr, "Not yet implemented\n");
+            free(result);
             return NULL;
     }
 
@@ -109,31 +112,37 @@ static gchar *set_string_type(SetType settype) {
     return settypes[settype];
 }
 
-GArray *set_get_values(Set *set) {
-    guint length;
-    guint i;
-    guint val;
-    GArray *return_array;
-    gpointer *keys;
+AocArrayPtr set_get_values(Set *set) {
+    uint32_t length;
+    uint32_t i;
+    AocArrayPtr return_array;
+    void **keys;
 
     keys = g_hash_table_get_keys_as_array(set->set, &length);
     switch(set->settype) {
         case SET_INT:
-            return_array = g_array_sized_new(FALSE, FALSE, sizeof(gint), length);
+            return_array = aoc_array_sized_new(sizeof(int), length);
             for (i = 0; i < length; i++) {
-                val = GPOINTER_TO_INT(keys[i]);
-                g_array_append_val(return_array, val);
+                int val = (int)(int64_t)(keys[i]);
+                aoc_int_array_append(return_array, val);
             }
             break;
         case SET_CHAR:
-            return_array = g_array_sized_new(FALSE, FALSE, sizeof(guint), length);
+            return_array = aoc_array_sized_new(sizeof(char), length);
             for (i = 0; i < length; i++) {
-                val = GPOINTER_TO_INT(keys[i]);
-                g_array_append_val(return_array, val);
+                char val = (char)(int64_t)(keys[i]);
+                aoc_char_array_append(return_array, val);
+            }
+            break;
+        case SET_STR:
+            return_array = aoc_array_sized_new(sizeof(char *), length);
+            for (i = 0; i < length; i++) {
+                char *val = (char *)(keys[i]);
+                aoc_str_array_append(return_array, val);
             }
             break;
         default:
-            g_print("Not yet implemented for type %s\n", set_string_type(set->settype));
+            fprintf(stderr, "Not yet implemented for type %s\n", set_string_type(set->settype));
             return NULL;
             break;
     }
@@ -142,18 +151,19 @@ GArray *set_get_values(Set *set) {
 
 Set *set_difference(Set *set1, Set *set2) {
     Set *result;
-    gpointer *keys;
-    gpointer key;
-    guint length;
-    guint i;
+    void **keys;
+    void *key;
+    uint32_t length;
+    uint32_t i;
 
 
     if (!set1 || !set2) {
-        g_printerr("NULL set given\n");
+        fprintf(stderr, "NULL set given\n");
+        return NULL;
     }
 
     if (set1->settype != set2->settype) {
-        g_printerr("Not matching set types\n");
+        fprintf(stderr, "Not matching set types\n");
         return NULL;
     }
 
@@ -172,12 +182,18 @@ Set *set_difference(Set *set1, Set *set2) {
             }
             break;
         case SET_STR:
-        case SET_FLOAT:
-        case SET_DOUBLE:
-        case SET_LONG:
-            g_print("Not yet implemented for set type %s\n", set_string_type(result->settype));
+            result->set = g_hash_table_new(g_str_hash, g_str_equal);
+            keys = g_hash_table_get_keys_as_array(set1->set, &length);
+            for (i = 0; i < length; i++) {
+                key = keys[i];
+                if(!g_hash_table_contains(set2->set, key)) {
+                    g_hash_table_add(result->set, key);
+                }
+            }
+            break;
         default:
-            g_free(result);
+            fprintf(stderr, "Not yet implemented for set type %s\n", set_string_type(result->settype));
+            free(result);
             return NULL;
     }
 
@@ -230,17 +246,18 @@ int set_add(Set *set, gconstpointer v) {
 
 Set *set_union(Set *set1, Set *set2) {
     Set *result;
-    gpointer *keys;
-    gpointer key;
-    guint length;
-    guint i;
+    void **keys;
+    void *key;
+    uint32_t length;
+    uint32_t i;
 
     if (!set1 || !set2) {
-        g_printerr("NULL set given\n");
+        fprintf(stderr, "NULL set given\n");
+        return NULL;
     }
 
     if (set1->settype != set2->settype) {
-        g_printerr("Not matching set types\n");
+        fprintf(stderr, "Not matching set types\n");
         return NULL;
     }
 
@@ -263,12 +280,22 @@ Set *set_union(Set *set1, Set *set2) {
             }
             break;
         case SET_STR:
-        case SET_FLOAT:
-        case SET_DOUBLE:
-        case SET_LONG:
-            g_print("Not yet implemented for set type %s\n", set_string_type(result->settype));
+            result->set = g_hash_table_new(g_str_hash, g_str_equal);
+            keys = g_hash_table_get_keys_as_array(set1->set, &length);
+            for (i = 0; i < length; i++) {
+                key = keys[i];
+                g_hash_table_add(result->set, key);
+            }
+            keys = g_hash_table_get_keys_as_array(set2->set, &length);
+            for (i = 0; i < length; i++) {
+                if (!g_hash_table_contains(set1->set, keys[i])) {
+                    g_hash_table_add(result->set, keys[i]);
+                }
+            }
+            break;
         default:
-            g_free(result);
+            fprintf(stderr, "Not yet implemented for set type %s\n", set_string_type(result->settype));
+            free(result);
             return NULL;
     }
 
@@ -278,7 +305,42 @@ Set *set_union(Set *set1, Set *set2) {
 void set_free(Set *set) {
     if (set) {
         g_hash_table_destroy(set->set);
-        g_free(set);
+        free(set);
     }
 }
 
+void set_print(Set *set) {
+    AocArrayPtr values;
+    if (set == NULL) {
+        fprintf(stderr, "Set is undefined\n");
+        return;
+    }
+
+    values = set_get_values(set);
+    if (aoc_array_length(values) == 0) {
+        printf("Set is empty\n");
+        return;
+    }
+    switch(set->settype) {
+        case SET_INT:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                g_print("%s%d", i == 0 ? "{":", ", aoc_int_array_index(values, i));
+            }
+            g_print("}\n");
+            break;
+        case SET_CHAR:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                g_print("%s'%c'", i == 0 ? "{":", ", aoc_char_array_index(values, i));
+            }
+            g_print("}\n");
+            break;
+        case SET_STR:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                g_print("%s'%s'", i == 0 ? "{":", ", aoc_str_array_index(values, i));
+            }
+            g_print("}\n");
+            break;
+        default:
+            break;
+    }
+}
