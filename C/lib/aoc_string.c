@@ -158,6 +158,14 @@ char *strdup_printf(const char *format, ...) {
     return string;
 }
 
+void aoc_str_freev(char **str_array) {
+    if (str_array) {
+        for (size_t i = 0; str_array[i] != NULL; i++) {
+            free(str_array[i]);
+        }
+        free(str_array);
+    }
+}
 /**
  * stpcpy - copy a string from src to dest returning a pointer to the new end
  *          of dest, including src's %NUL-terminator. May overrun dest.

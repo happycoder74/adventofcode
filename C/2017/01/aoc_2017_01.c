@@ -4,6 +4,7 @@
 #include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
 typedef struct {
     int *data;
@@ -32,7 +33,7 @@ int_array *get_input_bare(char *fn, int year, int day) {
         return_array->data[i++] = c - '0';
     }
 
-    return_array->len = i;
+    aoc_array_length(return_array) = i;
 
     fclose(fp);
     return return_array;
@@ -43,8 +44,8 @@ int solve_part_1(int_array *data, int step) {
 
     int sum = 0;
 
-    for (i = 0; i < data->len; i++) {
-        j = (i + step) % data->len;
+    for (i = 0; i < aoc_array_length(data); i++) {
+        j = (i + step) % aoc_array_length(data);
         if (data->data[i] == data->data[j]) {
             sum += data->data[i];
         }
@@ -54,7 +55,7 @@ int solve_part_1(int_array *data, int step) {
 }
 
 int solve_part_2(int_array *data) {
-    return solve_part_1(data, data->len / 2);
+    return solve_part_1(data, aoc_array_length(data) / 2);
 }
 
 int main(int argc, char **argv) {

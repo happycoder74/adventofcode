@@ -22,7 +22,7 @@ void *solve_part_1(AocData_t *data) {
     unsigned int i;
 
     count = 0;
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         if(is_valid(aoc_str_array_index(data->data, i))) {
             count++;
         }
@@ -35,16 +35,16 @@ void *solve_part_2(AocData_t *data) {
     unsigned int i, j;
     int count = 0;
     for (i = 0; i < 3; i++) {
-        int_array[i] = malloc(sizeof(int) * data->data->len);
+        int_array[i] = malloc(sizeof(int) * aoc_data_length(data));
     }
 
-    for (i = 0; i < data->data->len; i++) {
+    for (i = 0; i < aoc_data_length(data); i++) {
         sscanf(aoc_str_array_index(data->data, i), "%d %d %d",
                 &int_array[0][i], &int_array[1][i], &int_array[2][i]);
     }
 
     for (j = 0; j < 3; j++) {
-        for (i = 0; i < data->data->len - 2; i += 3) {
+        for (i = 0; i < aoc_data_length(data) - 2; i += 3) {
             if (is_valid_i(int_array[j][i], int_array[j][i + 1], int_array[j][i + 2]))
                 count++;
         }

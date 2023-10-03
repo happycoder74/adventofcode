@@ -48,7 +48,7 @@ bool check_rules(int number, int part) {
 
 AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr return_array = aoc_array_new(sizeof(int));
-    char **str = g_strsplit(aoc_str_array_index(data, 0), "-", 0);
+    char **str = aoc_str_split(aoc_str_array_index(data, 0), "-", 0);
     int start, end;
     start = atoi(str[0]);
     end = atoi(str[1]);
@@ -56,6 +56,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     aoc_int_array_append(return_array, start);
     aoc_int_array_append(return_array, end);
 
+    aoc_str_freev(str);
     return return_array;
 }
 

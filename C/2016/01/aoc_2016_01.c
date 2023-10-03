@@ -6,7 +6,7 @@
 #include "aoc_array.h"
 #include "aoc_string.h"
 
-int solution(AocArrayPtr data, gboolean part_two) {
+int solution(AocArrayPtr data, int part_two) {
     char **split_string;
     int i;
     int *pos;
@@ -46,7 +46,7 @@ int solution(AocArrayPtr data, gboolean part_two) {
     if (part_two) {
         g_hash_table_add(locations, strdup_printf("(%d, %d)", pos[0], pos[1]));
     }
-    split_string = g_strsplit(aoc_str_array_index(data, 0), ", ", 0);
+    split_string = aoc_str_split(aoc_str_array_index(data, 0), ", ", 0);
     int index = 0;
     int s = 0;
     step = (step_t *)malloc(sizeof(step_t));
@@ -67,6 +67,7 @@ int solution(AocArrayPtr data, gboolean part_two) {
         }
     }
     free(step);
+    aoc_str_freev(split_string);
     aoc_array_free(directions);
 
     return abs(pos[0] + pos[1]);

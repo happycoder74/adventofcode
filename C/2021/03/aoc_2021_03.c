@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_array.h"
@@ -29,14 +30,14 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 int common_value(AocArrayPtr data, int position, int method) {
     int sum = 0;
     AocArrayPtr bitfield;
-    gdouble check;
+    double check;
     size_t i;
 
-    for (i = 0; i < data->len; i++) {
+    for (i = 0; i < aoc_array_length(data); i++) {
         bitfield = aoc_array_index(data, i);
         sum += aoc_int_array_index(bitfield, position);
     }
-    check = (gdouble) sum / data->len;
+    check = (double) sum / aoc_array_length(data);
     if (method == 1) { // 1 = most, 0 = least
         return check < 0.5;
     } else {
@@ -61,7 +62,7 @@ AocArrayPtr reduce(AocArrayPtr data, int value, int position) {
 
 void print_bitfield(AocArrayPtr bitfield) {
     size_t i;
-    for (i = 0; i < bitfield->len; i++) {
+    for (i = 0; i < aoc_array_length(bitfield); i++) {
         int val = aoc_int_array_index(bitfield, i);
         printf("%d ", val);
     }
@@ -70,7 +71,7 @@ void print_bitfield(AocArrayPtr bitfield) {
 
 void print_bitfields_all(AocArrayPtr bitfields) {
     size_t i;
-    for (i = 0; i < bitfields->len; i++) {
+    for (i = 0; i < aoc_array_length(bitfields); i++) {
         print_bitfield(aoc_array_index(bitfields, i));
     }
 }
@@ -84,7 +85,7 @@ void *solve_part_1(AocData_t *data) {
 
     for (j = 0; j < aoc_array_length(bitfield); j++) {
         count = 0;
-        for (i = 0; i < aoc_data_get(data)->len; i++) {
+        for (i = 0; i < aoc_data_length(data); i++) {
             bitfield = aoc_array_index(aoc_data_get(data), i);
             count += aoc_int_array_index(bitfield, j);
         }
@@ -107,8 +108,8 @@ int bitfield_sum(AocArrayPtr bitfield) {
     int value = 0;
     size_t i;
 
-    for (i = 0; i < bitfield->len; i++) {
-        int j = bitfield->len - 1 - i;
+    for (i = 0; i < aoc_array_length(bitfield); i++) {
+        int j = aoc_array_length(bitfield) - 1 - i;
         int val = aoc_int_array_index(bitfield, i);
         value += val * (int)pow(2, j);
     }
@@ -136,11 +137,11 @@ void *solve_part_2(AocData_t *data) {
             co2_scrubber = reduce(aoc_data_get(data), !value, j);
         } else {
             // Oxy generator:
-            if (oxygen_generator->len > 1) {
+            if (aoc_array_length(oxygen_generator) > 1) {
                 value = common_value(oxygen_generator, j, 1);
                 oxygen_generator = reduce(oxygen_generator, value, j);
             }
-            if (co2_scrubber->len > 1) {
+            if (aoc_array_length(co2_scrubber) > 1) {
                 value = common_value(co2_scrubber, j, 0);
                 co2_scrubber = reduce(co2_scrubber, value, j);
             }

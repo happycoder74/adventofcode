@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_array.h"

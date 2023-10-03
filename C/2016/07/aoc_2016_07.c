@@ -5,6 +5,7 @@
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
 void *solve_part_1(AocData_t *aoc_data) {
     GError *regex_error = NULL;
@@ -28,7 +29,7 @@ void *solve_part_1(AocData_t *aoc_data) {
         exit(EXIT_FAILURE);
     }
 
-    for (i = 0; i < data->len; i++) {
+    for (i = 0; i < aoc_array_length(data); i++) {
         str = aoc_str_array_index(data, i);
         g_regex_match(abba, str, 0, &matchInfo);
         g_regex_match(hypernet, str, 0, &hypernetInfo);
@@ -80,7 +81,7 @@ void *solve_part_2(AocData_t *aoc_data) {
     GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &err);
     count = 0;
 
-    for (unsigned int i = 0; i < data->len; i++) {
+    for (unsigned int i = 0; i < aoc_array_length(data); i++) {
         string = aoc_str_array_index(data, i);
         g_regex_match(hypernet, string, 0, &hypernetInfo);
 

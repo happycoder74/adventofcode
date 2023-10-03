@@ -27,7 +27,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     boards = aoc_array_new(sizeof(Board *));
 
     line = aoc_str_array_index(data, 0);
-    split_line = g_strsplit(line, ",", -1);
+    split_line = aoc_str_split(line, ",", -1);
     int i = 0;
     while(split_line[i] != NULL) {
         aoc_int_array_append(numbers, atoi(split_line[i++]));
@@ -50,6 +50,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     }
 
     aoc_array_append(return_data, boards);
+    aoc_str_freev(split_line);
 
     return return_data;
 }

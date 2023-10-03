@@ -8,7 +8,7 @@
 
 AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr return_array = aoc_array_new(sizeof(int));
-    char **instructions = g_strsplit(aoc_str_array_index(data, 0), ",", 0);
+    char **instructions = aoc_str_split(aoc_str_array_index(data, 0), ",", 0);
     char **p = instructions;
     int opcode;
 
@@ -17,7 +17,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         aoc_int_array_append(return_array, opcode);
         p++;
     }
-    g_strfreev(instructions);
+    aoc_str_freev(instructions);
 
     return return_array;
 }
