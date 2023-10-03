@@ -5,6 +5,7 @@
 #include "aoc_array.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_timer.h"
 
 AocArray *clean_input(AocArray *data) {
     AocArrayPtr return_data = aoc_array_new(sizeof(int));
