@@ -7,7 +7,6 @@
 // aoc_timer.h and aoc_array.h included for legacy support
 // will be removed when all solutions are converted
 #include "aoc_timer.h"
-#include "aoc_array.h"
 
 // AoC Data Structure macros
 #define aoc_data_new(filename, year, day)       (aoc_data_new_clean(filename, year, day, NULL))
@@ -30,6 +29,7 @@ Line line_new(Point, Point);
 Point *point_new_m(int, int);
 Point point_new(int, int);
 void point_print(Point);
+char *point_to_string(Point);
 void line_array_print(AocArrayPtr lines);
 int line_length(Line);
 

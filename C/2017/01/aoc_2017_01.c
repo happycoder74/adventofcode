@@ -4,6 +4,7 @@
 #include <glib.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
 typedef struct {
     int *data;
