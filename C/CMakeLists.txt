@@ -22,14 +22,7 @@ set(AOC_LIB_SOURCES
 	${CMAKE_SOURCE_DIR}/lib/aoc_hash.c
 )
 
-add_library(aoc
-	${AOC_LIB_SOURCES}
-	)
-target_include_directories(aoc PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(aoc PRIVATE ${GLIB_INCLUDE_DIRS})
-target_compile_options(aoc PRIVATE
-    -Wall -Wextra -Wpedantic -Werror -Wno-error=unused -Wno-error=unused-parameter
-	)
+add_subdirectory(lib)
 
 foreach (Y ${AOC_YEARS})
 	message(${CMAKE_SOURCE_DIR}/${Y}/CMakeLists.txt)
