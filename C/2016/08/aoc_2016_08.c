@@ -9,6 +9,7 @@
 #include "aoc_string.h"
 #include "aoc_grid.h"
 #include "aoc_array.h"
+#include "aoc_timer.h"
 
 enum command_type {INIT, ROW, COL};
 
