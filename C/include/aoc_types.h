@@ -3,7 +3,7 @@
 
 #include <glib.h>
 
-typedef GArray AocArray;
+typedef GArray  AocArray;
 typedef GArray* AocArrayPtr;
 
 typedef struct {

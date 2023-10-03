@@ -4,6 +4,7 @@
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_array.h"
 
 int marker(AocArrayPtr data, size_t window) {
     size_t i, j;

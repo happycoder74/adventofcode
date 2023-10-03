@@ -3,6 +3,7 @@
 #include <string.h>
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
 int get_requested(int row, int col) {
     if (row == 0)

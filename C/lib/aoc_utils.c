@@ -1,4 +1,3 @@
-#include "aoc_utils.h"
 #include <glib.h>
 #include <math.h>
 #include <stdio.h>
@@ -6,10 +5,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include "glibconfig.h"
 
+#include "aoc_utils.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
-#include "glibconfig.h"
 
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
@@ -26,7 +26,7 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
 //     return NULL;
 // }
 
-AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, GArray *(*clean_function)(GArray *)) {
+AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
     data->filename = strdup(filename);
@@ -47,7 +47,7 @@ void aoc_data_free(AocData_t *data) {
     }
 
     if (data->data) {
-        g_array_free((GArray *)data->data, TRUE);
+        aoc_array_free((GArray *)data->data);
     }
     free(data);
 }
@@ -85,13 +85,13 @@ GSList *get_input_list(char *filename, int year, int day) {
 AocArrayPtr get_input_new(char *filename, int year, int day) {
     FILE *fp;
     AocArrayPtr data;
-    gchar line[10000];
-    gchar *data_line;
-    gchar path[255];
-    gchar *file = NULL;
+    char line[10000];
+    char *data_line;
+    char path[255];
+    char *file = NULL;
 
     sprintf(path, "../../data/%d/%02d/", year, day);
-    data = g_array_new(TRUE, TRUE, sizeof(char *));
+    data = aoc_str_array_new();
     file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {

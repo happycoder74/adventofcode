@@ -5,6 +5,7 @@
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
 
 void *solve_part_1(AocData_t *aoc_data) {
     GError *regex_error = NULL;
