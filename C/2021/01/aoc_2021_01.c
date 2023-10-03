@@ -3,6 +3,7 @@
 #include "aoc_array.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_timer.h"
 
 void *solve_part_1(AocData_t *data) {
     size_t i;

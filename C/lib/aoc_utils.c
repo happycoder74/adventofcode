@@ -1,15 +1,14 @@
-#include <glib.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include "glibconfig.h"
 
 #include "aoc_utils.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
+#include "aoc_list.h"
 
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
@@ -54,14 +53,14 @@ void aoc_data_free(AocData_t *data) {
 
 
 
-GSList *get_input_list(char *filename, int year, int day) {
+AocSList *get_input_list(char *filename, int year, int day) {
     FILE *fp;
-    GSList *data = NULL;
-    gchar *line = NULL;
+    AocSList *data = NULL;
+    char *line = NULL;
     size_t line_length = 0;
-    gchar *data_line;
-    gchar *path;
-    gchar *file = NULL;
+    char *data_line;
+    char *path;
+    char *file = NULL;
 
     path = strdup_printf("../../../data/%d/%02d/", year, day);
     file = strconcat(path, filename);
@@ -73,13 +72,13 @@ GSList *get_input_list(char *filename, int year, int day) {
 
     while ((getline(&line, &line_length, fp)) != -1) {
         data_line = str_trim(strdup(line));
-        data = g_slist_prepend(data, data_line);
+        data = aoc_slist_prepend(data, data_line);
     }
 
-    g_free(file);
-    g_free(path);
+    free(file);
+    free(path);
 
-    return g_slist_reverse(data);
+    return aoc_slist_reverse(data);
 }
 
 AocArrayPtr get_input_new(char *filename, int year, int day) {
@@ -130,7 +129,7 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     }
 
 #ifdef DEBUG
-    g_print("%s\n", file);
+    printf("%s\n", file);
 #endif
 
     if (!(fp = fopen(file, "r"))) {
@@ -153,9 +152,9 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     return data;
 }
 
-gint max(gint *arr, gint length) {
-    gint max = arr[0];
-    gint i;
+int max(int *arr, int length) {
+    int max = arr[0];
+    int i;
 
     for (i = 1; i < length; i++) {
         if (arr[i] > max) {
@@ -165,9 +164,9 @@ gint max(gint *arr, gint length) {
     return max;
 }
 
-gint min(gint *arr, gint length) {
-    gint min = arr[0];
-    gint i;
+int min(int *arr, int length) {
+    int min = arr[0];
+    int i;
 
     for (i = 1; i < length; i++) {
         if (arr[i] < min) {
@@ -177,9 +176,9 @@ gint min(gint *arr, gint length) {
     return min;
 }
 
-gint int_array_max(gint *arr, gint length) {
-    gint max = arr[0];
-    gint i;
+int int_array_max(int *arr, int length) {
+    int max = arr[0];
+    int i;
 
     for (i = 1; i < length; i++) {
         if (arr[i] > max) {
@@ -189,9 +188,9 @@ gint int_array_max(gint *arr, gint length) {
     return max;
 }
 
-gint int_array_min(gint *arr, gint length) {
-    gint min = arr[0];
-    gint i;
+int int_array_min(int *arr, int length) {
+    int min = arr[0];
+    int i;
 
     for (i = 1; i < length; i++) {
         if (arr[i] < min) {

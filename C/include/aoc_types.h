@@ -25,4 +25,9 @@ typedef struct line {
     int stepy;
 } Line;
 
+typedef struct AocSList {
+    struct AocSList *next;
+    void *data;
+} AocSList;
+
 #endif

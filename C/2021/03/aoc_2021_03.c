@@ -6,6 +6,7 @@
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_array.h"
+#include "aoc_timer.h"
 
 AocArrayPtr clean_input(AocArrayPtr data) {
     char *line;

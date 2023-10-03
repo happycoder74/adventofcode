@@ -5,6 +5,7 @@
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_array.h"
+#include "aoc_timer.h"
 
 int fuel_cost(int fuel) {
     fuel = (fuel / 3) - 2;
