@@ -20,6 +20,7 @@ set(AOC_LIB_SOURCES
 	${CMAKE_SOURCE_DIR}/lib/aoc_string.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_hash.c
+	${CMAKE_SOURCE_DIR}/lib/aoc_list.c
 )
 
 add_subdirectory(lib)

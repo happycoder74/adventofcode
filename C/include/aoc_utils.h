@@ -6,7 +6,6 @@
 //
 // aoc_timer.h and aoc_array.h included for legacy support
 // will be removed when all solutions are converted
-#include "aoc_timer.h"
 
 // AoC Data Structure macros
 #define aoc_data_new(filename, year, day)       (aoc_data_new_clean(filename, year, day, NULL))
@@ -35,13 +34,13 @@ int line_length(Line);
 
 Point *line_intersection(Line line1, Line line2, Point *intersection_point);
 Point point_difference(Point, Point);
-guint point_hash(const void *);
+unsigned int point_hash(const void *);
 int point_equal(const void *, const void *);
 int point_manhattan_distance(Point, Point);
 int point_distance(Point, Point);
 bool point_on_line(Point p, Line line);
 
-GSList *get_input_list(char *filename, int year, int day);
+AocSList *get_input_list(char *filename, int year, int day);
 AocArrayPtr get_input(char *filename, int year, int day);
 AocArrayPtr get_input_new(char *filename, int year, int day);
 
