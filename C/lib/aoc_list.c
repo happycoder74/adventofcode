@@ -2,6 +2,23 @@
 #include "aoc_types.h"
 #include "aoc_list.h"
 
+AocSList *aoc_slist_append(AocSList *list, void *data) {
+    AocSList *new_list = malloc(sizeof(AocSList));
+    new_list->next = NULL;
+    new_list->data = data;
+
+    if (list) {
+        while (list->next) {
+            list = list->next;
+        }
+        list->next = new_list;
+        return list;
+    }
+
+    return new_list;
+}
+
+
 AocSList *aoc_slist_prepend(AocSList *list, void *data) {
     AocSList *new_list = malloc(sizeof(AocSList));
 
