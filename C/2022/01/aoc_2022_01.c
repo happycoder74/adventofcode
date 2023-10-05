@@ -35,7 +35,7 @@ int sort_int_desc(const void *a, const void *b) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    g_array_sort(data->data, sort_int_desc);
+    aoc_int_array_sort(aoc_data_get(data), sort_int_desc);
     return strdup_printf("%d", aoc_int_array_index(aoc_data_get(data), 0));
 }
 

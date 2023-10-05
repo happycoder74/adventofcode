@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,7 @@
 #include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_list.h"
+#include "aoc_types.h"
 
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
@@ -100,7 +102,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
 
     while (fgets(line, 10000, fp)) {
         data_line = str_trim(strdup(line));
-        g_array_append_val(data, data_line);
+        aoc_str_array_append(data, data_line);
     }
 
     if (file) {
@@ -108,7 +110,6 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     return data;
-    ;
 }
 
 AocArrayPtr get_input(char *filename, int year, int day) {
@@ -305,19 +306,24 @@ int point_distance(Point p0,  Point p1) {
 }
 
 void point_print(Point p) {
-    g_print("Point (%d, %d)\n", p.x, p.y);
+    printf("Point (%d, %d)\n", p.x, p.y);
     return;
 }
 
-guint point_hash(gconstpointer p) {
+char *point_to_string(Point p, char *buf) {
+    sprintf(buf, "(%d, %d)", p.x, p.y);
+    return buf;
+}
+
+unsigned int point_hash(const void *p) {
     Point *point = (Point *)p;
-    guint64 *int_hash = g_new(guint64, 1);
+    uint64_t *int_hash = (uint64_t *)malloc(sizeof(uint64_t));
     *int_hash = point->x;
     *int_hash <<= sizeof(UINT_MAX) * 4;
     *int_hash ^= point->y;
 
-    guint return_value = g_int64_hash(int_hash);
-    g_free(int_hash);
+    unsigned int return_value = g_int64_hash(int_hash);
+    free(int_hash);
     return return_value;
 }
 
@@ -407,7 +413,7 @@ Point point_new(int x, int y) {
 }
 
 Point *point_new_m(int x, int y) {
-    Point *p = g_new(Point, 1);
+    Point *p = (Point *)malloc(sizeof(Point));
     p->x = x;
     p->y = y;
 
@@ -451,9 +457,9 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     return intersection_point;
 }
 
-void line_array_print(GArray *lines) {
-    for (guint i = 0; i < lines->len; i++) {
-        line_print(g_array_index(lines, Line, i));
+void line_array_print(AocArrayPtr lines) {
+    for (size_t i = 0; i < lines->len; i++) {
+        line_print(aoc_line_array_index(lines, i));
     }
 }
 
