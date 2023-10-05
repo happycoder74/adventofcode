@@ -64,7 +64,11 @@ AocSList *get_input_list(char *filename, int year, int day) {
     char *path;
     char *file = NULL;
 
-    path = strdup_printf("../../../data/%d/%02d/", year, day);
+    char *data_location = NULL;
+    if((data_location = getenv("AOC_DATA_LOCATION")))
+        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
+    else
+        path = strdup_printf("../../data/%d/%02d/", year, day);
     file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
@@ -88,10 +92,14 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     AocArrayPtr data;
     char line[10000];
     char *data_line;
-    char path[255];
+    char *path;
     char *file = NULL;
 
-    sprintf(path, "../../data/%d/%02d/", year, day);
+    char *data_location;
+    if((data_location = getenv("AOC_DATA_LOCATION")))
+        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
+    else
+        path = strdup_printf("../../data/%d/%02d/", year, day);
     data = aoc_str_array_new();
     file = strconcat(path, filename);
 
@@ -121,7 +129,11 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     gchar *path;
     gchar *file = NULL;
     char wd[255];
-    path = strdup_printf("../../data/%d/%02d/", year, day);
+    char *data_location = NULL;
+    if((data_location = getenv("AOC_DATA_LOCATION")))
+        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
+    else
+        path = strdup_printf("../../data/%d/%02d/", year, day);
     data = aoc_str_array_new();
     if (!strcmp(filename, "input.txt")) {
         file = strconcat(path, filename);
