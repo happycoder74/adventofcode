@@ -8,7 +8,7 @@
 #include "aoc_timer.h"
 
 AocArray *clean_input(AocArray *data) {
-    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    AocArrayPtr return_data = aoc_int32_array_new();
     char *row;
     size_t i = 0;
     uint32_t elf_sum = 0;
@@ -17,14 +17,14 @@ AocArray *clean_input(AocArray *data) {
         if (strlen(row) > 0) {
             elf_sum += strtoul(row, NULL, 0);
         } else {
-            aoc_int_array_append(return_data, elf_sum);
+            aoc_int32_array_append(return_data, elf_sum);
             elf_sum = 0;
         }
     }
     if (elf_sum != 0)
-        aoc_int_array_append(return_data, elf_sum);
+        aoc_int32_array_append(return_data, elf_sum);
 
-    aoc_array_free(data);
+    aoc_array_free(data, 0);
     return return_data;
 }
 
