@@ -135,7 +135,7 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
     data = aoc_str_array_new();
-    if (!strcmp(filename, "input.txt")) {
+    if (str_endswith(filename, "input.txt")) {
         file = strconcat(path, filename);
     } else {
         file = filename;

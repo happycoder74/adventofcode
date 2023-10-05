@@ -19,6 +19,11 @@ function (AOC_GENERATE YEAR DAY)
         DEPENDS aoc_${YEAR}_${DAY}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
+    add_custom_target(test_${YEAR}_${DAY}
+        COMMAND aoc_${YEAR}_${DAY} --test
+        DEPENDS aoc_${YEAR}_${DAY}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
 endfunction()
 
 function(AOC_GENERATE_YEAR AOC_YEAR)
