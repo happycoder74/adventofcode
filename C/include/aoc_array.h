@@ -108,9 +108,16 @@
 // Integer (int32_t) array function macros
 #define aoc_int_array_new()                     (aoc_int32_array_new())
 #define aoc_int_array_index(_arr, _index)       (aoc_int32_array_index(_arr, _index))
-#define aoc_int_array_append(_arr, _val)        (aoc_int32_array_append(_arr, _val))
+#define aoc_int_array_append(_arr, _val)        aoc_int32_array_append(_arr, _val)
 #define aoc_int_array_sort(_arr, func)          (aoc_array_sort(_arr, func))
 
+// Point array function macros
+#define aoc_ptr_array_new(size_)              (aoc_array_new(AOC_ARRAY_PTR, 1))
+#define aoc_ptr_array_index(arr_, index_)     ((void *)(*(uint64_t *)(aoc_array_index(arr_, index_))))
+#define aoc_ptr_array_append(arr_, value_)    (aoc_array_append(arr_, &(value_)));
+#define aoc_ptr_array_free(arr_)              (aoc_array_free(arr_, false))
+#define aoc_ptr_array_free_all(arr_)          (aoc_array_free(arr_, true))
+#define aoc_ptr_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
 
 
 
@@ -125,5 +132,6 @@ void aoc_array_print(AocArray *);
 void aoc_array_append(AocArray *, void *);
 void *aoc_array_index(AocArray *, size_t);
 void aoc_array_free(AocArray *, int);
+AocArrayPtr aoc_array_remove_index(AocArrayPtr, size_t);
 
 #endif // !__AOC_ARRAY_H__
