@@ -17,7 +17,7 @@ function (AOC_GENERATE YEAR DAY)
     add_custom_target(run_${YEAR}_${DAY}
         COMMAND aoc_${YEAR}_${DAY}
         DEPENDS aoc_${YEAR}_${DAY}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/build
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
 endfunction()
 
@@ -39,7 +39,7 @@ function(AOC_GENERATE_YEAR AOC_YEAR)
     add_custom_target(
         run_${AOC_YEAR}
         ${custom_target_args}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/build
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
 endfunction()
 
