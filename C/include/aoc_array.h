@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include <glib.h>
 #include "aoc_types.h"
 #include <stdint.h>
 
