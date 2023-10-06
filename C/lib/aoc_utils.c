@@ -6,6 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "glib.h"
+
 #include "aoc_utils.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
@@ -387,16 +389,16 @@ bool is_vertical(Line line) { return line.p0.x == line.p1.x; }
 
 bool is_parallel(Line line1, Line line2) {
     if (((line1.p0.x - line1.p1.x) == 0) && ((line2.p0.x - line2.p1.x) == 0))
-        return TRUE;
+        return true;
     if (((line1.p0.y - line1.p1.y) == 0) && ((line2.p0.y - line2.p1.y) == 0))
-        return TRUE;
-    return FALSE;
+        return true;
+    return false;
 
 }
 
 bool is_diagonal(Line line) {
     if(is_vertical(line))
-        return FALSE;
+        return false;
     return (abs((line.p1.y - line.p0.y) / (line.p1.x - line.p0.x)) == 1);
 }
 
