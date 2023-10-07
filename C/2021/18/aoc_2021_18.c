@@ -255,10 +255,10 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     unsigned int i;
     SFNumber *sn;
 
-    numbers = aoc_array_sized_new(sizeof(SFNumber *), aoc_array_length(data));
+    numbers = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
     for (i = 0; i < aoc_array_length(data); i++){
         sn = sf_number_from_string((char *) aoc_str_array_index(data, i));
-        aoc_str_array_append(numbers, sn);
+        aoc_ptr_array_append(numbers, sn);
     }
 
     return numbers;
@@ -268,9 +268,9 @@ void *solve_part_1(AocData_t *data) {
     unsigned int i;
     SFNumber *sn;
 
-    sn = aoc_array_index(aoc_data_get(data), 0);
+    sn = aoc_ptr_array_index(aoc_data_get(data), 0);
     for (i = 1; i < aoc_data_length(data); i++) {
-        sn = sf_number_add(sn, aoc_array_index(aoc_data_get(data), i));
+        sn = sf_number_add(sn, aoc_ptr_array_index(aoc_data_get(data), i));
         sn = sf_number_reduce(sn);
     }
     return strdup_printf("%d", sf_number_magnitude(sn));
@@ -285,13 +285,13 @@ void *solve_part_2(AocData_t *data) {
 
     for (i = 0; i < aoc_data_length(data); i++) {
         for (j = i + 1; j < aoc_data_length(data); j++) {
-            sn = sf_number_add(aoc_array_index(aoc_data_get(data), i),
-                               aoc_array_index(aoc_data_get(data), j));
+            sn = sf_number_add(aoc_ptr_array_index(aoc_data_get(data), i),
+                               aoc_ptr_array_index(aoc_data_get(data), j));
             sn = sf_number_reduce(sn);
             mag = sf_number_magnitude(sn);
             mag_max = MAX(mag, mag_max);
-            sn = sf_number_add(aoc_array_index(aoc_data_get(data), j),
-                               aoc_array_index(aoc_data_get(data), i));
+            sn = sf_number_add(aoc_ptr_array_index(aoc_data_get(data), j),
+                               aoc_ptr_array_index(aoc_data_get(data), i));
             sn = sf_number_reduce(sn);
             mag = sf_number_magnitude(sn);
             mag_max = MAX(mag, mag_max);

@@ -35,8 +35,8 @@ int sort_int_desc(const void *a, const void *b) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    aoc_int_array_sort(aoc_data_get(data), sort_int_desc);
-    return strdup_printf("%d", aoc_int_array_index(aoc_data_get(data), 0));
+    aoc_int32_array_sort(aoc_data_get(data), sort_int_desc);
+    return strdup_printf("%d", aoc_int32_array_index(aoc_data_get(data), 0));
 }
 
 void *solve_part_2(AocData_t *data) {
@@ -47,14 +47,14 @@ void *solve_part_2(AocData_t *data) {
     // we can just return the sum of the three first
     // items.
     for(i = 0; i < 3; i++) {
-        return_sum += aoc_int_array_index(aoc_data_get(data), 0);
+        return_sum += aoc_int32_array_index(aoc_data_get(data), 0);
     }
     return strdup_printf("%d", return_sum);
 }
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
