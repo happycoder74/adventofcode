@@ -17,13 +17,13 @@ int fuel_cost(int fuel) {
 }
 
 AocArrayPtr clean_data(AocArrayPtr data) {
-    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    AocArrayPtr return_data = aoc_int32_array_new();
     unsigned int i;
     unsigned int val;
 
     for (i = 0; i < aoc_array_length(data); i++) {
         val = atoi(aoc_str_array_index(data, i));
-        aoc_int_array_append(return_data, val);
+        aoc_int32_array_append(return_data, val);
     }
     return return_data;
 }
@@ -34,7 +34,7 @@ void *solve_part_1(AocData_t *data) {
     int val;
 
     for (i = 0; i < aoc_data_length(data); i++) {
-        val = aoc_int_array_index(data->data, i);
+        val = aoc_int32_array_index(aoc_data_get(data), i);
         fuel += (val / 3) - 2;
     }
     return strdup_printf("%d", fuel);
@@ -47,7 +47,7 @@ void *solve_part_2(AocData_t *data) {
     unsigned int sum_fuel = 0;
 
     for (i = 0; i < aoc_data_length(data); i++) {
-        val = aoc_int_array_index(aoc_data_get(data), i);
+        val = aoc_int32_array_index(aoc_data_get(data), i);
         fuel = (val / 3) - 2;
         sum_fuel += fuel + fuel_cost(fuel);
     }
@@ -56,7 +56,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
