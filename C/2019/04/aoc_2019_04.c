@@ -48,14 +48,14 @@ bool check_rules(int number, int part) {
 }
 
 AocArrayPtr clean_input(AocArrayPtr data) {
-    AocArrayPtr return_array = aoc_array_new(sizeof(int));
+    AocArrayPtr return_array = aoc_int32_array_new();
     char **str = aoc_str_split(aoc_str_array_index(data, 0), "-", 0);
     int start, end;
     start = atoi(str[0]);
     end = atoi(str[1]);
 
-    aoc_int_array_append(return_array, start);
-    aoc_int_array_append(return_array, end);
+    aoc_int32_array_append(return_array, start);
+    aoc_int32_array_append(return_array, end);
 
     aoc_str_freev(str);
     return return_array;
@@ -63,8 +63,8 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
 void *solve_part_1(AocData_t *data) {
     int count = 0;
-    int start = aoc_int_array_index(aoc_data_get(data), 0);
-    int end = aoc_int_array_index(aoc_data_get(data), 1);
+    int start = aoc_int32_array_index(aoc_data_get(data), 0);
+    int end = aoc_int32_array_index(aoc_data_get(data), 1);
 
     for (int i = start; i <= end; i++) {
         if (check_rules(i, 1))
@@ -75,8 +75,8 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     int count = 0;
-    int start = aoc_int_array_index(aoc_data_get(data), 0);
-    int end = aoc_int_array_index(aoc_data_get(data), 1);
+    int start = aoc_int32_array_index(aoc_data_get(data), 0);
+    int end = aoc_int32_array_index(aoc_data_get(data), 1);
 
     for (int i = start; i <= end; i++) {
         if (check_rules(i, 2)) {
@@ -88,7 +88,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1); } return NULL;
 }
