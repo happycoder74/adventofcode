@@ -10,7 +10,7 @@
 
 AocArrayPtr clean_input(AocArrayPtr data) {
     char **split_string;
-    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    AocArrayPtr return_data = aoc_int_array_new();
     int value;
     split_string = aoc_str_split(aoc_str_array_index(data, 0), ",", -1);
     for (int i = 0; split_string[i] != NULL; i++) {
@@ -19,7 +19,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     }
 
     aoc_str_freev(split_string);
-    aoc_array_free(data);
+    aoc_int32_array_free(data);
     return return_data;
 }
 

@@ -14,7 +14,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr return_data;
     Line line;
 
-    return_data = aoc_array_new(sizeof(Line));
+    return_data = aoc_line_array_new();
     for (unsigned int i = 0; i < aoc_array_length(data); i++) {
         dataline = aoc_str_array_index(data, i);
         sscanf(dataline, "%d,%d -> %d,%d", &line.p0.x, &line.p0.y, &line.p1.x, &line.p1.y);
@@ -31,7 +31,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         aoc_line_array_append(return_data, line);
     }
 
-    aoc_array_free(data);
+    aoc_line_array_free(data);
     return return_data;
 }
 
@@ -47,8 +47,8 @@ int mark_points(GHashTable *hashtable, Line line, int diagonal) {
     }
 
     for (point = line.p0;
-            (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy));
-            point.x += line.stepx, point.y += line.stepy) {
+         (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy));
+         point.x += line.stepx, point.y += line.stepy) {
         if(g_hash_table_lookup_extended(hashtable, &point, NULL, &old_value)) {
             count++;
             value = (int)(int64_t)(old_value) + 1;
