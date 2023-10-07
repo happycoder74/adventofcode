@@ -20,24 +20,24 @@ int solution(AocArrayPtr data, int part_two) {
 
     step_t *step = (step_t *)malloc(sizeof(step_t));
 
-    directions = aoc_array_new(sizeof(int *));
+    directions = aoc_ptr_array_new();
     locations = g_hash_table_new(g_str_hash, g_str_equal);
     pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 1;
     pos[1] = 0;
-    aoc_str_array_append(directions, pos);
+    aoc_ptr_array_append(directions, pos);
     pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 0;
     pos[1] = 1;
-    aoc_str_array_append(directions, pos);
+    aoc_ptr_array_append(directions, pos);
     pos = (int *)malloc(sizeof(int)*2);
     pos[0] = -1;
     pos[1] = 0;
-    aoc_str_array_append(directions, pos);
+    aoc_ptr_array_append(directions, pos);
     pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 0;
     pos[1] = -1;
-    aoc_str_array_append(directions, pos);
+    aoc_ptr_array_append(directions, pos);
 
     pos = (int *)malloc(sizeof(int)*2);
     pos[0] = 0;
@@ -54,7 +54,7 @@ int solution(AocArrayPtr data, int part_two) {
         sscanf(split_string[i], "%c%d", &step->direction, &step->steps);
         index = index + (step->direction == 'R' ? 1 : -1);
         index = (index >= 0 ? index % 4 : 4 + (index % -4));
-        current = (int *)aoc_str_array_index(directions, index);
+        current = (int *)aoc_ptr_array_index(directions, index);
         for (s = 0; s < step->steps; s++) {
             pos[0] = pos[0] + current[0];
             pos[1] = pos[1] + current[1];
@@ -68,7 +68,7 @@ int solution(AocArrayPtr data, int part_two) {
     }
     free(step);
     aoc_str_freev(split_string);
-    aoc_array_free(directions);
+    aoc_ptr_array_free(directions);
 
     return abs(pos[0] + pos[1]);
 
@@ -76,11 +76,11 @@ int solution(AocArrayPtr data, int part_two) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    return strdup_printf("%d", solution(data->data, FALSE));
+    return strdup_printf("%d", solution(aoc_data_get(data), FALSE));
 }
 
 void *solve_part_2(AocData_t *data) {
-    return strdup_printf("%d", solution(data->data, TRUE));
+    return strdup_printf("%d", solution(aoc_data_get(data), TRUE));
 }
 
 void *solve_all(AocData_t *data) {

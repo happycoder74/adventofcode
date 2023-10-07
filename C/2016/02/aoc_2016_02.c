@@ -152,7 +152,7 @@ void *solve_part_1(AocData_t *data) {
     char *return_string;
 
     keypad = keypad_init(KP_STD);
-    return_string = strdup(keypad_get_code(keypad, data->data));
+    return_string = strdup(keypad_get_code(keypad, aoc_data_get(data)));
     keypad_destroy(keypad);
     return return_string;
 }
@@ -162,14 +162,14 @@ void *solve_part_2(AocData_t *data) {
     char *return_string;
 
     keypad = keypad_init(KP_ALT);
-    return_string = strdup(keypad_get_code(keypad, data->data));
+    return_string = strdup(keypad_get_code(keypad, aoc_data_get(data)));
     keypad_destroy(keypad);
     return return_string;
 }
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }

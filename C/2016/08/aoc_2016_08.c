@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include <unistd.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
@@ -25,7 +24,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     Instruction *instruction;
     AocArrayPtr instruction_list;
 
-    instruction_list = aoc_array_sized_new(sizeof(Instruction *), aoc_array_length(data));
+    instruction_list = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
@@ -33,17 +32,17 @@ AocArrayPtr clean_input(AocArrayPtr data) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = INIT;
             sscanf(line, "rect %dx%d", &instruction->value1, &instruction->value2);
-            g_array_append_val(instruction_list, instruction);
+            aoc_ptr_array_append(instruction_list, instruction);
         } else if (g_strstr_len(line, 10, "rotate col")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = COL;
             sscanf(line, "rotate column x=%d by %d", &instruction->value1, &instruction->value2);
-            g_array_append_val(instruction_list, instruction);
+            aoc_ptr_array_append(instruction_list, instruction);
         } else if (g_strstr_len(line, 10, "rotate row")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = ROW;
             sscanf(line, "rotate row y=%d by %d", &instruction->value1, &instruction->value2);
-            g_array_append_val(instruction_list, instruction);
+            aoc_ptr_array_append(instruction_list, instruction);
         }
     }
     return instruction_list;
@@ -132,8 +131,9 @@ void *solve_part_1(AocData_t *data) {
     grid->columns = 50;
     grid->grid = calloc((grid->rows * grid->columns), sizeof(int));
 
+    AocArrayPtr d = aoc_data_get(data);
     for (i = 0; i < aoc_data_length(data); i++) {
-        instruction = g_array_index(data->data, Instruction *, i);
+        instruction = aoc_ptr_array_index(d, i);
         switch(instruction->command) {
             case INIT:
                 init_area(grid, instruction);
@@ -167,7 +167,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }

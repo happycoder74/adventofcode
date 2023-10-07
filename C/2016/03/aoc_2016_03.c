@@ -23,7 +23,7 @@ void *solve_part_1(AocData_t *data) {
 
     count = 0;
     for (i = 0; i < aoc_data_length(data); i++) {
-        if(is_valid(aoc_str_array_index(data->data, i))) {
+        if(is_valid(aoc_str_array_index(aoc_data_get(data), i))) {
             count++;
         }
     }
@@ -39,7 +39,7 @@ void *solve_part_2(AocData_t *data) {
     }
 
     for (i = 0; i < aoc_data_length(data); i++) {
-        sscanf(aoc_str_array_index(data->data, i), "%d %d %d",
+        sscanf(aoc_str_array_index(aoc_data_get(data), i), "%d %d %d",
                 &int_array[0][i], &int_array[1][i], &int_array[2][i]);
     }
 
@@ -56,7 +56,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
