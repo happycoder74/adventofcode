@@ -9,13 +9,12 @@
 #include "aoc_timer.h"
 
 AocArrayPtr clean_input(AocArrayPtr data) {
-    AocArrayPtr array = aoc_int_array_new();
+    AocArrayPtr array = aoc_int32_array_new();
     char *str = aoc_str_array_index(data, 0);
 
     for (size_t i = 0; i < strlen(str); i++) {
-        aoc_int_array_append(array, str[i] - '0');
+        aoc_int32_array_append(array, str[i] - '0');
     }
-
     return array;
 }
 
@@ -24,8 +23,8 @@ static int solver(AocArrayPtr array, int step) {
 
     for (size_t i = 0; i < aoc_array_length(array); i++) {
         size_t j = (i + step) % aoc_array_length(array);
-        if (aoc_int_array_index(array, i) == aoc_int_array_index(array, j)) {
-            sum += aoc_int_array_index(array, i);
+        if (aoc_int32_array_index(array, i) == aoc_int32_array_index(array, j)) {
+            sum += aoc_int32_array_index(array, i);
         }
     }
     return sum;
