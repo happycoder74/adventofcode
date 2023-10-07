@@ -35,11 +35,18 @@ AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*cl
     data->filename = strdup(filename);
     data->year = year;
     data->day = day;
+    data->data = NULL;
+
+    AocArrayPtr input_data = get_input(filename, year, day);
+    if (!input_data) {
+        aoc_data_free(data);
+        exit(EXIT_FAILURE);
+    }
 
     if(clean_function) {
-        data->data = clean_function(get_input(filename, year, day));
+        data->data = clean_function(input_data);
     } else {
-        data->data = get_input(filename, year, day);
+        data->data = input_data;
     }
     return data;
 }
@@ -102,7 +109,6 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
-    data = aoc_str_array_new();
     file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
@@ -110,6 +116,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
         return NULL;
     }
 
+    data = aoc_str_array_new();
     while (fgets(line, 10000, fp)) {
         data_line = str_trim(strdup(line));
         aoc_str_array_append(data, data_line);
@@ -136,22 +143,20 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
-    data = aoc_str_array_new();
+
     if (str_endswith(filename, "input.txt")) {
         file = strconcat(path, filename);
     } else {
         file = filename;
     }
 
-#ifdef DEBUG
-    printf("%s\n", file);
-#endif
-
     if (!(fp = fopen(file, "r"))) {
-        printf("Can not open file! (%s)\nCurrent working directory = %s\n",
+        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n",
                file, getcwd(wd ,255));
         return NULL;
     }
+
+    data = aoc_str_array_new();
 
     while ((getline(&line, &line_length, fp)) != -1) {
         data_line = str_trim(strdup(line));
