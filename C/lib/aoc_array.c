@@ -265,7 +265,7 @@ void aoc_array_print(AocArray *array) {
     char buffer[100];
     Line l;
     AocGenArray *arr = (AocGenArray *)array;
-    printf("Type: %s (%d), Length: %llu, Capacity: %llu\n", aoc_type_string(array->type), array->type, aoc_array_length(array), arr->capacity);
+    printf("Type: %s (%d), Length: %zu, Capacity: %zu\n", aoc_type_string(array->type), array->type, aoc_array_length(array), arr->capacity);
     for (size_t i = 0; i < aoc_array_length(array); i++) {
         switch (array->type) {
             case AOC_ARRAY_INT32:
