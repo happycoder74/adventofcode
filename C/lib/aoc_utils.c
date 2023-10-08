@@ -144,7 +144,7 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
 
-    if (str_endswith(filename, "input.txt")) {
+    if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
         file = strconcat(path, filename);
     } else {
         file = filename;
@@ -479,14 +479,6 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
 void line_array_print(AocArrayPtr lines) {
     for (size_t i = 0; i < aoc_array_length(lines); i++) {
         line_print(aoc_line_array_index(lines, i));
-#define aoc_uint32_array_index(arr_, index_)    (*(uint32_t *)(aoc_array_index(arr_, index_)))
-#define aoc_uint32_array_append(arr_, value_)   do { \
-                                                    int val_ = value_; \
-                                                    aoc_array_append(arr_, &val_); \
-                                                } while (0)
-#define aoc_uint32_array_free(arr_)             (aoc_array_free(arr_, false))
-#define aoc_uint32_array_free_all(arr_)         (aoc_array_free(arr_, true))
-#define aoc_uint32_array_sort(_arr, func)       (aoc_array_sort(_arr, func))
     }
 }
 
