@@ -13,6 +13,7 @@ int main(void) {
     add_case(ts, "test_int32_array_index()", test_int32_array_index, NULL);
     add_case(ts, "test_int32_array_remove_index()", test_int32_array_remove_index, NULL);
     add_case(ts, "test_int32_array_append_to_null()", test_int32_array_append_to_null, NULL);
+    add_case(ts, "test_int32_array_append_to_wrong_type()", test_int32_array_append_to_wrong_type, NULL);
     add_case(ts, "test_int32_array_insert_at_beginning()", test_int32_array_insert_at_beginning, NULL);
 
     run_test_cases(ts);

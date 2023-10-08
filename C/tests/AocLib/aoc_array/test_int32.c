@@ -64,7 +64,19 @@ int test_int32_array_remove_index(void) {
 }
 
 int test_int32_array_append_to_null(void) {
-    int result = false;
+    AocArrayPtr array = NULL;
+
+    array = aoc_int32_array_append(array, 10);
+
+    return !(array == NULL);
+}
+
+int test_int32_array_append_to_wrong_type(void) {
+    AocArrayPtr array = aoc_str_array_new();
+
+    int result = (aoc_int32_array_append(array, 10) == NULL);
+
+    aoc_str_array_free(array);
 
     return !result;
 }
