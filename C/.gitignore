@@ -5,3 +5,4 @@ glib.tags
 build
 .cmake
 CMakeCache.txt
+debug
