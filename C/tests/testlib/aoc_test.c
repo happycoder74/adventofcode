@@ -48,7 +48,7 @@ int add_case(TestCaseStructure *ts, char *test_name, TestFunc func, void *parame
 
     if (ts->number_of_cases == ts->capacity) {
         ts->capacity *= 2;
-        ts->cases = (TestCase **)realloc(ts->cases, ts->capacity);
+        ts->cases = (TestCase **)realloc(ts->cases, ts->capacity * sizeof(TestCase *));
         if (!(ts->cases)) {
             fprintf(stderr, "Could not resize structure... Exiting with error\n");
             exit(EXIT_FAILURE);
