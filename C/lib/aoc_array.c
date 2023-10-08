@@ -97,51 +97,118 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
 }
 
 void *aoc_int32_array_append(AocArrayPtr array, int32_t value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_INT32) {
+        return NULL;
+    }
     int32_t val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_int64_array_append(AocArrayPtr array, int64_t value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_INT64) {
+        return NULL;
+    }
     int64_t val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_uint32_array_append(AocArrayPtr array, uint32_t value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_UINT32) {
+        return NULL;
+    }
     uint32_t val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_uint64_array_append(AocArrayPtr array, uint64_t value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_UINT64) {
+        return NULL;
+    }
     uint64_t val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_char_array_append(AocArrayPtr array, char value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_CHAR) {
+        return NULL;
+    }
     char val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_uchar_array_append(AocArrayPtr array, unsigned char value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_UCHAR) {
+        return NULL;
+    }
     unsigned char val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_str_array_append(AocArrayPtr array, char *value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_STR) {
+        return NULL;
+    }
     char *val_ = strdup(value);
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_point_array_append(AocArrayPtr array, Point value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_POINT) {
+        return NULL;
+    }
     Point val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_line_array_append(AocArrayPtr array, Line value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if(array->type != AOC_ARRAY_LINE) {
+        return NULL;
+    }
     Line val_ = value;
     return aoc_array_append(array, &val_);
 }
 
 void *aoc_array_append(AocArray *array, void *value) {
+    if(array == NULL) {
+        return NULL;
+    }
+
     switch(array->type) {
         case AOC_ARRAY_INT32:
         case AOC_ARRAY_UINT32:
@@ -286,6 +353,8 @@ AocArrayPtr aoc_array_copy(AocArrayPtr array) {
 AocArrayPtr aoc_int32_array_set_index(AocArrayPtr array, size_t index, int32_t value) {
     if (!array)
         return NULL;
+    if (array->type != AOC_ARRAY_INT32)
+        return NULL;
 
     AocGenArray *dst = (AocGenArray *)array;
     int32_t *data = (int32_t *)dst->data;
@@ -296,6 +365,8 @@ AocArrayPtr aoc_int32_array_set_index(AocArrayPtr array, size_t index, int32_t v
 
 AocArrayPtr aoc_int64_array_set_index(AocArrayPtr array, size_t index, int64_t value) {
     if (!array)
+        return NULL;
+    if (array->type != AOC_ARRAY_INT64)
         return NULL;
 
     AocGenArray *dst = (AocGenArray *)array;
@@ -308,6 +379,8 @@ AocArrayPtr aoc_int64_array_set_index(AocArrayPtr array, size_t index, int64_t v
 AocArrayPtr aoc_uint32_array_set_index(AocArrayPtr array, size_t index, uint32_t value) {
     if (!array)
         return NULL;
+    if (array->type != AOC_ARRAY_UINT32)
+        return NULL;
 
     AocGenArray *dst = (AocGenArray *)array;
     uint32_t *data = (uint32_t *)dst->data;
@@ -318,6 +391,8 @@ AocArrayPtr aoc_uint32_array_set_index(AocArrayPtr array, size_t index, uint32_t
 
 AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr array, size_t index, uint64_t value) {
     if (!array)
+        return NULL;
+    if (array->type != AOC_ARRAY_UINT64)
         return NULL;
 
     AocGenArray *dst = (AocGenArray *)array;
