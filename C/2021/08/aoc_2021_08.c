@@ -92,7 +92,7 @@ GHashTable **decode_signal(char *signal) {
 
     signal_sets = aoc_ptr_array_new();
     signal_parts = aoc_str_array_new();
-    parts = aoc_str_split(g_strstrip(signal), " ", -1);
+    parts = aoc_str_split(str_trim(signal), " ", -1);
     size_t j = 0;
     while (parts[j] != NULL) {
         aoc_str_array_append(signal_parts, parts[j]);
@@ -148,7 +148,7 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
     GHashTable *set;
     char letter_key;
 
-    parts = aoc_str_split(g_strstrip(signal), " ", -2);
+    parts = aoc_str_split(str_trim(signal), " ", -2);
     signal_sets = aoc_ptr_array_new();
     message = aoc_int32_array_new();
 
@@ -187,7 +187,7 @@ void *solve_part_1(AocData_t *data) {
 
     for (size_t i = 0; i < aoc_data_length(data); i++) {
         split_line = (char **)aoc_ptr_array_index(aoc_data_get(data), i);
-        output_value = aoc_str_split(g_strstrip(split_line[1]), " ", -1);
+        output_value = aoc_str_split(str_trim(split_line[1]), " ", -1);
 
         int j = 0;
         while ((val = output_value[j]) != NULL) {
@@ -212,14 +212,15 @@ void *solve_part_2(AocData_t *data) {
     output = aoc_int32_array_new();
     for (size_t i = 0; i < aoc_data_length(data); i++) {
         split_line = (char **)aoc_ptr_array_index(aoc_data_get(data), i);
-        decoded = decode_signal(g_strstrip(split_line[0]));
-        message = decode(decoded, g_strstrip(split_line[1]));
+        decoded = decode_signal(str_trim(split_line[0]));
+        message = decode(decoded, str_trim(split_line[1]));
         message_sum = 0;
         for (size_t j = 0; j < aoc_array_length(message); j++) {
             message_sum += (int)pow((double)10, (double)(3 - j)) * aoc_int_array_index(message, j);
         }
 
         aoc_int_array_append(output, message_sum);
+        free(decoded);
     }
 
     array_sum = 0;
