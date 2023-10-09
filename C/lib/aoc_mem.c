@@ -164,5 +164,53 @@ extern void *aoc_array_new_mangle(AocArrayType, size_t);
 void *aoc_array_new_debug(AocArrayType type, size_t size, char *file, int line) {
     fprintf(fp, "(aoc_array_new) called from %s line %d\n", file, line);
 
-    return aoc_array_new_mangle(type, size);
+    return aoc_array_new(type, size);
+}
+
+
+void *g_hash_table_new_mem_debug(unsigned int (*hash_func)(const void *), int (*eq_func)(const void *, const void *), char *file, int line) {
+    if(!mem_alloc_table)
+        aoc_mem_dbg_init();
+    char *message = NULL;
+    message = (char *)malloc(sizeof(char)*200);
+    sprintf(message, "[g_hash_table_new in '%s' line: %d]", file, line);
+
+    void *address = g_hash_table_new(hash_func, eq_func);
+
+    if(!address) {
+        fprintf(fp, "(g_hash_table_new) Could not allocate memory %s\n", message);
+        return address;
+    }
+
+    if(g_hash_table_contains(mem_alloc_table, address)) {
+
+        fprintf(fp, "(g_hash_table_new) Obtained address already allocated from %s\n\t%s\n",(char *)g_hash_table_lookup(mem_alloc_table, address), message);
+    } else {
+        g_hash_table_insert(mem_alloc_table, address, message);
+        fprintf(fp, "(g_hash_table_new) Getting %p %s\n", address, message);
+    }
+
+    return address;
+
+}
+
+void g_hash_table_destroy_mem_debug(void *address, char *file, int line) {
+    if (!address)
+        return;
+
+    char message[200];
+    sprintf(message, "[g_hash_table_destroy in '%s' line: %d]", file, line);
+
+    if (mem_alloc_table) {
+        if(g_hash_table_contains(mem_alloc_table, address)) {
+            void *value = g_hash_table_lookup(mem_alloc_table, address);
+            free(value);
+            g_hash_table_remove(mem_alloc_table, address);
+            fprintf(fp, "(g_hash_table_destroy) Freeing up %p %s\n", address, message);
+            g_hash_table_destroy(address);
+        } else {
+            fprintf(fp, "(g_hash_table_destroy) Memory at %p is already free'd %s\n", address, message);
+        }
+    }
+
 }

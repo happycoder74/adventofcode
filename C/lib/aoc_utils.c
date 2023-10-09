@@ -166,6 +166,7 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         aoc_str_array_append(data, data_line);
     }
 
+    free(line);
     free(file);
     free(path);
 

@@ -53,11 +53,7 @@ static char* aoc_type_string(AocArrayType type) {
     return string_repr[type];
 }
 
-#ifdef NDEBUG
 AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
-#else
-AocArray *aoc_array_new_mangle(AocArrayType array_type, size_t size) {
-#endif
     AocGenArray *array = (AocGenArray *)malloc(sizeof(AocGenArray));
 
     switch(array_type) {
@@ -216,33 +212,17 @@ void *aoc_array_append(AocArray *array, void *value) {
         return NULL;
     }
 
-    switch(array->type) {
-        case AOC_ARRAY_INT32:
-        case AOC_ARRAY_UINT32:
-        case AOC_ARRAY_INT64:
-        case AOC_ARRAY_UINT64:
-        case AOC_ARRAY_CHAR:
-        case AOC_ARRAY_UCHAR:
-        case AOC_ARRAY_POINT:
-        case AOC_ARRAY_LINE:
-        case AOC_ARRAY_PTR:
-        case AOC_ARRAY_STR:
-            {
-                AocGenArray *arr = (AocGenArray *)array;
-                if (array->length == arr->capacity) {
-                    #ifdef DEBUG
-                    fprintf(stderr, "Array full, reallocating...\n");
-                    #endif
-                    arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity << 1));
-                    arr->capacity <<= 1;
-                }
-                memcpy((arr->data + (array->length * arr->element_size)), value, arr->element_size);
-            }
-            break;
-        default:
-            fprintf(stderr, "Type %s is not implemented in aoc_array_append()\n", aoc_type_string(array->type));
-            return NULL;
+    if(array->type >= AOC_ARRAY_COUNT) {
+        fprintf(stderr, "Type %s is not implemented in aoc_array_append()\n", aoc_type_string(array->type));
+        return NULL;
     }
+
+    AocGenArray *arr = (AocGenArray *)array;
+    if (array->length == arr->capacity) {
+        arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity << 1));
+        arr->capacity <<= 1;
+    }
+    memcpy((arr->data + (array->length * arr->element_size)), value, arr->element_size);
     array->length += 1;
     return array;
 }
@@ -261,7 +241,7 @@ void aoc_array_free(AocArray *array, int free_segments) {
     AocGenArray *arr = (AocGenArray *)array;
     if(free_segments) {
         for (size_t index = 0; index < aoc_array_length(array); index++) {
-            free(&arr->data[index * arr->element_size]);
+            free(&(arr->data[index * arr->element_size]));
         }
     }
     free(arr->data);
