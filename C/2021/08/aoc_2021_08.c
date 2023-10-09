@@ -10,6 +10,10 @@
 #include "aoc_string.h"
 #include "aoc_timer.h"
 
+#ifndef NDEBUG
+#include "aoc_mem.h"
+#endif
+
 AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr result;
     size_t i;
@@ -137,6 +141,7 @@ GHashTable **decode_signal(char *signal) {
         decoded[hkey] = (GHashTable *)aoc_ptr_array_index(signal_sets, signal_set_key[hkey]);
     }
 
+    free(signal_set_key);
     return decoded;
 }
 
@@ -175,6 +180,7 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
     }
 
     aoc_str_freev(parts);
+    aoc_ptr_array_free(signal_sets);
 
     return message;
 }
@@ -198,6 +204,7 @@ void *solve_part_1(AocData_t *data) {
         }
 
     }
+    aoc_str_freev(output_value);
     return strdup_printf("%d", count);
 }
 
@@ -220,6 +227,10 @@ void *solve_part_2(AocData_t *data) {
         }
 
         aoc_int_array_append(output, message_sum);
+        for (size_t index = 0; index < 10; index++) {
+            GHashTable *table = decoded[index];
+            g_hash_table_destroy(table);
+        }
         free(decoded);
     }
 
@@ -228,6 +239,7 @@ void *solve_part_2(AocData_t *data) {
         array_sum += aoc_int_array_index(output, i);
     }
 
+    aoc_int32_array_free(output);
     return strdup_printf("%d", array_sum);
 }
 
@@ -263,6 +275,10 @@ int main(int argc, char **argv) {
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
+
+#ifndef NDEBUG
+    aoc_mem_wrap_up();
+#endif
 
     return 0;
 }

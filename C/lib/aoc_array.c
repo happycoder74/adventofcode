@@ -53,7 +53,11 @@ static char* aoc_type_string(AocArrayType type) {
     return string_repr[type];
 }
 
+#ifdef NDEBUG
 AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
+#else
+AocArray *aoc_array_new_mangle(AocArrayType array_type, size_t size) {
+#endif
     AocGenArray *array = (AocGenArray *)malloc(sizeof(AocGenArray));
 
     switch(array_type) {

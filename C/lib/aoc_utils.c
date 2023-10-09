@@ -14,6 +14,9 @@
 #include "aoc_list.h"
 #include "aoc_types.h"
 
+#ifndef NDEBUG
+#include "aoc_mem.h"
+#endif
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
         aoc->data = data;
@@ -147,7 +150,7 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
         file = strconcat(path, filename);
     } else {
-        file = filename;
+        file = strdup(filename);
     }
 
     if (!(fp = fopen(file, "r"))) {
@@ -163,10 +166,7 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         aoc_str_array_append(data, data_line);
     }
 
-    if (file != filename) {
-        free(file);
-    }
-
+    free(file);
     free(path);
 
     return data;

@@ -1,5 +1,8 @@
 #include <glib.h>
+#include <stdint.h>
 #include <stdio.h>
+#include "aoc_types.h"
+#include "aoc_array.h"
 
 GHashTable *mem_alloc_table = NULL;
 FILE *fp = NULL;
@@ -18,19 +21,23 @@ void aoc_mem_dbg_destroy(void) {
 void *aoc_malloc_debug(size_t size, char *file, int line) {
     if(!mem_alloc_table)
         aoc_mem_dbg_init();
+    char *message = NULL;
+    message = (char *)malloc(sizeof(char)*200);
+    sprintf(message, "[malloc in '%s' line: %d]", file, line);
 
     void *address = malloc(size);
 
     if(!address) {
-        fprintf(fp, "(malloc) Could not allocate memory [in '%s' line: %d]\n", file, line);
+        fprintf(fp, "(malloc) Could not allocate memory %s\n", message);
         return address;
     }
 
     if(g_hash_table_contains(mem_alloc_table, address)) {
-        fprintf(fp, "(malloc) Obtained address already allocated from somewhere\n\t[in '%s' line: %d]\n", file, line);
+
+        fprintf(fp, "(malloc) Obtained address already allocated from %s\n\t%s\n",(char *)g_hash_table_lookup(mem_alloc_table, address), message);
     } else {
-        g_hash_table_add(mem_alloc_table, address);
-        fprintf(fp, "(malloc) Getting %p [in '%s' line: %d]\n", address, file, line);
+        g_hash_table_insert(mem_alloc_table, address, message);
+        fprintf(fp, "(malloc) Getting %p %s\n", address, message);
     }
 
     return address;
@@ -39,19 +46,22 @@ void *aoc_malloc_debug(size_t size, char *file, int line) {
 void *aoc_calloc_debug(size_t count, size_t size, char *file, int line) {
     if(!mem_alloc_table)
         aoc_mem_dbg_init();
+    char *message = NULL;
+    message = (char *)malloc(sizeof(char)*200);
+    sprintf(message, "[calloc in '%s' line: %d]", file, line);
 
     void *address = calloc(count, size);
 
     if(!address) {
-        fprintf(fp, "(calloc) Could not allocate memory [in '%s' line: %d]\n", file, line);
+        fprintf(fp, "(calloc) Could not allocate memory %s\n", message);
         return address;
     }
 
     if(g_hash_table_contains(mem_alloc_table, address)) {
-        fprintf(fp, "(calloc) Obtained address already allocated from somewhere\n\t[in '%s' line: %d]\n", file, line);
+        fprintf(fp, "(calloc) Obtained address already allocated from %s\n\t%s\n", (char *)g_hash_table_lookup(mem_alloc_table, address), message);
     } else {
-        g_hash_table_add(mem_alloc_table, address);
-        fprintf(fp, "(calloc) Getting %p [in '%s' line: %d]\n", address, file, line);
+        g_hash_table_insert(mem_alloc_table, address, message);
+        fprintf(fp, "(calloc) Getting %p %s\n", address, message);
     }
 
     return address;
@@ -61,22 +71,26 @@ void *aoc_realloc_debug(void *ptr, size_t size, char *file, int line) {
     if(!mem_alloc_table)
         aoc_mem_dbg_init();
 
-    void *old_ptr = ptr;
+    char *message = NULL;
+    message = (char *)malloc(sizeof(char)*200);
+    sprintf(message, "[realloc in '%s' line: %d]", file, line);
+
+    uint64_t old_ptr = (uint64_t)ptr;
     void *address = realloc(ptr, size);
 
     if(!address) {
-        fprintf(fp, "(realloc) Could not allocate memory [in '%s' line: %d]\n", file, line);
+        fprintf(fp, "(realloc) Could not allocate memory %s\n", message);
         return address;
     }
 
-    if (old_ptr != address) {
+    if ((void *)old_ptr != address) {
         if(g_hash_table_contains(mem_alloc_table, address)) {
-            fprintf(fp, "(realloc) Obtained address already allocated from somewhere\n\t[in '%s' line: %d]\n", file, line);
+            fprintf(fp, "(realloc) Obtained address already allocated from %s\n\t%s\n", (char *)g_hash_table_lookup(mem_alloc_table, address), message);
         } else {
-            g_hash_table_remove(mem_alloc_table, old_ptr);
-            fprintf(fp, "(realloc) Freeing up %p [in '%s' line: %d]\n", address, file, line);
-            g_hash_table_add(mem_alloc_table, address);
-            fprintf(fp, "(realloc) Getting %p [in '%s' line: %d]\n", address, file, line);
+            g_hash_table_remove(mem_alloc_table, (void *)old_ptr);
+            fprintf(fp, "(realloc) Freeing up %p %s\n", address, message);
+            g_hash_table_insert(mem_alloc_table, address, message);
+            fprintf(fp, "(realloc) Getting %p %s\n", address, message);
         }
     }
     return address;
@@ -86,19 +100,26 @@ void aoc_free_debug(void *address, char *file, int line) {
     if (!address)
         return;
 
+    char message[200];
+    sprintf(message, "[free in '%s' line: %d]", file, line);
+
     if (mem_alloc_table) {
         if(g_hash_table_contains(mem_alloc_table, address)) {
+            void *value = g_hash_table_lookup(mem_alloc_table, address);
+            free(value);
             g_hash_table_remove(mem_alloc_table, address);
-            fprintf(fp, "(free) Freeing up %p [in '%s' line: %d]\n", address, file, line);
+            fprintf(fp, "(free) Freeing up %p %s\n", address, message);
                     free(address);
         } else {
-            fprintf(fp, "(free) Memory at %p is already free'd\n", address);
+            fprintf(fp, "(free) Memory at %p is already free'd %s\n", address, message);
         }
     }
 }
 
 int free_key(void *key, void *value, void *data) {
     free(key);
+    free(value);
+
     return TRUE;
 }
 
@@ -114,7 +135,7 @@ void aoc_mem_report_debug(void) {
     g_hash_table_iter_init (&iter, mem_alloc_table);
     while (g_hash_table_iter_next (&iter, &key, &value))
     {
-        fprintf(fp, "%p\n", key);
+        fprintf(fp, "%p allocated by %s\n", key, (char *)value);
     }
 }
 
@@ -133,3 +154,15 @@ void aoc_mem_wrap_up(void) {
     mem_alloc_table = NULL;
 }
 
+void *aoc_array_append_debug(AocArrayPtr array, void *value, char *file, int line) {
+    fprintf(fp, "(aoc_array_append) called from %s line %d\n", file, line);
+
+    return aoc_array_append(array, value);
+}
+extern void *aoc_array_new_mangle(AocArrayType, size_t);
+
+void *aoc_array_new_debug(AocArrayType type, size_t size, char *file, int line) {
+    fprintf(fp, "(aoc_array_new) called from %s line %d\n", file, line);
+
+    return aoc_array_new_mangle(type, size);
+}
