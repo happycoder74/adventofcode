@@ -5,6 +5,9 @@ project(aoc_main)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_C_FLAGS_DEBUG
+    "${CMAKE_C_FLAGS_DEBUG} -O0 -ggdb3 -Wno-error=use-after-free"
+    )
 
 set(AOC_YEARS
 	2015 2016 2017 2018 2019 2020 2021 2022
@@ -22,6 +25,7 @@ set(AOC_LIB_SOURCES
 	${CMAKE_SOURCE_DIR}/lib/aoc_hash.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_list.c
 	${CMAKE_SOURCE_DIR}/lib/aoc_array.c
+    $<$<CONFIG:Debug>:${CMAKE_SOURCE_DIR}/lib/aoc_mem.c>
 )
 
 add_subdirectory(lib)

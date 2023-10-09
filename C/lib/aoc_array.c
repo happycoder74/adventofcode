@@ -6,6 +6,9 @@
 
 #include "aoc_types.h"
 #include "aoc_array.h"
+#ifndef NDEBUG
+#include "aoc_mem.h"
+#endif
 
 typedef struct {
     AocArrayType type;
