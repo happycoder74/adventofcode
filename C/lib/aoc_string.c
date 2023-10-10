@@ -7,18 +7,26 @@
 
 #include "aoc_string.h"
 
+#ifdef MEMDEBUG
+#include "aoc_mem.h"
+#endif
+
 char *strdup(const char *s) {
     size_t size = strlen(s) + 1;
-    char *p = malloc(size);
-    if (p) {
-        memcpy(p, s, size);
+    char *p = (char *)malloc(size);
+    if (!p) {
+        return NULL;
     }
+    memcpy(p, s, size);
     return p;
 }
 
 char *strconcat(const char *s1, const char *s2) {
     char *return_string = (char *)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
     char *pointer;
+
+    if (!return_string)
+        return NULL;
 
     pointer = stpcpy(return_string, s1);
     stpcpy(pointer, s2);
