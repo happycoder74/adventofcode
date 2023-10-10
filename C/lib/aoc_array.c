@@ -6,7 +6,7 @@
 
 #include "aoc_types.h"
 #include "aoc_array.h"
-#ifndef NDEBUG
+#ifdef MEMDEBUG
 #include "aoc_mem.h"
 #endif
 
@@ -241,7 +241,8 @@ void aoc_array_free(AocArray *array, int free_segments) {
     AocGenArray *arr = (AocGenArray *)array;
     if(free_segments) {
         for (size_t index = 0; index < aoc_array_length(array); index++) {
-            free(&(arr->data[index * arr->element_size]));
+            void *segment = (void *)*(char **)(arr->data + index * arr->element_size);
+            free(segment);
         }
     }
     free(arr->data);
