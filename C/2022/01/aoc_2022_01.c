@@ -6,9 +6,6 @@
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
-#ifndef NDEBUG
-#include "aoc_mem.h"
-#endif
 
 AocArray *clean_input(AocArray *data) {
     AocArrayPtr return_data = aoc_int32_array_new();
@@ -27,7 +24,7 @@ AocArray *clean_input(AocArray *data) {
     if (elf_sum != 0)
         aoc_int32_array_append(return_data, elf_sum);
 
-    aoc_array_free(data, 0);
+    aoc_array_free(data, 1);
     return return_data;
 }
 
@@ -90,8 +87,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-#ifndef NDEBUG
-    aoc_mem_wrap_up();
-#endif
     return 0;
 }
