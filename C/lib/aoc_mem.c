@@ -1,15 +1,31 @@
 #include <glib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <libgen.h>
+#include <string.h>
+
 #include "aoc_types.h"
 #include "aoc_array.h"
 
 GHashTable *mem_alloc_table = NULL;
 FILE *fp = NULL;
 
-static void aoc_mem_dbg_init(void) {
-    mem_alloc_table = g_hash_table_new(g_direct_hash, g_direct_equal);
-    fp = fopen("allocation.log", "w");
+typedef struct {
+    char message[301];
+    char allocator[100];
+    char function[50];
+    char file[200];
+    int line;
+} LogMessage_t;
+
+void aoc_mem_dbg_init(int year, int day) {
+    mem_alloc_table = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
+    char filename[100];
+
+    sprintf(filename, "aoc_%4d_%02d_allocation.log", year, day);
+    fp = fopen(filename, "w");
+    fprintf(fp, "Allocation log for %4d/%02d:\n", year, day);
+    fflush(fp);
 }
 
 void aoc_mem_dbg_destroy(void) {
@@ -18,101 +34,88 @@ void aoc_mem_dbg_destroy(void) {
 
 }
 
-void *aoc_malloc_debug(size_t size, char *file, int line) {
-    if(!mem_alloc_table)
-        aoc_mem_dbg_init();
-    char *message = NULL;
-    message = (char *)malloc(sizeof(char)*200);
-    sprintf(message, "[malloc in '%s' line: %d]", file, line);
+static LogMessage_t *create_log_message(const char *allocator, const char *function, const char *file, int line) {
+    LogMessage_t *msg = (LogMessage_t *)malloc(sizeof(LogMessage_t));
+    snprintf(msg->allocator, 100, allocator);
+    snprintf(msg->function, 50, function);
+    snprintf(msg->file, 200, "%s", (char *)(strrchr(file, '/')) + 1);
+    msg->line = line;
+    snprintf(msg->message, 300, "[%s in {%s}:'%s':%d]", msg->allocator, msg->function, msg->file, msg->line);
+
+    return msg;
+}
+
+static void aoc_allocator_debug(LogMessage_t *msg, void *address) {
+    if(!address) {
+        fprintf(fp, "(%s) Could not allocate memory %s\n", msg->allocator, msg->message);
+        fflush(fp);
+        return;
+    }
+
+    if(g_hash_table_contains(mem_alloc_table, address)) {
+        LogMessage_t *value = (LogMessage_t *)g_hash_table_lookup(mem_alloc_table, address);
+        if (strcmp("realloc", msg->allocator)) {
+            fprintf(fp, "(%s) %#08llx already allocated from %s\n\t%s\n", msg->allocator, (uint64_t)address, value->message, msg->message);
+            fflush(fp);
+        }
+    } else {
+        g_hash_table_insert(mem_alloc_table, address, msg);
+        fprintf(fp, "(%s) %#08llx %s\n", msg->allocator, (uint64_t)address, msg->message);
+        fflush(fp);
+    }
+}
+
+void *aoc_malloc_debug(size_t size, const char *function, const char *file, const int line) {
 
     void *address = malloc(size);
-
-    if(!address) {
-        fprintf(fp, "(malloc) Could not allocate memory %s\n", message);
-        return address;
-    }
-
-    if(g_hash_table_contains(mem_alloc_table, address)) {
-
-        fprintf(fp, "(malloc) Obtained address already allocated from %s\n\t%s\n",(char *)g_hash_table_lookup(mem_alloc_table, address), message);
-    } else {
-        g_hash_table_insert(mem_alloc_table, address, message);
-        fprintf(fp, "(malloc) Getting %p %s\n", address, message);
-    }
-
+    LogMessage_t *msg = create_log_message("malloc", function, file, line);
+    aoc_allocator_debug(msg, address);
     return address;
 }
 
-void *aoc_calloc_debug(size_t count, size_t size, char *file, int line) {
-    if(!mem_alloc_table)
-        aoc_mem_dbg_init();
-    char *message = NULL;
-    message = (char *)malloc(sizeof(char)*200);
-    sprintf(message, "[calloc in '%s' line: %d]", file, line);
-
+void *aoc_calloc_debug(size_t count, size_t size, const char *function, const char *file, const int line) {
     void *address = calloc(count, size);
-
-    if(!address) {
-        fprintf(fp, "(calloc) Could not allocate memory %s\n", message);
-        return address;
-    }
-
-    if(g_hash_table_contains(mem_alloc_table, address)) {
-        fprintf(fp, "(calloc) Obtained address already allocated from %s\n\t%s\n", (char *)g_hash_table_lookup(mem_alloc_table, address), message);
-    } else {
-        g_hash_table_insert(mem_alloc_table, address, message);
-        fprintf(fp, "(calloc) Getting %p %s\n", address, message);
-    }
-
+    LogMessage_t *msg = create_log_message("malloc", function, file, line);
+    aoc_allocator_debug(msg, address);
     return address;
 }
 
-void *aoc_realloc_debug(void *ptr, size_t size, char *file, int line) {
-    if(!mem_alloc_table)
-        aoc_mem_dbg_init();
-
-    char *message = NULL;
-    message = (char *)malloc(sizeof(char)*200);
-    sprintf(message, "[realloc in '%s' line: %d]", file, line);
-
+void *aoc_realloc_debug(void *ptr, size_t size, const char *function, const char *file, const int line) {
     uint64_t old_ptr = (uint64_t)ptr;
+    LogMessage_t *msg = create_log_message("realloc", function, file, line);
+
     void *address = realloc(ptr, size);
-
-    if(!address) {
-        fprintf(fp, "(realloc) Could not allocate memory %s\n", message);
-        return address;
-    }
-
-    if ((void *)old_ptr != address) {
+    if (old_ptr != (uint64_t)address) {
         if(g_hash_table_contains(mem_alloc_table, address)) {
-            fprintf(fp, "(realloc) Obtained address already allocated from %s\n\t%s\n", (char *)g_hash_table_lookup(mem_alloc_table, address), message);
+            LogMessage_t *value = g_hash_table_lookup(mem_alloc_table, address);
+            fprintf(fp, "(%s) %#08llx already allocated from %s:'%s':%d\n", "realloc", (uint64_t)address, value->allocator, value->file, value->line);
         } else {
             g_hash_table_remove(mem_alloc_table, (void *)old_ptr);
-            fprintf(fp, "(realloc) Freeing up %p %s\n", address, message);
-            g_hash_table_insert(mem_alloc_table, address, message);
-            fprintf(fp, "(realloc) Getting %p %s\n", address, message);
+            fprintf(fp, "(%s) Releasing %#08llx\n", msg->allocator, (uint64_t)old_ptr);
         }
     }
+
+    aoc_allocator_debug(msg, address);
     return address;
 }
 
-void aoc_free_debug(void *address, char *file, int line) {
-    if (!address)
+
+void aoc_free_debug(void *address, const char *function, const char *file, const int line) {
+    if ((!address) || (!mem_alloc_table))
         return;
 
-    char message[200];
-    sprintf(message, "[free in '%s' line: %d]", file, line);
+    LogMessage_t *msg = create_log_message("free", function, file, line);
 
-    if (mem_alloc_table) {
-        if(g_hash_table_contains(mem_alloc_table, address)) {
-            void *value = g_hash_table_lookup(mem_alloc_table, address);
-            free(value);
-            g_hash_table_remove(mem_alloc_table, address);
-            fprintf(fp, "(free) Freeing up %p %s\n", address, message);
-                    free(address);
-        } else {
-            fprintf(fp, "(free) Memory at %p is already free'd %s\n", address, message);
-        }
+    if(g_hash_table_contains(mem_alloc_table, address)) {
+        LogMessage_t *value = g_hash_table_lookup(mem_alloc_table, address);
+        fprintf(fp, "(%s) %#08llx from (%s):'%s':%d | %s\n", msg->allocator, (uint64_t)address, value->allocator, value->file, value->line, msg->message);
+        fflush(fp);
+        g_hash_table_remove(mem_alloc_table, address);
+        free(value);
+        free(address);
+    } else {
+        fprintf(fp, "(%-16s) Memory at %p is already free'd or allocated outside of memdebug scope%s\n", msg->allocator, address, msg->message);
+        fflush(fp);
     }
 }
 
@@ -148,32 +151,30 @@ void aoc_mem_wrap_up(void) {
         fprintf(fp, "Remaining allocated memory:\n");
         aoc_mem_report_debug();
     }
-    g_hash_table_foreach_remove(mem_alloc_table, free_key, NULL);
+
     g_hash_table_destroy(mem_alloc_table);
 
     mem_alloc_table = NULL;
 }
 
-void *aoc_array_append_debug(AocArrayPtr array, void *value, char *file, int line) {
-    fprintf(fp, "(aoc_array_append) called from %s line %d\n", file, line);
+void *aoc_array_append_debug(AocArrayPtr array, void *value, const char *function, const char *file, const int line) {
+    fprintf(fp, "(aoc_array_append) called from {%s}:'%s' line: %d]", function, file, line);
 
     return aoc_array_append(array, value);
 }
 extern void *aoc_array_new_mangle(AocArrayType, size_t);
 
-void *aoc_array_new_debug(AocArrayType type, size_t size, char *file, int line) {
-    fprintf(fp, "(aoc_array_new) called from %s line %d\n", file, line);
+void *aoc_array_new_debug(AocArrayType type, size_t size, const char *function, const char *file, const int line) {
+    fprintf(fp, "(aoc_array_new) called from {%s}:'%s' line: %d]", function, file, line);
 
     return aoc_array_new(type, size);
 }
 
 
-void *g_hash_table_new_mem_debug(unsigned int (*hash_func)(const void *), int (*eq_func)(const void *, const void *), char *file, int line) {
-    if(!mem_alloc_table)
-        aoc_mem_dbg_init();
+void *g_hash_table_new_mem_debug(unsigned int (*hash_func)(const void *), int (*eq_func)(const void *, const void *), const char *function, const char *file, const int line) {
     char *message = NULL;
     message = (char *)malloc(sizeof(char)*200);
-    sprintf(message, "[g_hash_table_new in '%s' line: %d]", file, line);
+    sprintf(message, "[g_hash_table_new in {%s}:'%s' line: %d]", function, file, line);
 
     void *address = g_hash_table_new(hash_func, eq_func);
 
@@ -194,12 +195,12 @@ void *g_hash_table_new_mem_debug(unsigned int (*hash_func)(const void *), int (*
 
 }
 
-void g_hash_table_destroy_mem_debug(void *address, char *file, int line) {
+void g_hash_table_destroy_mem_debug(void *address, const char *function, const char *file, const int line) {
     if (!address)
         return;
 
     char message[200];
-    sprintf(message, "[g_hash_table_destroy in '%s' line: %d]", file, line);
+    sprintf(message, "[g_hash_table_destroy in {%s}:'%s' line: %d]", function, file, line);
 
     if (mem_alloc_table) {
         if(g_hash_table_contains(mem_alloc_table, address)) {
