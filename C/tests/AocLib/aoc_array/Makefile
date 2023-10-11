@@ -1,6 +1,6 @@
 GLIB_CFLAGS=`pkg-config glib-2.0 --cflags`
 GLIB_LDFLAGS=`pkg-config glib-2.0 --libs`
-SYS_LIB_LOCATION=$(shell ([ -d /mingw64] && echo "mingw64") || echo "usr")
+SYS_LIB_LOCATION=$(shell ([ -d /mingw64 ] && echo "mingw64") || echo "usr")
 CRITERION_CFLAGS=-I/$(SYS_LIB_LOCATION)/local/include
 CRITERION_LDLIBS=-L/$(SYS_LIB_LOCATION)/local/lib -lcriterion
 AOC_CFLAGS=-I$(AOC_HOME)/include
