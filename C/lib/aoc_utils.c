@@ -14,6 +14,10 @@
 #include "aoc_list.h"
 #include "aoc_types.h"
 
+#ifdef MEMDEBUG
+#include "aoc_mem.h"
+#endif
+
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
         aoc->data = data;
@@ -22,14 +26,12 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-// AocArrayPtr aoc_data_data(AocData_t *data) {
-//     if(data) {
-//         return data->data;
-//     }
-//     return NULL;
-// }
 
 AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
+#ifdef MEMDEBUG
+    aoc_mem_dbg_init(year, day);
+#endif
+
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
     data->filename = strdup(filename);
@@ -57,9 +59,17 @@ void aoc_data_free(AocData_t *data) {
     }
 
     if (data->data) {
-        aoc_array_free(data->data, 0);
+        if((data->data->type == AOC_ARRAY_PTR) || (data->data->type == AOC_ARRAY_STR)) {
+            aoc_array_free(data->data, 1);
+        } else {
+            aoc_array_free(data->data, 0);
+        }
     }
     free(data);
+
+#ifdef MEMDEBUG
+    aoc_mem_wrap_up();
+#endif
 }
 
 
@@ -147,26 +157,27 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
         file = strconcat(path, filename);
     } else {
-        file = filename;
+        file = strdup(filename);
     }
 
     if (!(fp = fopen(file, "r"))) {
         fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n",
-               file, getcwd(wd ,255));
+                file, getcwd(wd ,255));
+        if(file != NULL)
+            free(file);
+        free(path);
         return NULL;
     }
 
     data = aoc_str_array_new();
 
     while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = str_trim(strdup(line));
+        data_line = str_trim((line));
         aoc_str_array_append(data, data_line);
     }
 
-    if (file != filename) {
-        free(file);
-    }
-
+    free(line);
+    free(file);
     free(path);
 
     return data;
@@ -234,48 +245,48 @@ int min_non_zero(int *arr, int length) {
 
 #ifdef __MINGW32__
 ssize_t getline(char **buf, size_t *bufsiz, FILE *fp) {
-	return getdelim(buf, bufsiz, '\n', fp);
+    return getdelim(buf, bufsiz, '\n', fp);
 }
 
 ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
-	char *ptr, *eptr;
+    char *ptr, *eptr;
 
 
-	if (*buf == NULL || *bufsiz == 0) {
-		*bufsiz = BUFSIZ;
-		if ((*buf = malloc(*bufsiz)) == NULL)
-			return -1;
-	}
+    if (*buf == NULL || *bufsiz == 0) {
+        *bufsiz = BUFSIZ;
+        if ((*buf = malloc(*bufsiz)) == NULL)
+            return -1;
+    }
 
-	for (ptr = *buf, eptr = *buf + *bufsiz;;) {
-		int c = fgetc(fp);
-		if (c == -1) {
-			if (feof(fp)) {
-				ssize_t diff = (ssize_t)(ptr - *buf);
-				if (diff != 0) {
-					*ptr = '\0';
-					return diff;
-				}
-			}
-			return -1;
-		}
-		*ptr++ = c;
-		if (c == delimiter) {
-			*ptr = '\0';
-			return ptr - *buf;
-		}
-		if (ptr + 2 >= eptr) {
-			char *nbuf;
-			size_t nbufsiz = *bufsiz * 2;
-			ssize_t d = ptr - *buf;
-			if ((nbuf = realloc(*buf, nbufsiz)) == NULL)
-				return -1;
-			*buf = nbuf;
-			*bufsiz = nbufsiz;
-			eptr = nbuf + nbufsiz;
-			ptr = nbuf + d;
-		}
-	}
+    for (ptr = *buf, eptr = *buf + *bufsiz;;) {
+        int c = fgetc(fp);
+        if (c == -1) {
+            if (feof(fp)) {
+                ssize_t diff = (ssize_t)(ptr - *buf);
+                if (diff != 0) {
+                    *ptr = '\0';
+                    return diff;
+                }
+            }
+            return -1;
+        }
+        *ptr++ = c;
+        if (c == delimiter) {
+            *ptr = '\0';
+            return ptr - *buf;
+        }
+        if (ptr + 2 >= eptr) {
+            char *nbuf;
+            size_t nbufsiz = *bufsiz * 2;
+            ssize_t d = ptr - *buf;
+            if ((nbuf = realloc(*buf, nbufsiz)) == NULL)
+                return -1;
+            *buf = nbuf;
+            *bufsiz = nbufsiz;
+            eptr = nbuf + nbufsiz;
+            ptr = nbuf + d;
+        }
+    }
 }
 
 #endif
@@ -291,8 +302,8 @@ void print_line(Line line) {
         line.p0.x, line.p0.y, line.p1.x, line.p1.y, diff.x, diff.y, line.stepx,
         line.stepy);
     for (point = line.p0; (point.x != (line.p1.x + line.stepx)) ||
-                          (point.y != (line.p1.y + line.stepy));
-         point.x += line.stepx, point.y += line.stepy) {
+    (point.y != (line.p1.y + line.stepy));
+    point.x += line.stepx, point.y += line.stepy) {
         printf("\t(%d, %d)\n", point.x, point.y);
     }
 
@@ -363,8 +374,8 @@ char *basename(const char *path) {
 #endif
     char *ptr = strrchr(path, pathsep);
     if (!ptr)
-        return strdup(path);
-    return strdup(ptr + 1);
+        return (char *)(path);
+    return (char *)(ptr + 1);
 }
 
 char *basename_new(const char *path) {
@@ -382,9 +393,9 @@ char *basename_new(const char *path) {
 char *_aoc_basename(const char *path, const char pathsep) {
     char *s = strrchr(path, pathsep);
     if (!s) {
-        return strdup(path);
+        return (char *)(path);
     } else {
-        return strdup(s + 1);
+        return (s + 1);
     }
 }
 
@@ -462,9 +473,9 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     u = (float)((x1 - x3)*(y1 - y2) - (y1 - y3)*(x1 - x2)) /
         (float)((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
 
-    #ifndef NDEBUG
+#ifdef DEBUG
     printf("t = %f, u = %f\n", t, u);
-    #endif /* ifdef ndef NDEBUG */
+#endif
 
     if (!((0 <= t) && (t <= 1.0)) || !((0 <= u) && (u <= 1.0))) {
         return NULL;

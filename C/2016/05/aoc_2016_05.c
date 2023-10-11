@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
@@ -44,6 +45,12 @@ void *solve_part_1(AocData_t *data) {
     return strdup_printf("%s (%d)", code, counter);
 }
 
+static int digit_value(char c) {
+    if (!isdigit(c))
+        return -1;
+    return c - '0';
+}
+
 void *solve_part_2(AocData_t *data) {
     const char *hashed;
     int counter = 0, found = 0;
@@ -66,7 +73,7 @@ void *solve_part_2(AocData_t *data) {
         g_checksum_update(checksum, to_hash, strlen((const char *)to_hash));
         hashed = g_checksum_get_string(checksum);
         if (!strncasecmp(hashed, "00000", 5)) {
-            if ((pos = g_ascii_digit_value(hashed[5])) != -1) {
+            if ((pos = digit_value(hashed[5])) != -1) {
                 if ((pos < 8) && (code[pos] == '_')) {
                     found++;
                     code[pos] = hashed[6];

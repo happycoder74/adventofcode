@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include "aoc_timer.h"
 
+#ifdef MEMDEBUG
+#include "aoc_mem.h"
+#endif
+
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, gboolean show_res) {
     gdouble elapsed, elapsed_unit;
     GTimer *timer = g_timer_new();

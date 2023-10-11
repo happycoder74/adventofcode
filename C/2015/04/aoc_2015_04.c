@@ -80,9 +80,11 @@ void *solve_part_2_bin(AocData_t *data) {
 void *solve_all(AocData_t *data) {
 
     if (data->data) {
+#ifndef MEMDEBUG
         printf("Solving using str\n");
         timer_func(1, solve_part_1_str, data, 1);
         timer_func(2, solve_part_2_str, data, 1);
+#endif
 
         printf("Solving using bin\n");
         timer_func(1, solve_part_1_bin, data, 1);
