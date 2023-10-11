@@ -1,11 +1,17 @@
 function (AOC_GENERATE YEAR DAY)
     add_executable(aoc_${YEAR}_${DAY}
-        ${DAY}/aoc_${YEAR}_${DAY}.c)
+        ${DAY}/aoc_${YEAR}_${DAY}.c
+        )
     target_include_directories(aoc_${YEAR}_${DAY} PRIVATE ${GLIB_INCLUDE_DIRS})
     target_include_directories(aoc_${YEAR}_${DAY} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+    target_include_directories(
+        aoc_${YEAR}_${DAY} PRIVATE
+        $<$<CONFIG:Memdebug>:${CMAKE_SOURCE_DIR}/lib/libdebug>
+        )
     target_link_libraries(aoc_${YEAR}_${DAY} ${GLIB_LDFLAGS})
     target_link_libraries(aoc_${YEAR}_${DAY}
         aoc
+        $<$<CONFIG:Memdebug>:aocmemdbg>
         glib-2.0
         m
         )
@@ -43,6 +49,12 @@ function(AOC_GENERATE_YEAR AOC_YEAR)
 
     add_custom_target(
         run_${AOC_YEAR}
+        ${custom_target_args}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+
+    add_custom_target(
+        test_${AOC_YEAR}
         ${custom_target_args}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )

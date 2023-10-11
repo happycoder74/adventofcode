@@ -24,17 +24,8 @@ pkg_search_module(GLIB REQUIRED glib-2.0)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)
 
-set(AOC_LIB_SOURCES
-	${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
-	${CMAKE_SOURCE_DIR}/lib/aoc_string.c
-	${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
-	${CMAKE_SOURCE_DIR}/lib/aoc_hash.c
-	${CMAKE_SOURCE_DIR}/lib/aoc_list.c
-	${CMAKE_SOURCE_DIR}/lib/aoc_array.c
-    $<$<CONFIG:Memdebug>:${CMAKE_SOURCE_DIR}/lib/aoc_mem.c>
-)
-
-add_subdirectory(lib)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/libdebug)
 
 foreach (Y ${AOC_YEARS})
 	message(${CMAKE_SOURCE_DIR}/${Y}/CMakeLists.txt)
