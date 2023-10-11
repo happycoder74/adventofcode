@@ -1,12 +1,13 @@
 GLIB_CFLAGS=`pkg-config glib-2.0 --cflags`
 GLIB_LDFLAGS=`pkg-config glib-2.0 --libs`
-CRITERION_CFLAGS=-I/mingw64/local/include
-CRITERION_LDLIBS=-L/mingw64/local/lib -lcriterion
+SYS_LIB_LOCATION=$(shell ([ -d /mingw64] && echo "mingw64") || echo "usr")
+CRITERION_CFLAGS=-I/$(SYS_LIB_LOCATION)/local/include
+CRITERION_LDLIBS=-L/$(SYS_LIB_LOCATION)/local/lib -lcriterion
 AOC_CFLAGS=-I$(AOC_HOME)/include
 AOC_LDFLAGS=-L$(AOC_HOME)/debug/lib -laoc
 CFLAGS = -g $(AOC_CFLAGS) $(GLIB_CFLAGS) $(CRITERION_CFLAGS)
 LDLIBS = $(GLIB_LDFLAGS) $(AOC_LDFLAGS) $(AOC_LIB) $(CRITERION_LDLIBS)
-AOC_HOME=/home/yy11510/projects/adventofcode/C
+AOC_HOME=/home/$(USER)/projects/adventofcode/C
 
 BIN=bin
 
