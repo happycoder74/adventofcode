@@ -374,8 +374,8 @@ char *basename(const char *path) {
 #endif
     char *ptr = strrchr(path, pathsep);
     if (!ptr)
-        return strdup(path);
-    return strdup(ptr + 1);
+        return (char *)(path);
+    return (char *)(ptr + 1);
 }
 
 char *basename_new(const char *path) {
@@ -393,9 +393,9 @@ char *basename_new(const char *path) {
 char *_aoc_basename(const char *path, const char pathsep) {
     char *s = strrchr(path, pathsep);
     if (!s) {
-        return strdup(path);
+        return (char *)(path);
     } else {
-        return strdup(s + 1);
+        return (s + 1);
     }
 }
 
