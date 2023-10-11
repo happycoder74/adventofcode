@@ -1,0 +1,71 @@
+#include "aoc_types.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <criterion/criterion.h>
+#include "aoc_array.h"
+#include "criterion/internal/assert.h"
+
+AocArrayPtr array = NULL;
+
+void aoc_array_setup(void) {
+    array = aoc_str_array_new();
+}
+
+void aoc_array_teardown(void) {
+    aoc_str_array_free(array);
+}
+
+TestSuite(aoc_array, .init=aoc_array_setup, .fini=aoc_array_teardown);
+
+Test(aoc_array, test_str_array_new) {
+    cr_expect(array != NULL, "Expected new array to not be NULL");
+}
+
+Test(aoc_array, test_str_array_new_length) {
+    cr_expect(array->length == 0, "Expected new array length to be 0");
+}
+
+Test(aoc_array, test_str_array_append_string_literal) {
+    aoc_str_array_append(array, "Test String");
+    char **data = (char **)aoc_array_get_data(array);
+    cr_expect(!strcmp(data[0], "Test String"), "Expected value to be \"Test String\"");
+}
+
+
+Test(aoc_array, test_str_array_index) {
+    aoc_str_array_append(array, "One");
+    aoc_str_array_append(array, "Two");
+    aoc_str_array_append(array, "Three");
+
+    char *data = aoc_str_array_index(array, 1);
+    cr_expect(!strcmp(data, "Two"), "Expected value to be \"Two\"");
+}
+
+Test(aoc_array, test_str_array_remove_index) {
+    aoc_str_array_append(array, "One");
+    aoc_str_array_append(array, "Two");
+    aoc_str_array_append(array, "Three");
+
+    AocArrayPtr res = NULL;
+    res = aoc_array_remove_index(array, 1);
+
+    cr_assert_not_null(res);
+    cr_expect(!strcmp(aoc_str_array_index(array, 0), "One"), "Expected value to be \"One\"");
+    cr_expect(!strcmp(aoc_str_array_index(array, 1), "Three"), "Expected value to be \"Three\"");
+    cr_expect(aoc_array_length(array) == 2, "Expected a length of 2");
+}
+//
+//     add_case(ts, "test_str_array_index()", test_str_array_index, NULL);
+//     add_case(ts, "test_str_array_remove_index()", test_str_array_remove_index, NULL);
+//     add_case(ts, "test_str_array_append_to_null()", test_str_array_append_to_null, NULL);
+//     add_case(ts, "test_str_array_append_to_wrong_type()", test_str_array_append_to_wrong_type, NULL);
+//     add_case(ts, "test_str_array_insert_at_beginning()", test_str_array_insert_at_beginning, NULL);
+//
+//     run_test_cases(ts);
+//
+//     test_report(ts);
+//
+//     tear_down(ts);
+//
+//     return EXIT_SUCCESS;

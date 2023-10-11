@@ -40,6 +40,21 @@ Test(aoc_array, test_int32_array_index) {
     int32_t data = aoc_int32_array_index(array, 1);
     cr_expect(data == 7, "Expected value to be 7");
 }
+
+Test(aoc_array, test_int32_array_remove_index) {
+    aoc_int32_array_append(array, 15);
+    aoc_int32_array_append(array, 0);
+    aoc_int32_array_append(array, -5);
+
+    AocArrayPtr res = NULL;
+    res = aoc_array_remove_index(array, 0);
+
+    cr_assert_not_null(res);
+    cr_assert(aoc_int32_array_index(array, 0) == 0);
+    cr_assert(aoc_int32_array_index(array, 1) == -5);
+    cr_expect(aoc_array_length(array) == 2, "Expected a length of 2");
+}
+//
 //     add_case(ts, "test_int32_array_index()", test_int32_array_index, NULL);
 //     add_case(ts, "test_int32_array_remove_index()", test_int32_array_remove_index, NULL);
 //     add_case(ts, "test_int32_array_append_to_null()", test_int32_array_append_to_null, NULL);
