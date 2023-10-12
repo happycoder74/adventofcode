@@ -1,0 +1,4 @@
+CompileFlags:
+  Add: [
+    "-IC:/Local/msys64/mingw64/local/include"
+  ]
