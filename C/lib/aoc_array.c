@@ -1,11 +1,11 @@
-#include <stdlib.h>
 #include <stddef.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "aoc_types.h"
 #include "aoc_array.h"
+#include "aoc_types.h"
 
 typedef struct {
     AocArrayType type;
@@ -14,7 +14,6 @@ typedef struct {
     size_t capacity;
     uint8_t *data;
 } AocGenArray;
-
 
 void aoc_array_sort(AocArrayPtr array, int (*compare_function)(const void *, const void *)) {
     AocGenArray *arr = (AocGenArray *)array;
@@ -27,6 +26,7 @@ static char *point_to_string(Point p, char *buf) {
     return buf;
 }
 
+// clang-format off
 static char* aoc_type_string(AocArrayType type) {
     char *string_repr[AOC_ARRAY_COUNT + 1] = {
         "AOC_ARRAY_CHAR",
@@ -41,6 +41,7 @@ static char* aoc_type_string(AocArrayType type) {
         "AOC_ARRAY_PTR",
         NULL
     };
+    // clang-format on
 
     if (type > AOC_ARRAY_COUNT) {
         fprintf(stderr, "Type ID (%d) is not defined. Exiting...", type);
@@ -53,7 +54,7 @@ static char* aoc_type_string(AocArrayType type) {
 AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
     AocGenArray *array = (AocGenArray *)malloc(sizeof(AocGenArray));
 
-    switch(array_type) {
+    switch (array_type) {
         case AOC_ARRAY_INT32:
             array->element_size = sizeof(int32_t);
             break;
@@ -101,7 +102,7 @@ void *aoc_str_array_append(AocArrayPtr array, char *value) {
         return NULL;
     }
 
-    if(array->type != AOC_ARRAY_STR) {
+    if (array->type != AOC_ARRAY_STR) {
         return NULL;
     }
     char *val_ = strdup(value);
@@ -109,11 +110,11 @@ void *aoc_str_array_append(AocArrayPtr array, char *value) {
 }
 
 void *aoc_array_append(AocArray *array, void *value) {
-    if(array == NULL) {
+    if (array == NULL) {
         return NULL;
     }
 
-    switch(array->type) {
+    switch (array->type) {
         case AOC_ARRAY_INT32:
         case AOC_ARRAY_UINT32:
         case AOC_ARRAY_INT64:
@@ -127,9 +128,9 @@ void *aoc_array_append(AocArray *array, void *value) {
             {
                 AocGenArray *arr = (AocGenArray *)array;
                 if (array->length == arr->capacity) {
-                    #ifdef DEBUG
+#ifdef DEBUG
                     fprintf(stderr, "Array full, reallocating...\n");
-                    #endif
+#endif
                     arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity << 1));
                     arr->capacity <<= 1;
                 }
@@ -156,7 +157,7 @@ void *aoc_array_index(AocArray *array, size_t index) {
 
 void aoc_array_free(AocArray *array, int free_segments) {
     AocGenArray *arr = (AocGenArray *)array;
-    if(free_segments) {
+    if (free_segments) {
         for (size_t index = 0; index < aoc_array_length(array); index++) {
             free(&arr->data[index * arr->element_size]);
         }
@@ -173,35 +174,35 @@ void aoc_array_print(AocArray *array) {
     for (size_t i = 0; i < aoc_array_length(array); i++) {
         switch (array->type) {
             case AOC_ARRAY_INT32:
-                printf("%s%d%s", i == 0 ? "{" : "", aoc_int32_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s%d%s", i == 0 ? "{" : "", aoc_int32_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_UINT32:
-                printf("%s%u%s", i == 0 ? "{" : "", aoc_uint32_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s%u%s", i == 0 ? "{" : "", aoc_uint32_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_INT64:
-                printf("%s%lld%s", i == 0 ? "{" : "", aoc_int64_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s%lld%s", i == 0 ? "{" : "", aoc_int64_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_UINT64:
-                printf("%s%llu%s", i == 0 ? "{" : "", aoc_uint64_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s%llu%s", i == 0 ? "{" : "", aoc_uint64_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_STR:
-                printf("%s\"%s\"%s", i == 0 ? "{" : "", aoc_str_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s\"%s\"%s", i == 0 ? "{" : "", aoc_str_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_CHAR:
-                printf("%s'%c'%s", i == 0 ? "{" : "", aoc_char_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s'%c'%s", i == 0 ? "{" : "", aoc_char_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_UCHAR:
-                printf("%s'%uc'%s", i == 0 ? "{" : "", aoc_uchar_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s'%uc'%s", i == 0 ? "{" : "", aoc_uchar_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_POINT:
-                printf("%s%s%s", i == 0 ? "{" : "", point_to_string(aoc_point_array_index(array, i), buffer), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s%s%s", i == 0 ? "{" : "", point_to_string(aoc_point_array_index(array, i), buffer), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_LINE:
-                l = aoc_line_array_index(array,i);
-                printf("%s%s -> %s%s", i == 0 ? "{" : "", point_to_string(l.p0, buffer), point_to_string(l.p1, buffer), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                l = aoc_line_array_index(array, i);
+                printf("%s%s -> %s%s", i == 0 ? "{" : "", point_to_string(l.p0, buffer), point_to_string(l.p1, buffer), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_ARRAY_PTR:
-                printf("%s%p%s", i == 0 ? "{" : "", (void *)aoc_ptr_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n":", ");
+                printf("%s%p%s", i == 0 ? "{" : "", (void *)aoc_ptr_array_index(array, i), i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             default:
                 printf("Print of requested array type is not implemented\n");
@@ -232,9 +233,7 @@ AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index) {
     arr->length -= 1;
 
     return array;
-
 }
-
 
 void *aoc_array_get_data(AocArrayPtr array) {
     AocGenArray *arr = (AocGenArray *)array;
@@ -305,5 +304,3 @@ AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr array, size_t index, uint64_t
 
     return array;
 }
-
-
