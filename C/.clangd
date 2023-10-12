@@ -1,0 +1,10 @@
+CompileFlags:
+  Add: [
+    -Wall,
+    -Wextra,
+    -std=c99,
+    --target=x86_64_pc_windows_gnu,
+    "-Ic:/Local/msys64/mingw64/include/glib-2.0",
+    "-Ic:/Local/msys64/mingw64/lib/glib-2.0/include",
+    "-Ic:/Local/msys64/home/yy11510/projects/adventofcode/C/include",
+  ]

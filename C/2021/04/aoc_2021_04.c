@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +32,8 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     split_line = aoc_str_split(line, ",", -1);
     int i = 0;
     while(split_line[i] != NULL) {
-        aoc_int_array_append(numbers, atoi(split_line[i++]));
+        int32_t value = atoi(split_line[i++]);
+        aoc_int_array_append(numbers, value);
     }
     aoc_ptr_array_append(return_data, numbers);
 
