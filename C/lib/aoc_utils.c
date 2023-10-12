@@ -109,6 +109,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
+
     file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
