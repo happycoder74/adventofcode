@@ -21,7 +21,8 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         len = strlen(line);
         AocArrayPtr bitfield = aoc_int_array_new();
         for (j = 0; j < len; j++) {
-            aoc_int_array_append(bitfield, line[j] - '0');
+            int32_t line_digit = line[j] - '0';
+            aoc_int_array_append(bitfield, line_digit);
         }
         aoc_ptr_array_append(bitfields, bitfield);
     }

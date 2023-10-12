@@ -13,7 +13,8 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     char *str = aoc_str_array_index(data, 0);
 
     for (size_t i = 0; i < strlen(str); i++) {
-        aoc_int32_array_append(array, str[i] - '0');
+        int int_char = str[i] - '0';
+        aoc_int32_array_append(array, int_char);
     }
     return array;
 }
