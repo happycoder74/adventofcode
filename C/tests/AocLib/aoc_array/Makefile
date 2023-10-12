@@ -28,15 +28,15 @@ $(BIN)/%.exe: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(AOC_LIBDIR):	$(SRCS) $(AOC_HOME)/debug $(AOC_HOME)/include/*.h
-	ninja -C $(AOC_HOME)/debug aoc
+	ninja -vC $(AOC_HOME)/debug aoc
 
 $(AOC_HOME)/debug:	$(AOC_HOME)/CMakeLists.txt
 	cmake -B $(AOC_HOME)/debug -S $(AOC_HOME) -D CMAKE_BUILD_TYPE=Debug -G Ninja
 
-test: $(AOC_LIBDIR)/libaoc.a $(BIN) $(TESTBINS) ## Run all tests
+test: $(AOC_LIBDIR) $(BIN) $(TESTBINS) ## Run all tests
 	@for test in $(TESTBINS); do echo "running $$test"; ./$$test; done
 
-testverbose: $(AOC_LIBDIR)/libaoc.a $(BIN) $(TESTBINS) ## Run all tests in verbose mode
+testverbose: $(AOC_LIBDIR) $(BIN) $(TESTBINS) ## Run all tests in verbose mode
 	@for test in $(TESTBINS); do echo "running $$test"; ./$$test --verbose; done
 
 clean: ## Clean built files

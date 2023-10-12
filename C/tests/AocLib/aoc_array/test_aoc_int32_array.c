@@ -26,31 +26,34 @@ Test(aoc_array, test_int32_array_new_length) {
 }
 
 Test(aoc_array, test_int32_array_append) {
-    aoc_int32_array_append(array, 5);
+    int32_t value = 5;
+    aoc_int32_array_append(array, value);
     int32_t *data = (int *)aoc_array_get_data(array);
 
     cr_expect(data[0] == 5, "Expected value to be 5");
 }
 
 Test(aoc_array, test_int32_array_index) {
-    aoc_int32_array_append(array, 15);
-    aoc_int32_array_append(array, 7);
-    aoc_int32_array_append(array, -5);
+    int32_t values[3] = {15, 7, -5};
+    aoc_int32_array_append(array, values[0]);
+    aoc_int32_array_append(array, values[1]);
+    aoc_int32_array_append(array, values[2]);
 
     int32_t data = aoc_int32_array_index(array, 1);
     cr_expect(data == 7, "Expected value to be 7");
 }
 
 Test(aoc_array, test_int32_array_remove_index) {
-    aoc_int32_array_append(array, 15);
-    aoc_int32_array_append(array, 0);
-    aoc_int32_array_append(array, -5);
+    int32_t values[3] = {15, 7, -5};
+    aoc_int32_array_append(array, values[0]);
+    aoc_int32_array_append(array, values[1]);
+    aoc_int32_array_append(array, values[2]);
 
     AocArrayPtr res = NULL;
     res = aoc_array_remove_index(array, 0);
 
     cr_assert_not_null(res);
-    cr_assert(aoc_int32_array_index(array, 0) == 0);
+    cr_assert(aoc_int32_array_index(array, 0) == 7);
     cr_assert(aoc_int32_array_index(array, 1) == -5);
     cr_expect(aoc_array_length(array) == 2, "Expected a length of 2");
 }

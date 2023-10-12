@@ -19,23 +19,27 @@ void aoc_array_teardown(void) {
 TestSuite(aoc_array, .init=aoc_array_setup, .fini=aoc_array_teardown);
 
 Test(aoc_array, test_int64_array_new) {
-    cr_expect(array != NULL, "Expected new array to not be NULL");
+    cr_expect_not_null(array, "Expected new array to not be NULL");
 }
 
 Test(aoc_array, test_int64_array_new_length) {
-    cr_expect(array->length == 0, "Expected new array length to be 0");
+    cr_expect_eq(array->length, 0, "Expected new array length to be 0");
 }
 
 Test(aoc_array, test_int64_array_append) {
-    aoc_int64_array_append(array, 5);
+    int64_t value = 5;
+    aoc_int64_array_append(array, value);
     int64_t *data = (int64_t *)aoc_array_get_data(array);
 
-    cr_expect(data[0] == 5, "Expected value to be 5");
+    int64_t expected = value;
+    int64_t actual = data[0];
+    cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
 }
 
 Test(aoc_array, test_int64_array_append_int64_maxmin) {
-    aoc_int64_array_append(array, INT64_MAX);
-    aoc_int64_array_append(array, INT64_MIN);
+    int64_t values[2] = {INT64_MAX, INT64_MIN};
+    aoc_int64_array_append(array, values[0]);
+    aoc_int64_array_append(array, values[1]);
     int64_t *data = (int64_t *)aoc_array_get_data(array);
 
     cr_expect(data[0] == INT64_MAX, "Expected value to be INT64_MAX");
@@ -43,18 +47,20 @@ Test(aoc_array, test_int64_array_append_int64_maxmin) {
 }
 
 Test(aoc_array, test_int64_array_index) {
-    aoc_int64_array_append(array, 15);
-    aoc_int64_array_append(array, 7);
-    aoc_int64_array_append(array, -5);
+    int64_t values[3] = {15, 7, -5};
+    aoc_int64_array_append(array, values[0]);
+    aoc_int64_array_append(array, values[1]);
+    aoc_int64_array_append(array, values[2]);
 
     int64_t data = aoc_int64_array_index(array, 1);
     cr_expect(data == 7, "Expected value to be 7");
 }
 
 Test(aoc_array, test_int64_array_remove_index) {
-    aoc_int64_array_append(array, 15);
-    aoc_int64_array_append(array, 0);
-    aoc_int64_array_append(array, -5);
+    int64_t values[3] = {15, 0, -5};
+    aoc_int64_array_append(array, values[0]);
+    aoc_int64_array_append(array, values[1]);
+    aoc_int64_array_append(array, values[2]);
 
     AocArrayPtr res = NULL;
     res = aoc_array_remove_index(array, 0);

@@ -13,7 +13,7 @@ void aoc_array_setup(void) {
 }
 
 void aoc_array_teardown(void) {
-    aoc_str_array_free(array);
+    free(array);
 }
 
 TestSuite(aoc_array, .init=aoc_array_setup, .fini=aoc_array_teardown);
