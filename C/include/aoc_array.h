@@ -21,6 +21,7 @@
 #define aoc_int32_array_free_all(arr_)          (aoc_array_free(arr_, true))
 #define aoc_int32_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
 #define aoc_int32_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT32) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_int32_array_prepend(_arr_, _val_)   (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT32) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // uint32_t array function macros
@@ -30,6 +31,7 @@
 #define aoc_uint32_array_free_all(arr_)         (aoc_array_free(arr_, true))
 #define aoc_uint32_array_sort(_arr, func)       (aoc_array_sort(_arr, func))
 #define aoc_uint32_array_append(_arr_, _val_)   (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_UINT32) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_uint32_array_prepend(_arr_, _val_)   (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_UINT32) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // int64_t array function macros
@@ -40,6 +42,7 @@
 #define aoc_int64_array_free_all(arr_)          (aoc_array_free(arr_, true))
 #define aoc_int64_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
 #define aoc_int64_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT64) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_int64_array_prepend(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT64) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // uint64_t array function macros
@@ -50,6 +53,7 @@
 #define aoc_uint64_array_sort(_arr, func)       (aoc_array_sort(_arr, func))
 #define aoc_uint64_array_sort(_arr, func)       (aoc_array_sort(_arr, func))
 #define aoc_uint64_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_UINT64) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_uint64_array_prepend(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_UINT64) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // String (char *) array function macros
@@ -67,6 +71,7 @@
 #define aoc_char_array_free_all(arr_)           (aoc_array_free(arr_, true))
 #define aoc_char_array_sort(_arr, func)         (aoc_array_sort(_arr, func))
 #define aoc_char_array_append(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_CHAR) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_char_array_prepend(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_CHAR) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 // Unsigned Char array function macros
 #define aoc_uchar_array_new() i                  (aoc_array_new(AOC_ARRAY_UCHAR, 1))
@@ -75,6 +80,7 @@
 #define aoc_uchar_array_free_all(arr_)           (aoc_array_free(arr_, true))
 #define aoc_uchar_array_sort(_arr, func)         (aoc_array_sort(_arr, func))
 #define aoc_uchar_array_append(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_UCHAR) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_uchar_array_prepend(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_UCHAR) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // Point array function macros
@@ -84,6 +90,7 @@
 #define aoc_point_array_free_all(arr_)          (aoc_array_free(arr_, true))
 #define aoc_point_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
 #define aoc_point_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_POINT) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_point_array_prepend(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_POINT) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // Line (struct Line) array function macros
@@ -93,6 +100,7 @@
 #define aoc_line_array_free_all(arr_)           (aoc_array_free(arr_, true))
 #define aoc_line_array_sort(_arr, func)         (aoc_array_sort(_arr, func))
 #define aoc_line_array_append(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_LINE) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_line_array_prepend(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_LINE) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 
 // Integer (int32_t) array function macros
@@ -105,6 +113,7 @@
 #define aoc_ptr_array_new()                     (aoc_array_new(AOC_ARRAY_PTR, 1))
 #define aoc_ptr_array_index(arr_, index_)       ((void *)(*(uint64_t *)(aoc_array_index(arr_, index_))))
 #define aoc_ptr_array_append(arr_, value_)      (aoc_array_append(arr_, &(value_)));
+#define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, &(value_)));
 #define aoc_ptr_array_free(arr_)                (aoc_array_free(arr_, false))
 #define aoc_ptr_array_free_all(arr_)            (aoc_array_free(arr_, true))
 #define aoc_ptr_array_sort(_arr, func)          (aoc_array_sort(_arr, func))
@@ -115,15 +124,13 @@
 
 
 // Function declarations
-void *aoc_str_array_append(AocArrayPtr, char *);
 
 AocArrayPtr aoc_int32_array_set_index(AocArrayPtr, size_t index, int32_t);
 AocArrayPtr aoc_int64_array_set_index(AocArrayPtr, size_t index, int64_t);
 AocArrayPtr aoc_uint32_array_set_index(AocArrayPtr, size_t index, uint32_t);
 AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr, size_t index, uint64_t);
 
-AocArrayPtr aoc_int32_array_prepend(AocArrayPtr, int32_t);
-
+void *aoc_str_array_append(AocArrayPtr, char *);
 
 void aoc_array_sort(AocArrayPtr arr, int (*compare_function)(const void *, const void *));
 AocArray *aoc_array_new(AocArrayType, size_t);
@@ -134,5 +141,6 @@ void aoc_array_free(AocArray *, int);
 AocArrayPtr aoc_array_remove_index(AocArrayPtr, size_t);
 void *aoc_array_get_data(AocArrayPtr);
 AocArrayPtr aoc_array_copy(AocArrayPtr);
+size_t aoc_array_get_element_size(AocArrayPtr);
 
 #endif // !__AOC_ARRAY_H__

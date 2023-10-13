@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 #include "aoc_array.h"
 #include "aoc_types.h"
@@ -109,6 +110,15 @@ void *aoc_str_array_append(AocArrayPtr array, char *value) {
     return aoc_array_append(array, &val_);
 }
 
+static void *aoc_array_expand(AocArray *array) {
+    AocGenArray *arr = (AocGenArray *)array;
+
+    arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity << 1));
+    arr->capacity <<= 1;
+
+    return array;
+}
+
 void *aoc_array_append(AocArray *array, void *value) {
     if (array == NULL) {
         return NULL;
@@ -128,11 +138,7 @@ void *aoc_array_append(AocArray *array, void *value) {
             {
                 AocGenArray *arr = (AocGenArray *)array;
                 if (array->length == arr->capacity) {
-#ifdef DEBUG
-                    fprintf(stderr, "Array full, reallocating...\n");
-#endif
-                    arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity << 1));
-                    arr->capacity <<= 1;
+                    array = (AocArrayPtr)aoc_array_expand(array);
                 }
                 memcpy((arr->data + (array->length * arr->element_size)), value, arr->element_size);
             }
@@ -141,6 +147,25 @@ void *aoc_array_append(AocArray *array, void *value) {
             fprintf(stderr, "Type %s is not implemented in aoc_array_append()\n", aoc_type_string(array->type));
             return NULL;
     }
+    array->length += 1;
+    return array;
+}
+
+void *aoc_array_prepend(AocArrayPtr array, void *value) {
+    if (array == NULL)
+        return NULL;
+
+    if(array->type >= AOC_ARRAY_COUNT) {
+        return NULL;
+    }
+
+    AocGenArray *arr = (AocGenArray *)array;
+    if (array->length == arr->capacity) {
+        array = (AocArrayPtr)aoc_array_expand(array);
+    }
+    memmove(arr->data + arr->element_size, arr->data, arr->element_size);
+    memcpy(arr->data, value, arr->element_size);
+
     array->length += 1;
     return array;
 }
@@ -303,4 +328,8 @@ AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr array, size_t index, uint64_t
     data[index] = value;
 
     return array;
+}
+
+size_t aoc_array_get_element_size(AocArrayPtr array) {
+    return ((AocGenArray *)array)->element_size;
 }
