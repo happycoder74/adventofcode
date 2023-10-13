@@ -119,6 +119,17 @@ static void *aoc_array_expand(AocArray *array) {
     return array;
 }
 
+static void *aoc_array_shrink(AocArray *array) {
+    AocGenArray *arr = (AocGenArray *)array;
+
+    if (arr->length < (arr->capacity >> 1)) {
+        arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity >> 1));
+        arr->capacity >>= 1;
+    }
+
+    return array;
+}
+
 void *aoc_array_append(AocArray *array, void *value) {
     if (array == NULL) {
         return NULL;
@@ -131,8 +142,7 @@ void *aoc_array_append(AocArray *array, void *value) {
 
     AocGenArray *arr = (AocGenArray *)array;
     if (array->length == arr->capacity) {
-        arr->data = (uint8_t *)realloc(arr->data, arr->element_size * (arr->capacity << 1));
-        arr->capacity <<= 1;
+        array = (AocArrayPtr)aoc_array_expand(array);
     }
     memcpy((arr->data + (array->length * arr->element_size)), value, arr->element_size);
     array->length += 1;
@@ -240,11 +250,18 @@ AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index) {
         free(str);
     }
 
+    if (arr->type == AOC_ARRAY_PTR) {
+        void *ptr = aoc_ptr_array_index(array, index);
+        free(ptr);
+    }
+
     if (index != aoc_array_length(arr) - 1) {
         memmove((arr->data + index * arr->element_size), (arr->data + (index + 1) * arr->element_size), arr->element_size * (aoc_array_length(arr) - index - 1));
     }
 
     arr->length -= 1;
+
+    array = aoc_array_shrink(array);
 
     return array;
 }
