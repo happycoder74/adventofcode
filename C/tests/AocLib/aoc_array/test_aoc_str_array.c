@@ -55,17 +55,23 @@ Test(aoc_array, test_str_array_remove_index) {
     cr_expect(!strcmp(aoc_str_array_index(array, 1), "Three"), "Expected value to be \"Three\"");
     cr_expect(aoc_array_length(array) == 2, "Expected a length of 2");
 }
-//
-//     add_case(ts, "test_str_array_index()", test_str_array_index, NULL);
-//     add_case(ts, "test_str_array_remove_index()", test_str_array_remove_index, NULL);
-//     add_case(ts, "test_str_array_append_to_null()", test_str_array_append_to_null, NULL);
-//     add_case(ts, "test_str_array_append_to_wrong_type()", test_str_array_append_to_wrong_type, NULL);
-//     add_case(ts, "test_str_array_insert_at_beginning()", test_str_array_insert_at_beginning, NULL);
-//
-//     run_test_cases(ts);
-//
-//     test_report(ts);
-//
-//     tear_down(ts);
-//
-//     return EXIT_SUCCESS;
+
+Test(aoc_array, test_str_array_prepend_to_empty) {
+    char str[] = "Test String Prepend";
+    array = aoc_str_array_prepend(array, str);
+
+    cr_assert_not_null(array);
+    cr_expect_eq(array->length, 1, "String length should be 1");
+    cr_expect_str_eq(aoc_str_array_index(array, 0), str, "Strings not equal");
+}
+
+Test(aoc_array, test_str_array_prepend_to_existing) {
+    char str[] = "Test String Prepend";
+    array = aoc_str_array_append(array, "First string (append)");
+    array = aoc_str_array_prepend(array, str);
+
+    cr_assert_not_null(array);
+    cr_expect_eq(array->length, 2, "String length should be 1");
+    cr_expect_str_eq(aoc_str_array_index(array, 0), str, "Strings not equal");
+    cr_expect_str_eq(aoc_str_array_index(array, 1), "First string (append)", "Strings not equal");
+}

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <criterion/criterion.h>
 #include "aoc_array.h"
-#include "criterion/internal/assert.h"
 
 AocArrayPtr array = NULL;
 
@@ -70,17 +69,31 @@ Test(aoc_array, test_int64_array_remove_index) {
     cr_assert(aoc_int64_array_index(array, 1) == -5);
     cr_expect(aoc_array_length(array) == 2, "Expected a length of 2");
 }
-//
-//     add_case(ts, "test_int64_array_index()", test_int64_array_index, NULL);
-//     add_case(ts, "test_int64_array_remove_index()", test_int64_array_remove_index, NULL);
-//     add_case(ts, "test_int64_array_append_to_null()", test_int64_array_append_to_null, NULL);
-//     add_case(ts, "test_int64_array_append_to_wrong_type()", test_int64_array_append_to_wrong_type, NULL);
-//     add_case(ts, "test_int64_array_insert_at_beginning()", test_int64_array_insert_at_beginning, NULL);
-//
-//     run_test_cases(ts);
-//
-//     test_report(ts);
-//
-//     tear_down(ts);
-//
-//     return EXIT_SUCCESS;
+
+Test(aoc_array, test_int64_array_prepend_to_empty) {
+    int64_t value = 5;
+    aoc_int64_array_prepend(array, value);
+    int64_t *data = (int64_t *)aoc_array_get_data(array);
+
+    int64_t expected = value;
+    int64_t actual = data[0];
+    cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    cr_expect_eq(1, array->length, "Expected length to be [1] but got [%d]", array->length);
+}
+
+Test(aoc_array, test_int64_array_prepend_to_existing) {
+    int64_t value = 5;
+    aoc_int64_array_append(array, value);
+    value = 10;
+    aoc_int64_array_prepend(array, value);
+    int64_t *data = (int64_t *)aoc_array_get_data(array);
+
+    int64_t expected = value;
+    int64_t actual = data[0];
+    cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    expected = 5;
+    actual = data[1];
+    cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    cr_expect_eq(2, array->length, "Expected length to be [2] but got [%d]", array->length);
+}
+
