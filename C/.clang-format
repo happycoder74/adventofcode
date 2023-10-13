@@ -18,14 +18,14 @@ AlignConsecutiveBitFields:
   PadOperators:    false
 AlignConsecutiveDeclarations:
   Enabled:         true
-  AcrossEmptyLines: false
-  AcrossComments:  false
+  AcrossEmptyLines: true
+  AcrossComments:  true
   AlignCompound:   false
   PadOperators:    false
 AlignConsecutiveMacros:
-  Enabled:         false
-  AcrossEmptyLines: false
-  AcrossComments:  false
+  Enabled:         true
+  AcrossEmptyLines: true
+  AcrossComments:  true
   AlignCompound:   false
   PadOperators:    false
 AlignConsecutiveShortCaseStatements:
