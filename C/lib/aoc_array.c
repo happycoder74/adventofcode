@@ -245,9 +245,9 @@ AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index) {
         return NULL;
     }
 
-    if (arr->type == AOC_ARRAY_STR) {
-        char *str = aoc_str_array_index(array, index);
-        free(str);
+    if ((arr->type == AOC_ARRAY_STR) || (arr->type == AOC_ARRAY_PTR)){
+        void *ptr = aoc_ptr_array_index(array, index);
+        free(ptr);
     }
 
     if (arr->type == AOC_ARRAY_PTR) {

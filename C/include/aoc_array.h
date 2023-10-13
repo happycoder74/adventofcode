@@ -113,7 +113,7 @@
 #define aoc_ptr_array_new()                     (aoc_array_new(AOC_ARRAY_PTR, 1))
 #define aoc_ptr_array_index(arr_, index_)       ((void *)(*(uint64_t *)(aoc_array_index(arr_, index_))))
 #define aoc_ptr_array_append(arr_, value_)      (aoc_array_append(arr_, &(value_)));
-#define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, &(value_)));
+#define aoc_ptr_array_prepend(arr_, value_)     (aoc_array_prepend(arr_, &(value_)));
 #define aoc_ptr_array_free(arr_)                (aoc_array_free(arr_, false))
 #define aoc_ptr_array_free_all(arr_)            (aoc_array_free(arr_, true))
 #define aoc_ptr_array_sort(_arr, func)          (aoc_array_sort(_arr, func))
@@ -136,6 +136,7 @@ void aoc_array_sort(AocArrayPtr arr, int (*compare_function)(const void *, const
 AocArray *aoc_array_new(AocArrayType, size_t);
 void aoc_array_print(AocArray *);
 void *aoc_array_append(AocArray *, void *);
+void *aoc_array_prepend(AocArray *, void *);
 void *aoc_array_index(AocArray *, size_t);
 void aoc_array_free(AocArray *, int);
 AocArrayPtr aoc_array_remove_index(AocArrayPtr, size_t);
