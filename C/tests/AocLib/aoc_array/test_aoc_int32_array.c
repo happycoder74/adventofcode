@@ -1,4 +1,5 @@
 #include "aoc_types.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <criterion/criterion.h>
@@ -31,6 +32,17 @@ Test(aoc_array, test_int32_array_append) {
     int32_t *data = (int *)aoc_array_get_data(array);
 
     cr_expect(data[0] == 5, "Expected value to be 5");
+}
+
+Test(aoc_array, test_int32_array_append_maxmin) {
+    int32_t int32_max = INT32_MAX;
+    int32_t int32_min = INT32_MIN;
+
+    aoc_int32_array_append(array, int32_min);
+    aoc_int32_array_append(array, int32_max);
+    int32_t *data = (int *)aoc_array_get_data(array);
+    cr_expect(data[0] == INT32_MIN, "Expected INT32_MIN (%d), got %d", INT32_MIN, data[0]);
+    cr_expect(data[1] == INT32_MAX, "Expected INT32_MAX (%d), got %d", INT32_MAX, data[1]);
 }
 
 Test(aoc_array, test_int32_array_index) {
