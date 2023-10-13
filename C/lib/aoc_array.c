@@ -112,6 +112,18 @@ void *aoc_str_array_append(AocArrayPtr array, char *value) {
     return aoc_array_append(array, &val_);
 }
 
+void *aoc_str_array_prepend(AocArrayPtr array, char *value) {
+    if (array == NULL) {
+        return NULL;
+    }
+
+    if (array->type != AOC_ARRAY_STR) {
+        return NULL;
+    }
+    char *val_ = strdup(value);
+    return aoc_array_prepend(array, &val_);
+}
+
 static void *aoc_array_expand(AocArray *array) {
     AocGenArray *arr = (AocGenArray *)array;
 
@@ -188,6 +200,9 @@ void *aoc_array_index(AocArray *array, size_t index) {
 }
 
 void aoc_array_free(AocArray *array, int free_segments) {
+    if (array == NULL)
+        return;
+
     AocGenArray *arr = (AocGenArray *)array;
     if (free_segments) {
         for (size_t index = 0; index < aoc_array_length(array); index++) {

@@ -131,6 +131,7 @@ AocArrayPtr aoc_uint32_array_set_index(AocArrayPtr, size_t index, uint32_t);
 AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr, size_t index, uint64_t);
 
 void *aoc_str_array_append(AocArrayPtr, char *);
+void *aoc_str_array_prepend(AocArrayPtr, char *);
 
 void aoc_array_sort(AocArrayPtr arr, int (*compare_function)(const void *, const void *));
 AocArray *aoc_array_new(AocArrayType, size_t);
