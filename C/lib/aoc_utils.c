@@ -22,13 +22,6 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-// AocArrayPtr aoc_data_data(AocData_t *data) {
-//     if(data) {
-//         return data->data;
-//     }
-//     return NULL;
-// }
-
 AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 

@@ -200,6 +200,9 @@ void *aoc_array_index(AocArray *array, size_t index) {
 }
 
 void aoc_array_free(AocArray *array, int free_segments) {
+    if (array == NULL)
+        return;
+
     AocGenArray *arr = (AocGenArray *)array;
     if (free_segments) {
         for (size_t index = 0; index < aoc_array_length(array); index++) {
