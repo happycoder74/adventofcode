@@ -7,7 +7,6 @@
 #include "aoc_utils.h"
 #include "aoc_timer.h"
 #include "aoc_array.h"
-#include "aoc_sets.h"
 
 int32_t prio(char c) {
     if(isupper(c))
