@@ -144,5 +144,6 @@ AocArrayPtr aoc_array_remove_index(AocArrayPtr, size_t);
 void *aoc_array_get_data(AocArrayPtr);
 AocArrayPtr aoc_array_copy(AocArrayPtr);
 size_t aoc_array_get_element_size(AocArrayPtr);
+size_t aoc_array_get_capacity(AocArrayPtr);
 
 #endif // !__AOC_ARRAY_H__

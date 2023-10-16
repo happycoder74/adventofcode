@@ -29,6 +29,10 @@ static char *point_to_string(Point p, char *buf) {
     return buf;
 }
 
+size_t aoc_array_capacity(AocArrayPtr array) {
+    return ((AocGenArray *)array)->capacity;
+}
+
 // clang-format off
 static char* aoc_type_string(AocArrayType type) {
     char *string_repr[AOC_ARRAY_COUNT + 1] = {
