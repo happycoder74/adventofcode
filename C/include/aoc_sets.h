@@ -18,6 +18,7 @@ typedef struct {
     SetType settype;
 } Set;
 
+Set *set_new(SetType settype);
 Set *set_new_with_data(GArray *data, SetType settype);
 Set *set_intersect(Set *set1, Set *set2);
 Set *set_difference(Set *set1, Set *set2);
