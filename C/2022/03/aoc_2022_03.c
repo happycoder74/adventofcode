@@ -47,18 +47,16 @@ void *solve_part_1(AocData_t *data) {
     int prio_sum = 0;
     for (uint16_t i = 0; i < aoc_data_length(data); i++) {
         packs = aoc_ptr_array_index(aoc_data_get(data), i);
-        GHashTable *common_items = g_hash_table_new(g_direct_hash, g_direct_equal);
+        AocArrayPtr common_items = aoc_array_sized_new(AOC_ARRAY_CHAR, 20);
         for (uint16_t j = 0; j < strlen(packs[0]); j++) {
             if(strchr(packs[1], packs[0][j]) != NULL) {
-                g_hash_table_insert(common_items, GINT_TO_POINTER(packs[0][j]), GINT_TO_POINTER(packs[0][j]));
+                if (!aoc_char_array_contains(common_items, packs[0][j]))
+                    aoc_char_array_append(common_items, packs[0][j]);
             }
         }
 
-        uint32_t table_size;
-        void **keys = g_hash_table_get_keys_as_array(common_items, &table_size);
-        for (uint16_t c = 0; c < table_size; c++) {
-            char item = GPOINTER_TO_INT(g_hash_table_lookup(common_items, keys[c]));
-            prio_sum += prio(item);
+        for (uint16_t c = 0; c < aoc_array_length(common_items); c++) {
+            prio_sum += prio(aoc_char_array_index(common_items, c));
         }
     }
     return strdup_printf("%d", prio_sum);
@@ -83,23 +81,26 @@ void *solve_part_2(AocData_t *data) {
     for (uint32_t i = 0; i < aoc_array_length(groups); i++) {
         group = aoc_ptr_array_index(groups, i);
         char *str = aoc_str_array_index(group, 0);
-        GHashTable *common_items = g_hash_table_new(g_direct_hash, g_direct_equal);
+        AocArrayPtr common_items = aoc_char_array_new();
+
         char *str1 = aoc_str_array_index(group, 1);
         for (uint32_t k = 0; k < strlen(str); k++) {
             if(strchr(str1, str[k]) != NULL) {
-                g_hash_table_insert(common_items, GINT_TO_POINTER(str[k]), GINT_TO_POINTER(str[k]));
+                if(!aoc_char_array_contains(common_items, str[k]))
+                    aoc_char_array_append(common_items, str[k]);
             }
         }
         str1 = aoc_str_array_index(group, 2);
-        uint32_t table_size;
-        void **keys = g_hash_table_get_keys_as_array(common_items, &table_size);
-        for (uint32_t k = 0; k < table_size; k++) {
-            char item = GPOINTER_TO_INT(g_hash_table_lookup(common_items, keys[k]));
-            if(! strchr(str1, item))
-                g_hash_table_remove(common_items, keys[k]);
+        for (uint32_t k = 0; k < aoc_array_length(common_items); k++) {
+            char item = aoc_char_array_index(common_items, k);
+            if(! strchr(str1, item)) {
+                int index = aoc_char_array_find(common_items, item);
+                aoc_array_remove_index(common_items, index);
+                k -= 1;
+            }
         }
 
-        prio_sum += prio(GPOINTER_TO_INT(g_hash_table_get_keys(common_items)->data));
+        prio_sum += prio(aoc_char_array_index(common_items, 0));
     }
     return strdup_printf("%d", prio_sum);
 }
