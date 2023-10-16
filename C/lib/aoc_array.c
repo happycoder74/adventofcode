@@ -18,6 +18,83 @@ typedef struct {
     uint8_t *data;
 } AocGenArray;
 
+
+int aoc_array_contains(AocArrayPtr array, void *value) {
+    for (size_t i = 0; i < array->length; i++) {
+        switch (array->type) {
+            case AOC_ARRAY_INT32:
+                if(aoc_int32_array_index(array, i) == *(int32_t *)value)
+                    return 1;
+                break;
+            case AOC_ARRAY_UINT32:
+                if(aoc_uint32_array_index(array, i) == *(uint32_t *)value)
+                    return 1;
+                break;
+            case AOC_ARRAY_INT64:
+                if(aoc_int64_array_index(array, i) == *(int64_t *)value)
+                    return 1;
+                break;
+            case AOC_ARRAY_UINT64:
+                if(aoc_uint64_array_index(array, i) == *(uint64_t *)value)
+                    return 1;
+                break;
+            case AOC_ARRAY_CHAR:
+                if(aoc_char_array_index(array, i) == *(char *)value)
+                    return 1;
+                break;
+            case AOC_ARRAY_UCHAR:
+                if(aoc_uchar_array_index(array, i) == *(unsigned char *)value)
+                    return 1;
+                break;
+            case AOC_ARRAY_PTR:
+                if(aoc_ptr_array_index(array, i) == value)
+                    return 1;
+                break;
+            default:
+                break;
+        }
+    }
+    return 0;
+}
+
+int aoc_array_find(AocArrayPtr array, void *value) {
+    for (size_t i = 0; i < array->length; i++) {
+        switch(array->type) {
+            case AOC_ARRAY_INT32:
+                if(aoc_int32_array_index(array, i) == *(int32_t *)value)
+                    return (int)i;
+                break;
+            case AOC_ARRAY_UINT32:
+                if(aoc_uint32_array_index(array, i) == *(uint32_t *)value)
+                    return (int)i;
+                break;
+            case AOC_ARRAY_INT64:
+                if(aoc_int64_array_index(array, i) == *(int64_t *)value)
+                    return (int)i;
+                break;
+            case AOC_ARRAY_UINT64:
+                if(aoc_uint64_array_index(array, i) == *(uint64_t *)value)
+                    return (int)i;
+                break;
+            case AOC_ARRAY_CHAR:
+                if(aoc_char_array_index(array, i) == *(char *)value)
+                    return (int)i;
+                break;
+            case AOC_ARRAY_UCHAR:
+                if(aoc_uchar_array_index(array, i) == *(unsigned char *)value)
+                    return (int)i;
+                break;
+            case AOC_ARRAY_PTR:
+                if(aoc_ptr_array_index(array, i) == value)
+                    return (int)i;
+                break;
+            default:
+                break;
+        }
+    }
+    return -1;
+}
+
 void aoc_array_sort(AocArrayPtr array, int (*compare_function)(const void *, const void *)) {
     AocGenArray *arr = (AocGenArray *)array;
 

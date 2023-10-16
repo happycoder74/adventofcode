@@ -22,6 +22,7 @@
 #define aoc_int32_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
 #define aoc_int32_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT32) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
 #define aoc_int32_array_prepend(_arr_, _val_)   (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT32) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
+#define aoc_int32_array_contains(_arr_, _value_)    aoc_array_contains(_arr_, &(_value_))
 
 
 // uint32_t array function macros
@@ -72,6 +73,8 @@
 #define aoc_char_array_sort(_arr, func)         (aoc_array_sort(_arr, func))
 #define aoc_char_array_append(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_CHAR) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
 #define aoc_char_array_prepend(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_CHAR) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
+#define aoc_char_array_contains(_arr_, _value_)    aoc_array_contains(_arr_, &(_value_))
+#define aoc_char_array_find(_arr_, _value_)    aoc_array_find(_arr_, &(_value_))
 
 // Unsigned Char array function macros
 #define aoc_uchar_array_new()                    (aoc_array_new(AOC_ARRAY_UCHAR, 0))
@@ -145,5 +148,6 @@ void *aoc_array_get_data(AocArrayPtr);
 AocArrayPtr aoc_array_copy(AocArrayPtr);
 size_t aoc_array_get_element_size(AocArrayPtr);
 size_t aoc_array_get_capacity(AocArrayPtr);
-
+int aoc_array_contains(AocArrayPtr array, void *value);
+int aoc_array_find(AocArrayPtr array, void *value);
 #endif // !__AOC_ARRAY_H__
