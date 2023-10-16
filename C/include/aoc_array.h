@@ -65,7 +65,7 @@
 
 
 // Char array function macros
-#define aoc_char_array_new() i                  (aoc_array_new(AOC_ARRAY_CHAR, 0))
+#define aoc_char_array_new()                    (aoc_array_new(AOC_ARRAY_CHAR, 0))
 #define aoc_char_array_index(arr_, index_)      (*(char *)(aoc_array_index(arr_, index_)))
 #define aoc_char_array_free(arr_)               (aoc_array_free(arr_, false))
 #define aoc_char_array_free_all(arr_)           (aoc_array_free(arr_, true))
@@ -74,7 +74,7 @@
 #define aoc_char_array_prepend(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_CHAR) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 // Unsigned Char array function macros
-#define aoc_uchar_array_new() i                  (aoc_array_new(AOC_ARRAY_UCHAR, 0))
+#define aoc_uchar_array_new()                    (aoc_array_new(AOC_ARRAY_UCHAR, 0))
 #define aoc_uchar_array_index(arr_, index_)      (*(unsigned char *)(aoc_array_index(arr_, index_)))
 #define aoc_uchar_array_free(arr_)               (aoc_array_free(arr_, false))
 #define aoc_uchar_array_free_all(arr_)           (aoc_array_free(arr_, true))
