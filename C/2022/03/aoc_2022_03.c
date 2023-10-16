@@ -14,6 +14,7 @@ int32_t prio(char c) {
     return c - 'a' + 1;
 }
 
+
 AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr rucksacks;
     rucksacks = aoc_ptr_array_new();
@@ -64,7 +65,43 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    return NULL;
+    AocArrayPtr groups = aoc_ptr_array_new();
+    AocArrayPtr group = aoc_str_array_new();
+
+    for (uint32_t i = 0; i < aoc_data_length(data); i++) {
+        char **packs = aoc_ptr_array_index(aoc_data_get(data), i);
+        char *pack = str_join("", packs, 2);
+        aoc_str_array_append(group, pack);
+        if ((((i + 1) % 3) == 0) && (i > 0)) {
+            aoc_ptr_array_append(groups, group);
+            group = aoc_str_array_new();
+        }
+    }
+
+    int prio_sum = 0;
+
+    for (uint32_t i = 0; i < aoc_array_length(groups); i++) {
+        group = aoc_ptr_array_index(groups, i);
+        char *str = aoc_str_array_index(group, 0);
+        GHashTable *common_items = g_hash_table_new(g_direct_hash, g_direct_equal);
+        char *str1 = aoc_str_array_index(group, 1);
+        for (uint32_t k = 0; k < strlen(str); k++) {
+            if(strchr(str1, str[k]) != NULL) {
+                g_hash_table_insert(common_items, GINT_TO_POINTER(str[k]), GINT_TO_POINTER(str[k]));
+            }
+        }
+        str1 = aoc_str_array_index(group, 2);
+        uint32_t table_size;
+        void **keys = g_hash_table_get_keys_as_array(common_items, &table_size);
+        for (uint32_t k = 0; k < table_size; k++) {
+            char item = GPOINTER_TO_INT(g_hash_table_lookup(common_items, keys[k]));
+            if(! strchr(str1, item))
+                g_hash_table_remove(common_items, keys[k]);
+        }
+
+        prio_sum += prio(GPOINTER_TO_INT(g_hash_table_get_keys(common_items)->data));
+    }
+    return strdup_printf("%d", prio_sum);
 }
 
 void *solve_all(AocData_t *data) {
