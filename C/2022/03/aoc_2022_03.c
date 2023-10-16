@@ -25,9 +25,10 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         char *pack1 = (char *)calloc(pack_length + 1, sizeof(char));
         char *pack2 = (char *)calloc(pack_length + 1, sizeof(char));
 
-        char *ptr = row + (pack_length);
-        strncpy(pack1, row, pack_length);
-        strncpy(pack2, ptr, pack_length);
+        memcpy(pack1, row, pack_length * sizeof(char));
+        pack1[pack_length] = '\0';
+        memcpy(pack2, row + pack_length, pack_length * sizeof(char));
+        pack2[pack_length] = '\0';
 
         char **packs = (char **)calloc(2, sizeof(char *));
 
