@@ -17,7 +17,7 @@ void aoc_int32_array_teardown(void) {
     aoc_int32_array_free(array2);
 }
 
-TestSuite(aoc_int32_array, .init=aoc_array_int32_setup, .fini=aoc_array_int32_teardown);
+TestSuite(aoc_int32_array, .init=aoc_int32_array_setup, .fini=aoc_int32_array_teardown);
 
 Test(aoc_int32_array, test_int32_array_new) {
     cr_expect(array != NULL, "Expected new array to not be NULL");
@@ -80,7 +80,7 @@ Test(aoc_int32_array, test_int32_array_prepend_to_empty) {
     int32_t expected = value;
     int32_t actual = data[0];
     cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
-    cr_expect_eq(1, array->length, "Expected length to be [1] but got [%d]", array->length);
+    cr_expect_eq(1, array->length, "Expected length to be [1] but got [%d]", (int)array->length);
 }
 
 Test(aoc_int32_array, test_int32_array_prepend_to_existing) {
@@ -96,7 +96,7 @@ Test(aoc_int32_array, test_int32_array_prepend_to_existing) {
     expected = 5;
     actual = data[1];
     cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
-    cr_expect_eq(2, array->length, "Expected length to be [2] but got [%d]", array->length);
+    cr_expect_eq(2, array->length, "Expected length to be [2] but got [%d]", (int)array->length);
 }
 
 Test(aoc_int32_array, test_int32_array_copy) {

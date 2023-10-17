@@ -78,7 +78,7 @@ Test(aoc_array, test_int64_array_prepend_to_empty) {
     int64_t expected = value;
     int64_t actual = data[0];
     cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
-    cr_expect_eq(1, array->length, "Expected length to be [1] but got [%d]", array->length);
+    cr_expect_eq(1, array->length, "Expected length to be [1] but got [%d]", (int)array->length);
 }
 
 Test(aoc_array, test_int64_array_prepend_to_existing) {
@@ -94,6 +94,6 @@ Test(aoc_array, test_int64_array_prepend_to_existing) {
     expected = 5;
     actual = data[1];
     cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
-    cr_expect_eq(2, array->length, "Expected length to be [2] but got [%d]", array->length);
+    cr_expect_eq(2, array->length, "Expected length to be [2] but got [%d]", (int)array->length);
 }
 
