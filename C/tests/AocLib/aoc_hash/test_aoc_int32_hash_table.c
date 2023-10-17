@@ -92,7 +92,7 @@ Test(aoc_int32_hash_table, test_int32_hash_table_delete) {
 Test(aoc_int32_hash_table, test_int32_hash_table_rehash, .init=aoc_int32_hash_table_load_6) {
     int32_t value = 1001;
     aoc_int32_hash_table_insert(hash_table, 100, &value);
-    int32_t expected = 7;
+    int32_t expected = 17;
     int32_t actual = (int32_t)aoc_hash_table_size(hash_table);
     cr_expect_eq(expected, actual, "Expected size of %d, but got %d", expected, actual);
     expected = values[4];
