@@ -37,4 +37,7 @@ void aoc_hash_table_destroy(AocHashTablePtr ht);
 bool aoc_hash_table_insert(AocHashTablePtr ht, const void *key, void *obj);
 void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key);
 
+size_t aoc_hash_table_size(AocHashTablePtr hash_table);
+size_t aoc_hash_table_count(AocHashTablePtr hash_table);
+
 #endif /* AOC_HASH_H */
