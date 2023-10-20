@@ -5,7 +5,7 @@
 
 namespace aoc {
 
-std::string get_input_bare(std::string fn, int year, int day) {
+std::string get_input_bare(std::string fn) {
     std::ifstream ifs(fn);
     std::string   line;
 

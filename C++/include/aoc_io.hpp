@@ -11,13 +11,12 @@
 
 namespace aoc {
 
-std::string get_input_bare(std::string fn, int year, int day);
+std::string get_input_bare(std::string fn);
 
-template <typename T>
-std::vector<T> get_input_list(std::string fn, int year, int day) {
-    std::ifstream ifs;
-    std::vector<T> return_data;
-    std::string line;
+template <typename T> std::vector<T> get_input_list(std::string fn, int year, int day) {
+    std::ifstream         ifs;
+    std::vector<T>        return_data;
+    std::string           line;
     std::filesystem::path path(std::filesystem::current_path());
     std::filesystem::path datapath;
 
@@ -30,17 +29,16 @@ std::vector<T> get_input_list(std::string fn, int year, int day) {
     } else {
         ifs.open(fn);
     }
-    while(std::getline(ifs, line)) {
+    while (std::getline(ifs, line)) {
         return_data.push_back(line);
     }
 
     return return_data;
 }
-template<>
-inline std::vector<int> get_input_list(std::string fn, int year, int day) {
-    std::ifstream ifs;
-    std::string line;
-    std::vector<int> result;
+template <> inline std::vector<int> get_input_list(std::string fn, int year, int day) {
+    std::ifstream         ifs;
+    std::string           line;
+    std::vector<int>      result;
     std::filesystem::path path(std::filesystem::current_path());
     std::filesystem::path datapath;
 
@@ -55,7 +53,7 @@ inline std::vector<int> get_input_list(std::string fn, int year, int day) {
         ifs.open(fn);
     }
 
-    while(std::getline(ifs, line)) {
+    while (std::getline(ifs, line)) {
         result.push_back(std::stoi(line));
     }
 
@@ -64,9 +62,9 @@ inline std::vector<int> get_input_list(std::string fn, int year, int day) {
 
 namespace string {
 
-std::vector <std::string> split(const std::string&, char);
+std::vector<std::string> split(const std::string &, char);
 
-} // namespace aoc::string
+} // namespace string
 
 } // namespace aoc
 
