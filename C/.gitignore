@@ -7,3 +7,5 @@ memdebug
 .cmake
 CMakeCache.txt
 debug
+*workspace
+
