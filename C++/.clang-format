@@ -27,11 +27,6 @@ AlignConsecutiveMacros:
   AcrossComments:  true
   AlignCompound:   false
   PadOperators:    false
-AlignConsecutiveShortCaseStatements:
-  Enabled:         false
-  AcrossEmptyLines: false
-  AcrossComments:  false
-  AlignCaseColons: false
 AlignEscapedNewlines: Right
 AlignOperands:   Align
 AlignTrailingComments:
@@ -63,6 +58,7 @@ BraceWrapping:
   AfterExternBlock: false
   AfterFunction:   false
   AfterNamespace:  false
+  AfterObjCDeclaration: false
   AfterStruct:     false
   AfterUnion:      false
   BeforeCatch:     false
@@ -74,6 +70,7 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakAfterAttributes: Never
+BreakAfterJavaFieldAnnotations: false
 BreakArrays:     true
 BreakBeforeBinaryOperators: None
 BreakBeforeConceptDeclarations: Always
@@ -136,14 +133,20 @@ IntegerLiteralSeparator:
   DecimalMinDigits: 0
   Hex:             0
   HexMinDigits:    0
+JavaScriptQuotes: Leave
+JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: true
-KeepEmptyLinesAtEOF: false
 LambdaBodyIndentation: Signature
 LineEnding:      LF
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
+ObjCBinPackProtocolList: Auto
+ObjCBlockIndentWidth: 2
+ObjCBreakBeforeNestedBlockParam: true
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
 PackConstructorInitializers: BinPack
 PenaltyBreakAssignment: 2
 PenaltyBreakBeforeFirstCallParameter: 19
@@ -161,13 +164,13 @@ QualifierAlignment: Leave
 ReferenceAlignment: Pointer
 ReflowComments:  true
 RemoveBracesLLVM: false
-RemoveParentheses: Leave
 RemoveSemicolon: false
 RequiresClausePosition: OwnLine
 RequiresExpressionIndentation: OuterScope
 SeparateDefinitionBlocks: Leave
 ShortNamespaceLines: 1
 SortIncludes:    CaseSensitive
+SortJavaStaticImport: Before
 SortUsingDeclarations: LexicographicNumeric
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
@@ -178,7 +181,6 @@ SpaceBeforeCaseColon: false
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
-SpaceBeforeJsonColon: false
 SpaceBeforeParens: ControlStatements
 SpaceBeforeParensOptions:
   AfterControlStatements: true
@@ -193,18 +195,16 @@ SpaceBeforeParensOptions:
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceBeforeSquareBrackets: false
 SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles:  Never
+SpacesInConditionalStatement: false
 SpacesInContainerLiterals: true
+SpacesInCStyleCastParentheses: false
 SpacesInLineCommentPrefix:
   Minimum:         1
   Maximum:         -1
-SpacesInParens:  Never
-SpacesInParensOptions:
-  InCStyleCasts:   false
-  InConditionalStatements: false
-  InEmptyParentheses: false
-  Other:           false
+SpacesInParentheses: false
 SpacesInSquareBrackets: false
 Standard:        Latest
 StatementAttributeLikeMacros:
@@ -214,7 +214,6 @@ StatementMacros:
   - QT_REQUIRE_VERSION
 TabWidth:        8
 UseTab:          Never
-VerilogBreakBetweenInstancePorts: true
 WhitespaceSensitiveMacros:
   - BOOST_PP_STRINGIZE
   - CF_SWIFT_NAME
