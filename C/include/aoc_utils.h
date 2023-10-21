@@ -10,13 +10,13 @@
 // AoC Data Structure macros
 #define aoc_data_new(filename, year, day)       (aoc_data_new_clean(filename, year, day, NULL))
 #define aoc_data_get(arr)                      (((arr)->data != NULL) && (arr != NULL) ? ((arr)->data) : NULL)
-#define aoc_data_length(arr)                    (((arr)->data != NULL) && (arr != NULL) ? (arr)->data->len : 0)
+#define aoc_data_length(arr)                    (((arr)->data != NULL) && (arr != NULL) ? (arr)->data->length : 0)
 #define aoc_data_has_data(arr)                  ((arr)->data != NULL ? 1 : 0)
 
 // AoC Data Structure functions
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data);
 void aoc_data_free(AocData_t *data);
-AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArrayPtr (*clean_function)(AocArrayPtr ));
+AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*clean_function)(AocArrayPtr));
 
 bool is_horisontal(Line);
 bool is_vertical(Line);
@@ -28,7 +28,7 @@ Line line_new(Point, Point);
 Point *point_new_m(int, int);
 Point point_new(int, int);
 void point_print(Point);
-char *point_to_string(Point);
+char *point_to_string(Point, char *);
 void line_array_print(AocArrayPtr lines);
 int line_length(Line);
 

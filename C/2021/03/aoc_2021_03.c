@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdint.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_array.h"
@@ -13,16 +14,17 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr bitfields;
     size_t i, j, len;
 
-    bitfields = aoc_array_sized_new(sizeof(AocArrayPtr ), aoc_array_length(data));
+    bitfields = aoc_array_new(AOC_ARRAY_PTR, aoc_array_length(data));
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
         len = strlen(line);
-        AocArrayPtr bitfield = aoc_array_new(sizeof(int));
+        AocArrayPtr bitfield = aoc_int_array_new();
         for (j = 0; j < len; j++) {
-            aoc_int_array_append(bitfield, line[j] - '0');
+            int32_t line_digit = line[j] - '0';
+            aoc_int_array_append(bitfield, line_digit);
         }
-        aoc_array_append(bitfields, bitfield);
+        aoc_ptr_array_append(bitfields, bitfield);
     }
     return bitfields;
 
@@ -35,7 +37,7 @@ int common_value(AocArrayPtr data, int position, int method) {
     size_t i;
 
     for (i = 0; i < aoc_array_length(data); i++) {
-        bitfield = aoc_array_index(data, i);
+        bitfield = aoc_ptr_array_index(data, i);
         sum += aoc_int_array_index(bitfield, position);
     }
     check = (double) sum / aoc_array_length(data);
@@ -51,11 +53,11 @@ AocArrayPtr reduce(AocArrayPtr data, int value, int position) {
     AocArrayPtr item;
     size_t i;
 
-    reduced = aoc_array_new(sizeof(AocArrayPtr ));
+    reduced = aoc_ptr_array_new();
     for (i = 0; i < aoc_array_length(data); i++) {
-        item = aoc_array_index(data, i);
+        item = aoc_ptr_array_index(data, i);
         if (aoc_int_array_index(item, position) != value) {
-            aoc_array_append(reduced, item);
+            aoc_ptr_array_append(reduced, item);
         }
     }
     return reduced;
@@ -73,21 +75,21 @@ void print_bitfield(AocArrayPtr bitfield) {
 void print_bitfields_all(AocArrayPtr bitfields) {
     size_t i;
     for (i = 0; i < aoc_array_length(bitfields); i++) {
-        print_bitfield(aoc_array_index(bitfields, i));
+        print_bitfield(aoc_ptr_array_index(bitfields, i));
     }
 }
 
 void *solve_part_1(AocData_t *data) {
     AocArrayPtr digits;
     uint32_t gamma_rate, epsilon_rate;
-    AocArrayPtr bitfield = aoc_array_index(aoc_data_get(data), 0);
-    digits = aoc_array_new(sizeof(int));
+    AocArrayPtr bitfield = aoc_ptr_array_index(aoc_data_get(data), 0);
+    digits = aoc_int32_array_new();
     size_t count, i, j;
 
     for (j = 0; j < aoc_array_length(bitfield); j++) {
         count = 0;
         for (i = 0; i < aoc_data_length(data); i++) {
-            bitfield = aoc_array_index(aoc_data_get(data), i);
+            bitfield = aoc_ptr_array_index(aoc_data_get(data), i);
             count += aoc_int_array_index(bitfield, j);
         }
         int value = (2 * count / aoc_data_length(data) >= 1);
@@ -123,7 +125,7 @@ void *solve_part_2(AocData_t *data) {
     AocArrayPtr oxygen_generator = NULL;
     AocArrayPtr co2_scrubber = NULL;
 
-    bitfield = aoc_array_index(aoc_data_get(data), 0);
+    bitfield = aoc_ptr_array_index(aoc_data_get(data), 0);
 
     int oxygen_generator_value;
     int co2_scrubber_value;
@@ -148,8 +150,8 @@ void *solve_part_2(AocData_t *data) {
             }
         }
     }
-    oxygen_generator_value = bitfield_sum(aoc_array_index(oxygen_generator, 0));
-    co2_scrubber_value = bitfield_sum(aoc_array_index(co2_scrubber, 0));
+    oxygen_generator_value = bitfield_sum(aoc_ptr_array_index(oxygen_generator, 0));
+    co2_scrubber_value = bitfield_sum(aoc_ptr_array_index(co2_scrubber, 0));
 
     return strdup_printf("%d", oxygen_generator_value * co2_scrubber_value);
 }
@@ -171,7 +173,11 @@ int main(int argc, char **argv) {
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        }
     } else {
         data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }

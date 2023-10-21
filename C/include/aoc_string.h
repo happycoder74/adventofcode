@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <glib.h>
 
 // String function macros
 #define aoc_str_split(_string, _delimiter, _max_tokens)      (g_strsplit(_string, _delimiter, _max_tokens))

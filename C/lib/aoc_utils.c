@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,10 +6,13 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "glib.h"
+
 #include "aoc_utils.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_list.h"
+#include "aoc_types.h"
 
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if(aoc) {
@@ -18,24 +22,24 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-// AocArrayPtr aoc_data_data(AocData_t *data) {
-//     if(data) {
-//         return data->data;
-//     }
-//     return NULL;
-// }
-
 AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof (AocData_t));
 
     data->filename = strdup(filename);
     data->year = year;
     data->day = day;
+    data->data = NULL;
+
+    AocArrayPtr input_data = get_input(filename, year, day);
+    if (!input_data) {
+        aoc_data_free(data);
+        exit(EXIT_FAILURE);
+    }
 
     if(clean_function) {
-        data->data = clean_function(get_input(filename, year, day));
+        data->data = clean_function(input_data);
     } else {
-        data->data = get_input(filename, year, day);
+        data->data = input_data;
     }
     return data;
 }
@@ -46,7 +50,7 @@ void aoc_data_free(AocData_t *data) {
     }
 
     if (data->data) {
-        aoc_array_free((GArray *)data->data);
+        aoc_array_free(data->data, 0);
     }
     free(data);
 }
@@ -98,7 +102,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
-    data = aoc_str_array_new();
+
     file = strconcat(path, filename);
 
     if (!(fp = fopen(file, "r"))) {
@@ -106,9 +110,10 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
         return NULL;
     }
 
+    data = aoc_str_array_new();
     while (fgets(line, 10000, fp)) {
         data_line = str_trim(strdup(line));
-        g_array_append_val(data, data_line);
+        aoc_str_array_append(data, data_line);
     }
 
     if (file) {
@@ -116,7 +121,6 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     return data;
-    ;
 }
 
 AocArrayPtr get_input(char *filename, int year, int day) {
@@ -133,22 +137,20 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
     else
         path = strdup_printf("../../data/%d/%02d/", year, day);
-    data = aoc_str_array_new();
-    if (str_endswith(filename, "input.txt")) {
+
+    if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
         file = strconcat(path, filename);
     } else {
         file = filename;
     }
 
-#ifdef DEBUG
-    printf("%s\n", file);
-#endif
-
     if (!(fp = fopen(file, "r"))) {
-        printf("Can not open file! (%s)\nCurrent working directory = %s\n",
+        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n",
                file, getcwd(wd ,255));
         return NULL;
     }
+
+    data = aoc_str_array_new();
 
     while ((getline(&line, &line_length, fp)) != -1) {
         data_line = str_trim(strdup(line));
@@ -317,19 +319,24 @@ int point_distance(Point p0,  Point p1) {
 }
 
 void point_print(Point p) {
-    g_print("Point (%d, %d)\n", p.x, p.y);
+    printf("Point (%d, %d)\n", p.x, p.y);
     return;
 }
 
-guint point_hash(gconstpointer p) {
+char *point_to_string(Point p, char *buf) {
+    sprintf(buf, "(%d, %d)", p.x, p.y);
+    return buf;
+}
+
+unsigned int point_hash(const void *p) {
     Point *point = (Point *)p;
-    guint64 *int_hash = g_new(guint64, 1);
+    uint64_t *int_hash = (uint64_t *)malloc(sizeof(uint64_t));
     *int_hash = point->x;
     *int_hash <<= sizeof(UINT_MAX) * 4;
     *int_hash ^= point->y;
 
-    guint return_value = g_int64_hash(int_hash);
-    g_free(int_hash);
+    unsigned int return_value = g_int64_hash(int_hash);
+    free(int_hash);
     return return_value;
 }
 
@@ -381,16 +388,16 @@ bool is_vertical(Line line) { return line.p0.x == line.p1.x; }
 
 bool is_parallel(Line line1, Line line2) {
     if (((line1.p0.x - line1.p1.x) == 0) && ((line2.p0.x - line2.p1.x) == 0))
-        return TRUE;
+        return true;
     if (((line1.p0.y - line1.p1.y) == 0) && ((line2.p0.y - line2.p1.y) == 0))
-        return TRUE;
-    return FALSE;
+        return true;
+    return false;
 
 }
 
 bool is_diagonal(Line line) {
     if(is_vertical(line))
-        return FALSE;
+        return false;
     return (abs((line.p1.y - line.p0.y) / (line.p1.x - line.p0.x)) == 1);
 }
 
@@ -419,7 +426,7 @@ Point point_new(int x, int y) {
 }
 
 Point *point_new_m(int x, int y) {
-    Point *p = g_new(Point, 1);
+    Point *p = (Point *)malloc(sizeof(Point));
     p->x = x;
     p->y = y;
 
@@ -463,9 +470,9 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     return intersection_point;
 }
 
-void line_array_print(GArray *lines) {
-    for (guint i = 0; i < lines->len; i++) {
-        line_print(g_array_index(lines, Line, i));
+void line_array_print(AocArrayPtr lines) {
+    for (size_t i = 0; i < aoc_array_length(lines); i++) {
+        line_print(aoc_line_array_index(lines, i));
     }
 }
 

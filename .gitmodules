@@ -1,3 +1,4 @@
 [submodule "data"]
 	path = data
 	url = https://github.com/happycoder74/adventofcode-data.git
+    branch = github-data

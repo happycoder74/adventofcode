@@ -33,16 +33,16 @@ int marker(AocArrayPtr data, size_t window) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    return strdup_printf("%d", marker(data->data, 4));
+    return strdup_printf("%d", marker(aoc_data_get(data), 4));
 }
 
 void *solve_part_2(AocData_t *data) {
-    return strdup_printf("%d", marker(data->data, 14));
+    return strdup_printf("%d", marker(aoc_data_get(data), 14));
 }
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
@@ -58,7 +58,11 @@ int main(int argc, char **argv) {
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new(argv[1], year, day);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new("test_input.txt", year, day);
+        } else {
+            data = aoc_data_new(argv[1], year, day);
+        }
     } else {
         data = aoc_data_new("input.txt", year, day);
     }

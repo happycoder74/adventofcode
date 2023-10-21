@@ -10,7 +10,7 @@
 
 AocArrayPtr clean_input(AocArrayPtr data) {
     char **split_string;
-    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    AocArrayPtr return_data = aoc_int_array_new();
     int value;
     split_string = aoc_str_split(aoc_str_array_index(data, 0), ",", -1);
     for (int i = 0; split_string[i] != NULL; i++) {
@@ -19,7 +19,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     }
 
     aoc_str_freev(split_string);
-    aoc_array_free(data);
+    aoc_int32_array_free(data);
     return return_data;
 }
 
@@ -75,7 +75,11 @@ int main(int argc, char **argv) {
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        }
     } else {
         data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }

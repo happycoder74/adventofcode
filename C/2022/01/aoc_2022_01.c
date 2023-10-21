@@ -8,7 +8,7 @@
 #include "aoc_timer.h"
 
 AocArray *clean_input(AocArray *data) {
-    AocArrayPtr return_data = aoc_array_new(sizeof(int));
+    AocArrayPtr return_data = aoc_int32_array_new();
     char *row;
     size_t i = 0;
     uint32_t elf_sum = 0;
@@ -17,14 +17,14 @@ AocArray *clean_input(AocArray *data) {
         if (strlen(row) > 0) {
             elf_sum += strtoul(row, NULL, 0);
         } else {
-            aoc_int_array_append(return_data, elf_sum);
+            aoc_int32_array_append(return_data, elf_sum);
             elf_sum = 0;
         }
     }
     if (elf_sum != 0)
-        aoc_int_array_append(return_data, elf_sum);
+        aoc_int32_array_append(return_data, elf_sum);
 
-    aoc_array_free(data);
+    aoc_array_free(data, 0);
     return return_data;
 }
 
@@ -35,8 +35,8 @@ int sort_int_desc(const void *a, const void *b) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    g_array_sort(data->data, sort_int_desc);
-    return strdup_printf("%d", aoc_int_array_index(aoc_data_get(data), 0));
+    aoc_int32_array_sort(aoc_data_get(data), sort_int_desc);
+    return strdup_printf("%d", aoc_int32_array_index(aoc_data_get(data), 0));
 }
 
 void *solve_part_2(AocData_t *data) {
@@ -47,14 +47,14 @@ void *solve_part_2(AocData_t *data) {
     // we can just return the sum of the three first
     // items.
     for(i = 0; i < 3; i++) {
-        return_sum += aoc_int_array_index(aoc_data_get(data), 0);
+        return_sum += aoc_int32_array_index(aoc_data_get(data), 0);
     }
     return strdup_printf("%d", return_sum);
 }
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
@@ -72,7 +72,11 @@ int main(int argc, char **argv) {
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        }
     } else {
         data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }
