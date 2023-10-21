@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(aoc++)
-add_library(aoc++ 
+add_library(aoc++
 	aoc_io.cpp
 	${CMAKE_SOURCE_DIR}/../include/aoc_io.hpp
 	${CMAKE_SOURCE_DIR}/../include/aoc_timer.hpp
