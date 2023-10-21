@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <cstdint>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
 #include <iterator>
 #include <set>
 #include <stdlib.h>
@@ -11,15 +11,15 @@
 
 namespace aoc_2022_03 {
 static int prio(char p) {
-    if(std::isupper(p)) {
+    if (std::isupper(p)) {
         return p - 'A' + 27;
-    }    
+    }
     return p - 'a' + 1;
 }
 
 std::vector<std::pair<std::string, std::string>> clean_input(std::vector<std::string> input_data) {
     std::vector<std::pair<std::string, std::string>> rucksacks;
-    for (auto& row: input_data) {
+    for (auto &row : input_data) {
         std::pair<std::string, std::string> packs;
         packs.first = row.substr(0, row.length() / 2);
         packs.second = row.substr(row.length() / 2, row.length() / 2);
@@ -30,7 +30,7 @@ std::vector<std::pair<std::string, std::string>> clean_input(std::vector<std::st
 
 std::vector<std::string> parse(std::string path) {
     std::vector<std::string> data;
-    std::fstream file(path);
+    std::fstream             file(path);
     if (!file.is_open()) {
         std::cerr << "Failed to open " << std::quoted(path) << "\n";
     }
@@ -45,7 +45,7 @@ std::vector<std::string> parse(std::string path) {
 int solve_part_1(std::vector<std::pair<std::string, std::string>> data) {
     std::int32_t prio_sum = 0;
 
-    for (auto& pack: data) {
+    for (auto &pack : data) {
         std::set<char> first(pack.first.begin(), pack.first.end());
         std::set<char> second(pack.second.begin(), pack.second.end());
 
@@ -56,7 +56,7 @@ int solve_part_1(std::vector<std::pair<std::string, std::string>> data) {
 
     return prio_sum;
 }
-}
+} // namespace aoc_2022_03
 
 int main(void) {
 
@@ -65,6 +65,6 @@ int main(void) {
     auto parsed_data = aoc_2022_03::clean_input(data);
 
     std::cout << "Part 1 Answer: " << aoc_2022_03::solve_part_1(parsed_data) << std::endl;
-    
+
     return 0;
 }

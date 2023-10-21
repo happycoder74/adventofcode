@@ -1,48 +1,49 @@
+#include "aoc_io.hpp"
+#include "aoc_timer.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include "aoc_io.hpp"
-#include "aoc_timer.hpp"
 
 namespace aoc_2021_01 {
 
-    int solve_part_1(std::vector<int> data) {
-        int sum = 0;
-        for(std::vector<int>::iterator it1 = data.begin(), it2 = it1 + 1; it2 != data.end(); it1++, it2++) {
-            if (*it1 < *it2) {
-                sum++;
-            }
+int solve_part_1(std::vector<int> data) {
+    int sum = 0;
+    for (std::vector<int>::iterator it1 = data.begin(), it2 = it1 + 1; it2 != data.end(); it1++, it2++) {
+        if (*it1 < *it2) {
+            sum++;
         }
-
-        return sum;
     }
 
-    int solve_part_2(std::vector<int> data) {
-        int sum = 0;
-        for(std::vector<int>::iterator it1 = data.begin(), it2 = it1 + 3; it2 != data.end(); it1++, it2++) {
-            if (*it1 < *it2) {
-                sum++;
-            }
-        }
-
-        return sum;
-    }
-
-    int solve_all(std::vector<int> data) {
-        aoc::timer(1, aoc_2021_01::solve_part_1, data, true);
-        aoc::timer(2, aoc_2021_01::solve_part_2, data, true);
-
-        return 0;
-    }
+    return sum;
 }
 
+int solve_part_2(std::vector<int> data) {
+    int sum = 0;
+    for (std::vector<int>::iterator it1 = data.begin(), it2 = it1 + 3; it2 != data.end(); it1++, it2++) {
+        if (*it1 < *it2) {
+            sum++;
+        }
+    }
+
+    return sum;
+}
+
+int solve_all(std::vector<int> data) {
+    aoc::timer(1, aoc_2021_01::solve_part_1, data, true);
+    aoc::timer(2, aoc_2021_01::solve_part_2, data, true);
+
+    return 0;
+}
+} // namespace aoc_2021_01
+
 int main(int argc, char **argv) {
-    std::string filename;
+    std::string      filename;
     std::vector<int> data;
-    const int year = 2021;
-    const int day = 1;
+    const int        year = 2021;
+    const int        day = 1;
 
     filename = argc > 1 ? argv[1] : "input.txt";
 
@@ -53,5 +54,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
-

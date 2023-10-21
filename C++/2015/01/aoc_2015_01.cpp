@@ -5,10 +5,10 @@
 #include <string>
 
 std::string get_line_data(std::string filename, uint16_t year, uint8_t day) {
-    std::string line_data;
+    std::string   line_data;
     std::ifstream ifs;
-    std::string fn;
-    std::string path(std::format("/home/yy11510/projects/adventofcode/data/{}/{:02d}/", year, day));
+    std::string   fn;
+    std::string   path(std::format("/home/yy11510/projects/adventofcode/data/{}/{:02d}/", year, day));
     if (std::string(filename) == "input.txt") {
         fn = path + filename;
     } else {
@@ -19,12 +19,11 @@ std::string get_line_data(std::string filename, uint16_t year, uint8_t day) {
     return line_data;
 }
 
-
 int main(int argc, char **argv) {
-    std::int16_t level = 0;
+    std::int16_t  level = 0;
     std::uint16_t counter = 0;
-    bool basement_found = false;
-    std::string filename;
+    bool          basement_found = false;
+    std::string   filename;
 
     if (argc > 1) {
         filename = argv[1];
@@ -32,12 +31,11 @@ int main(int argc, char **argv) {
         filename = "input.txt";
     }
 
-
     std::string line = get_line_data(filename, 2015, 1);
 
-    for (auto ch: line) {
+    for (auto ch : line) {
         ch == '(' ? level++ : level--;
-        if(!basement_found) {
+        if (!basement_found) {
             counter++;
             if (level == -1) {
                 basement_found = true;
@@ -49,4 +47,3 @@ int main(int argc, char **argv) {
     std::cout << counter << std::endl;
     return 0;
 }
-

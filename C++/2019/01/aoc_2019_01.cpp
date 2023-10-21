@@ -1,3 +1,6 @@
+#include "aoc_io.hpp"
+#include "aoc_timer.hpp"
+
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -8,9 +11,6 @@
 #include <ranges>
 #include <string>
 #include <vector>
-
-#include "aoc_io.hpp"
-#include "aoc_timer.hpp"
 
 typedef std::chrono::high_resolution_clock Clock;
 
