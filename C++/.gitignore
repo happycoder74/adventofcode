@@ -4,4 +4,7 @@ CMakeFiles
 .ninja*
 build.ninja
 build
+release
+memdebug
+debug
 .cache
