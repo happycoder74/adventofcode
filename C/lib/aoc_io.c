@@ -6,14 +6,6 @@
 #include <curl/easy.h>
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef _WIN32
-#include <windows.h>
-#define CREATE_DIRECTORY(_path_) CreateDirectoryA(_path_)
-#else
-#include <sys/stat.h>
-#include <sys/types.h>
-#define CREATE_DIRECTORY(_path_) mkdir(_path_, S_IRWXU)
-#endif
 
 int download_input(int year, int day) {
     FILE *fp = NULL;
