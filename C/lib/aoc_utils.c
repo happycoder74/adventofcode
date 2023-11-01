@@ -1,5 +1,6 @@
 #include "aoc_utils.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
 #include "glib.h"

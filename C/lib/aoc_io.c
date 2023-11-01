@@ -40,6 +40,8 @@ int download_input(int year, int day) {
         char     errbuf[CURL_ERROR_SIZE];
         char    *cookie = strdup_printf("session=%s", cookie_contents);
 
+        char *cookie = strdup_printf("session=%s", cookie_contents);
+
         char *output_filename = strdup_printf("%s/%d/%02d/input.txt", data_home, year, day);
         output_file = fopen(output_filename, "w");
 
