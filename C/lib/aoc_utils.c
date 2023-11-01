@@ -1,5 +1,4 @@
 #include "aoc_utils.h"
-#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
@@ -21,8 +20,8 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
-    AocData_t *data = (AocData_t *)aoc_malloc(sizeof(AocData_t));
+AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
+    AocData_t *data = (AocData_t *)malloc(sizeof(AocData_t));
 
     data->filename = strdup(filename);
     data->year = year;
@@ -46,13 +45,13 @@ AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*cl
 
 void aoc_data_free(AocData_t *data) {
     if (data->filename) {
-        aoc_free(data->filename);
+        free(data->filename);
     }
 
     if (data->data) {
         aoc_array_free(data->data, data->data->free_segments);
     }
-    aoc_free(data);
+    free(data);
 }
 
 int max(int *arr, int length) {
@@ -166,17 +165,17 @@ char *point_to_string(Point p, char *buf) {
 
 unsigned int point_hash(const void *p) {
     Point    *point = (Point *)p;
-    uint64_t *int_hash = (uint64_t *)aoc_malloc(sizeof(uint64_t));
+    uint64_t *int_hash = (uint64_t *)malloc(sizeof(uint64_t));
     *int_hash = point->x;
     *int_hash <<= sizeof(UINT_MAX) * 4;
     *int_hash ^= point->y;
 
     unsigned int return_value = g_int64_hash(int_hash);
-    aoc_free(int_hash);
+    free(int_hash);
     return return_value;
 }
 
-int point_equal(gconstpointer pp1, gconstpointer pp2) {
+int point_equal(const void *pp1, const void *pp2) {
     Point *p1, *p2;
     p1 = (Point *)pp1;
     p2 = (Point *)pp2;
@@ -262,7 +261,7 @@ Point point_new(int x, int y) {
 }
 
 Point *point_new_m(int x, int y) {
-    Point *p = (Point *)aoc_malloc(sizeof(Point));
+    Point *p = (Point *)malloc(sizeof(Point));
     p->x = x;
     p->y = y;
 
