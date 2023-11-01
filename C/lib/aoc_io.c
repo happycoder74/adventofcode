@@ -1,3 +1,7 @@
+#include "aoc_array.h"
+#include "aoc_list.h"
+#include "aoc_string.h"
+#include "aoc_types.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <stdio.h>
@@ -6,22 +10,21 @@
 int download_input(int year, int day) {
     FILE *fp = NULL;
 
-    char        input_url[200];
-    char        path[200];
     const char *filename = ".cookie";
     char        cookie_contents[200];
 
-    sprintf(input_url, "https://adventofcode.com/%d/day/%d/input", year, day);
+    char *input_url = strdup_printf("https://adventofcode.com/%d/day/%d/input", year, day);
 
     char *data_home = NULL;
     if (!(data_home = getenv("AOC_DATA_LOCATION"))) {
         fprintf(stderr, "Could not find data location. Please set environment variable AOC_DATA_LOCATION\n");
         return EXIT_FAILURE;
     }
-    sprintf(path, "%s/%s", data_home, filename);
+    char *path = strdup_printf("%s/%s", data_home, filename);
 
     if (!(fp = fopen(path, "r"))) {
         fprintf(stderr, "Could not open cookie-file\n");
+        free(path);
         return EXIT_FAILURE;
     }
 
@@ -33,11 +36,9 @@ int download_input(int year, int day) {
         CURLcode res;
         FILE    *output_file = NULL;
 
-        char cookie[200];
-        sprintf(cookie, "session=%s", cookie_contents);
+        char *cookie = strdup_printf("session=%s", cookie_contents);
 
-        char output_filename[200];
-        sprintf(output_filename, "%s/%d/%02d/input.txt", data_home, year, day);
+        char *output_filename = strdup_printf("%s/%d/%02d/input.txt", data_home, year, day);
         output_file = fopen(output_filename, "w");
 
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -47,6 +48,9 @@ int download_input(int year, int day) {
 
         res = curl_easy_perform(curl);
 
+        free(cookie);
+        free(input_url);
+        free(output_filename);
         fclose(output_file);
 
         if (res != CURLE_OK) {
@@ -57,3 +61,158 @@ int download_input(int year, int day) {
     }
     return EXIT_SUCCESS;
 }
+
+AocSList *get_input_list(char *filename, int year, int day) {
+    FILE     *fp;
+    AocSList *data = NULL;
+    char     *line = NULL;
+    size_t    line_length = 0;
+    char     *data_line;
+    char     *path;
+    char     *file = NULL;
+
+    char *data_location = NULL;
+    if ((data_location = getenv("AOC_DATA_LOCATION")))
+        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
+    else
+        path = strdup_printf("../../data/%d/%02d/", year, day);
+    file = strconcat(path, filename);
+
+    if (!(fp = fopen(file, "r"))) {
+        printf("Can not open file!\n");
+        return NULL;
+    }
+
+    while ((getline(&line, &line_length, fp)) != -1) {
+        data_line = str_trim(strdup(line));
+        data = aoc_slist_prepend(data, data_line);
+    }
+
+    free(file);
+    free(path);
+
+    return aoc_slist_reverse(data);
+}
+
+AocArrayPtr get_input_new(char *filename, int year, int day) {
+    FILE       *fp;
+    AocArrayPtr data;
+    char        line[10000];
+    char       *data_line;
+    char       *path;
+    char       *file = NULL;
+
+    char *data_location;
+    if ((data_location = getenv("AOC_DATA_LOCATION")))
+        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
+    else
+        path = strdup_printf("../../data/%d/%02d/", year, day);
+
+    file = strconcat(path, filename);
+
+    if (!(fp = fopen(file, "r"))) {
+        printf("Can not open file!\n");
+        return NULL;
+    }
+
+    data = aoc_str_array_new();
+    while (fgets(line, 10000, fp)) {
+        data_line = str_trim(strdup(line));
+        aoc_str_array_append(data, data_line);
+    }
+
+    if (file) {
+        free(file);
+    }
+
+    return data;
+}
+
+AocArrayPtr get_input(char *filename, int year, int day) {
+    FILE       *fp;
+    AocArrayPtr data;
+    gchar      *line = NULL;
+    size_t      line_length = 0;
+    gchar      *data_line;
+    gchar      *path;
+    gchar      *file = NULL;
+    char        wd[255];
+    char       *data_location = NULL;
+    if ((data_location = getenv("AOC_DATA_LOCATION")))
+        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
+    else
+        path = strdup_printf("../../data/%d/%02d/", year, day);
+
+    if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
+        file = strconcat(path, filename);
+    } else {
+        file = filename;
+    }
+
+    if (!(fp = fopen(file, "r"))) {
+        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file, getcwd(wd, 255));
+        return NULL;
+    }
+
+    data = aoc_str_array_new();
+
+    while ((getline(&line, &line_length, fp)) != -1) {
+        data_line = str_trim(strdup(line));
+        aoc_str_array_append(data, data_line);
+    }
+
+    if (file != filename) {
+        free(file);
+    }
+
+    free(path);
+
+    return data;
+}
+
+#ifdef __MINGW32__
+ssize_t getline(char **buf, size_t *bufsiz, FILE *fp) {
+    return getdelim(buf, bufsiz, '\n', fp);
+}
+
+ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
+    char *ptr, *eptr;
+
+    if (*buf == NULL || *bufsiz == 0) {
+        *bufsiz = BUFSIZ;
+        if ((*buf = malloc(*bufsiz)) == NULL)
+            return -1;
+    }
+
+    for (ptr = *buf, eptr = *buf + *bufsiz;;) {
+        int c = fgetc(fp);
+        if (c == -1) {
+            if (feof(fp)) {
+                ssize_t diff = (ssize_t)(ptr - *buf);
+                if (diff != 0) {
+                    *ptr = '\0';
+                    return diff;
+                }
+            }
+            return -1;
+        }
+        *ptr++ = c;
+        if (c == delimiter) {
+            *ptr = '\0';
+            return ptr - *buf;
+        }
+        if (ptr + 2 >= eptr) {
+            char   *nbuf;
+            size_t  nbufsiz = *bufsiz * 2;
+            ssize_t d = ptr - *buf;
+            if ((nbuf = realloc(*buf, nbufsiz)) == NULL)
+                return -1;
+            *buf = nbuf;
+            *bufsiz = nbufsiz;
+            eptr = nbuf + nbufsiz;
+            ptr = nbuf + d;
+        }
+    }
+}
+
+#endif
