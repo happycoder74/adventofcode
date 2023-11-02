@@ -1,3 +1,4 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_list.h"
 #include "aoc_string.h"
@@ -24,7 +25,7 @@ int download_input(int year, int day) {
 
     if (!(fp = fopen(path, "r"))) {
         fprintf(stderr, "Could not open cookie-file\n");
-        free(path);
+        aoc_free(path);
         return EXIT_FAILURE;
     }
 
@@ -48,9 +49,9 @@ int download_input(int year, int day) {
 
         res = curl_easy_perform(curl);
 
-        free(cookie);
-        free(input_url);
-        free(output_filename);
+        aoc_free(cookie);
+        aoc_free(input_url);
+        aoc_free(output_filename);
         fclose(output_file);
 
         if (res != CURLE_OK) {
@@ -88,8 +89,8 @@ AocSList *get_input_list(char *filename, int year, int day) {
         data = aoc_slist_prepend(data, data_line);
     }
 
-    free(file);
-    free(path);
+    aoc_free(file);
+    aoc_free(path);
 
     return aoc_slist_reverse(data);
 }
@@ -122,7 +123,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     if (file) {
-        free(file);
+        aoc_free(file);
     }
 
     return data;
@@ -157,15 +158,18 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     data = aoc_str_array_new();
 
     while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = str_trim(strdup(line));
+        char *to_trim = strdup(line);
+        data_line = strdup(str_trim(to_trim));
         aoc_str_array_append(data, data_line);
+        aoc_free(to_trim);
+        aoc_free(line);
     }
 
     if (file != filename) {
-        free(file);
+        aoc_free(file);
     }
 
-    free(path);
+    aoc_free(path);
 
     return data;
 }
@@ -180,7 +184,7 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
 
     if (*buf == NULL || *bufsiz == 0) {
         *bufsiz = BUFSIZ;
-        if ((*buf = malloc(*bufsiz)) == NULL)
+        if ((*buf = aoc_malloc(*bufsiz)) == NULL)
             return -1;
     }
 
@@ -205,7 +209,7 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
             char   *nbuf;
             size_t  nbufsiz = *bufsiz * 2;
             ssize_t d = ptr - *buf;
-            if ((nbuf = realloc(*buf, nbufsiz)) == NULL)
+            if ((nbuf = aoc_realloc(*buf, nbufsiz)) == NULL)
                 return -1;
             *buf = nbuf;
             *bufsiz = nbufsiz;

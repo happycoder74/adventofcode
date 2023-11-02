@@ -1,15 +1,15 @@
-#include <stdio.h>
-#include <string.h>
-#include "aoc_utils.h"
+#include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
-#include "aoc_array.h"
+#include "aoc_utils.h"
+#include <stdio.h>
+#include <string.h>
 
 void *solve_part_1(AocData_t *data) {
-    int level = 0;
+    int    level = 0;
     size_t i = 0;
-    char *line;
+    char  *line;
 
     line = aoc_str_array_index(aoc_data_get(data), i);
 
@@ -25,7 +25,7 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     size_t i = 0;
-    int level = 0;
+    int    level = 0;
 
     char *line;
 
@@ -52,12 +52,11 @@ void *solve_all(AocData_t *data) {
     return NULL;
 }
 
-
 int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
