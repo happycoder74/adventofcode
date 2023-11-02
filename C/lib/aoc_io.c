@@ -1,3 +1,4 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_list.h"
 #include "aoc_string.h"
@@ -26,7 +27,7 @@ int download_input(int year, int day) {
     fp = fopen(path, "r");
     if (!fp) {
         fprintf(stderr, "Could not open cookie-file\n");
-        free(path);
+        aoc_free(path);
         return EXIT_FAILURE;
     }
 
@@ -54,9 +55,9 @@ int download_input(int year, int day) {
 
         res = curl_easy_perform(curl);
 
-        free(cookie);
-        free(input_url);
-        free(output_filename);
+        aoc_free(cookie);
+        aoc_free(input_url);
+        aoc_free(output_filename);
         fclose(output_file);
 
         if (res != CURLE_OK) {
@@ -102,8 +103,8 @@ AocSList *get_input_list(char *filename, int year, int day) {
         data = aoc_slist_prepend(data, data_line);
     }
 
-    free(file);
-    free(path);
+    aoc_free(file);
+    aoc_free(path);
 
     return aoc_slist_reverse(data);
 }
@@ -143,7 +144,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     if (file) {
-        free(file);
+        aoc_free(file);
     }
 
     return data;
@@ -203,10 +204,10 @@ AocArrayPtr get_input(char *filename, int year, int day) {
 #endif
     fclose(fp);
     if (file != filename) {
-        free(file);
+        aoc_free(file);
     }
 
-    free(path);
+    aoc_free(path);
 
     return data;
 }

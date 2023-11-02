@@ -3,6 +3,7 @@ add_library(aoc)
 
 target_sources(
     aoc
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_alloc.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_string.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
