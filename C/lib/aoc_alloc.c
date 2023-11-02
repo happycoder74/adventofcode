@@ -147,7 +147,6 @@ void aoc_free_internal(void *ptr, const char *function, const char *file, int li
  * Will also destroy hash table when done.
  */
 uint64_t aoc_mem_gc(void) {
-
     if (!(mem_table) || (g_hash_table_size(mem_table) == 0)) {
         return 0;
     }

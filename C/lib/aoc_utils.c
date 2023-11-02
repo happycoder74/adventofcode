@@ -1,4 +1,5 @@
 #include "aoc_utils.h"
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
@@ -44,14 +45,14 @@ AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArray *(*cle
 }
 
 void aoc_data_free(AocData_t *data) {
+    uint32_t size = 0;
     if (data->filename) {
-        free(data->filename);
+        aoc_free(data->filename);
     }
 
     if (data->data) {
         aoc_array_free(data->data, data->data->free_segments);
     }
-    free(data);
 }
 
 int max(int *arr, int length) {
@@ -165,13 +166,13 @@ char *point_to_string(Point p, char *buf) {
 
 unsigned int point_hash(const void *p) {
     Point    *point = (Point *)p;
-    uint64_t *int_hash = (uint64_t *)malloc(sizeof(uint64_t));
+    uint64_t *int_hash = (uint64_t *)aoc_malloc(sizeof(uint64_t));
     *int_hash = point->x;
     *int_hash <<= sizeof(UINT_MAX) * 4;
     *int_hash ^= point->y;
 
     unsigned int return_value = g_int64_hash(int_hash);
-    free(int_hash);
+    aoc_free(int_hash);
     return return_value;
 }
 
@@ -261,7 +262,7 @@ Point point_new(int x, int y) {
 }
 
 Point *point_new_m(int x, int y) {
-    Point *p = (Point *)malloc(sizeof(Point));
+    Point *p = (Point *)aoc_malloc(sizeof(Point));
     p->x = x;
     p->y = y;
 
