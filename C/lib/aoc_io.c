@@ -162,11 +162,11 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         data_line = strdup(str_trim(to_trim));
         aoc_ptr_array_append(data, data_line);
         aoc_free(to_trim);
-#ifdef __MINGW32__
-        aoc_free(line);
-#endif
     }
 
+#ifdef __MINGW32__
+    aoc_free(line);
+#endif
     fclose(fp);
     if (file != filename) {
         aoc_free(file);
@@ -187,7 +187,7 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
 
     if (*buf == NULL || *bufsiz == 0) {
         *bufsiz = BUFSIZ;
-        if ((*buf = aoc_malloc(*bufsiz)) == NULL)
+        if ((*buf = aoc_realloc(*buf, *bufsiz)) == NULL)
             return -1;
     }
 
