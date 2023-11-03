@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void free_key(void *key) {
+    aoc_free(key);
+}
+
 int solution(AocArrayPtr data, int part_two) {
     char      **split_string;
     int         i;
@@ -22,7 +26,7 @@ int solution(AocArrayPtr data, int part_two) {
     step_t *step = (step_t *)aoc_malloc(sizeof(step_t));
 
     directions = aoc_ptr_array_new();
-    locations = g_hash_table_new_full(g_str_hash, g_str_equal, aoc_free, NULL);
+    locations = g_hash_table_new_full(g_str_hash, g_str_equal, free_key, NULL);
     pos = (int *)aoc_malloc(sizeof(int) * 2);
     pos[0] = 1;
     pos[1] = 0;
@@ -50,7 +54,6 @@ int solution(AocArrayPtr data, int part_two) {
     split_string = aoc_str_split(aoc_str_array_index(data, 0), ", ", 0);
     int index = 0;
     int s = 0;
-    step = (step_t *)aoc_malloc(sizeof(step_t));
     for (i = 0; split_string[i] != NULL; i++) {
         sscanf(split_string[i], "%c%d", &step->direction, &step->steps);
         index = index + (step->direction == 'R' ? 1 : -1);
@@ -65,6 +68,7 @@ int solution(AocArrayPtr data, int part_two) {
                     int return_value = abs(pos[0]) + abs(pos[1]);
                     aoc_free(pos);
                     aoc_free(step);
+                    aoc_free(check_key);
                     aoc_str_freev(split_string);
                     aoc_array_free(directions, true);
 
@@ -129,5 +133,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
