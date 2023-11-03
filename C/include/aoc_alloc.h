@@ -28,5 +28,4 @@ uint64_t aoc_mem_gc(void);
 #define aoc_mem_gc()               0
 
 #endif
-
 #endif // !__AOC_ALLOC_H_
