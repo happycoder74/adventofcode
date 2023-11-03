@@ -1,15 +1,16 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_utils.h"
 #include <stdbool.h>
 #include <stdint.h>
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 char password_next_letter(char letter) {
     char next_letter;
 
     next_letter = ((letter + 1) - 'a') % ('z' - 'a' + 1) + 'a';
-    switch(next_letter) {
+    switch (next_letter) {
         case 'i':
         case 'o':
         case 'l':
@@ -35,10 +36,8 @@ bool invalid_letters(const char *password) {
     size_t i;
     size_t length = strlen(password);
 
-    for(i = 0; i < length; i++) {
-        if ((password[i] == 'i')
-                || (password[i] == 'o')
-                || (password[i] == 'l')) {
+    for (i = 0; i < length; i++) {
+        if ((password[i] == 'i') || (password[i] == 'o') || (password[i] == 'l')) {
             return TRUE;
         }
     }
@@ -50,8 +49,7 @@ bool has_triplets(const char *password) {
     size_t length = strlen(password);
 
     for (i = 0; i < length - 2; i++) {
-        if ((password[i + 1] == password[i] + 1) &&
-            (password[i + 2] == password[i] + 2)) {
+        if ((password[i + 1] == password[i] + 1) && (password[i + 2] == password[i] + 2)) {
             return TRUE;
         }
     }
@@ -82,7 +80,7 @@ bool password_validate(const char *password) {
         return FALSE;
     }
 
-    if(!has_doubles(password)) {
+    if (!has_doubles(password)) {
         return FALSE;
     }
 
@@ -126,7 +124,7 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -147,6 +145,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
-

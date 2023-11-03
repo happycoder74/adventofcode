@@ -1,11 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef G_REGEX_MATCH_DEFAULT
 #define G_REGEX_MATCH_DEFAULT 0
@@ -13,7 +14,7 @@
 
 uint32_t count_matches(GRegex *pattern, char *string) {
     GMatchInfo *match_info;
-    uint32_t count = 0;
+    uint32_t    count = 0;
 
     g_regex_match(pattern, string, G_REGEX_MATCH_DEFAULT, &match_info);
     while (g_match_info_matches(match_info)) {
@@ -27,9 +28,9 @@ uint32_t count_matches(GRegex *pattern, char *string) {
 
 void *solve_part_1(AocData_t *data) {
     GRegex *regex_wovel, *regex_double_letter, *regex_invalid;
-    int count = 0;
-    size_t i;
-    char *line;
+    int     count = 0;
+    size_t  i;
+    char   *line;
 
     regex_wovel = g_regex_new("[aeiou]", 0, 0, NULL);
     regex_double_letter = g_regex_new("(.)\\1", 0, 0, NULL);
@@ -37,9 +38,7 @@ void *solve_part_1(AocData_t *data) {
 
     for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
-        if ((count_matches(regex_wovel, line) >= 3) &&
-            (count_matches(regex_double_letter, line) > 0) &&
-            (count_matches(regex_invalid, line) == 0)) {
+        if ((count_matches(regex_wovel, line) >= 3) && (count_matches(regex_double_letter, line) > 0) && (count_matches(regex_invalid, line) == 0)) {
             count++;
         }
     }
@@ -52,18 +51,17 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    GRegex *regex_pairs, *regex_repeat;
+    GRegex  *regex_pairs, *regex_repeat;
     uint32_t count = 0;
-    size_t i;
-    char *line;
+    size_t   i;
+    char    *line;
 
     regex_pairs = g_regex_new("([a-z][a-z])\\w*\\1", 0, 0, NULL);
     regex_repeat = g_regex_new("(.)\\w\\1", 0, 0, NULL);
 
     for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
-        if ((count_matches(regex_pairs, line) > 0) &&
-            (count_matches(regex_repeat, line) > 0)) {
+        if ((count_matches(regex_pairs, line) > 0) && (count_matches(regex_repeat, line) > 0)) {
             count++;
         }
     }
@@ -88,7 +86,7 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -109,6 +107,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
-
