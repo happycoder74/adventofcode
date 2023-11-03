@@ -45,7 +45,6 @@ AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*cl
 }
 
 void aoc_data_free(AocData_t *data) {
-    uint32_t size = 0;
     if (data->filename) {
         aoc_free(data->filename);
     }
@@ -54,9 +53,7 @@ void aoc_data_free(AocData_t *data) {
         aoc_array_free(data->data, 1);
     }
     aoc_free(data);
-    if ((size = (uint32_t)aoc_mem_gc())) {
-        fprintf(stderr, "%u elements remaining\n", size);
-    }
+    aoc_mem_gc();
 }
 
 int max(int *arr, int length) {
