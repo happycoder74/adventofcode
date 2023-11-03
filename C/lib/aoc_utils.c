@@ -29,6 +29,7 @@ AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*cl
     data->year = year;
     data->day = day;
     data->data = NULL;
+    data->free_segments = 1;
 
     AocArrayPtr input_data = get_input(filename, year, day);
     if (!input_data) {
@@ -50,10 +51,9 @@ void aoc_data_free(AocData_t *data) {
     }
 
     if (data->data) {
-        aoc_array_free(data->data, 1);
+        aoc_array_free(data->data, data->data->free_segments);
     }
     aoc_free(data);
-    aoc_mem_gc();
 }
 
 int max(int *arr, int length) {
