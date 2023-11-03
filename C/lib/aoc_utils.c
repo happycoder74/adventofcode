@@ -50,10 +50,9 @@ void aoc_data_free(AocData_t *data) {
     }
 
     if (data->data) {
-        aoc_array_free(data->data, 1);
+        aoc_array_free(data->data, data->data->free_segments);
     }
     aoc_free(data);
-    aoc_mem_gc();
 }
 
 int max(int *arr, int length) {
