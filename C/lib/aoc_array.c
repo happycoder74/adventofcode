@@ -12,6 +12,7 @@
 typedef struct {
     AocArrayType type;
     size_t       length;
+    uint8_t      free_segments;
     size_t       element_size;
     size_t       capacity;
     uint8_t     *data;
@@ -135,6 +136,7 @@ static char* aoc_type_string(AocArrayType type) {
 
 AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
     AocGenArray *array = (AocGenArray *)aoc_malloc(sizeof(AocGenArray));
+    array->free_segments = 0;
 
     switch (array_type) {
         case AOC_ARRAY_INT32:
@@ -151,6 +153,7 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
             break;
         case AOC_ARRAY_STR:
             array->element_size = sizeof(char *);
+            array->free_segments = 1;
             break;
         case AOC_ARRAY_CHAR:
             array->element_size = sizeof(char);
@@ -163,6 +166,7 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
             break;
         case AOC_ARRAY_PTR:
             array->element_size = sizeof(void *);
+            array->free_segments = 1;
             break;
         case AOC_ARRAY_LINE:
             array->element_size = sizeof(Line);
