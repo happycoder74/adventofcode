@@ -10,7 +10,6 @@ static void free_key(void *key) {
     aoc_free(key);
 }
 
-
 int solution(AocArrayPtr data, int part_two) {
     char      **split_string;
     int         i;
