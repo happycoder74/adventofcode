@@ -8,27 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int solution_str(AocData_t *data, const char *cmp_string) {
-    int         number = 0;
-    GChecksum  *checksum = g_checksum_new(G_CHECKSUM_MD5);
-    char       *string = NULL;
-    const char *hashcode;
-    char       *base = aoc_str_array_index(data->data, 0);
-
-    while (TRUE) {
-        string = strdup_printf("%s%d", base, ++number);
-        g_checksum_update(checksum, (unsigned char *)string, -1);
-        hashcode = g_checksum_get_string(checksum);
-        free(string);
-        if (strncmp(hashcode, cmp_string, strlen(cmp_string)) == 0) {
-            break;
-        }
-        g_checksum_reset(checksum);
-    }
-    g_checksum_free(checksum);
-    return number;
-}
-
 int solution_bin(AocData_t *data, const char *cmp_string) {
     char       string[100];
     int        number = 0;
@@ -59,14 +38,6 @@ int solution_bin(AocData_t *data, const char *cmp_string) {
     return number;
 }
 
-void *solve_part_1_str(AocData_t *data) {
-    return strdup_printf("%d", solution_str(data, "00000"));
-}
-
-void *solve_part_2_str(AocData_t *data) {
-    return strdup_printf("%d", solution_str(data, "000000"));
-}
-
 void *solve_part_1_bin(AocData_t *data) {
     return strdup_printf("%d", solution_bin(data, "00000"));
 }
@@ -78,10 +49,6 @@ void *solve_part_2_bin(AocData_t *data) {
 void *solve_all(AocData_t *data) {
 
     if (data->data) {
-        printf("Solving using str\n");
-        timer_func(1, solve_part_1_str, data, 1);
-        timer_func(2, solve_part_2_str, data, 1);
-
         printf("Solving using bin\n");
         timer_func(1, solve_part_1_bin, data, 1);
         timer_func(2, solve_part_2_bin, data, 1);
