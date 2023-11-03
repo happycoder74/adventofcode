@@ -8,7 +8,7 @@
 #include <string.h>
 
 char *strdup(const char *s) {
-    size_t size = strlen(s) + 1;
+    size_t size = (strlen(s) + 1) * sizeof(char);
     char  *p = aoc_malloc(size);
     if (p) {
         memcpy(p, s, size);
