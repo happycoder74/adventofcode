@@ -11,7 +11,7 @@ static void init_mem_table(void) {
 }
 
 static void gc_free(void *key, void *value, void *user_data) {
-    fprintf(stderr, "gc:     %p\n", value);
+    fprintf(stderr, "gc:      %p (size = %u)\n", value, g_hash_table_size(mem_table));
 
     // free(value);
     return;
@@ -27,7 +27,7 @@ void *aoc_malloc(size_t size) {
 
     /* Add addr to hash_table here */
     g_hash_table_add(mem_table, addr);
-    fprintf(stderr, "malloc: %p\n", addr);
+    fprintf(stderr, "malloc:  %p (size = %u)\n", addr, g_hash_table_size(mem_table));
 
     return addr;
 }
@@ -40,7 +40,7 @@ void *aoc_calloc(size_t n_elements, size_t element_size) {
 
     /* Add addr to hash_table here */
     g_hash_table_add(mem_table, addr);
-    fprintf(stderr, "calloc: %p\n", addr);
+    fprintf(stderr, "calloc:  %p (size = %u)\n", addr, g_hash_table_size(mem_table));
 
     return addr;
 }
@@ -53,7 +53,7 @@ void *aoc_realloc(void *orig, size_t new_size) {
     if (addr) {
         /* Add addr to hash_table here */
         g_hash_table_add(mem_table, addr);
-        fprintf(stderr, "realloc: %p\n", addr);
+        fprintf(stderr, "realloc: %p (size = %u)\n", addr, g_hash_table_size(mem_table));
     }
 
     return addr;
@@ -62,7 +62,7 @@ void *aoc_realloc(void *orig, size_t new_size) {
 void aoc_free(void *ptr) {
     /* Delete ptr from mem_table if present */
     g_hash_table_remove(mem_table, ptr);
-    fprintf(stderr, "free:   %p\n", ptr);
+    fprintf(stderr, "free:    %p (size = %u)\n", ptr, g_hash_table_size(mem_table));
 
     // Free the memory
     free(ptr);
@@ -81,6 +81,7 @@ uint64_t aoc_mem_gc(void) {
 
     uint64_t size = g_hash_table_size(mem_table);
     g_hash_table_foreach(mem_table, gc_free, NULL);
+    g_hash_table_destroy(mem_table);
     mem_table = NULL;
     return size;
 }
