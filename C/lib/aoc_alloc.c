@@ -7,18 +7,17 @@
 
 GHashTable *mem_table = NULL;
 
-static void init_mem_table(void) {
-    mem_table = g_hash_table_new(g_direct_hash, g_direct_equal);
-}
-
-static void gc_free(void *key, void *value, void *user_data) {
+static void gc_free(void *key) {
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "gc:      %p (size = %u)\n", value, g_hash_table_size(mem_table));
+    fprintf(stderr, "gc:      %p (size = %u)\n", key, *(int *)((char *)mem_table + sizeof(gsize) + 2 * sizeof(int)));
     fflush(stderr);
 #endif
-
-    free(value);
+    free(key);
     return;
+}
+
+static void init_mem_table(void) {
+    mem_table = g_hash_table_new_full(g_direct_hash, g_direct_equal, gc_free, NULL);
 }
 
 void *aoc_malloc_internal(size_t size, const char *function, const char *file, int line) {
@@ -98,7 +97,6 @@ uint64_t aoc_mem_gc(void) {
         fprintf(stderr, "%" PRIu64 " elements remaining\n", size);
         fflush(stderr);
     }
-    g_hash_table_foreach(mem_table, gc_free, NULL);
     g_hash_table_destroy(mem_table);
     mem_table = NULL;
     return size;
