@@ -30,6 +30,10 @@ GHashTable *init_points(const int *point_array) {
     return points;
 }
 
+static void queue_free_function(void *ptr) {
+    free(ptr);
+}
+
 void *solve_part_1(AocData_t *data) {
     GQueue     *stack;
     GHashTable *brackets, *points;
@@ -58,7 +62,7 @@ void *solve_part_1(AocData_t *data) {
                 }
             }
         }
-        g_queue_free_full(stack, free);
+        g_queue_free_full(stack, queue_free_function);
     }
     g_hash_table_destroy(brackets);
     g_hash_table_destroy(points);
