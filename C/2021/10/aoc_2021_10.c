@@ -1,11 +1,12 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include "aoc_types.h"
-#include "aoc_utils.h"
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 GHashTable *init_brackets(void) {
     GHashTable *brackets;
@@ -30,27 +31,31 @@ GHashTable *init_points(const int *point_array) {
     return points;
 }
 
+static void queue_free_function(void *ptr) {
+    aoc_free(ptr);
+}
+
 void *solve_part_1(AocData_t *data) {
-    GQueue *stack;
+    GQueue     *stack;
     GHashTable *brackets, *points;
-    char *line;
-    int error_points = 0;
-    const int point_array[] = {3, 57, 1197, 25137};
+    char       *line;
+    int         error_points = 0;
+    const int   point_array[] = {3, 57, 1197, 25137};
 
     brackets = init_brackets();
     points = init_points(point_array);
 
-    for(unsigned int j = 0; j < aoc_data_length(data); j++) {
+    for (unsigned int j = 0; j < aoc_data_length(data); j++) {
         stack = g_queue_new();
         line = aoc_str_array_index(aoc_data_get(data), j);
-        for(unsigned int i = 0; i < strlen(line); i++) {
+        for (unsigned int i = 0; i < strlen(line); i++) {
             char *key = strdup_printf("%c", line[i]);
             char *last_bracket;
             if (g_hash_table_contains(brackets, key)) {
                 g_queue_push_tail(stack, key);
             } else {
                 last_bracket = g_queue_peek_tail(stack);
-                if(strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
+                if (strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
                     error_points += (int)(int64_t)(g_hash_table_lookup(points, key));
                     break;
                 } else {
@@ -58,7 +63,7 @@ void *solve_part_1(AocData_t *data) {
                 }
             }
         }
-        g_queue_free_full(stack, free);
+        g_queue_free_full(stack, queue_free_function);
     }
     g_hash_table_destroy(brackets);
     g_hash_table_destroy(points);
@@ -73,38 +78,36 @@ static int int64_compare(const void *a, const void *b) {
         return 0;
     } else {
         return (int)((v_a - v_b) / (llabs(v_a - v_b)));
-
     }
 }
 
 void *solve_part_2(AocData_t *data) {
-    GQueue *stack;
+    GQueue     *stack;
     GHashTable *brackets, *points;
-    char *line;
-    int8_t valid;
-    char *key;
-    char *last_bracket;
-    int64_t complete_points;
+    char       *line;
+    int8_t      valid;
+    char       *key;
+    char       *last_bracket;
+    int64_t     complete_points;
     AocArrayPtr result;
-    const int point_array[] = {1, 2, 3, 4};
-
+    const int   point_array[] = {1, 2, 3, 4};
 
     brackets = init_brackets();
     points = init_points(point_array);
 
     result = aoc_int64_array_new();
-    for(unsigned int j = 0; j < aoc_data_length(data); j++) {
+    for (unsigned int j = 0; j < aoc_data_length(data); j++) {
         complete_points = 0;
         valid = TRUE;
         stack = g_queue_new();
         line = aoc_str_array_index(aoc_data_get(data), j);
-        for(unsigned int i = 0; i < strlen(line); i++) {
+        for (unsigned int i = 0; i < strlen(line); i++) {
             key = strdup_printf("%c", line[i]);
             if (g_hash_table_contains(brackets, key)) {
                 g_queue_push_tail(stack, key);
             } else {
                 last_bracket = g_queue_peek_tail(stack);
-                if(strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
+                if (strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
                     valid = FALSE;
                     break;
                 } else {
@@ -141,7 +144,7 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -162,5 +165,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
