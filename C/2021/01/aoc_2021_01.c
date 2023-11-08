@@ -1,21 +1,22 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "aoc_alloc.h"
 #include "aoc_array.h"
-#include "aoc_utils.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_utils.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void *solve_part_1(AocData_t *data) {
-    size_t i;
-    int count = 0;
-    char *val1, *val2;
+    size_t      i;
+    int         count = 0;
+    char       *val1, *val2;
     AocArrayPtr arr = aoc_data_get(data);
 
     for (i = 1; i < aoc_data_length(data); i++) {
         val1 = aoc_str_array_index(arr, i - 1);
         val2 = aoc_str_array_index(arr, i);
         if (atoi(val2) > atoi(val1)) {
-            count ++;
+            count++;
         }
     }
 
@@ -24,8 +25,8 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     size_t i;
-    int count = 0;
-    char *val1, *val2;
+    int    count = 0;
+    char  *val1, *val2;
 
     AocArrayPtr arr = aoc_data_get(data);
 
@@ -33,7 +34,7 @@ void *solve_part_2(AocData_t *data) {
         val1 = aoc_str_array_index(arr, i - 3);
         val2 = aoc_str_array_index(arr, i);
         if (atoi(val2) > atoi(val1)) {
-            count ++;
+            count++;
         }
     }
 
@@ -54,7 +55,7 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -75,6 +76,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
-

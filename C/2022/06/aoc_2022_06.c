@@ -1,22 +1,23 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_timer.h"
-#include "aoc_array.h"
 
 int marker(AocArrayPtr data, size_t window) {
     size_t i, j;
-    char *string;
-    char *chunk;
+    char  *string;
+    char  *chunk;
 
     chunk = (char *)calloc((size_t)window + 1, sizeof(char));
-    string = aoc_str_array_index(data, 0);
+    string = (char *)aoc_ptr_array_index(data, 0);
     for (i = 0; i < strlen(string) - window; i++) {
         chunk[0] = '\0';
         for (j = 0; j < window; j++) {
-            if(strchr(chunk, string[i + j])) {
+            if (strchr(chunk, string[i + j])) {
                 break;
             } else {
                 chunk[j] = string[i + j];
@@ -51,10 +52,10 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    int year, day;
-    char sourcefile[100];
+    int        year, day;
+    char       sourcefile[100];
 
-    strcpy(sourcefile, basename(__FILE__));
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
@@ -72,5 +73,5 @@ int main(int argc, char **argv) {
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
-    return 0;
+    return aoc_mem_gc();
 }
