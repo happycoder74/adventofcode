@@ -1,19 +1,20 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <glib.h>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <glib.h>
-#include "aoc_array.h"
-#include "aoc_types.h"
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_timer.h"
 
 AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr result;
-    size_t i;
-    char **split_line;
+    size_t      i;
+    char      **split_line;
 
     result = aoc_ptr_array_new();
     for (i = 0; i < aoc_array_length(data); i++) {
@@ -28,14 +29,14 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
 static int g_hash_table_set_compare(GHashTable *a, GHashTable *b) {
     GHashTableIter iter;
-    void *key, *value;
+    void          *key, *value;
 
     if (g_hash_table_size(a) != g_hash_table_size(b))
         return FALSE;
 
     g_hash_table_iter_init(&iter, a);
-    while(g_hash_table_iter_next(&iter, &key, &value)) {
-        if(!g_hash_table_contains(b, key)) {
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        if (!g_hash_table_contains(b, key)) {
             return FALSE;
         }
     }
@@ -43,46 +44,46 @@ static int g_hash_table_set_compare(GHashTable *a, GHashTable *b) {
 }
 
 static int g_hash_table_set_difference(GHashTable *a, GHashTable *b) {
-    int diff_size;
+    int            diff_size;
     GHashTableIter iter;
-    void *key, *value;
+    void          *key, *value;
 
     diff_size = g_hash_table_size(a);
     g_hash_table_iter_init(&iter, a);
-    while(g_hash_table_iter_next(&iter, &key, &value)) {
-        if(g_hash_table_contains(b, key))
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        if (g_hash_table_contains(b, key))
             diff_size -= 1;
     }
     return diff_size >= 0 ? diff_size : 0;
 }
 
 static int g_hash_table_set_intersection(GHashTable *a, GHashTable *b) {
-    size_t common_keys = 0;
+    size_t         common_keys = 0;
     GHashTableIter iter;
-    void *key, *value;
+    void          *key, *value;
 
     g_hash_table_iter_init(&iter, a);
-    while(g_hash_table_iter_next(&iter, &key, &value)) {
-        if(g_hash_table_contains(b, key))
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        if (g_hash_table_contains(b, key))
             common_keys += 1;
     }
     return common_keys;
 }
 
 int signal_sort(const void *a, const void *b) {
-    const char *str1 = *((char **) a);
-    const char *str2 = *((char **) b);
+    const char *str1 = *((char **)a);
+    const char *str2 = *((char **)b);
 
     return strlen(str1) - strlen(str2);
 }
 
 GHashTable **decode_signal(char *signal) {
-    int *signal_set_key;
+    int        *signal_set_key;
     AocArrayPtr signal_sets;
-    char **parts;
+    char      **parts;
     GHashTable *set;
     AocArrayPtr signal_parts;
-    char letter_key;
+    char        letter_key;
 
     signal_set_key = (int *)calloc(10, sizeof(int));
     signal_set_key[1] = 0;
@@ -101,10 +102,10 @@ GHashTable **decode_signal(char *signal) {
 
     aoc_str_array_sort(signal_parts, signal_sort);
 
-    for(j = 0; j < aoc_array_length(signal_parts); j++) {
+    for (j = 0; j < aoc_array_length(signal_parts); j++) {
         set = g_hash_table_new(g_direct_hash, g_direct_equal);
         char *part = aoc_str_array_index(signal_parts, j);
-        for(size_t k = 0; k < strlen(part); k++) {
+        for (size_t k = 0; k < strlen(part); k++) {
             letter_key = part[k];
             g_hash_table_add(set, (void *)(uint64_t)(letter_key));
         }
@@ -142,11 +143,11 @@ GHashTable **decode_signal(char *signal) {
 
 AocArrayPtr decode(GHashTable **keys, char *signal) {
     AocArrayPtr message;
-    char **parts;
+    char      **parts;
     AocArrayPtr signal_sets;
     GHashTable *signal_set;
     GHashTable *set;
-    char letter_key;
+    char        letter_key;
 
     parts = aoc_str_split(str_trim(signal), " ", -2);
     signal_sets = aoc_ptr_array_new();
@@ -155,7 +156,7 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
     size_t j = 0;
     while (parts[j] != NULL) {
         set = g_hash_table_new(g_direct_hash, g_direct_equal);
-        for(size_t k = 0; k < strlen(parts[j]); k++) {
+        for (size_t k = 0; k < strlen(parts[j]); k++) {
             letter_key = parts[j][k];
             g_hash_table_add(set, (void *)(uint64_t)(letter_key));
         }
@@ -168,7 +169,7 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
         signal_set = (GHashTable *)aoc_ptr_array_index(signal_sets, i);
         for (size_t j = 0; j < 10; j++) {
             set = keys[j];
-            if(g_hash_table_set_compare(set, signal_set)) {
+            if (g_hash_table_set_compare(set, signal_set)) {
                 aoc_int_array_append(message, j);
             }
         }
@@ -180,10 +181,10 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    char ** split_line;
+    char **split_line;
     char **output_value;
-    char *val;
-    int count = 0;
+    char  *val;
+    int    count = 0;
 
     for (size_t i = 0; i < aoc_data_length(data); i++) {
         split_line = (char **)aoc_ptr_array_index(aoc_data_get(data), i);
@@ -191,23 +192,22 @@ void *solve_part_1(AocData_t *data) {
 
         int j = 0;
         while ((val = output_value[j]) != NULL) {
-            if ((strlen(val) >= 2 && strlen(val) <=4) || strlen(val) == 7) {
+            if ((strlen(val) >= 2 && strlen(val) <= 4) || strlen(val) == 7) {
                 count++;
             }
             j++;
         }
-
     }
     return strdup_printf("%d", count);
 }
 
 void *solve_part_2(AocData_t *data) {
-    char **split_line;
-    AocArrayPtr output;
-    int array_sum;
+    char       **split_line;
+    AocArrayPtr  output;
+    int          array_sum;
     GHashTable **decoded;
-    AocArrayPtr message;
-    int message_sum;
+    AocArrayPtr  message;
+    int          message_sum;
 
     output = aoc_int32_array_new();
     for (size_t i = 0; i < aoc_data_length(data); i++) {
@@ -236,14 +236,15 @@ void *solve_all(AocData_t *data) {
     if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
-    } return NULL;
+    }
+    return NULL;
 }
 
 int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -264,5 +265,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

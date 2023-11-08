@@ -1,14 +1,15 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 int get_requested(int row, int col) {
     if (row == 0)
-        switch(col) {
+        switch (col) {
             case 0:
                 return 2;
             case 1:
@@ -19,7 +20,7 @@ int get_requested(int row, int col) {
     if (row == 1)
         return col;
     if (row == 2)
-        switch(col) {
+        switch (col) {
             case 0:
                 return 1;
             case 1:
@@ -40,7 +41,7 @@ void *solve_part_1(AocData_t *data) {
     };
 
     size_t i;
-    char *draw;
+    char  *draw;
 
     int sum_points = 0;
 
@@ -55,12 +56,12 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    int shape_points[3] = {1, 2, 3};
-    int col, row;
+    int    shape_points[3] = {1, 2, 3};
+    int    col, row;
     size_t i;
-    int sum_points = 0;
-    int points[3] = {0, 3, 6};
-    char *draw;
+    int    sum_points = 0;
+    int    points[3] = {0, 3, 6};
+    char  *draw;
 
     for (i = 0; i < aoc_data_length(data); i++) {
         draw = aoc_str_array_index(aoc_data_get(data), i);
@@ -86,7 +87,7 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -107,5 +108,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

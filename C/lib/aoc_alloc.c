@@ -20,25 +20,27 @@ static void init_mem_table(void) {
     mem_table = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
 }
 
-/*
+/**
  * aoc_malloc_internal:
- * @size: memory size requested
- * @element_size: size of each element
- * @function: name of calling function
- * @file: filename of file where call is made
- * @line: line number in file where call is made
+ * @param size: memory size requested
+ * @param element_size: size of each element
+ * @param function: name of calling function
+ * @param file: filename of file where call is made
+ * @param line: line number in file where call is made
  *
  * Forwards size to malloc.
  * Add address to memory table unless NULL is returned.
  * If DEBUG_VERBOSE is defined the details is logged to stderr.
  */
 void *aoc_malloc_internal(size_t size, const char *function, const char *file, int line) {
-    if (!mem_table)
+    if (!mem_table) {
         init_mem_table();
+    }
 
     void *addr = malloc(size);
-    if (!addr)
+    if (!addr) {
         return NULL;
+    }
 
     /* Add addr to hash_table here */
     g_hash_table_add(mem_table, addr);
@@ -65,8 +67,9 @@ void *aoc_malloc_internal(size_t size, const char *function, const char *file, i
 void *aoc_calloc_internal(size_t n_elements, size_t element_size, const char *function, const char *file, int line) {
     void *addr = calloc(n_elements, element_size);
 
-    if (!addr)
+    if (!addr) {
         return NULL;
+    }
 
     /* Add addr to hash_table here */
     g_hash_table_add(mem_table, addr);
@@ -103,7 +106,7 @@ void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, con
         fflush(stderr);
 #endif
     } else {
-        g_hash_table_add(mem_table, orig);
+        g_hash_table_add(mem_table, ptr);
     }
 
     return addr;

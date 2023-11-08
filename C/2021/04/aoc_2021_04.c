@@ -1,28 +1,28 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <glib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include "aoc_types.h"
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 typedef struct {
     int board[5][5];
     int hits;
 } Board;
 
-
 AocArrayPtr clean_input(AocArrayPtr data) {
-    char *line;
-    char **split_line;
+    char       *line;
+    char      **split_line;
     AocArrayPtr boards;
     AocArrayPtr numbers;
 
     AocArrayPtr return_data;
-    Board *board;
+    Board      *board;
 
     numbers = aoc_int32_array_new();
     return_data = aoc_ptr_array_new();
@@ -31,7 +31,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     line = aoc_str_array_index(data, 0);
     split_line = aoc_str_split(line, ",", -1);
     int i = 0;
-    while(split_line[i] != NULL) {
+    while (split_line[i] != NULL) {
         int32_t value = atoi(split_line[i++]);
         aoc_int_array_append(numbers, value);
     }
@@ -44,10 +44,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         for (int j = 0; j < 5; j++) {
             int index = j + b;
             line = aoc_str_array_index(data, index);
-            sscanf(line, "%d %d %d %d %d",
-                   &(board->board[j][0]), &(board->board[j][1]),
-                   &(board->board[j][2]), &(board->board[j][3]),
-                   &(board->board[j][4]));
+            sscanf(line, "%d %d %d %d %d", &(board->board[j][0]), &(board->board[j][1]), &(board->board[j][2]), &(board->board[j][3]), &(board->board[j][4]));
         }
         aoc_ptr_array_append(boards, board);
     }
@@ -99,7 +96,7 @@ int sum_board(Board *board) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    Board *board;
+    Board      *board;
     AocArrayPtr numbers = aoc_ptr_array_index(aoc_data_get(data), 0);
     AocArrayPtr boards = aoc_ptr_array_index(aoc_data_get(data), 1);
 
@@ -117,13 +114,13 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    Board *board;
+    Board      *board;
     AocArrayPtr numbers = aoc_ptr_array_index(aoc_data_get(data), 0);
     AocArrayPtr boards = aoc_ptr_array_index(aoc_data_get(data), 1);
     AocArrayPtr winners = aoc_int32_array_new();
-    int winner;
-    int number;
-    int winner_sum = 0;
+    int         winner;
+    int         number;
+    int         winner_sum = 0;
 
     size_t i = 0;
     while ((aoc_array_length(boards) > 0) && (i < aoc_array_length(numbers))) {
@@ -141,7 +138,6 @@ void *solve_part_2(AocData_t *data) {
                 board = (Board *)aoc_ptr_array_index(boards, winner);
                 winner_sum = sum_board(board) * number;
                 boards = aoc_array_remove_index(boards, winner);
-
             }
             aoc_int32_array_free(winners);
             winners = aoc_int32_array_new();
@@ -164,7 +160,7 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -185,5 +181,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
