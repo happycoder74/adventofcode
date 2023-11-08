@@ -29,7 +29,7 @@ typedef struct {
     unsigned int *pos;
 } KeyPad_t;
 
-#define NOT_FOUND -1
+#define NOT_FOUND (-1)
 unsigned int command_get_index(char *commands, char command) {
     char needle[2];
     sprintf(needle, "%c", command);
