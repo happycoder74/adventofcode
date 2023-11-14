@@ -17,13 +17,15 @@ int download_input(int year, int day) {
     char *input_url = strdup_printf("https://adventofcode.com/%d/day/%d/input", year, day);
 
     char *data_home = NULL;
-    if (!(data_home = getenv("AOC_DATA_LOCATION"))) {
+    data_home = getenv("AOC_DATA_LOCATION");
+    if (!data_home) {
         fprintf(stderr, "Could not find data location. Please set environment variable AOC_DATA_LOCATION\n");
         return EXIT_FAILURE;
     }
     char *path = strdup_printf("%s/%s", data_home, filename);
 
-    if (!(fp = fopen(path, "r"))) {
+    fp = fopen(path, "r");
+    if (!fp) {
         fprintf(stderr, "Could not open cookie-file\n");
         aoc_free(path);
         return EXIT_FAILURE;
@@ -73,13 +75,21 @@ AocSList *get_input_list(char *filename, int year, int day) {
     char     *file = NULL;
 
     char *data_location = NULL;
-    if ((data_location = getenv("AOC_DATA_LOCATION")))
+    data_location = getenv("AOC_DATA_LOCATION");
+    if ((data_location)) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
-    else
+    } else {
         path = strdup_printf("../../data/%d/%02d/", year, day);
-    file = strconcat(path, filename);
+    }
 
-    if (!(fp = fopen(file, "r"))) {
+    if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
+        file = strconcat(path, filename);
+    } else {
+        file = filename;
+    }
+
+    fp = fopen(file, "r");
+    if (!(fp)) {
         printf("Can not open file!\n");
         return NULL;
     }
@@ -102,16 +112,23 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     char       *data_line;
     char       *path;
     char       *file = NULL;
+    char       *data_location;
 
-    char *data_location;
-    if ((data_location = getenv("AOC_DATA_LOCATION")))
+    data_location = getenv("AOC_DATA_LOCATION");
+    if ((data_location)) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
-    else
+    } else {
         path = strdup_printf("../../data/%d/%02d/", year, day);
+    }
 
-    file = strconcat(path, filename);
+    if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
+        file = strconcat(path, filename);
+    } else {
+        file = filename;
+    }
 
-    if (!(fp = fopen(file, "r"))) {
+    fp = fopen(file, "r");
+    if (!(fp)) {
         printf("Can not open file!\n");
         return NULL;
     }
@@ -139,10 +156,13 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     gchar      *file = NULL;
     char        wd[255];
     char       *data_location = NULL;
-    if ((data_location = getenv("AOC_DATA_LOCATION")))
+
+    data_location = getenv("AOC_DATA_LOCATION");
+    if ((data_location)) {
         path = strdup_printf("%s/%d/%02d/", data_location, year, day);
-    else
+    } else {
         path = strdup_printf("../../data/%d/%02d/", year, day);
+    }
 
     if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
         file = strconcat(path, filename);
@@ -150,9 +170,20 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         file = filename;
     }
 
-    if (!(fp = fopen(file, "r"))) {
+    fp = fopen(file, "r");
+    if (!(fp)) {
         fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file, getcwd(wd, 255));
-        return NULL;
+        fprintf(stderr, "Trying to download...\n");
+        int dl_status = download_input(year, day);
+        if (!dl_status) {
+            return NULL;
+        } else {
+            fp = fopen(file, "r");
+            if (!(fp)) {
+                fprintf(stderr, "Download failed... Exiting!\n");
+                return NULL;
+            }
+        }
     }
 
     data = aoc_ptr_array_new();
@@ -187,8 +218,10 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
 
     if (*buf == NULL || *bufsiz == 0) {
         *bufsiz = BUFSIZ;
-        if ((*buf = aoc_realloc(*buf, *bufsiz)) == NULL)
+        *buf = aoc_realloc(*buf, *bufsiz);
+        if ((*buf) == NULL) {
             return -1;
+        }
     }
 
     for (ptr = *buf, eptr = *buf + *bufsiz;;) {
@@ -203,7 +236,7 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
             }
             return -1;
         }
-        *ptr++ = c;
+        *ptr++ = (char)c;
         if (c == delimiter) {
             *ptr = '\0';
             return ptr - *buf;
@@ -212,8 +245,10 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
             char   *nbuf;
             size_t  nbufsiz = *bufsiz * 2;
             ssize_t d = ptr - *buf;
-            if ((nbuf = aoc_realloc(*buf, nbufsiz)) == NULL)
+            nbuf = aoc_realloc(*buf, nbufsiz);
+            if ((nbuf) == NULL) {
                 return -1;
+            }
             *buf = nbuf;
             *bufsiz = nbufsiz;
             eptr = nbuf + nbufsiz;

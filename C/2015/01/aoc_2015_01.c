@@ -15,10 +15,11 @@ void *solve_part_1(AocData_t *data) {
     line = aoc_str_array_index(aoc_data_get(data), i);
 
     for (i = 0; i < strlen(line); i++) {
-        if (line[i] == '(')
+        if (line[i] == '(') {
             level += 1;
-        else if (line[i] == ')')
+        } else if (line[i] == ')') {
             level -= 1;
+        }
     }
 
     return (void *)strdup_printf("%d", level);
@@ -33,12 +34,14 @@ void *solve_part_2(AocData_t *data) {
     line = aoc_str_array_index(aoc_data_get(data), i);
 
     for (i = 0; i < strlen(line); i++) {
-        if (line[i] == '(')
+        if (line[i] == '(') {
             level += 1;
-        else if (line[i] == ')')
+        } else if (line[i] == ')') {
             level -= 1;
-        if (level < 0)
+        }
+        if (level < 0) {
             return (void *)strdup_printf("%d", i + 1);
+        }
     }
     return NULL;
 }
@@ -59,7 +62,7 @@ int main(int argc, char **argv) {
     char sourcefile[20];
     int  year, day;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
+    strncpy(sourcefile, aoc_basename(__FILE__), 19);
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
