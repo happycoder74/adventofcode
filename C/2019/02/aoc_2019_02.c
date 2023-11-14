@@ -25,20 +25,20 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    AocArrayPtr instructions = aoc_array_copy(aoc_data_get(data));
-    int         return_value;
+    AocArrayPtr      instructions = aoc_array_copy(aoc_data_get(data));
+    IntCodeReturn_t *return_value;
 
     aoc_int32_array_set_index(instructions, 1, 12);
     aoc_int32_array_set_index(instructions, 2, 2);
 
-    return_value = intcode(instructions);
+    return_value = intcode(instructions, NULL);
     aoc_int32_array_free(instructions);
-    return strdup_printf("%d", return_value);
+    return strdup_printf("%d", return_value->return_value);
 }
 
 void *solve_part_2(AocData_t *data) {
-    AocArrayPtr instructions = NULL;
-    int         return_value;
+    AocArrayPtr      instructions = NULL;
+    IntCodeReturn_t *return_value;
 
     for (int verb = 0; verb < 100; verb++) {
         for (int noun = 0; noun < 100; noun++) {
@@ -46,8 +46,8 @@ void *solve_part_2(AocData_t *data) {
             aoc_int32_array_set_index(instructions, 1, verb);
             aoc_int32_array_set_index(instructions, 2, noun);
 
-            return_value = intcode(instructions);
-            if (return_value == 19690720) {
+            return_value = intcode(instructions, NULL);
+            if (return_value->return_value == 19690720) {
                 aoc_int32_array_free(instructions);
                 return strdup_printf("%d", 100 * verb + noun);
             }
