@@ -23,6 +23,7 @@
 #define aoc_int32_array_append(_arr_, _val_)     (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT32) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
 #define aoc_int32_array_prepend(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_INT32) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 #define aoc_int32_array_contains(_arr_, _value_) aoc_array_contains(_arr_, &(_value_))
+#define aoc_int32_array_last(_array_)            (*(int32_t *)aoc_array_last(_array_))
 
 // uint32_t array function macros
 #define aoc_uint32_array_new()                   (aoc_array_new(AOC_ARRAY_UINT32, 0))
@@ -106,7 +107,7 @@
 
 // Point array function macros
 #define aoc_ptr_array_new()                      (aoc_array_new(AOC_ARRAY_PTR, 0))
-#define aoc_ptr_array_index(arr_, index_)        ((void *)(*(uint64_t *)(aoc_array_index(arr_, index_))))
+#define aoc_ptr_array_index(arr_, index_)        (aoc_array_index(arr_, index_))
 #define aoc_ptr_array_append(arr_, value_)       (aoc_array_append(arr_, &(value_)));
 #define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, &(value_)));
 #define aoc_ptr_array_free(arr_)                 (aoc_array_free(arr_, false))
@@ -117,26 +118,29 @@
 
 // Function declarations
 
-AocArrayPtr aoc_int32_array_set_index(AocArrayPtr, size_t index, int32_t);
-AocArrayPtr aoc_int64_array_set_index(AocArrayPtr, size_t index, int64_t);
-AocArrayPtr aoc_uint32_array_set_index(AocArrayPtr, size_t index, uint32_t);
-AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr, size_t index, uint64_t);
+AocArrayPtr aoc_int32_array_set_index(AocArrayPtr array, size_t index, int32_t value);
+AocArrayPtr aoc_int64_array_set_index(AocArrayPtr array, size_t index, int64_t value);
+AocArrayPtr aoc_uint32_array_set_index(AocArrayPtr array, size_t index, uint32_t value);
+AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr array, size_t index, uint64_t value);
 
-void *aoc_str_array_append(AocArrayPtr, char *);
-void *aoc_str_array_prepend(AocArrayPtr, char *);
+void *aoc_str_array_append(AocArrayPtr array, char *str);
+void *aoc_str_array_prepend(AocArrayPtr array, char *str);
 
-void        aoc_array_sort(AocArrayPtr arr, int (*compare_function)(const void *, const void *));
-AocArray   *aoc_array_new(AocArrayType, size_t);
-void        aoc_array_print(AocArray *);
-void       *aoc_array_append(AocArray *, void *);
-void       *aoc_array_prepend(AocArray *, void *);
-void       *aoc_array_index(AocArray *, size_t);
-void        aoc_array_free(AocArray *, int);
-AocArrayPtr aoc_array_remove_index(AocArrayPtr, size_t);
-void       *aoc_array_get_data(AocArrayPtr);
-AocArrayPtr aoc_array_copy(AocArrayPtr);
-size_t      aoc_array_get_element_size(AocArrayPtr);
-size_t      aoc_array_get_capacity(AocArrayPtr);
+void        aoc_array_sort(AocArrayPtr arr, int (*compare_function)(const void *e1, const void *e2));
+AocArray   *aoc_array_new(AocArrayType array_type, size_t length);
+void        aoc_array_print(AocArray *array);
+void       *aoc_array_append(AocArray *array, void *value);
+void       *aoc_array_prepend(AocArray *array, void *value);
+void       *aoc_array_index(AocArray *array, size_t index);
+void        aoc_array_free(AocArray *array, int free_segments);
+AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index);
+void       *aoc_array_get_data(AocArrayPtr array);
+AocArrayPtr aoc_array_copy(AocArrayPtr array);
+size_t      aoc_array_get_element_size(AocArrayPtr array);
+size_t      aoc_array_get_capacity(AocArrayPtr array);
 int         aoc_array_contains(AocArrayPtr array, void *value);
 int         aoc_array_find(AocArrayPtr array, void *value);
+AocArrayPtr aoc_array_new_from_data(AocArrayType array_type, void *data, size_t length);
+void       *aoc_array_last(AocArrayPtr array);
+
 #endif // !__AOC_ARRAY_H__
