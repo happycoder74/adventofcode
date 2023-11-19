@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +56,7 @@ char *str_trim(char *str) {
 
 char *str_join(const char *delimiter, char **str_list, size_t length) {
     char  *result;
-    int    res_length;
+    size_t res_length;
     size_t i;
     char  *ptr;
 
@@ -125,7 +126,7 @@ int str_startswith(char *str, char *start_str) {
     char *sstr;
     int   result;
 
-    sstr = substr(str, 0, strlen(start_str));
+    sstr = substr(str, 0, (int)strlen(start_str));
     result = !strcmp(start_str, sstr);
     free(sstr);
     return result;
@@ -135,7 +136,7 @@ int str_endswith(char *str, char *end_str) {
     char *sstr;
     int   result;
 
-    sstr = substr(str, -strlen(end_str), strlen(str));
+    sstr = substr(str, (int)-strlen(end_str), (int)strlen(str));
     result = !strcmp(end_str, sstr);
     free(sstr);
     return result;
@@ -157,6 +158,43 @@ char *strdup_printf(const char *format, ...) {
     length = vsnprintf(string, length + 1, format, args);
     va_end(args);
     return string;
+}
+
+char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
+    char      **return_split;
+    char       *s = NULL;
+    const char *remainder;
+    uint32_t    reserved_size;
+    uint32_t    n_tokens = 0;
+
+    if (max_tokens < 1) {
+        max_tokens = INT_MAX;
+        reserved_size = 21;
+    } else {
+        reserved_size = max_tokens + 1;
+    }
+    return_split = (char **)calloc(reserved_size, sizeof(char *));
+
+    remainder = str;
+
+    s = strstr(remainder, delimiter);
+    if (s) {
+        size_t delimiter_length = strlen(delimiter);
+        while (--max_tokens && s) {
+            size_t length = s - remainder;
+            return_split[n_tokens++] = strndup(remainder, length);
+            remainder = s + delimiter_length;
+            s = strstr(remainder, delimiter);
+        }
+    }
+
+    if (*remainder) {
+        return_split[n_tokens++] = strdup(remainder);
+    }
+
+    return_split[n_tokens] = NULL;
+
+    return return_split;
 }
 
 void aoc_str_freev(char **str_array) {
@@ -183,7 +221,23 @@ void aoc_str_freev(char **str_array) {
  * stpcpy.
  */
 char *stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
-    while ((*dest++ = *src++) != '\0') /* nothing */
+    while ((*dest++ = *src++) != '\0') {
+        /* nothing */
         ;
+    }
     return --dest;
+}
+
+char *strndup(const char *str, size_t n) {
+    char *new_str;
+
+    if (str) {
+        new_str = (char *)calloc(n + 1, sizeof(char));
+        strncpy(new_str, str, n);
+        new_str[n] = '\0';
+    } else {
+        new_str = NULL;
+    }
+
+    return new_str;
 }
