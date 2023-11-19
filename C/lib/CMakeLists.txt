@@ -3,6 +3,7 @@ add_library(aoc)
 
 target_sources(
     aoc
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_alloc.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_string.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
@@ -19,6 +20,6 @@ target_include_directories(aoc PUBLIC ${CURL_INCLUDE_DIR})
 target_link_libraries(aoc PRIVATE ${CURL_LIBRARIES})
 
 target_compile_options(aoc PRIVATE
-    -Wall -Wextra -Wpedantic -Werror -Wno-error=unused -Wno-error=unused-parameter
+    -Wall -Wextra -pedantic -Werror -Wno-error=unused -Wno-error=unused-parameter
 	)
 

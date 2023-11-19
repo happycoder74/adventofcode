@@ -1,15 +1,15 @@
+#include "aoc_string.h"
+#include "aoc_alloc.h"
 #include <assert.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
-
-#include "aoc_string.h"
 
 char *strdup(const char *s) {
-    size_t size = strlen(s) + 1;
-    char *p = malloc(size);
+    size_t size = (strlen(s) + 1) * sizeof(char);
+    char  *p = aoc_malloc(size);
     if (p) {
         memcpy(p, s, size);
     }
@@ -17,7 +17,7 @@ char *strdup(const char *s) {
 }
 
 char *strconcat(const char *s1, const char *s2) {
-    char *return_string = (char *)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
+    char *return_string = (char *)aoc_malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
     char *pointer;
 
     pointer = stpcpy(return_string, s1);
@@ -25,7 +25,6 @@ char *strconcat(const char *s1, const char *s2) {
 
     return return_string;
 }
-
 
 /* Note: This function returns a pointer to a substring of the original string.
 If the given string was allocated dynamically, the caller must not overwrite
@@ -37,14 +36,16 @@ char *str_trim(char *str) {
     char *end;
 
     /* Trim leading space */
-    while (isspace((unsigned char)*str)) str++;
+    while (isspace((unsigned char)*str))
+        str++;
 
     if (*str == '\0') /* All spaces? */
         return str;
 
     /* Trim trailing space */
     end = str + strlen(str) - 1;
-    while (end > str && isspace((unsigned char)*end)) end--;
+    while (end > str && isspace((unsigned char)*end))
+        end--;
 
     /* Write new null terminator character */
     end[1] = '\0';
@@ -53,10 +54,10 @@ char *str_trim(char *str) {
 }
 
 char *str_join(const char *delimiter, char **str_list, size_t length) {
-    char *result;
-    int res_length;
+    char  *result;
+    int    res_length;
     size_t i;
-    char *ptr;
+    char  *ptr;
 
     if (!*str_list) {
         return strdup("");
@@ -69,7 +70,7 @@ char *str_join(const char *delimiter, char **str_list, size_t length) {
     }
     res_length += (length - 1) * strlen(delimiter) + 1;
 
-    result = (char *)malloc(sizeof(char) * res_length);
+    result = (char *)aoc_malloc(sizeof(char) * res_length);
     ptr = stpcpy(result, str_list[0]);
     for (i = 1; (i < length) && (str_list[i] != NULL); i++) {
         ptr = stpcpy(ptr, delimiter);
@@ -98,7 +99,7 @@ int str_count(char *str, char needle, int start, int end) {
 
 char *substr(char *str, int start, int end) {
     char *substr;
-    int i;
+    int   i;
     if (end < 0) {
         end = (int)strlen(str) - 1 + end + 1;
     }
@@ -112,7 +113,7 @@ char *substr(char *str, int start, int end) {
     assert(start < (int)strlen(str));
     assert(start <= end);
 
-    substr = (char *)malloc(sizeof(char) * (end - start + 1));
+    substr = (char *)aoc_malloc(sizeof(char) * (end - start + 1));
     for (i = 0; i < (end - start); i++) {
         substr[i] = str[start + i];
     }
@@ -122,7 +123,7 @@ char *substr(char *str, int start, int end) {
 
 int str_startswith(char *str, char *start_str) {
     char *sstr;
-    int result;
+    int   result;
 
     sstr = substr(str, 0, strlen(start_str));
     result = !strcmp(start_str, sstr);
@@ -132,7 +133,7 @@ int str_startswith(char *str, char *start_str) {
 
 int str_endswith(char *str, char *end_str) {
     char *sstr;
-    int result;
+    int   result;
 
     sstr = substr(str, -strlen(end_str), strlen(str));
     result = !strcmp(end_str, sstr);
@@ -142,8 +143,8 @@ int str_endswith(char *str, char *end_str) {
 
 char *strdup_printf(const char *format, ...) {
     va_list args;
-    char *string;
-    int length;
+    char   *string;
+    int     length;
 
     va_start(args, format);
     length = vsnprintf(NULL, 0, format, args);
@@ -151,7 +152,7 @@ char *strdup_printf(const char *format, ...) {
     if (length < 0) {
         return NULL;
     }
-    string = (char *)malloc(sizeof(char) * (length + 1));
+    string = (char *)aoc_malloc(sizeof(char) * (length + 1));
     va_start(args, format);
     length = vsnprintf(string, length + 1, format, args);
     va_end(args);
@@ -161,9 +162,9 @@ char *strdup_printf(const char *format, ...) {
 void aoc_str_freev(char **str_array) {
     if (str_array) {
         for (size_t i = 0; str_array[i] != NULL; i++) {
-            free(str_array[i]);
+            aoc_free(str_array[i]);
         }
-        free(str_array);
+        aoc_free(str_array);
     }
 }
 /**
@@ -186,5 +187,3 @@ char *stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
         ;
     return --dest;
 }
-
-

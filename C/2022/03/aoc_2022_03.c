@@ -1,3 +1,4 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
@@ -21,15 +22,15 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         char *row = aoc_str_array_index(data, i);
         row = str_trim(row);
         uint16_t pack_length = strlen(row) / 2;
-        char    *pack1 = (char *)calloc(pack_length + 1, sizeof(char));
-        char    *pack2 = (char *)calloc(pack_length + 1, sizeof(char));
+        char    *pack1 = (char *)aoc_calloc(pack_length + 1, sizeof(char));
+        char    *pack2 = (char *)aoc_calloc(pack_length + 1, sizeof(char));
 
         memcpy(pack1, row, pack_length * sizeof(char));
         pack1[pack_length] = '\0';
         memcpy(pack2, row + pack_length, pack_length * sizeof(char));
         pack2[pack_length] = '\0';
 
-        char **packs = (char **)calloc(2, sizeof(char *));
+        char **packs = (char **)aoc_calloc(2, sizeof(char *));
 
         packs[0] = pack1;
         packs[1] = pack2;
@@ -37,14 +38,14 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         aoc_ptr_array_append(rucksacks, packs);
     }
 
-    aoc_str_array_free(data);
+    aoc_array_free(data, data->free_segments);
     return rucksacks;
 }
 
 void *solve_part_1(AocData_t *data) {
     char **packs = NULL;
 
-    int    prio_sum = 0;
+    int prio_sum = 0;
     for (uint16_t i = 0; i < aoc_data_length(data); i++) {
         packs = aoc_ptr_array_index(aoc_data_get(data), i);
         AocArrayPtr common_items = aoc_array_sized_new(AOC_ARRAY_CHAR, 20);
@@ -58,21 +59,22 @@ void *solve_part_1(AocData_t *data) {
         for (uint16_t c = 0; c < aoc_array_length(common_items); c++) {
             prio_sum += prio(aoc_char_array_index(common_items, c));
         }
+        aoc_char_array_free(common_items);
     }
     return strdup_printf("%d", prio_sum);
 }
 
 void *solve_part_2(AocData_t *data) {
     AocArrayPtr groups = aoc_ptr_array_new();
-    AocArrayPtr group = aoc_str_array_new();
+    AocArrayPtr group = aoc_ptr_array_new();
 
     for (uint32_t i = 0; i < aoc_data_length(data); i++) {
         char **packs = aoc_ptr_array_index(aoc_data_get(data), i);
         char  *pack = str_join("", packs, 2);
-        aoc_str_array_append(group, pack);
+        aoc_ptr_array_append(group, pack);
         if ((((i + 1) % 3) == 0) && (i > 0)) {
             aoc_ptr_array_append(groups, group);
-            group = aoc_str_array_new();
+            group = aoc_ptr_array_new();
         }
     }
 
@@ -83,7 +85,7 @@ void *solve_part_2(AocData_t *data) {
         char       *str = aoc_str_array_index(group, 0);
         AocArrayPtr common_items = aoc_char_array_new();
 
-        char       *str1 = aoc_str_array_index(group, 1);
+        char *str1 = aoc_str_array_index(group, 1);
         for (uint32_t k = 0; k < strlen(str); k++) {
             if (strchr(str1, str[k]) != NULL) {
                 if (!aoc_char_array_contains(common_items, str[k]))
@@ -101,7 +103,13 @@ void *solve_part_2(AocData_t *data) {
         }
 
         prio_sum += prio(aoc_char_array_index(common_items, 0));
+        aoc_char_array_free(common_items);
     }
+    for (uint32_t group = 0; group < aoc_array_length(groups); group++) {
+        AocArrayPtr group_ptr = aoc_ptr_array_index(groups, group);
+        aoc_array_free(group_ptr, group_ptr->free_segments);
+    }
+    aoc_array_free(groups, 0);
     return strdup_printf("%d", prio_sum);
 }
 
@@ -118,8 +126,8 @@ void *solve_all(AocData_t *data) {
 int main(int argc, char **argv) {
     AocData_t *data;
 
-    char       sourcefile[20];
-    int        year, day;
+    char sourcefile[20];
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
@@ -138,7 +146,12 @@ int main(int argc, char **argv) {
     printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
+    for (uint32_t segment = 0; segment < aoc_data_length(data); segment++) {
+        char **packs = (char **)aoc_ptr_array_index(data->data, segment);
+        aoc_free(packs[0]);
+        aoc_free(packs[1]);
+    }
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
