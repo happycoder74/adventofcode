@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "ninja-release",
+      "binaryDir": "${sourceDir}/release",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": {
+          "type": "BOOL",
+          "value": "on"
+        }
+      }
+    },
+    {
+      "name": "ninja-debug",
+      "binaryDir": "${sourceDir}/debug",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": {
+          "type": "BOOL",
+          "value": "on"
+        }
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "ninja-release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "ninja-debug"
+    }
+  ]
+}
