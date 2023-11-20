@@ -8,4 +8,6 @@ memdebug
 CMakeCache.txt
 debug
 *workspace
+release
+dbgverbose
 
