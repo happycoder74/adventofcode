@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_array.h"
+#include "aoc_timer.h"
+#include "aoc_string.h"
 
 typedef struct {
     int x;
@@ -131,67 +133,71 @@ char keypad_keystring(KeyPad_t *keypad, char *line) {
     return keypad_digit(keypad, keypad->pos);
 }
 
-char *keypad_get_code(KeyPad_t *keypad, GArray *data) {
-    gchar *line = NULL;
-    guint i;
-    guint data_length;
+char *keypad_get_code(KeyPad_t *keypad, AocArrayPtr data) {
+    char *line = NULL;
+    unsigned int i;
+    unsigned int data_length;
 
-    data_length = data->len;
+    data_length = aoc_array_length(data);
     keypad->code = (char *)calloc(data_length + 1, sizeof(char));
-    for (i = 0; i < data->len; i++) {
-        line = g_array_index(data, char *, i);
+    for (i = 0; i < aoc_array_length(data); i++) {
+        line = aoc_str_array_index(data, i);
         keypad->code[i] = keypad_keystring(keypad, line);
     }
     return keypad->code;
 }
 
-GArray *clean_input(GArray *data) {
-    return data;
-}
-
-gpointer solve_part_1(AocData_t *data) {
+void *solve_part_1(AocData_t *data) {
     KeyPad_t *keypad = NULL;
     char *return_string;
 
     keypad = keypad_init(KP_STD);
-    return_string = g_strdup(keypad_get_code(keypad, data->data));
+    return_string = strdup(keypad_get_code(keypad, aoc_data_get(data)));
     keypad_destroy(keypad);
     return return_string;
 }
 
-gpointer solve_part_2(AocData_t *data) {
+void *solve_part_2(AocData_t *data) {
     KeyPad_t *keypad = NULL;
     char *return_string;
 
     keypad = keypad_init(KP_ALT);
-    return_string = g_strdup(keypad_get_code(keypad, data->data));
+    return_string = strdup(keypad_get_code(keypad, aoc_data_get(data)));
     keypad_destroy(keypad);
     return return_string;
 }
 
-gpointer solve_all(AocData_t *data) {
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
+void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
+
     return NULL;
 }
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new("test_input.txt", year, day);
+        } else {
+            data = aoc_data_new(argv[1], year, day);
+        }
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    data = aoc_data_new(filename, 2016, 2);
-    g_free(filename);
-
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

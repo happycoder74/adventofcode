@@ -2,62 +2,66 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include "aoc_types.h"
 #include "aoc_utils.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
 
-
-int find_min(GArray *array) {
+int find_min(AocArrayPtr array) {
     int min;
-    guint i;
+    unsigned int i;
 
-    min = g_array_index(array, int, 0);
-    for (i = 1; i < array->len; i++) {
-        min = MIN(min, g_array_index(array, int, i));
+    min = aoc_int_array_index(array, 0);
+    for (i = 1; i < aoc_array_length(array); i++) {
+        min = MIN(min, aoc_int_array_index(array, i));
     }
     return min;
 }
 
-int find_max(GArray *array) {
+int find_max(AocArrayPtr array) {
     int max;
-    guint i;
+    unsigned int i;
 
-    max = g_array_index(array, int, 0);
-    for (i = 1; i < array->len; i++) {
-        max = MAX(max, g_array_index(array, int, i));
+    max = aoc_int_array_index(array, 0);
+    for (i = 1; i < aoc_array_length(array); i++) {
+        max = MAX(max, aoc_int_array_index(array, i));
     }
     return max;
 }
 
-GArray *clean_input(GArray *data) {
-    GArray *result;
-    gchar **split_line;
-    gchar *line;
-    line = g_array_index(data, gchar *, 0);
-    split_line = g_strsplit(line, ",", -1);
+AocArrayPtr clean_input(AocArrayPtr data) {
+    AocArrayPtr result;
+    char **split_line;
+    char *line;
+    line = aoc_str_array_index(data, 0);
+    split_line = aoc_str_split(line, ",", -1);
     int i, value;
 
-    result = g_array_new(FALSE, FALSE, sizeof(int));
+    result = aoc_int32_array_new();
 
     i = 0;
     while (split_line[i] != NULL) {
         sscanf(split_line[i], "%d", &value);
-        g_array_append_val(result, value);
+        aoc_int_array_append(result, value);
         i++;
     }
-    g_strfreev(split_line);
+
+    aoc_str_freev(split_line);
     return result;
 }
 
-int calc_fuel(GArray *data, int position, int part) {
+int calc_fuel(AocArrayPtr data, int position, int part) {
     if (part == 1) {
         int sum = 0;
-        for (guint i = 0; i < data->len; i++) {
-            sum += abs(g_array_index(data, int, i) - position);
+        for (unsigned int i = 0; i < aoc_array_length(data); i++) {
+            sum += abs(aoc_int_array_index(data, i) - position);
         }
         return sum;
     } else {
         int sum = 0;
-        for (guint i = 0; i < data->len; i++) {
-            int d = abs(g_array_index(data, int, i) - position);
+        for (unsigned int i = 0; i < aoc_array_length(data); i++) {
+            int d = abs(aoc_int_array_index(data, i) - position);
             for (int j = 0; j <= d; j++) {
                 sum += j;
             }
@@ -66,59 +70,67 @@ int calc_fuel(GArray *data, int position, int part) {
     }
 }
 
-int solve_part_1(GArray *data) {
+void *solve_part_1(AocData_t *data) {
     int min_fuel, fuel, pos;
 
-    min_fuel = calc_fuel(data, find_min(data), 1);
+    min_fuel = calc_fuel(aoc_data_get(data), find_min(aoc_data_get(data)), 1);
 
-    for (guint i = 0; i < data->len; i ++) {
-        pos = g_array_index(data, int, i);
-        fuel = calc_fuel(data, pos, 1);
+    for (size_t i = 0; i < aoc_data_length(data); i ++) {
+        pos = aoc_int_array_index(aoc_data_get(data), i);
+        fuel = calc_fuel(aoc_data_get(data), pos, 1);
         if (fuel < min_fuel) {
             min_fuel = fuel;
         }
     }
-    return min_fuel;
+    return strdup_printf("%d", min_fuel);
 }
 
-int solve_part_2(GArray *data) {
+void *solve_part_2(AocData_t *data) {
     int min_fuel, fuel;
 
-    min_fuel = calc_fuel(data, find_min(data), 2);
+    min_fuel = calc_fuel(aoc_data_get(data), find_min(aoc_data_get(data)), 2);
 
-    for (guint i = 0; i < (guint)find_max(data); i++) {
-        fuel = calc_fuel(data, i, 2);
+    for (unsigned int i = 0; i < (unsigned int)find_max(aoc_data_get(data)); i++) {
+        fuel = calc_fuel(aoc_data_get(data), i, 2);
         if (fuel < min_fuel) {
             min_fuel = fuel;
         }
     }
-    return min_fuel;
+    return strdup_printf("%d", min_fuel);
 }
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+void *solve_all(AocData_t *data) {
 
-    data = clean_input(get_input(filename, year, day));
-
-    if (data) {
-        TIMER(1, solve_part_1(data), INT, 1);
-        TIMER(2, solve_part_2(data), INT, 1);
-
-        g_array_free(data, TRUE);
-    }
-
-    return 0;
+    if (aoc_data_get(data)) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
+    } return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+
+    char sourcefile[20];
+    int year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        }
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }
 
-    TIMER(0, solve_all(filename, 2021, 7), INT, 0);
-    g_free(filename);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return 0;
 }

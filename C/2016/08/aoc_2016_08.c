@@ -2,45 +2,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include <unistd.h>
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_grid.h"
+#include "aoc_array.h"
+#include "aoc_timer.h"
 
 enum command_type {INIT, ROW, COL};
 
 typedef struct {
     enum command_type command;
-    gint value1;
-    gint value2;
+    int value1;
+    int value2;
 } Instruction;
 
-GArray *clean_input(GArray *data) {
-    gchar *line;
-    guint i;
+AocArrayPtr clean_input(AocArrayPtr data) {
+    char *line;
+    unsigned int i;
     Instruction *instruction;
-    GArray *instruction_list;
+    AocArrayPtr instruction_list;
 
-    instruction_list = g_array_sized_new(FALSE, FALSE, sizeof(Instruction *), data->len);
+    instruction_list = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
 
-    for (i = 0; i < data->len; i++) {
-        line = g_array_index(data, gchar *, i);
+    for (i = 0; i < aoc_array_length(data); i++) {
+        line = aoc_str_array_index(data, i);
         if(g_strstr_len(line, 4, "rect")) {
-            instruction = g_new(Instruction, 1);
+            instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = INIT;
             sscanf(line, "rect %dx%d", &instruction->value1, &instruction->value2);
-            g_array_append_val(instruction_list, instruction);
+            aoc_ptr_array_append(instruction_list, instruction);
         } else if (g_strstr_len(line, 10, "rotate col")) {
-            instruction = g_new(Instruction, 1);
+            instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = COL;
             sscanf(line, "rotate column x=%d by %d", &instruction->value1, &instruction->value2);
-            g_array_append_val(instruction_list, instruction);
+            aoc_ptr_array_append(instruction_list, instruction);
         } else if (g_strstr_len(line, 10, "rotate row")) {
-            instruction = g_new(Instruction, 1);
+            instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = ROW;
             sscanf(line, "rotate row y=%d by %d", &instruction->value1, &instruction->value2);
-            g_array_append_val(instruction_list, instruction);
+            aoc_ptr_array_append(instruction_list, instruction);
         }
     }
     return instruction_list;
@@ -120,7 +122,7 @@ void grid_print(Grid *grid, int final) {
 }
 void *solve_part_1(AocData_t *data) {
     Grid *grid;
-    guint i;
+    unsigned int i;
     int row, col, index;
     Instruction *instruction;
 
@@ -129,8 +131,9 @@ void *solve_part_1(AocData_t *data) {
     grid->columns = 50;
     grid->grid = calloc((grid->rows * grid->columns), sizeof(int));
 
-    for (i = 0; i < data->data->len; i++) {
-        instruction = g_array_index(data->data, Instruction *, i);
+    AocArrayPtr d = aoc_data_get(data);
+    for (i = 0; i < aoc_data_length(data); i++) {
+        instruction = aoc_ptr_array_index(d, i);
         switch(instruction->command) {
             case INIT:
                 init_area(grid, instruction);
@@ -162,11 +165,9 @@ void *solve_part_2(AocData_t *data) {
     return strdup("See above");
 }
 
-
 void *solve_all(AocData_t *data) {
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
@@ -176,22 +177,22 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    gchar *filename;
 
-    gchar *sourcefile = basename(__FILE__);
+    char sourcefile[20];
     int year, day;
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        }
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);

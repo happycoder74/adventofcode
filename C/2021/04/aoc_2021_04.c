@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,53 +6,54 @@
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include "aoc_string.h"
+#include "aoc_array.h"
+#include "aoc_timer.h"
 
 typedef struct {
     int board[5][5];
     int hits;
 } Board;
 
-void print_board(Board *);
 
-GArray *clean_input(GArray *data) {
+AocArrayPtr clean_input(AocArrayPtr data) {
     char *line;
     char **split_line;
-    GArray *boards;
-    GArray *numbers;
-    int value;
-    GArray *return_data;
+    AocArrayPtr boards;
+    AocArrayPtr numbers;
+
+    AocArrayPtr return_data;
     Board *board;
 
-    numbers = g_array_new(TRUE, FALSE, sizeof(int));
-    return_data = g_array_new(TRUE, FALSE, sizeof(GArray *));
-    boards = g_array_new(TRUE, FALSE, sizeof(Board *));
+    numbers = aoc_int32_array_new();
+    return_data = aoc_ptr_array_new();
+    boards = aoc_ptr_array_new();
 
-    line = g_array_index(data, char *, 0);
-    split_line = g_strsplit(line, ",", -1);
+    line = aoc_str_array_index(data, 0);
+    split_line = aoc_str_split(line, ",", -1);
     int i = 0;
     while(split_line[i] != NULL) {
-        value = atoi(split_line[i]);
-        g_array_append_val(numbers, value);
-        i++;
+        int32_t value = atoi(split_line[i++]);
+        aoc_int_array_append(numbers, value);
     }
-    g_array_append_val(return_data, numbers);
+    aoc_ptr_array_append(return_data, numbers);
 
     i = 2;
-    for (size_t b = 2; b + 2 < data->len; b += 6) {
-        board = g_new(Board, 1);
+    for (size_t b = 2; b + 2 < aoc_array_length(data); b += 6) {
+        board = (Board *)malloc(sizeof(Board));
         board->hits = 0;
         for (int j = 0; j < 5; j++) {
             int index = j + b;
-            line = g_array_index(data, char *, index);
+            line = aoc_str_array_index(data, index);
             sscanf(line, "%d %d %d %d %d",
-                    &(board->board[j][0]), &(board->board[j][1]),
-                    &(board->board[j][2]), &(board->board[j][3]),
-                    &(board->board[j][4]));
+                   &(board->board[j][0]), &(board->board[j][1]),
+                   &(board->board[j][2]), &(board->board[j][3]),
+                   &(board->board[j][4]));
         }
-        g_array_append_val(boards, board);
+        aoc_ptr_array_append(boards, board);
     }
 
-    g_array_append_val(return_data, boards);
+    aoc_ptr_array_append(return_data, boards);
+    aoc_str_freev(split_line);
 
     return return_data;
 }
@@ -96,96 +98,86 @@ int sum_board(Board *board) {
     return board_sum + board->hits;
 }
 
-void print_board(Board *board) {
-    for (int row = 0; row < 5; row++) {
-        for (int col = 0; col < 5; col++) {
-            g_print("%4d", board->board[row][col]);
-        }
-        g_print("\n");
-    }
-}
-
 void *solve_part_1(AocData_t *data) {
     Board *board;
-    GArray *numbers = g_array_index(data->data, GArray *, 0);
-    GArray *boards = g_array_index(data->data, GArray *, 1);
+    AocArrayPtr numbers = aoc_ptr_array_index(aoc_data_get(data), 0);
+    AocArrayPtr boards = aoc_ptr_array_index(aoc_data_get(data), 1);
 
-    for (guint i = 0; i < numbers->len; i++) {
-        int number = g_array_index(numbers, int, i);
-        for (guint b = 0; b < boards->len; b++) {
-            board = g_array_index(boards, Board *, b);
+    for (unsigned int i = 0; i < aoc_array_length(numbers); i++) {
+        int number = aoc_int_array_index(numbers, i);
+        for (unsigned int b = 0; b < aoc_array_length(boards); b++) {
+            board = (Board *)aoc_ptr_array_index(boards, b);
             if (check_board(board, number)) {
                 return strdup_printf("%d", sum_board(board) * number);
             }
         }
     }
 
-    return strdup_printf("");
+    return strdup("Not found");
 }
 
 void *solve_part_2(AocData_t *data) {
     Board *board;
-    GArray *numbers = g_array_index(data->data, GArray *, 0);
-    GArray *boards = g_array_index(data->data, GArray *, 1);
-    GArray *winners = g_array_new(FALSE, FALSE, sizeof(int));
+    AocArrayPtr numbers = aoc_ptr_array_index(aoc_data_get(data), 0);
+    AocArrayPtr boards = aoc_ptr_array_index(aoc_data_get(data), 1);
+    AocArrayPtr winners = aoc_int32_array_new();
     int winner;
     int number;
     int winner_sum = 0;
 
     size_t i = 0;
-    while ((boards->len > 0) && (i < numbers->len)) {
-        number = g_array_index(numbers, int, i++);
-        for (guint b = 0; b < boards->len; b++) {
-            board = g_array_index(boards, Board *, b);
+    while ((aoc_array_length(boards) > 0) && (i < aoc_array_length(numbers))) {
+        number = aoc_int_array_index(numbers, i++);
+        for (unsigned int b = 0; b < aoc_array_length(boards); b++) {
+            board = (Board *)aoc_ptr_array_index(boards, b);
             if (check_board(board, number)) {
                 winner = b;
-                g_array_append_val(winners, winner);
+                aoc_int_array_append(winners, winner);
             }
         }
-        if (winners->len > 0) {
-            for (int j = winners->len - 1; j >= 0; j--) {
-                winner = g_array_index(winners, int, j);
-                board = g_array_index(boards, Board *, winner);
+        if (aoc_array_length(winners) > 0) {
+            for (int j = aoc_array_length(winners) - 1; j >= 0; j--) {
+                winner = aoc_int_array_index(winners, j);
+                board = (Board *)aoc_ptr_array_index(boards, winner);
                 winner_sum = sum_board(board) * number;
-                boards = g_array_remove_index(boards, winner);
+                boards = aoc_array_remove_index(boards, winner);
+
             }
-            g_array_free(winners, TRUE);
-            winners = g_array_new(FALSE, FALSE, sizeof(int));
+            aoc_int32_array_free(winners);
+            winners = aoc_int32_array_new();
         }
     }
+    aoc_int32_array_free(winners);
     return strdup_printf("%d", winner_sum);
 }
 
 void *solve_all(AocData_t *data) {
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
-
     return NULL;
 }
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    char *sourcefile;
+    char sourcefile[20];
     int year, day;
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, clean_input);
+        }
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new_clean("input.txt", year, day, clean_input);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);

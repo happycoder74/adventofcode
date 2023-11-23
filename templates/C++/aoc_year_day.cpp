@@ -1,50 +1,46 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <glib.h>
-#include "aoc_utils.h"
+#include "aoc_io.hpp"
+#include "aoc_timer.hpp"
+#include <iomanip>
+#include <ranges>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+#include <chrono>
 
-GArray *clean_input(GArray *data) {
-    return data;
+typedef std::chrono::high_resolution_clock Clock;
+
+
+std::string solve_part_1(std::vector<std::string> instructions) {
+    std::string return_string;
+    return return_string;
 }
 
-gpointer solve_part_1(AocData_t *data) {
-    return NULL;
+std::string solve_part_2(std::vector<std::string> instructions) {
+    std::string return_string;
+    return return_string;
 }
 
-gpointer solve_part_2(AocData_t *data) {
-    return NULL;
-}
+std::string solve_all(std::vector<std::string> instructions) {
+    aoc::timer<std::string>(1, solve_part_1, instructions, true);
+    aoc::timer<std::string>(2, solve_part_2, instructions, true);
 
-gpointer solve_all(AocData_t *data) {
-
-    data->data = clean_input(get_input(data->filename, data->year, data->day));
-
-    if (data->data) {
-        timer_func(1, solve_part_1, data, 1);
-        timer_func(2, solve_part_2, data, 1);
-    }
-
-    return NULL;
+    return std::string("");
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
-    gchar *filename;
+    std::string filename;
+    std::vector<std::string> instructions;
 
-    if (argc > 1) {
-        filename = g_strdup(argv[1]);
-    } else {
-        filename = g_strdup("input.txt");
-    }
 
-    data = aoc_data_new(filename, <YEAR>, <DAY>);
-    g_free(filename);
+    filename = argc > 1 ? argv[1] : "input.txt";
 
-    timer_func(0, solve_all, data, 0);
+    instructions = aoc::get_input_list<std::string>(filename, <YEAR>, <DAY>);
 
-    aoc_data_free(data);
+    aoc::timer<std::string>(0, solve_all, instructions, false);
 
     return 0;
 }
+
 

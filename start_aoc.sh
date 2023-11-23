@@ -90,12 +90,12 @@ download_input() {
 
 	if [ -e "$data_directory/input.txt" -a $force -eq 0 -a $templates_only -eq 0 ]; then
 		if [ $silent -eq 0 ]; then
-			echo "Puzzle input exists. Add option -f to force download" 
+			echo "Puzzle input exists. Add option -f to force download"
 		fi
-		return 
+		return
 	fi
 
-	if [ ! -e $cookiefile ]; then 
+	if [ ! -e $cookiefile ]; then
 		if [ $silent -eq 0 ]; then
 			echo "No cookiefile found, unable to download"
 		fi
@@ -139,7 +139,11 @@ make_templates() {
 		mkdir -p $directory
 	fi
 	if [ ! -e $directory/aoc_${year}_${day}.${file_ext} ]; then
-		sed -e "s/<YEAR>/$year/g" -e "s/<0DAY>/$day/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
+        if [ $language == "C" ]; then
+            cp $template_dir/aoc_year_day.${file_ext} $directory/aoc_${year}_${day}.${file_ext}
+        else
+            sed -e "s/<YEAR>/$year/g" -e "s/<0DAY>/$day/g" -e "s/<DAY>/$((10#$day))/g" $template_dir/aoc_year_day.${file_ext} > $directory/aoc_${year}_${day}.${file_ext}
+        fi
 	fi
 
 	if [ $language == "python" ]; then
@@ -151,13 +155,13 @@ make_templates() {
 
 check_dates
 
-if [ $templates_only -eq 0 ]; then 
+if [ $templates_only -eq 0 ]; then
 	download_input
 fi
 
 if [ $input_only -eq 0 ]; then
 	if [ -z $langspec ]; then
-		for lang in "${languages[@]}"; do 
+		for lang in "${languages[@]}"; do
 			make_templates $lang
 		done
 	else
