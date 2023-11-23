@@ -48,6 +48,7 @@ int download_input(int year, int day) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, output_file);
         curl_easy_setopt(curl, CURLOPT_URL, input_url);
         curl_easy_setopt(curl, CURLOPT_COOKIE, cookie);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "\"github.com/happycoder74/adventofcode/C/lib/aoc_io.c\"");
 
         res = curl_easy_perform(curl);
 
