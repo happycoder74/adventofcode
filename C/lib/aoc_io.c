@@ -33,7 +33,7 @@ int download_input(int year, int day) {
         CURLcode res;
         FILE    *output_file = NULL;
 
-        char cookie[200];
+        char cookie[400];
         sprintf(cookie, "session=%s", cookie_contents);
 
         char output_filename[200];
