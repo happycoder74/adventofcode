@@ -19,6 +19,6 @@ target_include_directories(aoc PUBLIC ${CURL_INCLUDE_DIR})
 target_link_libraries(aoc PRIVATE ${CURL_LIBRARIES})
 
 target_compile_options(aoc PRIVATE
-    -Wall -Wextra -pedantic -Werror -Wno-error=unused -Wno-error=unused-parameter
+    -Wall -Wextra -pedantic -Wno-error=unused -Wno-error=unused-parameter
 	)
 
