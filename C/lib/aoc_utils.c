@@ -1,3 +1,8 @@
+#include "aoc_utils.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_types.h"
+#include "glib.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -5,14 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include "glib.h"
-
-#include "aoc_array.h"
-#include "aoc_list.h"
-#include "aoc_string.h"
-#include "aoc_types.h"
-#include "aoc_utils.h"
 
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     if (aoc) {
@@ -29,6 +26,7 @@ AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*cl
     data->year = year;
     data->day = day;
     data->data = NULL;
+    data->free_segments = 1;
 
     AocArrayPtr input_data = get_input(filename, year, day);
     if (!input_data) {
@@ -53,114 +51,6 @@ void aoc_data_free(AocData_t *data) {
         aoc_array_free(data->data, 0);
     }
     free(data);
-}
-
-AocSList *get_input_list(char *filename, int year, int day) {
-    FILE     *fp;
-    AocSList *data = NULL;
-    char     *line = NULL;
-    size_t    line_length = 0;
-    char     *data_line;
-    char     *path;
-    char     *file = NULL;
-
-    char *data_location = NULL;
-    if ((data_location = getenv("AOC_DATA_LOCATION")))
-        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
-    else
-        path = strdup_printf("../../data/%d/%02d/", year, day);
-    file = strconcat(path, filename);
-
-    if (!(fp = fopen(file, "r"))) {
-        printf("Can not open file!\n");
-        return NULL;
-    }
-
-    while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = str_trim(strdup(line));
-        data = aoc_slist_prepend(data, data_line);
-    }
-
-    free(file);
-    free(path);
-
-    return aoc_slist_reverse(data);
-}
-
-AocArrayPtr get_input_new(char *filename, int year, int day) {
-    FILE       *fp;
-    AocArrayPtr data;
-    char        line[10000];
-    char       *data_line;
-    char       *path;
-    char       *file = NULL;
-
-    char *data_location;
-    if ((data_location = getenv("AOC_DATA_LOCATION")))
-        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
-    else
-        path = strdup_printf("../../data/%d/%02d/", year, day);
-
-    file = strconcat(path, filename);
-
-    if (!(fp = fopen(file, "r"))) {
-        printf("Can not open file!\n");
-        return NULL;
-    }
-
-    data = aoc_str_array_new();
-    while (fgets(line, 10000, fp)) {
-        data_line = str_trim(strdup(line));
-        aoc_str_array_append(data, data_line);
-    }
-
-    if (file) {
-        free(file);
-    }
-
-    return data;
-}
-
-AocArrayPtr get_input(char *filename, int year, int day) {
-    FILE       *fp;
-    AocArrayPtr data;
-    gchar      *line = NULL;
-    size_t      line_length = 0;
-    gchar      *data_line;
-    gchar      *path;
-    gchar      *file = NULL;
-    char        wd[255];
-    char       *data_location = NULL;
-    if ((data_location = getenv("AOC_DATA_LOCATION")))
-        path = strdup_printf("%s/%d/%02d/", data_location, year, day);
-    else
-        path = strdup_printf("../../data/%d/%02d/", year, day);
-
-    if ((!strcmp(filename, "test_input.txt")) || (!strcmp(filename, "input.txt"))) {
-        file = strconcat(path, filename);
-    } else {
-        file = filename;
-    }
-
-    if (!(fp = fopen(file, "r"))) {
-        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file, getcwd(wd, 255));
-        return NULL;
-    }
-
-    data = aoc_str_array_new();
-
-    while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = str_trim(strdup(line));
-        aoc_str_array_append(data, data_line);
-    }
-
-    if (file != filename) {
-        free(file);
-    }
-
-    free(path);
-
-    return data;
 }
 
 int max(int *arr, int length) {
@@ -222,53 +112,6 @@ int min_non_zero(int *arr, int length) {
     }
     return min;
 }
-
-#ifdef __MINGW32__
-ssize_t getline(char **buf, size_t *bufsiz, FILE *fp) {
-    return getdelim(buf, bufsiz, '\n', fp);
-}
-
-ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
-    char *ptr, *eptr;
-
-    if (*buf == NULL || *bufsiz == 0) {
-        *bufsiz = BUFSIZ;
-        if ((*buf = malloc(*bufsiz)) == NULL)
-            return -1;
-    }
-
-    for (ptr = *buf, eptr = *buf + *bufsiz;;) {
-        int c = fgetc(fp);
-        if (c == -1) {
-            if (feof(fp)) {
-                ssize_t diff = (ssize_t)(ptr - *buf);
-                if (diff != 0) {
-                    *ptr = '\0';
-                    return diff;
-                }
-            }
-            return -1;
-        }
-        *ptr++ = c;
-        if (c == delimiter) {
-            *ptr = '\0';
-            return ptr - *buf;
-        }
-        if (ptr + 2 >= eptr) {
-            char   *nbuf;
-            size_t  nbufsiz = *bufsiz * 2;
-            ssize_t d = ptr - *buf;
-            if ((nbuf = realloc(*buf, nbufsiz)) == NULL)
-                return -1;
-            *buf = nbuf;
-            *bufsiz = nbufsiz;
-            eptr = nbuf + nbufsiz;
-            ptr = nbuf + d;
-        }
-    }
-}
-
-#endif
 
 void print_line(Line line) {
     Point diff;
