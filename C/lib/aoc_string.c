@@ -1,7 +1,9 @@
 #include "aoc_string.h"
 #include "aoc_alloc.h"
+#include "aoc_array.h"
 #include <assert.h>
 #include <ctype.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -161,19 +163,17 @@ char *strdup_printf(const char *format, ...) {
 }
 
 char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
-    char      **return_split;
     char       *s = NULL;
     const char *remainder;
-    uint32_t    reserved_size;
     uint32_t    n_tokens = 0;
+    AocArrayPtr return_split = NULL;
 
     if (max_tokens < 1) {
         max_tokens = INT_MAX;
-        reserved_size = 21;
+        return_split = aoc_ptr_array_new();
     } else {
-        reserved_size = max_tokens + 1;
+        return_split = aoc_array_new(AOC_ARRAY_PTR, max_tokens + 1);
     }
-    return_split = (char **)calloc(reserved_size, sizeof(char *));
 
     remainder = str;
 
@@ -182,19 +182,24 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
         size_t delimiter_length = strlen(delimiter);
         while (--max_tokens && s) {
             size_t length = s - remainder;
-            return_split[n_tokens++] = strndup(remainder, length);
+            char  *new_string = strndup(remainder, length);
+            aoc_ptr_array_append(return_split, new_string);
             remainder = s + delimiter_length;
             s = strstr(remainder, delimiter);
         }
     }
 
     if (*remainder) {
-        return_split[n_tokens++] = strdup(remainder);
+        char *new_string = strdup(remainder);
+        aoc_ptr_array_append(return_split, new_string);
     }
 
-    return_split[n_tokens] = NULL;
+    char *end_ptr = NULL;
+    aoc_ptr_array_append(return_split, end_ptr);
 
-    return return_split;
+    char **return_value = (char **)aoc_array_get_data(return_split);
+
+    return return_value;
 }
 
 void aoc_str_freev(char **str_array) {
