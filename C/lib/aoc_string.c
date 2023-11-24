@@ -165,7 +165,6 @@ char *strdup_printf(const char *format, ...) {
 char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
     char       *s = NULL;
     const char *remainder;
-
     AocArrayPtr return_split = NULL;
 
     if (max_tokens < 1) {
