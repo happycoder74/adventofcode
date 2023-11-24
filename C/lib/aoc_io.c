@@ -150,11 +150,11 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
 AocArrayPtr get_input(char *filename, int year, int day) {
     FILE       *fp;
     AocArrayPtr data;
-    gchar      *line = NULL;
+    char       *line = NULL;
     size_t      line_length = 0;
-    gchar      *data_line;
-    gchar      *path;
-    gchar      *file = NULL;
+    char       *data_line;
+    char       *path;
+    char       *file = NULL;
     char        wd[255];
     char       *data_location = NULL;
 
