@@ -51,4 +51,6 @@ typedef struct AocSList {
     void            *data;
 } AocSList;
 
+#undef MAX
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
