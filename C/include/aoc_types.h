@@ -2,6 +2,7 @@
 #define _AOC_TYPES_H_
 
 #include <stddef.h>
+#include <stdint.h>
 
 typedef enum AocArrayType {
     AOC_ARRAY_CHAR,
@@ -19,15 +20,17 @@ typedef enum AocArrayType {
 
 typedef struct AocArray {
     AocArrayType type;
-    size_t length;
+    size_t       length;
+    uint8_t      free_segments;
 } AocArray;
 
-typedef AocArray* AocArrayPtr;
+typedef AocArray *AocArrayPtr;
 
 typedef struct {
-    char *filename;
-    int year;
-    int day;
+    char       *filename;
+    int         year;
+    int         day;
+    int         free_segments;
     AocArrayPtr data;
 } AocData_t;
 
@@ -39,13 +42,15 @@ typedef struct point {
 typedef struct line {
     Point p0;
     Point p1;
-    int stepx;
-    int stepy;
+    int   stepx;
+    int   stepy;
 } Line;
 
 typedef struct AocSList {
     struct AocSList *next;
-    void *data;
+    void            *data;
 } AocSList;
 
+#undef MAX
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif

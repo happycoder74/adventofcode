@@ -1,2 +1,2 @@
 CompileFlags:
-  CompilationDatabase: [ "C:/Local/msys64/home/yy11510/projects/adventofcode/C/build"]
+  CompilationDatabase: "C:/Local/msys64/home/yy11510/projects/adventofcode/C/build"
