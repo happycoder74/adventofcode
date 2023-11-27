@@ -107,7 +107,7 @@
 
 // Point array function macros
 #define aoc_ptr_array_new()                      (aoc_array_new(AOC_ARRAY_PTR, 0))
-#define aoc_ptr_array_index(arr_, index_)        (aoc_array_index(arr_, index_))
+#define aoc_ptr_array_index(arr_, index_)        ((void *)*(uint64_t *)aoc_array_index(arr_, index_))
 #define aoc_ptr_array_append(arr_, value_)       (aoc_array_append(arr_, &(value_)));
 #define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, &(value_)));
 #define aoc_ptr_array_free(arr_)                 (aoc_array_free(arr_, false))
