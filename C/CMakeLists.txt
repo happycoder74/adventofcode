@@ -6,21 +6,22 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-set(CMAKE_C_FLAGS_RELWITHDBGINFO
-    "${CMAKE_C_FLAGS_RELWITHDBGINFO} -DNDEBUG"
-    )
+set(CMAKE_C_FLAGS_RELWITHDBGINFO "${CMAKE_C_FLAGS_RELWITHDBGINFO} -DNDEBUG")
 
 set(CMAKE_C_FLAGS_DEBUGVERBOSE
-    "${CMAKE_C_FLAGS_DEBUG} -DDEBUG_VERBOSE"
-    )
+    "${CMAKE_C_FLAGS_DEBUG} -ggdb -O0 -DDEBUG_VERBOSE")
 
-set(CMAKE_C_FLAGS_RELEASE
-    "${CMAKE_C_FLAGS_RELEASE} -mavx"
-    )
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -mavx")
 
 set(AOC_YEARS
-	2015 2016 2017 2018 2019 2020 2021 2022
-	)
+    2015
+    2016
+    2017
+    2018
+    2019
+    2020
+    2021
+    2022)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLIB REQUIRED glib-2.0)
 
@@ -29,11 +30,10 @@ include(AocGenerateDays)
 
 add_subdirectory(lib)
 
-foreach (Y ${AOC_YEARS})
-	message(${CMAKE_SOURCE_DIR}/${Y}/CMakeLists.txt)
-	if(EXISTS ${CMAKE_SOURCE_DIR}/${Y}/CMakeLists.txt)
-		message(Found ${Y})
-		add_subdirectory(${Y})
-	endif()
+foreach(year ${AOC_YEARS})
+  message(${CMAKE_SOURCE_DIR}/${year}/CMakeLists.txt)
+  if(EXISTS ${CMAKE_SOURCE_DIR}/${year}/CMakeLists.txt)
+    message(Found ${year})
+    add_subdirectory(${year})
+  endif()
 endforeach()
-
