@@ -16,7 +16,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 
 ## Year 2019
 + 2 &#11088; in [Python](python/README.md) 
-+ 8 &#11088; in [C](C/README.md)
++ 11 &#11088; in [C](C/README.md)
 + 2 &#11088; in [C++](C++/README.md)
 
 ## Year 2017
