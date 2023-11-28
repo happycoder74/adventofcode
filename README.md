@@ -2,6 +2,9 @@
 
 Solutions for [Advent of Code](https://adventofcode.com) in different languages. Currently [Python](https://www.python.org) as main platform. Using this for learning new languages and to recapture old knowledge in C.
 
+## Year 2023
+maybe Rust this year... Would be fun. 
+
 ## Year 2022
 + 36 &#11088; in [Python](python/README.md)
 + 4 &#11088; in [C](C/README.md)
