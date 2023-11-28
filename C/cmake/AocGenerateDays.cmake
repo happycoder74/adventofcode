@@ -12,7 +12,7 @@ function (AOC_GENERATE YEAR DAY)
     target_compile_options(
         aoc_${YEAR}_${DAY}
         PUBLIC
-        -Wall -Wextra -pedantic -Werror -Wno-error=unused -Wno-error=unused-parameter -Wno-error=unused-variable
+        -Wall -Wextra -pedantic -Wno-error=unused -Wno-error=unused-parameter -Wno-error=unused-variable
         )
     add_custom_target(run_${YEAR}_${DAY}
         COMMAND aoc_${YEAR}_${DAY}
