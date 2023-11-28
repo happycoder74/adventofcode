@@ -9,11 +9,16 @@ from typing import Any
 from common import timer
 
 
-
 class AocRunner(object):
-    def __init__(self, year: str|None = None, day: str|None = None,
-                 exclude: int|None = None, filename: str|None = None,
-                 data: list[Any]|None = None, test: bool = False):
+    def __init__(
+        self,
+        year: str | None = None,
+        day: str | None = None,
+        exclude: int | None = None,
+        filename: str | None = None,
+        data: list[Any] | None = None,
+        test: bool = False,
+    ):
         if year is not None:
             self.year = year
         else:
@@ -22,11 +27,12 @@ class AocRunner(object):
         if day:
             for d in day.split(","):
                 if "-" in d:
-                    self.days.extend(range(int(d.split("-")[0]),
-                                           int(d.split("-")[1]) + 1))
+                    self.days.extend(
+                        range(int(d.split("-")[0]), int(d.split("-")[1]) + 1)
+                    )
                 else:
                     self.days.append(int(d))
-        self.data: list[Any]|None = None
+        self.data: list[Any] | None = None
         if exclude is not None:
             self.exclude_day = [int(exclude)]
         else:
@@ -77,9 +83,7 @@ class AocRunner(object):
                 if os.path.exists(source_file):
                     try:
                         sys.path.append(source_path)
-                        puzzle = importlib.import_module(
-                            f"y{year}.d{day:02d}.{module}"
-                        )
+                        puzzle = importlib.import_module(f"y{year}.d{day:02d}.{module}")
                         try:
                             class_in_module = getattr(puzzle, f"Day{day:02d}")
                             class_list.append((year, class_in_module))
@@ -110,10 +114,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     data = args.data.split(",") if args.data else None
 
-    runner = AocRunner(year=args.year,
-                       day=args.day,
-                       exclude=args.exclude_day,
-                       filename=args.filename,
-                       data=data,
-                       test=args.test)
+    runner = AocRunner(
+        year=args.year,
+        day=args.day,
+        exclude=args.exclude_day,
+        filename=args.filename,
+        data=data,
+        test=args.test,
+    )
     runner.run()
