@@ -28,7 +28,9 @@ class AocRunner(object):
         if day:
             for d in day.split(","):
                 if "-" in d:
-                    self.days.extend(range(int(d.split("-")[0]), int(d.split("-")[1]) + 1))
+                    self.days.extend(
+                        range(int(d.split("-")[0]), int(d.split("-")[1]) + 1)
+                    )
                 else:
                     self.days.append(int(d))
         self.data: list[Any] | None = None
