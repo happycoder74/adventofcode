@@ -1,11 +1,8 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-
 #include <algorithm>
-#include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 
 namespace aoc_2017_01 {
 
@@ -28,7 +25,7 @@ int solve_part_1(std::string line) {
 }
 
 int solve_part_2(std::string line) {
-    return solution(line, line.length() / 2);
+    return solution(line, static_cast<int>(line.length()) / 2);
 }
 
 int solve_all(std::string line) {
@@ -41,17 +38,19 @@ int solve_all(std::string line) {
 
 int main(int argc, char **argv) {
     std::string filename;
-    std::string data;
 
-    if (argc > 1)
+    std::vector<std::string> data;
+
+    if (argc > 1) {
         filename = argv[1];
-    else
-        filename = "../../data/2017/01/input.txt";
+    } else {
+        filename = "input.txt";
+    }
 
-    data = aoc::get_input_bare(filename);
+    data = aoc::io::get_input_list<std::string>(filename, 2017, 1);
 
     std::cout << "Presenting solution:\n";
-    aoc::timer(0, aoc_2017_01::solve_all, data, false);
+    aoc::timer(0, aoc_2017_01::solve_all, data[0], false);
 
     return 0;
 }
