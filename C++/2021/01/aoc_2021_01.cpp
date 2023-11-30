@@ -1,8 +1,6 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 
-#include <algorithm>
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -40,16 +38,24 @@ int solve_all(std::vector<int> data) {
 } // namespace aoc_2021_01
 
 int main(int argc, char **argv) {
-    std::string      filename;
+    std::string filename;
+    const int   year = 2021;
+    const int   day = 1;
+
+    if (argc > 1) {
+        if (std::string(argv[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = argv[1];
+        }
+    } else {
+        filename = "input.txt";
+    }
+
     std::vector<int> data;
-    const int        year = 2021;
-    const int        day = 1;
+    data = aoc::io::get_input_list<int>(filename, year, day);
 
-    filename = argc > 1 ? argv[1] : "input.txt";
-
-    data = aoc::get_input_list<int>(filename, year, day);
-
-    std::cout << "Presenting solution:\n";
+    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
     aoc::timer(0, aoc_2021_01::solve_all, data, false);
 
     return 0;
