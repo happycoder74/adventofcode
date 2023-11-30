@@ -1,30 +1,23 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-
-#include <chrono>
-#include <cstring>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <map>
 #include <numeric>
 #include <ranges>
 #include <string>
 #include <vector>
 
-typedef std::chrono::high_resolution_clock Clock;
-
 static int fuel_cost(int fuel) {
     fuel = (fuel / 3) - 2;
-    if (fuel < 0)
+    if (fuel < 0) {
         return 0;
+    }
     return fuel + fuel_cost(fuel);
 }
 
 std::vector<int> clean_input(std::vector<std::string> instructions) {
     std::vector<int> return_instructions;
-    for (auto &row : instructions)
+    for (auto &row : instructions) {
         return_instructions.push_back(std::stoi(row));
+    }
 
     return return_instructions;
 }
@@ -54,19 +47,25 @@ std::string solve_all(std::vector<std::string> instructions) {
 }
 
 int main(int argc, char **argv) {
-    std::string              filename;
+    std::string filename;
+    const int   year = 2019;
+    const int   day = 1;
+
     std::vector<std::string> instructions;
 
     if (argc > 1) {
-        if (!std::strcmp(argv[1], "--test"))
+        if (std::string(argv[1]) == "--test") {
             filename = "test_input.txt";
-        else
+        } else {
             filename = argv[1];
+        }
     } else {
         filename = "input.txt";
     }
 
-    instructions = aoc::get_input_list<std::string>(filename, 2019, 1);
+    instructions = aoc::io::get_input_list<std::string>(filename, year, day);
+
+    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
     aoc::timer<std::string>(0, solve_all, instructions, false);
 
     return 0;

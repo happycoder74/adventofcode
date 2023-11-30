@@ -1,9 +1,5 @@
 #include "aoc_io.hpp"
-
-#include <chrono>
-#include <filesystem>
-#include <fstream>
-#include <iomanip>
+#include "aoc_timer.hpp"
 #include <iostream>
 #include <map>
 #include <ranges>
@@ -12,7 +8,7 @@
 
 typedef std::pair<int, int> Point;
 
-typedef std::chrono::high_resolution_clock Clock;
+typedef std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> Container;
 
 static std::vector<std::pair<Point, Point>> find_intersections(std::map<Point, Point> m1, std::map<Point, Point> m2) {
     std::vector<Point> return_vector;
@@ -25,19 +21,9 @@ static int manhattan_distance(const Point p0, const Point p1) {
     return std::abs((p0.first - p1.first)) + abs((p0.second - p1.second));
 }
 
-int main(int argc, char **argv) {
-    std::string                         filename;
-    std::vector<std::string>            instructions;
-    std::string                         line;
+static Container transform_input(std::vector<std::string> instructions) {
     std::vector<std::map<Point, int>>   wire_stepmap;
     std::vector<std::map<Point, Point>> wire_coords;
-
-    auto t1 = Clock::now();
-
-    filename = argc > 1 ? argv[1] : "input.txt";
-
-    instructions = aoc::get_input_list<std::string>(filename, 2019, 3);
-
     for (std::string &l : instructions) {
         int                      steps = 0;
         std::pair<int, int>      position = {0, 0};
@@ -78,23 +64,53 @@ int main(int argc, char **argv) {
         wire_stepmap.push_back(ws_map);
     }
 
-    std::vector<std::pair<Point, Point>> intersection_points;
+    std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> data;
+    data.first = find_intersections(wire_coords.front(), wire_coords.back());
+    data.second = wire_stepmap;
 
-    intersection_points = find_intersections(wire_coords.front(), wire_coords.back());
+    return data;
+}
 
+int solve_part_1(Container data) {
+    int dist = std::ranges::min(data.first | std::views::transform([](const auto &p) -> int { return manhattan_distance(p.first, {0, 0}); }));
+
+    return dist;
+}
+
+int solve_part_2(Container data) {
     int signal = INT_MAX;
-
-    auto dist = std::ranges::min(intersection_points | std::views::transform([](const auto &p) -> int { return manhattan_distance(p.first, {0, 0}); }));
-
-    for (auto p : intersection_points) {
-        signal = std::min(signal, wire_stepmap.front()[p.first] + wire_stepmap.back()[p.first]);
+    for (auto p : data.first) {
+        signal = std::min(signal, data.second.front()[p.first] + data.second.back()[p.first]);
     }
 
-    auto t2 = Clock::now();
+    return signal;
+}
 
-    std::chrono::duration<double> diff = t2 - t1;
-    std::cout << "Part 1: " << std::setw(15) << dist << std::endl;
-    std::cout << "Part 2: " << std::setw(15) << signal << std::endl;
-    std::cout << "Total time:" << std::setw(12) << std::setprecision(4) << diff.count() << " s" << std::endl;
+int solve_all(Container data) {
+    aoc::timer<int, Container>(1, solve_part_1, data, true);
+    aoc::timer<int, Container>(2, solve_part_2, data, true);
+
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    std::string filename;
+    std::string line;
+    const int   year = 2019;
+    const int   day = 3;
+
+    std::vector<std::string> instructions;
+
+    auto t1 = Clock::now();
+
+    filename = argc > 1 ? argv[1] : "input.txt";
+
+    instructions = aoc::io::get_input_list<std::string>(filename, 2019, 3);
+
+    Container data = transform_input(instructions);
+
+    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
+    aoc::timer<int, Container>(0, solve_all, data, false);
+
     return 0;
 }
