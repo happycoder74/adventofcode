@@ -3,9 +3,10 @@
 #include <string>
 #include <vector>
 
-namespace aoc {
+namespace aoc::io {
 
 std::string get_input_bare(std::string fn) {
+
     std::ifstream ifs(fn);
     std::string   line;
 
@@ -14,7 +15,22 @@ std::string get_input_bare(std::string fn) {
     return line;
 }
 
-namespace string {
+std::vector<std::string> get_input(std::string filename) {
+    std::vector<std::string> return_vector;
+    std::ifstream            ifs(filename);
+    std::string              line;
+
+    while (std::getline(ifs, line)) {
+        return_vector.push_back(line);
+    }
+
+    return return_vector;
+}
+
+} // namespace aoc::io
+
+namespace aoc::string {
+
 std::vector<std::string> split(const std::string &str, char delimiter) {
     std::vector<std::string> tokens;
     std::string              token;
@@ -26,6 +42,4 @@ std::vector<std::string> split(const std::string &str, char delimiter) {
     return tokens;
 }
 
-} // namespace string
-
-} // namespace aoc
+} // namespace aoc::string

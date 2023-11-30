@@ -3,7 +3,6 @@
 
 #include <chrono>
 #include <iostream>
-#include <ratio>
 #include <string>
 #include <vector>
 
@@ -26,6 +25,34 @@ template <typename T> void timer(int part, T (*func)(std::string), std::string d
 }
 
 template <typename T> void timer(int part, T (*func)(std::vector<T>), std::vector<T> data, bool show_res) {
+    auto                          t1 = Clock::now();
+    T                             result = func(data);
+    auto                          t2 = Clock::now();
+    std::chrono::duration<double> diff = (t2 - t1);
+    double                        elapsed = diff.count();
+    double                        elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
+    if (show_res) {
+        std::cout << std::format("Part {} answer: {}\r\033[35C( {:6.3f} {} )\n", part, result, elapsed_unit, elapsed > 0.1 ? "s" : "ms");
+    } else {
+        std::cout << std::format("Time elapsed:\r\033[35C( {:6.3f} {} )\n", elapsed_unit, elapsed > 0.1 ? "s" : "ms");
+    }
+}
+
+template <typename T, typename U> void timer(int part, T (*func)(std::vector<U>), std::vector<U> data, bool show_res) {
+    auto                          t1 = Clock::now();
+    T                             result = func(data);
+    auto                          t2 = Clock::now();
+    std::chrono::duration<double> diff = (t2 - t1);
+    double                        elapsed = diff.count();
+    double                        elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
+    if (show_res) {
+        std::cout << std::format("Part {} answer: {}\r\033[35C( {:6.3f} {} )\n", part, result, elapsed_unit, elapsed > 0.1 ? "s" : "ms");
+    } else {
+        std::cout << std::format("Time elapsed:\r\033[35C( {:6.3f} {} )\n", elapsed_unit, elapsed > 0.1 ? "s" : "ms");
+    }
+}
+
+template <typename T, typename U> void timer(int part, T (*func)(U), U data, bool show_res) {
     auto                          t1 = Clock::now();
     T                             result = func(data);
     auto                          t2 = Clock::now();
