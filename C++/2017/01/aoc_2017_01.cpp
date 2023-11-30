@@ -38,6 +38,8 @@ int solve_all(std::string line) {
 
 int main(int argc, char **argv) {
     std::string filename;
+    const int   year = 2017;
+    const int   day = 1;
 
     std::vector<std::string> data;
 
@@ -47,9 +49,9 @@ int main(int argc, char **argv) {
         filename = "input.txt";
     }
 
-    data = aoc::io::get_input_list<std::string>(filename, 2017, 1);
+    data = aoc::io::get_input_list<std::string>(filename, year, day);
 
-    std::cout << "Presenting solution:\n";
+    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
     aoc::timer(0, aoc_2017_01::solve_all, data[0], false);
 
     return 0;
