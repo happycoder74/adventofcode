@@ -51,6 +51,7 @@ void aoc_data_free(AocData_t *data) {
     if (data->data) {
         aoc_array_free(data->data, data->data->free_segments);
     }
+    free(data);
 }
 
 int max(int *arr, int length) {
@@ -149,7 +150,7 @@ int point_manhattan_distance(Point p0, Point p1) {
 }
 
 int point_distance(Point p0, Point p1) {
-    return sqrt((p0.x - p1.x) * (p0.x - p1.x) + (p0.y - p1.y) * (p0.y - p1.y));
+    return (int)sqrt((p0.x - p1.x) * (p0.x - p1.x) + (p0.y - p1.y) * (p0.y - p1.y));
 }
 
 void point_print(Point p) {
@@ -272,8 +273,9 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     int   x1, x2, x3, x4;
     int   y1, y2, y3, y4;
 
-    if (is_parallel(line1, line2))
+    if (is_parallel(line1, line2)) {
         return NULL;
+    }
 
     x1 = line1.p0.x;
     y1 = line1.p0.y;
@@ -305,11 +307,6 @@ void line_array_print(AocArrayPtr lines) {
 }
 
 bool point_on_line(Point p, Line line) {
-    // int d1 = sqrt(pow(p.x - line.p0.x, 2) + pow(p.y - line.p0.y, 2));
-    // int d2 = sqrt(pow(p.x - line.p1.x, 2) + pow(p.y - line.p0.y, 2));
-    // int d = sqrt(pow(line.p1.x - line.p0.x, 2) + pow(line.p1.y - line.p0.y, 2));
-    // printf("Distance diff: %d\n", d1+d2 - d);
-    // return d == d1 + d2;
     if (is_vertical(line)) {
         return ((MIN(line.p0.y, line.p1.y) <= p.y) && (p.y <= MAX(line.p0.y, line.p1.y)) && (line.p0.x == p.x));
     } else if (is_horisontal(line)) {

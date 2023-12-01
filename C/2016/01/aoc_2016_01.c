@@ -7,7 +7,7 @@
 #include <string.h>
 
 static void free_key(void *key) {
-    aoc_free(key);
+    free(key);
 }
 
 int solution(AocArrayPtr data, int part_two) {
@@ -53,7 +53,6 @@ int solution(AocArrayPtr data, int part_two) {
     split_string = aoc_str_split(aoc_str_array_index(data, 0), ", ", 0);
     int index = 0;
     int s = 0;
-    step = (step_t *)malloc(sizeof(step_t));
     for (i = 0; split_string[i] != NULL; i++) {
         sscanf(split_string[i], "%c%d", &step->direction, &step->steps);
         index = index + (step->direction == 'R' ? 1 : -1);

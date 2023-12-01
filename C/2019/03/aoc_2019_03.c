@@ -1,3 +1,4 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
@@ -47,6 +48,9 @@ AocArrayPtr clean_input(AocArrayPtr data) {
                     p1.x = p0.x + length;
                     p1.y = p0.y;
                     break;
+                default:
+                    fprintf(stderr, "Error in direction input\n");
+                    exit(EXIT_FAILURE);
             }
             segment.p0 = p0;
             segment.p1 = p1;
@@ -197,5 +201,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

@@ -1,4 +1,3 @@
-#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_list.h"
 #include "aoc_string.h"
@@ -27,7 +26,7 @@ int download_input(int year, int day) {
     fp = fopen(path, "r");
     if (!fp) {
         fprintf(stderr, "Could not open cookie-file\n");
-        aoc_free(path);
+        free(path);
         return EXIT_FAILURE;
     }
 
@@ -53,9 +52,9 @@ int download_input(int year, int day) {
 
         res = curl_easy_perform(curl);
 
-        aoc_free(cookie);
-        aoc_free(input_url);
-        aoc_free(output_filename);
+        free(cookie);
+        free(input_url);
+        free(output_filename);
         fclose(output_file);
 
         if (res != CURLE_OK) {
@@ -101,8 +100,8 @@ AocSList *get_input_list(char *filename, int year, int day) {
         data = aoc_slist_prepend(data, data_line);
     }
 
-    aoc_free(file);
-    aoc_free(path);
+    free(file);
+    free(path);
 
     return aoc_slist_reverse(data);
 }
@@ -142,7 +141,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     if (file) {
-        aoc_free(file);
+        free(file);
     }
 
     return data;
@@ -202,10 +201,10 @@ AocArrayPtr get_input(char *filename, int year, int day) {
 #endif
     fclose(fp);
     if (file != filename) {
-        aoc_free(file);
+        free(file);
     }
 
-    aoc_free(path);
+    free(path);
 
     return data;
 }
@@ -220,7 +219,10 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
 
     if (*buf == NULL || *bufsiz == 0) {
         *bufsiz = BUFSIZ;
-        return -1;
+        *buf = realloc(*buf, *bufsiz);
+        if ((*buf) == NULL) {
+            return -1;
+        }
     }
 
     for (ptr = *buf, eptr = *buf + *bufsiz;;) {
