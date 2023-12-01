@@ -1,33 +1,33 @@
+#include "aoc_io.hpp"
 #include <cstdint>
-#include <fstream>
+#include <fmt/core.h>
 #include <iostream>
 #include <string>
-#include <fmt/core.h>
-
-std::string get_line_data(const char *filename, uint16_t year, uint8_t day) {
-    std::string line_data;
-    std::string inputfile;
-    std::ifstream ifs;
-    inputfile = fmt::format("/home/yy11510/projects/adventofcode/data/{}/{:02d}/{}",
-            year, day, filename);
-    std::cout << "Reading from '" << inputfile << "'" << "\n";
-    ifs = std::ifstream(inputfile);
-    std::getline(ifs, line_data);
-    return line_data;
-}
-
 
 int main(int argc, char **argv) {
-    int16_t level = 0;
-    uint16_t counter = 0;
-    bool basement_found = false;
+    std::int16_t  level = 0;
+    std::uint16_t counter = 0;
+    std::string   filename;
 
+    bool      basement_found = false;
+    const int year = 2015;
+    const int day = 1;
 
-    std::string line = get_line_data("input.txt", 2015, 1);
+    if (argc > 1) {
+        if (std::string(argv[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = argv[1];
+        }
+    } else {
+        filename = "input.txt";
+    }
 
-    for (auto ch: line) {
+    std::vector<std::string> line = aoc::io::get_input_list<std::string>(filename, year, day);
+
+    for (auto ch : line[0]) {
         ch == '(' ? level++ : level--;
-        if(!basement_found) {
+        if (!basement_found) {
             counter++;
             if (level == -1) {
                 basement_found = true;
@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
         }
     }
 
+    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
     std::cout << level << std::endl;
     std::cout << counter << std::endl;
     return 0;
 }
-

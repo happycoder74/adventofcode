@@ -3,6 +3,8 @@ CMakeCache.txt
 CMakeFiles
 .ninja*
 build.ninja
-Makefile
 build
+release
+memdebug
+debug
 .cache
