@@ -1,15 +1,13 @@
+#include "aoc_io.hpp"
 #include <algorithm>
-#include <cstdint>
-#include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <set>
-#include <stdlib.h>
 #include <string>
 #include <vector>
 
 namespace aoc_2022_03 {
+
 static int prio(char p) {
     if (std::isupper(p)) {
         return p - 'A' + 27;
@@ -30,7 +28,9 @@ std::vector<std::pair<std::string, std::string>> clean_input(std::vector<std::st
 
 std::vector<std::string> parse(std::string path) {
     std::vector<std::string> data;
-    std::fstream             file(path);
+
+    std::fstream file(path);
+
     if (!file.is_open()) {
         std::cerr << "Failed to open " << std::quoted(path) << "\n";
     }
@@ -58,10 +58,23 @@ int solve_part_1(std::vector<std::pair<std::string, std::string>> data) {
 }
 } // namespace aoc_2022_03
 
-int main(void) {
+int main(int argc, char **argv) {
+    std::string filename;
+    const int   year = 2022;
+    const int   day = 3;
 
-    std::vector<std::string> data;
-    data = aoc_2022_03::parse("c:/home/yy11510/projects/adventofcode/data/2022/03/input.txt");
+    if (argc > 1) {
+        if (std::string(argv[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = argv[1];
+        }
+    } else {
+        filename = "input.txt";
+    }
+
+    std::vector<std::string> data = aoc::io::get_input_list<std::string>(filename, year, day);
+
     auto parsed_data = aoc_2022_03::clean_input(data);
 
     std::cout << "Part 1 Answer: " << aoc_2022_03::solve_part_1(parsed_data) << std::endl;
