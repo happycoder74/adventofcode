@@ -1,6 +1,9 @@
 # Advent of Code
 
-Solutions for [Advent of Code](https://adventofcode.com) in different languages. Currently [Python](https://www.python.org) as main platform. Using this for learning new languages and to recapture old knowledge in C.
+Solutions for [Advent of Code](https://adventofcode.com) in different languages.
+
+## Year 2023
++ 2 &#11088; in [C](C/README.md)
 
 ## Year 2022
 + 36 &#11088; in [Python](python/README.md)
@@ -15,7 +18,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 + 14 &#11088; in [Python](python/README.md)
 
 ## Year 2019
-+ 2 &#11088; in [Python](python/README.md) 
++ 2 &#11088; in [Python](python/README.md)
 + 8 &#11088; in [C](C/README.md)
 + 2 &#11088; in [C++](C++/README.md)
 
@@ -32,16 +35,15 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 
 
 ### Why taking on the Advent of Code
-An excellent way to learn new programming languages and to train and practice on old skills. My goal is to implement solutions as far as possible for a number of different programming languages. Some may never happen, but maybe I get the chance to learn something new. Most curious on Rust, Kotlin and Haskell. 
+An excellent way to learn new programming languages and to train and practice on old skills. My goal is to implement solutions as far as possible for a number of different programming languages. Some may never happen, but maybe I get the chance to learn something new. Most curious on Rust, Kotlin and Haskell.
 
 
 ### Upcoming languages to try out which I have not started yet:
 + [Rust](https://www.rust-lang.org/)
 + Elixir
 + Haskell
++ Clojure
 + Go
-+ JavaScript
-+ TypeScript
 + Java
 + Kotlin
 + Julia
