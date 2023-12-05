@@ -3,18 +3,15 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
+struct {
     unsigned red;
     unsigned green;
     unsigned blue;
-} Cubes_t;
-
-Cubes_t Bag = {12, 13, 14};
+} Bag = {12, 13, 14};
 
 unsigned max_color(const char *str, const char *color) {
     unsigned max_color = 0;
@@ -54,6 +51,12 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     uint32_t sum = 0;
+
+    AocArrayPtr input = aoc_data_get(data);
+    for (unsigned i = 0; i < input->length; i++) {
+        char *str = aoc_str_array_index(input, i);
+        sum += max_color(str, "red") * max_color(str, "green") * max_color(str, "blue");
+    }
 
     return strdup_printf("%d", sum);
 }
