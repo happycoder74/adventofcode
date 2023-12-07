@@ -13,15 +13,7 @@ class Day04(Puzzle, year=2023, day=4):
             [
                 v
                 for v in [
-                    2
-                    ** (
-                        len(
-                            set(card[1].split()).intersection(
-                                set(card[0].split())
-                            )
-                        )
-                        - 1
-                    )
+                    2 ** (len(set(card[1].split()).intersection(set(card[0].split()))) - 1)
                     for card in [d[9:].split("|") for d in self.data]
                 ]
                 if v >= 1
