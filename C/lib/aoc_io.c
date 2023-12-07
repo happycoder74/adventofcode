@@ -6,6 +6,7 @@
 #include <curl/easy.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int download_input(int year, int day) {
     FILE *fp = NULL;
