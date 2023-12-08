@@ -21,7 +21,7 @@ unsigned max_color(const char *str, const char *color) {
     while (ptr != NULL) {
         unsigned n_color = 0;
         ptr2 = strchr(ptr - 4, ' ') + 1;
-        sscanf(ptr2, "%d", &n_color);
+        sscanf(ptr2, "%u", &n_color);
         if (n_color > max_color) {
             max_color = n_color;
         }
