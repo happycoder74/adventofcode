@@ -1,5 +1,4 @@
 #include "aoc_array.h"
-#include "aoc_alloc.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
 #include <inttypes.h>
@@ -149,7 +148,7 @@ static char* aoc_type_string(AocArrayType type) {
 }
 
 AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
-    AocGenArray *array = (AocGenArray *)aoc_malloc(sizeof(AocGenArray));
+    AocGenArray *array = (AocGenArray *)malloc(sizeof(AocGenArray));
     array->free_segments = 0;
 
     switch (array_type) {
@@ -190,7 +189,7 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
             return NULL;
             break;
     }
-    array->data = (uint8_t *)aoc_malloc(array->element_size * MAX(size, 1));
+    array->data = (uint8_t *)malloc(array->element_size * MAX(size, 1));
     array->type = array_type;
     array->length = 0;
     array->capacity = size;
@@ -223,13 +222,17 @@ void *aoc_str_array_prepend(AocArrayPtr array, char *value) {
 
 static void *aoc_array_expand(AocArray *array) {
     AocGenArray *arr = (AocGenArray *)array;
+    uint8_t     *new_data = NULL;
 
     size_t new_capacity = 1;
     if (arr->capacity != 0) {
         new_capacity = arr->capacity << 1;
     }
 
-    arr->data = (uint8_t *)aoc_realloc(arr->data, arr->element_size * (new_capacity));
+    new_data = (uint8_t *)realloc(arr->data, arr->element_size * (new_capacity));
+    if (new_data) {
+        arr->data = new_data;
+    }
     arr->capacity = new_capacity;
 
     return array;
@@ -237,9 +240,13 @@ static void *aoc_array_expand(AocArray *array) {
 
 static void *aoc_array_shrink(AocArray *array) {
     AocGenArray *arr = (AocGenArray *)array;
+    uint8_t     *new_data = NULL;
 
     if (arr->length < (arr->capacity >> 1)) {
-        arr->data = (uint8_t *)aoc_realloc(arr->data, arr->element_size * (MAX(arr->capacity, 1)));
+        new_data = (uint8_t *)realloc(arr->data, arr->element_size * (MAX(arr->capacity, 1)));
+        if (new_data) {
+            arr->data = new_data;
+        }
         arr->capacity >>= 1;
     }
 
@@ -306,11 +313,11 @@ void aoc_array_free(AocArray *array, int free_segments) {
     if (free_segments) {
         for (size_t index = 0; index < aoc_array_length(array); index++) {
             void *segment = (void *)*(char **)(arr->data + index * arr->element_size);
-            aoc_free(segment);
+            free(segment);
         }
     }
-    aoc_free(arr->data);
-    aoc_free(array);
+    free(arr->data);
+    free(array);
 }
 
 void aoc_array_print(AocArray *array) {
@@ -370,7 +377,7 @@ AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index) {
 
     if ((arr->type == AOC_ARRAY_STR) || (arr->type == AOC_ARRAY_PTR)) {
         void *ptr = aoc_ptr_array_index(array, index);
-        aoc_free(ptr);
+        free(ptr);
     }
 
     if (index != aoc_array_length(arr) - 1) {
