@@ -32,6 +32,7 @@ typedef struct {
     int         day;
     int         free_segments;
     AocArrayPtr data;
+    void       *user_data;
 } AocData_t;
 
 typedef struct point {

@@ -28,6 +28,7 @@ AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArray *(*cle
     data->day = day;
     data->data = NULL;
     data->free_segments = 1;
+    data->user_data = NULL;
 
     AocArrayPtr input_data = get_input(filename, year, day);
     if (!input_data) {
@@ -51,6 +52,10 @@ void aoc_data_free(AocData_t *data) {
     if (data->data) {
         aoc_array_free(data->data, data->data->free_segments);
     }
+    if (data->user_data) {
+        free(data->user_data);
+    }
+
     free(data);
 }
 
