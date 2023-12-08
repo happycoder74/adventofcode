@@ -223,13 +223,17 @@ void *aoc_str_array_prepend(AocArrayPtr array, char *value) {
 
 static void *aoc_array_expand(AocArray *array) {
     AocGenArray *arr = (AocGenArray *)array;
+    uint8_t     *new_data = NULL;
 
     size_t new_capacity = 1;
     if (arr->capacity != 0) {
         new_capacity = arr->capacity << 1;
     }
 
-    arr->data = (uint8_t *)aoc_realloc(arr->data, arr->element_size * (new_capacity));
+    new_data = (uint8_t *)aoc_realloc(arr->data, arr->element_size * (new_capacity));
+    if (new_data) {
+        arr->data = new_data;
+    }
     arr->capacity = new_capacity;
 
     return array;
@@ -237,9 +241,13 @@ static void *aoc_array_expand(AocArray *array) {
 
 static void *aoc_array_shrink(AocArray *array) {
     AocGenArray *arr = (AocGenArray *)array;
+    uint8_t     *new_data = NULL;
 
     if (arr->length < (arr->capacity >> 1)) {
-        arr->data = (uint8_t *)aoc_realloc(arr->data, arr->element_size * (MAX(arr->capacity, 1)));
+        new_data = (uint8_t *)aoc_realloc(arr->data, arr->element_size * (MAX(arr->capacity, 1)));
+        if (new_data) {
+            arr->data = new_data;
+        }
         arr->capacity >>= 1;
     }
 
