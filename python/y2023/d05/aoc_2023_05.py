@@ -1,4 +1,3 @@
-from multiprocessing import Pool
 from common import timer, Puzzle
 
 
@@ -167,21 +166,12 @@ class Day05(Puzzle, year=2023, day=5):
         seeds = self.data["seeds"]
         seed_map = [(seeds[i], (seeds[i], seeds[i + 1])) for i in range(0, len(seeds), 2)]
         seed_range = self.filtered_range(seed_map, fr)
-        locs = []
-        seed_list = []
-        for r in seed_range:
-            seed_list += list(range(r[0], r[1]))
+        seed_list = [r[0] for r in seed_range]
 
-        # length = len(seed_list)
-        # for i, seed in enumerate(seed_list):
-        #     locs.extend(self.find_locations([seed]))
-        #     if i % int(length / 20) == 0:
-        #         print(f"{int(i/length*100):2d} %")
         def to_list(v):
             return [v]
 
-        with Pool() as p:
-            locs = p.map(self.find_locations, map(to_list, seed_list))
+        locs = map(self.find_locations, map(to_list, seed_list))
 
         min_location = min(locs)
         return min_location[0]
