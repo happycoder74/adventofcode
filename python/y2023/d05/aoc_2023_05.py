@@ -115,17 +115,16 @@ class Day05(Puzzle, year=2023, day=5):
                 end = min(t[1][0] + t[1][1], r[1])
                 if (start < end) and ((start, end) not in mapped_range):
                     mapped_range.append((start, end))
+
         output_range = []
 
         for hh, rr in zip(mapped_range, filtered_map):
             output_range.append((rr[0] + hh[0] - rr[1][0], rr[0] + hh[1] - rr[1][0]))
 
-        # TODO :
-        # This is not working correctly. Should only be gaps in relation to input range.
-        # gaps = list()
-        # for z in zip(mapped_range[:-1], mapped_range[1:]):
-        #     if z[0][1] != z[1][0]:
-        #         gaps.append((z[0][1], z[1][0]))
+        gaps = list()
+        for z in zip(mapped_range[:-1], mapped_range[1:]):
+            if z[0][1] != z[1][0]:
+                gaps.append((z[0][1], z[1][0]))
 
         return output_range
 
@@ -149,6 +148,69 @@ class Day05(Puzzle, year=2023, day=5):
         locs = [self.get_mapped(humid, self.data["humidity-to-location"]) for humid in humids]
         return locs
 
+    @staticmethod
+    def lookup(point: int, lookup_range: dict) -> int | None:
+        for k, v in lookup_range.items():
+            if k[0] <= point < k[1]:
+                return v[0] + point - k[0]
+        return point
+
+    @staticmethod
+    def transform_source_range(source_range, destination_range):
+        source = []
+        dl = list()
+        for s, t in destination_range:
+            dl.append(s)
+            dl.append(t)
+
+        for s in source_range:
+            arr = []
+            dest_list = sorted(list(set(dl)))
+            arr.append(s[0])
+            value = s[0]
+            if dest_list:
+                while dest_list[0] < s[0]:
+                    value = dest_list.pop(0)
+                    if not dest_list:
+                        break
+                if dest_list:
+                    value = dest_list.pop(0)
+                if s[0] < value < s[1]:
+                    arr.append(value)
+            if dest_list:
+                while dest_list[0] < s[1]:
+                    arr.append(dest_list.pop(0))
+                    if not dest_list:
+                        break
+            arr.append(s[1])
+            source += [(s, t) for s, t in zip(arr[:-1], arr[1:])]
+
+        return source
+
+    @staticmethod
+    def match_range(destination_map, source_range):
+        destination_range = dict()
+
+        dst_rg1 = {
+            (m[1][0], m[1][0] + m[1][1]): ((m[0], m[0] + m[1][1])) for m in destination_map.items()
+        }
+        sr = Day05.transform_source_range(source_range, dst_rg1)
+
+        for rng in sr:
+            if rng[0] > max(max(dst_rg1.keys())):
+                destination_range[rng] = rng
+            else:
+                for s_r, d_r in dst_rg1.items():
+                    if (s_r[0] <= rng[0]) and (rng[1] <= s_r[1]):
+                        destination_range[rng] = (
+                            rng[0] + d_r[0] - s_r[0],
+                            rng[1] + d_r[0] - s_r[0],
+                        )
+                    else:
+                        destination_range.setdefault(rng, rng)
+
+        return destination_range
+
     @timer(part=1)
     def solve_part_1(self):
         """Solution for part 1"""
@@ -158,30 +220,36 @@ class Day05(Puzzle, year=2023, day=5):
     @timer(part=2)
     def solve_part_2(self):
         """Solution for part 2"""
-        fr = self.min_location_range()
-        keys = list(self.data.keys())
-        for key in keys[-2:0:-1]:
-            fm = self.filter_maps(key, fr)
-            fr = self.filtered_range(fm, fr)
-
         seeds = self.data["seeds"]
         seed_map = [(seeds[i], (seeds[i], seeds[i + 1])) for i in range(0, len(seeds), 2)]
-        seed_range = self.filtered_range(seed_map, fr)
-        locs = []
-        seed_list = []
-        for r in seed_range:
-            seed_list += list(range(r[0], r[1]))
+        seed_range = [(seed[0], seed[0] + seed[1][1]) for seed in seed_map]
+        soils_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["seed-to-soil"].items()}, seed_range
+        )
+        fertilizer_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["soil-to-fertilizer"].items()},
+            soils_range.values(),
+        )
+        water_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["fertilizer-to-water"].items()},
+            fertilizer_range.values(),
+        )
+        light_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["water-to-light"].items()},
+            water_range.values(),
+        )
+        temperature_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["light-to-temperature"].items()},
+            light_range.values(),
+        )
+        humidity_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["temperature-to-humidity"].items()},
+            temperature_range.values(),
+        )
+        location_range = self.match_range(
+            {s[1][0]: (s[0], s[1][1]) for s in self.data["humidity-to-location"].items()},
+            humidity_range.values(),
+        )
 
-        # length = len(seed_list)
-        # for i, seed in enumerate(seed_list):
-        #     locs.extend(self.find_locations([seed]))
-        #     if i % int(length / 20) == 0:
-        #         print(f"{int(i/length*100):2d} %")
-        def to_list(v):
-            return [v]
-
-        with Pool() as p:
-            locs = p.map(self.find_locations, map(to_list, seed_list))
-
-        min_location = min(locs)
-        return min_location[0]
+        min_location = min(min(location_range.values()))
+        return min_location
