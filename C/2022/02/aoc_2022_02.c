@@ -1,17 +1,15 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include "aoc_utils.h"
-#include "aoc_string.h"
-
-GArray *clean_input(GArray *data) {
-    return data;
-}
 
 int get_requested(int row, int col) {
     if (row == 0)
-        switch(col) {
+        switch (col) {
             case 0:
                 return 2;
             case 1:
@@ -22,7 +20,7 @@ int get_requested(int row, int col) {
     if (row == 1)
         return col;
     if (row == 2)
-        switch(col) {
+        switch (col) {
             case 0:
                 return 1;
             case 1:
@@ -43,12 +41,12 @@ void *solve_part_1(AocData_t *data) {
     };
 
     size_t i;
-    char *draw;
+    char  *draw;
 
     int sum_points = 0;
 
-    for (i = 0; i < data->data->len; i++) {
-        draw = g_array_index(data->data, gchar *, i);
+    for (i = 0; i < aoc_data_length(data); i++) {
+        draw = aoc_str_array_index(aoc_data_get(data), i);
         row = draw[0] - 'A';
         col = draw[2] - 'X';
         sum_points += points[row][col] + shape_points[col];
@@ -58,15 +56,15 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    int shape_points[3] = {1, 2, 3};
-    int col, row;
+    int    shape_points[3] = {1, 2, 3};
+    int    col, row;
     size_t i;
-    int sum_points = 0;
-    int points[3] = {0, 3, 6};
-    char *draw;
+    int    sum_points = 0;
+    int    points[3] = {0, 3, 6};
+    char  *draw;
 
-    for (i = 0; i < data->data->len; i++) {
-        draw = g_array_index(data->data, char *, i);
+    for (i = 0; i < aoc_data_length(data); i++) {
+        draw = aoc_str_array_index(aoc_data_get(data), i);
         row = draw[0] - 'A';
         col = draw[2] - 'X';
         sum_points += points[col] + shape_points[get_requested(row, col)];
@@ -77,9 +75,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    data->data = clean_input(aoc_data_data(data));
-
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
@@ -89,23 +85,22 @@ void *solve_all(AocData_t *data) {
 
 int main(int argc, char **argv) {
     AocData_t *data;
-    char *filename;
 
-    int year, day;
-    char *sourcefile;
+    char sourcefile[20];
+    int  year, day;
 
-    sourcefile = basename(__FILE__);
+    strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
-    free(sourcefile);
 
     if (argc > 1) {
-        filename = strdup(argv[1]);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new("test_input.txt", year, day);
+        } else {
+            data = aoc_data_new(argv[1], year, day);
+        }
     } else {
-        filename = strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
-
-    data = aoc_data_new(filename, year, day);
-    free(filename);
 
     printf("================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
@@ -113,5 +108,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

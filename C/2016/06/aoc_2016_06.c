@@ -1,20 +1,23 @@
-#include <stdio.h>
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <glib.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include "aoc_utils.h"
 
-gint sort_function(gconstpointer a, gconstpointer b) {
+int sort_function(const void *a, const void *b) {
     int *int_a = (int *)a;
     int *int_b = (int *)b;
 
     return (*int_a) - (*int_b);
 }
 
-
-gint arr_index(gint *arr, gint value, gint length) {
+int arr_index(int *arr, int value, int length) {
     // Search for first occurance of value in array
-    gint i;
+    int i;
     for (i = 0; i < length; i++) {
         if (arr[i] == value) {
             return i;
@@ -25,129 +28,141 @@ gint arr_index(gint *arr, gint value, gint length) {
     return -1;
 }
 
-char **transpose_array(GArray *data, gint *columns) {
-    gchar **col_array;
-    gint i, col;
-    guint row;
-    char *line;
+char **transpose_array(AocArrayPtr data, int *columns) {
+    char       **col_array;
+    int          i, col;
+    unsigned int row;
+    char        *line;
 
-    (*columns) = strlen(g_array_index(data, char *, 0));
+    (*columns) = strlen(aoc_str_array_index(data, 0));
 
     // Initialize and allocate memory for columns
-    col_array = g_new0(gchar *, *columns);
+    col_array = (char **)calloc(*columns, sizeof(char *));
     for (i = 0; i < *columns; i++)
-        col_array[i] = g_new0(gchar, data->len + 1);
+        col_array[i] = (char *)calloc(aoc_array_length(data) + 1, sizeof(char));
 
     // "Transpose" the input array and make sure the char* arrays
     // are NULL terminated.
-    for (row = 0; row < data->len; row++) {
-        line = g_array_index(data, gchar *, row);
+    for (row = 0; row < aoc_array_length(data); row++) {
+        line = aoc_str_array_index(data, row);
         for (col = 0; col < *columns; col++) {
             col_array[col][row] = line[col];
-            if (row == data->len -1) {
+            if (row == aoc_array_length(data) - 1) {
                 col_array[col][row + 1] = '\0';
             }
         }
     }
 
     return col_array;
-
 }
 
-char* solve_part_1(GArray *data) {
-    guint i;
-    gint col;
-    gint columns;
-    gchar **col_array;
-    GString *message;
-    gint *count;
-    gint max_index;
+void *solve_part_1(AocData_t *data) {
+    unsigned int i;
+    int          col;
+    int          columns;
+    char       **col_array;
+    char         message[20];
+    int          count[26];
+    int          max_index;
 
     // Allocation of memory for base arrays
-    col_array = transpose_array(data, &columns);
-    message = g_string_new("");
+    col_array = transpose_array(aoc_data_get(data), &columns);
 
+    message[0] = '\0';
     // Count characters in each column by using offset to 'a' as index.
     // Add character at each max position to return string 'message'
     for (col = 0; col < columns; col++) {
-        count = g_new0(gint, 26);
-        for (i = 0; i < data->len; i++) {
+        for (size_t j = 0; j < 26; j++) {
+            count[j] = 0;
+        }
+        for (i = 0; i < aoc_data_length(data); i++) {
             count[col_array[col][i] - 'a']++;
         }
         max_index = arr_index(count, max(count, 26), 26);
-        message = g_string_append_c(message, (gchar)(max_index + 'a'));
-        g_free(count);
+        message[col] = (char)(max_index + 'a');
     }
-
-    /* Freeing up allocated memory */
-    for (col = 0; col < columns; col++) {
-        g_free(col_array[col]);
-    }
-    g_free(col_array);
-
-    return message->str;
-}
-
-char *solve_part_2(GArray *data) {
-    guint i;
-    gint col;
-    gint columns;
-    gchar **col_array;
-    gchar *message;
-    gint *count;
-    gint min_index;
-
-    // Allocation of memory for base arrays
-    col_array = transpose_array(data, &columns);
-    message = g_new0(gchar, columns + 1);
-
-    // Count characters in each column by using offset to 'a' as index.
-    // Add character at each min position to return string 'message'
-    for (col = 0; col < columns; col++) {
-        count = g_new0(gint, 26);
-        for (i = 0; i < data->len; i++) {
-            count[col_array[col][i] - 'a']++;
-        }
-        min_index = arr_index(count, min_non_zero(count, 26), 26);
-        message[col] = (gchar)(min_index + 'a');
-        g_free(count);
-    }
-
-    // Null terminate return string
     message[columns] = '\0';
 
     /* Freeing up allocated memory */
     for (col = 0; col < columns; col++) {
-        g_free(col_array[col]);
+        free(col_array[col]);
     }
-    g_free(col_array);
+    free(col_array);
 
-    return message;
+    return strdup(message);
 }
 
+void *solve_part_2(AocData_t *data) {
+    unsigned int i;
+    int          col;
+    int          columns;
+    char       **col_array;
+    char         message[20] = "";
+    int          count[26];
+    int          min_index;
 
-int solve_all(gchar *filename, int year, int day) {
-    GArray *data;
+    // Allocation of memory for base arrays
+    col_array = transpose_array(aoc_data_get(data), &columns);
 
-    data = get_input(filename, year, day);
-    if (data) {
-        TIMER_STR(1, solve_part_1(data), 1);
-        TIMER_STR(2, solve_part_2(data), 1);
-
-        g_array_free(data, TRUE);
+    // Count characters in each column by using offset to 'a' as index.
+    // Add character at each min position to return string 'message'
+    for (col = 0; col < columns; col++) {
+        for (size_t j = 0; j < 26; j++) {
+            count[j] = 0;
+        }
+        for (i = 0; i < aoc_data_length(data); i++) {
+            count[col_array[col][i] - 'a']++;
+        }
+        min_index = arr_index(count, min_non_zero(count, 26), 26);
+        message[col + 1] = '\0';
+        message[col] = (char)(min_index + 'a');
     }
-    return 0;
+
+    // Null terminate return string
+
+    /* Freeing up allocated memory */
+    for (col = 0; col < columns; col++) {
+        free(col_array[col]);
+    }
+    free(col_array);
+
+    return strdup(message);
+}
+
+void *solve_all(AocData_t *data) {
+
+    if (aoc_data_get(data)) {
+        timer_func(1, solve_part_1, data, 1);
+        timer_func(2, solve_part_2, data, 1);
+    }
+
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    gchar *filename;
+    AocData_t *data;
+
+    char sourcefile[20];
+    int  year, day;
+
+    strcpy(sourcefile, aoc_basename(__FILE__));
+    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        filename = g_strdup(argv[1]);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new("test_input.txt", year, day);
+        } else {
+            data = aoc_data_new(argv[1], year, day);
+        }
     } else {
-        filename = g_strdup("input.txt");
+        data = aoc_data_new("input.txt", year, day);
     }
 
-    TIMER(0, solve_all(filename, 2016, 6), INT, 0);
-    g_free(filename);
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    timer_func(0, solve_all, data, 0);
+
+    aoc_data_free(data);
+
+    return aoc_mem_gc();
 }

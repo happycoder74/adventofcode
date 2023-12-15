@@ -3,6 +3,11 @@ concepts
 CMakeFiles
 glib.tags
 build
+memdebug
 .cmake
-tests
 CMakeCache.txt
+debug
+*workspace
+release
+dbgverbose
+

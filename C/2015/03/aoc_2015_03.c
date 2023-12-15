@@ -1,18 +1,20 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_utils.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 int solver(AocArrayPtr data, uint32_t agents) {
-    char *line;
+    char       *line;
     GHashTable *visited;
-    Point *position;
-    size_t visited_size;
-    size_t position_index = 0;
-    Point *key;
+    Point      *position;
+    size_t      visited_size;
+    size_t      position_index = 0;
+    Point      *key;
 
     position = (Point *)calloc(agents, sizeof(Point));
     visited = g_hash_table_new_full(point_hash, point_equal, free, NULL);
@@ -25,7 +27,7 @@ int solver(AocArrayPtr data, uint32_t agents) {
     line = aoc_str_array_index(data, 0);
     for (size_t c = 0; c < strlen(line); c++) {
         position_index = c % agents;
-        switch(line[c]) {
+        switch (line[c]) {
             case '<':
                 position[position_index].x -= 1;
                 break;
@@ -51,7 +53,6 @@ int solver(AocArrayPtr data, uint32_t agents) {
     free(position);
     g_hash_table_destroy(visited);
     return visited_size;
-
 }
 
 void *solve_part_1(AocData_t *data) {
@@ -76,13 +77,17 @@ int main(int argc, char **argv) {
     AocData_t *data;
 
     char sourcefile[20];
-    int year, day;
+    int  year, day;
 
     strcpy(sourcefile, aoc_basename(__FILE__));
     sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
 
     if (argc > 1) {
-        data = aoc_data_new(argv[1], year, day);
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new("test_input.txt", year, day);
+        } else {
+            data = aoc_data_new(argv[1], year, day);
+        }
     } else {
         data = aoc_data_new_clean("input.txt", year, day, NULL);
     }
@@ -93,6 +98,5 @@ int main(int argc, char **argv) {
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
-
