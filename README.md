@@ -14,6 +14,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 ## Year 2021
 + 42 &#11088; in [Python](python/README.md)
 + 18 &#11088; in [C](C/README.md)
++ 2 &#11088; in [Rust](Rust/README.md)
 + 2 &#11088; in PHP (day 1)
 
 ## Year 2020
