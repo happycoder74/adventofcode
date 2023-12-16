@@ -1,3 +1,5 @@
+import functools
+
 from common import Puzzle, timer
 
 
@@ -10,34 +12,25 @@ class Day09(Puzzle, year=2023, day=9):
     def solve_part_1(self):
         """Solution for part 1"""
         values = []
-        r = dict()
         for row in self.data:
-            r[0] = row
-            level = 0
-            while any(r[level]):
-                level += 1
-                r[level] = [y - x for x, y in zip(r[level - 1][:-1], r[level - 1][1:])]
-            while level > 0:
-                r[level - 1].append(r[level - 1][-1] + r[level][-1])
-                level -= 1
-            values.append(r[0][-1])
-
+            r = row
+            row_values = []
+            while any(r):
+                row_values.append(r[-1])
+                r = [y - x for x, y in zip(r[:-1], r[1:])]
+            values.append(sum(row_values))
         return sum(values)
 
     @timer(part=2)
     def solve_part_2(self):
         """Solution for part 2"""
         values = []
-        r = dict()
         for row in self.data:
-            r[0] = row
-            level = 0
-            while any(r[level]):
-                level += 1
-                r[level] = [y - x for x, y in zip(r[level - 1][:-1], r[level - 1][1:])]
-            while level > 0:
-                r[level - 1].insert(0, r[level - 1][0] - r[level][0])
-                level -= 1
-            values.append(r[0][0])
+            r = row
+            row_values = []
+            while any(r):
+                row_values.append(r[0])
+                r = [y - x for x, y in zip(r[:-1], r[1:])]
+            values.append(functools.reduce(lambda a, b: b - a, reversed(row_values)))
 
         return sum(values)
