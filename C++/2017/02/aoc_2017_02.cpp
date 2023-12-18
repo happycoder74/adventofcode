@@ -1,4 +1,5 @@
 #include "aoc_io.hpp"
+#include "aoc_string.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
 #include <iostream>
