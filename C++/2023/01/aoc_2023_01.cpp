@@ -1,7 +1,9 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <cstdint>
 #include <format>
+#include <ranges>
 #include <string>
 #include <vector>
 
@@ -42,30 +44,34 @@ std::string solve_part_2(std::vector<std::string> data) {
     for (auto &string : data) {
         int32_t first_index = 100;
         int32_t second_index = -100;
-        int32_t first = 0;
-        int32_t second = 0;
 
-        for (int32_t i_needle = 0; i_needle < 18; i_needle++) {
-            std::string::size_type found;
-            std::string            needle = needles[i_needle];
+        auto first = needles | std::ranges::views::transform([&string](const auto &needle) -> std::pair<std::string::size_type, std::int32_t> {
+                         auto found = string.find(needle);
+                         if (found != std::string::npos) {
+                             for (std::vector<std::string>::iterator it = needles.begin(); it < needles.end(); it++) {
+                                 if (*it == needle) {
+                                     return std::make_pair(found, values[static_cast<int>(it - needles.begin())]);
+                                 }
+                             }
+                         }
+                         return std::make_pair(1000, 0);
+                     });
 
-            found = string.find(needle);
-            if (found != std::string::npos) {
-                if (static_cast<int>(found) < first_index) {
-                    first_index = static_cast<int>(found);
-                    first = values[i_needle];
-                }
-            }
-            found = string.rfind(needle);
-            if (found != std::string::npos) {
-                if (static_cast<int>(found) > second_index) {
-                    second_index = static_cast<int>(found);
-                    second = values[i_needle];
-                }
-            }
-        }
+        auto second = needles | std::ranges::views::transform([&string](const auto &needle) -> std::pair<std::string::size_type, std::int32_t> {
+                          auto found = string.rfind(needle);
+                          if (found != std::string::npos) {
+                              for (std::vector<std::string>::iterator it = needles.begin(); it < needles.end(); it++) {
+                                  if (*it == needle) {
+                                      return std::make_pair(found, values[static_cast<int>(it - needles.begin())]);
+                                  }
+                              }
+                          }
+                          return std::make_pair(0, 0);
+                      });
 
-        sum += first * 10 + second;
+        auto f_it = std::ranges::min_element(first);
+        auto s_it = std::ranges::max_element(second);
+        sum += (*f_it).second * 10 + (*s_it).second;
     }
 
     return std::string(std::format("{}", sum));
