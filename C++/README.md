@@ -7,6 +7,7 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 ## 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:------------
+|  1  | &#11088;&#11088; |               |               |C++ translation of my C solution. Quite straight forward, without any fancy features.
 |  8  | &#11088;&#11088; |               |               |Interesting how "easy" it is to program C++ in "Python style" using the STL...
 
 ## 2019:
