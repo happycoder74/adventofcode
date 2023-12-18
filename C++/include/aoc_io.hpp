@@ -58,10 +58,4 @@ template <> inline std::vector<int> get_input_list(std::string fn, int year, int
 }
 } // namespace aoc::io
 
-namespace aoc::string {
-
-std::vector<std::string> split(const std::string &, char);
-
-} // namespace aoc::string
-
 #endif
