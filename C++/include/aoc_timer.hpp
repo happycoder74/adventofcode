@@ -2,22 +2,23 @@
 #define __AOC_TIMER_H__
 
 #include <chrono>
-#include <fmt/core.h>
+#include <format>
 #include <iostream>
 #include <string>
 #include <vector>
 
 typedef std::chrono::high_resolution_clock Clock;
+using duration = std::chrono::duration<double>;
 
 namespace aoc {
 
 template <typename T> void timer(int part, T (*func)(std::string), std::string data, bool show_res) {
-    auto                          t1 = Clock::now();
-    T                             result = func(data);
-    auto                          t2 = Clock::now();
-    std::chrono::duration<double> diff = (t2 - t1);
-    double                        elapsed = diff.count();
-    double                        elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
+    auto     t1 = Clock::now();
+    T        result = func(data);
+    auto     t2 = Clock::now();
+    duration diff = (t2 - t1);
+    double   elapsed = diff.count();
+    double   elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
     if (show_res) {
         std::cout << std::format("Part {} answer: {}\r\033[35C( {:6.3f} {} )\n", part, result, elapsed_unit, elapsed > 0.1 ? "s" : "ms");
     } else {
@@ -26,12 +27,12 @@ template <typename T> void timer(int part, T (*func)(std::string), std::string d
 }
 
 template <typename T> void timer(int part, T (*func)(std::vector<T>), std::vector<T> data, bool show_res) {
-    auto                          t1 = Clock::now();
-    T                             result = func(data);
-    auto                          t2 = Clock::now();
-    std::chrono::duration<double> diff = (t2 - t1);
-    double                        elapsed = diff.count();
-    double                        elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
+    auto     t1 = Clock::now();
+    T        result = func(data);
+    auto     t2 = Clock::now();
+    duration diff = (t2 - t1);
+    double   elapsed = diff.count();
+    double   elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
     if (show_res) {
         std::cout << std::format("Part {} answer: {}\r\033[35C( {:6.3f} {} )\n", part, result, elapsed_unit, elapsed > 0.1 ? "s" : "ms");
     } else {
@@ -40,12 +41,12 @@ template <typename T> void timer(int part, T (*func)(std::vector<T>), std::vecto
 }
 
 template <typename T, typename U> void timer(int part, T (*func)(std::vector<U>), std::vector<U> data, bool show_res) {
-    auto                          t1 = Clock::now();
-    T                             result = func(data);
-    auto                          t2 = Clock::now();
-    std::chrono::duration<double> diff = (t2 - t1);
-    double                        elapsed = diff.count();
-    double                        elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
+    auto     t1 = Clock::now();
+    T        result = func(data);
+    auto     t2 = Clock::now();
+    duration diff = (t2 - t1);
+    double   elapsed = diff.count();
+    double   elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
     if (show_res) {
         std::cout << std::format("Part {} answer: {}\r\033[35C( {:6.3f} {} )\n", part, result, elapsed_unit, elapsed > 0.1 ? "s" : "ms");
     } else {
@@ -54,12 +55,12 @@ template <typename T, typename U> void timer(int part, T (*func)(std::vector<U>)
 }
 
 template <typename T, typename U> void timer(int part, T (*func)(U), U data, bool show_res) {
-    auto                          t1 = Clock::now();
-    T                             result = func(data);
-    auto                          t2 = Clock::now();
-    std::chrono::duration<double> diff = (t2 - t1);
-    double                        elapsed = diff.count();
-    double                        elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
+    auto     t1 = Clock::now();
+    T        result = func(data);
+    auto     t2 = Clock::now();
+    duration diff = (t2 - t1);
+    double   elapsed = diff.count();
+    double   elapsed_unit = elapsed > 0.1 ? elapsed : elapsed * 1000;
     if (show_res) {
         std::cout << std::format("Part {} answer: {}\r\033[35C( {:6.3f} {} )\n", part, result, elapsed_unit, elapsed > 0.1 ? "s" : "ms");
     } else {
