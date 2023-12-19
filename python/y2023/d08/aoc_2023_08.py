@@ -37,27 +37,33 @@ class Day08(Puzzle, year=2023, day=8):
 
         return step_index
 
+    @staticmethod
+    def get_steps(node, instructions, network):
+        steps_required = 0
+        steps = cycle(instructions)
+        step_index = 0
+        while True:
+            step = next(steps)
+            step_index += 1
+            if step == "R":
+                node = network[node][1]
+            else:
+                node = network[node][0]
+
+            if node.endswith("Z"):
+                steps_required = step_index
+                break
+
+        return steps_required
+
     @timer(part=2)
     def solve_part_2(self):
         """Solution for part 2"""
         steps_required = dict()
-        map = self.data[1]
-        nodes = [node for node in map if node.endswith("A")]
+        instructions = self.data[0]
+        network = self.data[1]
+        nodes = [node for node in network if node.endswith("A")]
         for node in nodes:
-            step_index = 0
-            steps = cycle(self.data[0])
-            found = False
-            while not found:
-                step = next(steps)
-                step_index += 1
-                if step == "R":
-                    node = map[node][1]
-                else:
-                    node = map[node][0]
-
-                if node.endswith("Z"):
-                    found = True
-                    steps_required[node] = step_index
-                    step_index = 0
+            steps_required[node] = Day08.get_steps(node, instructions, network)
 
         return functools.reduce(math.lcm, steps_required.values())
