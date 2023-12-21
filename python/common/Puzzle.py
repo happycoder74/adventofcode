@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 
-from common import timer
+from common.timer import timer
 
 
 class Puzzle(object):
