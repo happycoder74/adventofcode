@@ -7,10 +7,11 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 ## 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:------------
-|  1  | &#11088;&#11088; |               |               |C++ translation of my C solution. Quite straight forward, without any fancy features.
+|  1  | &#11088;&#11088; | 0.223 ms      | 3.368 ms      |C++ translation of my C solution. Quite straight forward, without any fancy features.
 |     |                  |               |               |Second version of this solution takes on a bit more modern approach using ranges.
-|  2  | &#11088;&#11088; |               |               |Trying to understand ranges...
+|  2  | &#11088;&#11088; | 0.303 ms      | 0.280 ms      |Trying to understand ranges...
 |  8  | &#11088;&#11088; |               |               |Interesting how "easy" it is to program C++ in "Python style" using the STL...
+| 11  | &#11088;&#11088; |               |               |Very "loopy" approach, but working nicely for these sizes of input.
 
 ## 2019:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
