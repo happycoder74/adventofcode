@@ -6,10 +6,8 @@ from common.timer import timer
 
 
 class Puzzle(object):
-    def __init_subclass__(cls, year=None, day=None, stripped=True, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls.year = year
-        cls.day = day
+    year: int | None
+    day: int | None
 
     def __init__(self, year=None, day=None, filename=None, data=None, stripped=True):
         self.filename = filename
@@ -20,6 +18,11 @@ class Puzzle(object):
         if data is None:
             data = self.get_input(stripped=stripped)
         self.data = self.clean_input(data)
+
+    def __init_subclass__(cls, year=None, day=None, stripped=True, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.year = year
+        cls.day = day
 
     def get_input(self, mode=None, stripped=True):
         if envpath := os.getenv("AOC_DATA_LOCATION"):
