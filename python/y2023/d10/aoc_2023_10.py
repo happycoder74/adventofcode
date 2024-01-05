@@ -111,7 +111,7 @@ class Day10(Puzzle, year=2023, day=10):
         self.outside = self.outside.union(
             {self.inside.get((c, self.max_r - 1)) for c in range(self.max_c)}
         )
-        self.print_domain()
+        # self.print_domain()
         if "a" in self.outside:
             return sum(v == "b" for v in self.inside.values())
         else:
