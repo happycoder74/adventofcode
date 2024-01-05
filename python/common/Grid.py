@@ -12,3 +12,14 @@ class Grid(object):
 
     def get_row(self, row) -> list[str]:
         return [self.grid[row, col] for col in range(self.max_c)]
+
+    def get_column_tuple(self, col) -> list[tuple[int, str]]:
+        return [(row, self.grid[row, col]) for row in range(self.max_r)]
+
+    def get_row_tuple(self, row) -> list[tuple[int, str]]:
+        return [(col, self.grid[row, col]) for col in range(self.max_c)]
+
+    def get_tuple(self, item_no, kind="row"):
+        if kind == "row":
+            return self.get_row_tuple(item_no)
+        return self.get_column_tuple(item_no)
