@@ -4,11 +4,36 @@ from common import Grid, Puzzle, timer
 class Day13(Puzzle, year=2023, day=13):
     def __init__(self, filename=None, data=None):
         super().__init__(filename=filename, data=data)
+        self.candidates = []
 
     @staticmethod
     def clean_input(data):
         groups = Puzzle.parse_input_groups(data)
         return [Grid(d) for d in groups]
+
+    def find_mirror(self, grid, kind="row") -> int:
+        mirror = 0
+        limit = grid.max_r if kind == "row" else grid.max_c
+        for check in range(1, limit):
+            mirrors = []
+            check_range = range(0, check)
+            for c1, c2 in zip(
+                check_range[::-1], [check + i for i in check_range if check + i < limit]
+            ):
+                item0 = set(grid.get_tuple(c1, kind=kind))
+                item1 = set(grid.get_tuple(c2, kind=kind))
+
+                diffset = item0.symmetric_difference(item1)
+                mirrors.append((len(diffset) == 0, len(diffset)))
+
+            mirror_check = [i for i in mirrors if not i[0]]
+            if len(mirror_check) == 0:
+                mirror = check
+            elif len(mirror_check) == 1:
+                if mirror_check[0][1] == 2:
+                    self.candidates.append((kind, check))
+
+        return mirror
 
     @timer(part=1)
     def solve_part_1(self) -> int:
@@ -17,37 +42,17 @@ class Day13(Puzzle, year=2023, day=13):
 
         for grid in self.data:
             # Check mirror cols
-            for checkcol in range(1, grid.max_c):
-                colrange = range(0, checkcol)
-                colcheck = True
-                for c1, c2 in zip(
-                    colrange[::-1], [checkcol + i for i in colrange if checkcol + i < grid.max_c]
-                ):
-                    column0 = grid.get_column(c1)
-                    column1 = grid.get_column(c2)
-                    if column0 != column1:
-                        colcheck = False
-                        break
-                if colcheck:
-                    sum_cols += checkcol
+            mirror_column = self.find_mirror(grid, kind="column")
+            sum_cols += mirror_column
 
             # Check mirror rows
-            for checkrow in range(1, grid.max_r):
-                rowrange = range(0, checkrow)
-                rowcheck = True
-                for r1, r2 in zip(
-                    rowrange[::-1], [checkrow + i for i in rowrange if checkrow + i < grid.max_r]
-                ):
-                    row0 = grid.get_row(r1)
-                    row1 = grid.get_row(r2)
-                    if row0 != row1:
-                        rowcheck = False
-                        break
-                if rowcheck:
-                    sum_rows += checkrow
+            mirror_row = self.find_mirror(grid, kind="row")
+            sum_rows += mirror_row
 
         return sum_cols + 100 * sum_rows
 
     @timer(part=2)
     def solve_part_2(self) -> str | int:
-        return "NOT IMPLEMENTED"
+        sum_cols = sum([c[1] for c in self.candidates if c[0] == "column"])
+        sum_rows = sum([c[1] for c in self.candidates if c[0] == "row"])
+        return sum_cols + 100 * sum_rows

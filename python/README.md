@@ -22,7 +22,7 @@ common directory.
 | 10  | &#11088;&#11088; |               |               |         |
 | 11  | &#11088;&#11088; |               |               |         |
 | 12  | &#11088;         |               |               | Nasty, time and space consuming solution. Works for part 1 but takes an eternity for part 2 |
-| 13  | &#11088;         |               |               | Straightforward. Should be possible to simplify |
+| 13  | &#11088;&#11088; |               |               | Straightforward. Should be possible to simplify |
 
 ### 2022:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |

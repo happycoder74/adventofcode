@@ -10,5 +10,6 @@ class Test_2023_13(unittest.TestCase):
     def test_part_1(self):
         self.assertEqual(405, self.day.solve_part_1())
 
-    # def test_part_2(self):
-    #     self.assertEqual(0, self.day.solve_part_2())
+    def test_part_2(self):
+        _ = self.day.solve_part_1()
+        self.assertEqual(400, self.day.solve_part_2())
