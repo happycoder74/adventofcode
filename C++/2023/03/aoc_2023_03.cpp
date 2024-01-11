@@ -1,101 +1,92 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <map>
 #include <string>
+#include <tuple>
 #include <vector>
 
 class Schematic {
   private:
-    std::uint32_t max_x;
-    std::uint32_t max_y;
-    std::uint32_t num_parts;
-    std::uint32_t next_col;
-    char        **grid;
+    std::pair<std::int32_t, std::int32_t>        limits;
+    std::int32_t                                 next_col;
+    std::map<std::tuple<int32_t, int32_t>, char> grid_map;
 
   public:
-    Schematic() {
-        this->max_x = 0;
-        this->max_y = 0;
-        this->num_parts = 0;
-        this->next_col = 0;
-        this->grid = NULL;
-    };
     explicit Schematic(std::vector<std::string>);
-    ~Schematic() {
-        for (std::uint32_t row = 0; row < this->max_y; row++) {
-            std::free(this->grid[row]);
-        }
-        free(this->grid);
-        this->grid = NULL;
-    };
-    void          neighbours(std::uint32_t y, std::uint32_t x, char *nbs, std::uint32_t *length);
-    bool          near_symbol(std::uint32_t y, std::uint32_t x);
-    std::uint32_t find_parts();
-    std::uint32_t find_number(std::uint32_t row, std::uint32_t col);
-    std::uint32_t find_gears();
+    std::vector<char> neighbours(std::int32_t y, std::int32_t x);
+    bool              near_symbol(std::int32_t y, std::int32_t x);
+    std::int32_t      find_parts();
+    std::int32_t      find_number(std::int32_t row, std::int32_t col);
+    std::int32_t      find_gears();
 };
 
 Schematic::Schematic(std::vector<std::string> data) {
-    this->max_y = data.size();
-    this->grid = static_cast<char **>(calloc(this->max_y, sizeof(char *)));
-    for (unsigned ind = 0; ind < this->max_y; ind++) {
-        this->grid[ind] = static_cast<char *>(calloc(data.at(ind).size(), sizeof(char)));
-        std::strcpy(this->grid[ind], data.at(ind).c_str());
+    this->limits.second = static_cast<int32_t>(data.size());
+    this->limits.first = static_cast<int32_t>(data[0].size());
+    this->next_col = INT_MAX;
+
+    int32_t j = 0;
+    for (auto &row : data) {
+        int32_t i = 0;
+        for (auto &col : row) {
+            grid_map[{j, i++}] = col;
+        }
+        j++;
     }
-    this->max_x = strlen(this->grid[0]);
-    this->next_col = UINT_MAX;
 }
-void Schematic::neighbours(std::uint32_t y, std::uint32_t x, char *nbs, std::uint32_t *length) {
-    std::uint32_t nb_index = 0;
-    for (std::int16_t j = -1; j <= 1; j++) {
-        for (std::int16_t i = -1; i <= 1; i++) {
-            if (((static_cast<int>(y) + j) >= 0) && ((static_cast<int>(y) + j) < static_cast<int>(this->max_y)) && (0 <= (static_cast<int>(x) + i)) &&
-                ((static_cast<int>(x) + i) < static_cast<int>(this->max_x))) {
+std::vector<char> Schematic::neighbours(std::int32_t y, std::int32_t x) {
+    std::vector<char>  nbs;
+    std::array<int, 3> delta = {-1, 0, 1};
+    for (auto &j : delta) {
+        for (auto &i : delta) {
+            /* For some reason grid_map.contains gives wrong final answer
+             * if (grid_map.contains({y + j, x + i}))
+             * should really be the same thing... */
+            if ((0 <= (y + j)) && ((y + j) < this->limits.second) && (0 <= (x + i)) && ((x + i) < this->limits.first)) {
                 if (!((i == 0) && (j == 0))) {
-                    nbs[nb_index++] = this->grid[y + j][x + i];
+                    nbs.push_back(this->grid_map[{y + j, x + i}]);
                 }
             }
         }
     }
 
-    *length = nb_index;
-    return;
+    return nbs;
 }
 
-bool Schematic::near_symbol(std::uint32_t y, std::uint32_t x) {
-    char          nbs[9] = {0};
-    std::uint32_t length;
-    this->neighbours(y, x, nbs, &length);
-    for (std::uint32_t index = 0; index < length; index++) {
-        if (!isdigit(nbs[index]) && (nbs[index] != '.')) {
+bool Schematic::near_symbol(std::int32_t y, std::int32_t x) {
+    std::vector<char> nbs = this->neighbours(y, x);
+    for (auto &nb : nbs) {
+        if (!isdigit(nb) && (nb != '.')) {
             return true;
         }
     }
     return false;
 }
 
-std::uint32_t Schematic::find_parts() {
-    std::uint32_t num_parts = 0;
-    for (std::uint32_t j = 0; j < this->max_y; j++) {
+std::int32_t Schematic::find_parts() {
+    std::int32_t num_parts = 0;
+    for (std::int32_t j = 0; j < this->limits.second; j++) {
         int  num_start = -1;
         bool keep = false;
-        for (std::uint32_t i = 0; i <= this->max_x; i++) {
-            char point = this->grid[j][i];
+        for (std::int32_t i = 0; i <= this->limits.first; i++) {
+            char point = this->grid_map[{j, i}];
             if (isdigit(point)) {
                 if (num_start == -1) {
-                    num_start = static_cast<int>(i);
+                    num_start = i;
                 }
                 if (keep || near_symbol(j, i)) {
                     keep = true;
                 }
             } else {
                 if ((num_start != -1) && keep) {
-                    char          buf[100];
-                    std::uint32_t k;
+                    char         buf[100];
+                    std::int32_t k;
                     for (k = 0; k <= (i - num_start); k++) {
-                        buf[k] = this->grid[j][k + num_start];
+                        buf[k] = this->grid_map[{j, k + num_start}];
                     }
                     buf[k] = '\0';
                     num_parts += std::atoi(buf);
@@ -108,15 +99,15 @@ std::uint32_t Schematic::find_parts() {
     return num_parts;
 }
 
-std::uint32_t Schematic::find_number(std::uint32_t row, std::uint32_t col) {
-    int start = static_cast<int>(col);
-    int end = static_cast<int>(col);
-    if (!isdigit(this->grid[row][col])) {
+std::int32_t Schematic::find_number(std::int32_t row, std::int32_t col) {
+    int start = col;
+    int end = col;
+    if (!isdigit(this->grid_map[{row, col}])) {
         return 0;
     }
     // Look left
     while (start >= 0) {
-        if (isdigit(this->grid[row][start])) {
+        if (isdigit(this->grid_map[{row, start}])) {
             start--;
         } else {
             break;
@@ -124,14 +115,14 @@ std::uint32_t Schematic::find_number(std::uint32_t row, std::uint32_t col) {
     }
 
     // Look right
-    while (isdigit(this->grid[row][end])) {
+    while (isdigit(this->grid_map[{row, end}])) {
         end++;
     }
 
     char buf[10] = {0};
     int  k;
     for (k = start + 1; k <= end - 1; k++) {
-        buf[k - (start + 1)] = this->grid[row][k];
+        buf[k - (start + 1)] = this->grid_map[{row, k}];
     }
     buf[k - (start + 1)] = '\0';
 
@@ -139,40 +130,40 @@ std::uint32_t Schematic::find_number(std::uint32_t row, std::uint32_t col) {
     return atoi(buf);
 }
 
-std::uint32_t Schematic::find_gears() {
-    std::uint32_t                              gear_ratio = 0;
-    std::vector<std::pair<uint32_t, uint32_t>> gears;
+std::int32_t Schematic::find_gears() {
+    std::int32_t gear_ratio = 0;
 
-    for (std::uint32_t j = 0; j < this->max_y; j++) {
-        for (std::uint32_t i = 0; i < this->max_x; i++) {
-            if (this->grid[j][i] == '*') {
-                gears.push_back(std::pair<uint32_t, uint32_t>(i, j));
+    std::vector<std::pair<int32_t, int32_t>> gears;
+
+    std::array<int, 3> delta = {-1, 0, 1};
+
+    for (std::int32_t j = 0; j < this->limits.second; j++) {
+        for (std::int32_t i = 0; i < this->limits.first; i++) {
+            if (this->grid_map[{j, i}] == '*') {
+                gears.push_back(std::pair<int32_t, int32_t>(i, j));
             }
         }
     }
 
-    for (std::uint32_t index = 0; index < gears.size(); index++) {
-        std::pair<uint32_t, uint32_t> p = gears[index];
-        std::uint32_t                 i = p.first;
-        std::uint32_t                 j = p.second;
+    for (auto &p : gears) {
 
-        std::uint32_t numbers[9] = {0};
-        std::uint32_t n_numbers = 0;
+        std::int32_t i = p.first;
+        std::int32_t j = p.second;
 
-        for (std::uint32_t row = j - 1; row <= j + 1; row++) {
-            for (std::uint32_t col = i - 1; col <= i + 1; col++) {
-                if ((0 <= static_cast<int>(row)) && (row < this->max_y) && (0 <= static_cast<int>(col)) && (col < this->max_x)) {
-                    if (isdigit(this->grid[row][col])) {
-                        numbers[n_numbers++] = find_number(row, col);
-                        if (this->next_col != UINT_MAX) {
-                            col = this->next_col;
-                            this->next_col = UINT_MAX;
-                        }
+        std::vector<int32_t> numbers;
+
+        for (std::int32_t row = j - 1; row <= j + 1; row++) {
+            for (std::int32_t col = i - 1; col <= i + 1; col++) {
+                if ((grid_map.contains({row, col})) && (isdigit(this->grid_map[{row, col}]))) {
+                    numbers.push_back(find_number(row, col));
+                    if (this->next_col != INT_MAX) {
+                        col = this->next_col;
+                        this->next_col = INT_MAX;
                     }
                 }
             }
         }
-        if (n_numbers > 1) {
+        if (numbers.size() > 1) {
             gear_ratio += numbers[0] * numbers[1];
         }
     }
@@ -182,6 +173,7 @@ std::uint32_t Schematic::find_gears() {
 
 std::string solve_part_1(std::vector<std::string> data) {
     Schematic schema(data);
+
     return std::format("{}", schema.find_parts());
 }
 
