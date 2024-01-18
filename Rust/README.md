@@ -2,6 +2,8 @@
 
 First baby steps in trying to learn Rust...
 
+Credits to [believer](https://github.com/believer) for inspiration.
+
 ## 2023
 The 2023 solutions use the [cargo-aoc](https://github.com/gobanos/cargo-aoc) helper application library.
 | Day | Stars            | Comment                                |
