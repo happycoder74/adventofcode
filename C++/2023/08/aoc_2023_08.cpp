@@ -1,4 +1,5 @@
 #include "aoc_io.hpp"
+#include "aoc_timer.hpp"
 #include <algorithm>
 #include <iostream>
 #include <map>
@@ -87,6 +88,12 @@ std::int64_t solve_part_2(std::pair<instructions_t, network_t> data) {
     return std::accumulate(steps_required.begin(), steps_required.end(), steps_required[0], std::lcm<std::int64_t, std::int64_t>);
 }
 
+void *solve_all(std::pair<instructions_t, network_t> data) {
+    aoc::timer(1, solve_part_1, data, 1);
+    aoc::timer(2, solve_part_2, data, 1);
+    return NULL;
+}
+
 } // namespace aoc_2023_08
 
 int main(int argc, char **argv) {
@@ -107,9 +114,9 @@ int main(int argc, char **argv) {
     std::vector<std::string> data = aoc::io::get_input_list<std::string>(filename, year, day);
 
     auto parsed_data = aoc_2023_08::clean_input(data);
-
-    std::cout << "Part 1 Answer: " << aoc_2023_08::solve_part_1(parsed_data) << std::endl;
-    std::cout << "Part 2 Answer: " << aoc_2023_08::solve_part_2(parsed_data) << std::endl;
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    aoc::timer(0, aoc_2023_08::solve_all, parsed_data, 0);
 
     return 0;
 }
