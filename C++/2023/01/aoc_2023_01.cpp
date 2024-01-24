@@ -24,7 +24,7 @@ static int find_digit(std::string string, int order) {
     return -1;
 }
 
-std::string solve_part_1(std::vector<std::string> data) {
+std::string solve_part_1(const std::vector<std::string> &data) {
     uint32_t sum = 0;
     for (auto &string : data) {
         uint32_t first = find_digit(string, 1);
@@ -39,7 +39,7 @@ std::vector<std::string> needles = {"one", "two", "three", "four", "five", "six"
 
 std::vector<std::int32_t> values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-std::string solve_part_2(std::vector<std::string> data) {
+std::string solve_part_2(const std::vector<std::string> &data) {
     uint32_t sum = 0;
     for (auto &string : data) {
         int32_t first_index = 100;
@@ -77,7 +77,7 @@ std::string solve_part_2(std::vector<std::string> data) {
     return std::string(std::format("{}", sum));
 }
 
-void *solve_all(std::vector<std::string> data) {
+void *solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
         aoc::timer(1, solve_part_1, data, 1);
