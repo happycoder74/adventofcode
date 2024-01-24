@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -19,13 +20,18 @@ template <typename T> std::vector<T> get_input_list(std::string fn, int year, in
     std::string           datapath_str;
     std::filesystem::path datapath;
 
-    datapath_str = std::string(std::getenv("AOC_DATA_LOCATION"));
+    char *env = std::getenv("AOC_DATA_LOCATION");
+    datapath_str = std::string(env ? env : "");
     if (datapath_str.length()) {
         datapath = datapath_str;
         datapath = datapath / std::format("{:4d}", year) / std::format("{:02d}", day) / fn;
         ifs.open(datapath);
     } else {
         ifs.open(fn);
+    }
+    if (ifs.fail()) {
+        std::cerr << "Something went wrong" << std::endl;
+        return return_data;
     }
     while (std::getline(ifs, line)) {
         return_data.push_back(line);
