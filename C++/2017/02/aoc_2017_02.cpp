@@ -2,16 +2,15 @@
 #include "aoc_string.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
-#include <iostream>
 #include <string>
 #include <vector>
 
 namespace aoc_2017_02 {
 
-std::vector<std::vector<int>> transform_input(std::vector<std::string> data) {
+std::vector<std::vector<int>> transform_input(const std::vector<std::string> &data) {
 
     std::vector<std::vector<int>> lines;
-    for (std::string &dataline : data) {
+    for (std::string dataline : data) {
         std::vector<int> line;
         std::replace(dataline.begin(), dataline.end(), '\t', ' ');
         for (std::string &num : aoc::string::split(dataline, ' ')) {
@@ -23,7 +22,7 @@ std::vector<std::vector<int>> transform_input(std::vector<std::string> data) {
     return lines;
 }
 
-int solve_part_1(std::vector<std::vector<int>> lines) {
+int solve_part_1(const std::vector<std::vector<int>> &lines) {
     int checksum = 0;
 
     for (auto &line : lines) {
@@ -32,7 +31,7 @@ int solve_part_1(std::vector<std::vector<int>> lines) {
     return checksum;
 }
 
-int solve_part_2(std::vector<std::vector<int>> lines) {
+int solve_part_2(const std::vector<std::vector<int>> &lines) {
     int checksum = 0;
 
     for (auto &line : lines) {
@@ -47,9 +46,11 @@ int solve_part_2(std::vector<std::vector<int>> lines) {
     return checksum;
 }
 
-int solve_all(std::vector<std::vector<int>> lines) {
-    aoc::timer<int, std::vector<int>>(1, aoc_2017_02::solve_part_1, lines, true);
-    aoc::timer<int, std::vector<int>>(2, aoc_2017_02::solve_part_2, lines, true);
+int solve_all(const std::vector<std::string> &data) {
+    auto lines = aoc_2017_02::transform_input(data);
+
+    aoc::timer(1, aoc_2017_02::solve_part_1, lines);
+    aoc::timer(2, aoc_2017_02::solve_part_2, lines);
 
     return 0;
 }
@@ -60,23 +61,20 @@ int main(int argc, char **argv) {
     const int   year = 2017;
     const int   day = 2;
 
+    std::vector<std::string> data;
+
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {
-            filename = "test_input.txt";
+            data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
         } else {
-            filename = argv[1];
+            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
         }
     } else {
-        filename = "input.txt";
+        data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
-    std::vector<std::vector<int>> lines;
-    std::vector<std::string>      data;
-    data = aoc::io::get_input_list<std::string>(filename, year, day);
-    lines = aoc_2017_02::transform_input(data);
-
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
-    aoc::timer<int, std::vector<int>>(0, aoc_2017_02::solve_all, lines, false);
+    aoc::io::header(year, day);
+    aoc::timer(0, aoc_2017_02::solve_all, data, false);
 
     return 0;
 }

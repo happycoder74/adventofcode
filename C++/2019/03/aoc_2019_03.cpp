@@ -11,7 +11,7 @@ typedef std::pair<int, int> Point;
 
 typedef std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> Container;
 
-static std::vector<std::pair<Point, Point>> find_intersections(std::map<Point, Point> m1, std::map<Point, Point> m2) {
+static std::vector<std::pair<Point, Point>> find_intersections(const std::map<Point, Point> &m1, const std::map<Point, Point> &m2) {
     std::vector<Point> return_vector;
 
     auto values = m1 | std::views::filter([=](std::pair<Point, Point> p) { return m2.contains(p.first); });
@@ -22,16 +22,18 @@ static int manhattan_distance(const Point p0, const Point p1) {
     return std::abs((p0.first - p1.first)) + abs((p0.second - p1.second));
 }
 
-static Container transform_input(std::vector<std::string> instructions) {
+static Container transform_input(const std::vector<std::string> &instructions) {
     std::vector<std::map<Point, int>>   wire_stepmap;
     std::vector<std::map<Point, Point>> wire_coords;
-    for (std::string &l : instructions) {
-        int                      steps = 0;
+    for (const std::string &l : instructions) {
+        int steps = 0;
+
         std::pair<int, int>      position = {0, 0};
         std::pair<int, int>      move;
         std::vector<std::string> tokens = aoc::string::split(l, ',');
         std::map<Point, Point>   wc_map;
         std::map<Point, int>     ws_map;
+
         for (auto ch : tokens) {
             char direction = ch[0];
             int  magnitude = std::stoi(ch.substr(1));
@@ -49,7 +51,7 @@ static Container transform_input(std::vector<std::string> instructions) {
                     move = {1, 0};
                     break;
                 default:
-                    std::cerr << "Error in direction input" << std::endl;
+                    std::cerr << "Error in direction input" << '\n';
                     exit(EXIT_FAILURE);
                     break;
             }
@@ -72,24 +74,27 @@ static Container transform_input(std::vector<std::string> instructions) {
     return data;
 }
 
-int solve_part_1(Container data) {
+int solve_part_1(const Container &data) {
     int dist = std::ranges::min(data.first | std::views::transform([](const auto &p) -> int { return manhattan_distance(p.first, {0, 0}); }));
 
     return dist;
 }
 
-int solve_part_2(Container data) {
+int solve_part_2(const Container &data) {
     int signal = INT_MAX;
-    for (auto p : data.first) {
-        signal = std::min(signal, data.second.front()[p.first] + data.second.back()[p.first]);
+    for (const auto &p : data.first) {
+        auto second = data.second;
+        signal = std::min(signal, second.front()[p.first] + second.back()[p.first]);
     }
 
     return signal;
 }
 
-int solve_all(Container data) {
-    aoc::timer<int, Container>(1, solve_part_1, data, true);
-    aoc::timer<int, Container>(2, solve_part_2, data, true);
+int solve_all(const std::vector<std::string> &instructions) {
+    Container data = transform_input(instructions);
+
+    aoc::timer(1, solve_part_1, data);
+    aoc::timer(2, solve_part_2, data);
 
     return 0;
 }
@@ -100,18 +105,22 @@ int main(int argc, char **argv) {
     const int   year = 2019;
     const int   day = 3;
 
-    std::vector<std::string> instructions;
+    std::vector<std::string> data;
 
     auto t1 = Clock::now();
 
-    filename = argc > 1 ? argv[1] : "input.txt";
+    if (argc > 1) {
+        if (std::string(argv[1]) == "--test") {
+            data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
+        } else {
+            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+        }
+    } else {
+        data = aoc::io::get_input_list<std::string>("input.txt", year, day);
+    }
 
-    instructions = aoc::io::get_input_list<std::string>(filename, 2019, 3);
-
-    Container data = transform_input(instructions);
-
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
-    aoc::timer<int, Container>(0, solve_all, data, false);
+    aoc::io::header(year, day);
+    aoc::timer(0, solve_all, data, false);
 
     return 0;
 }
