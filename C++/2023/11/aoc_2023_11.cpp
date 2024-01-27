@@ -129,8 +129,7 @@ int main(int argc, char **argv) {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
-    std::cout << std::format("{:=<50}", "") << "\n";
-    std::cout << std::format("Solution for {}, day {:02d}", year, day) << "\n";
+    aoc::io::header(year, day);
     aoc::timer(0, aoc::aoc_2023_11::solve_all, data, 0);
 
     return 0;

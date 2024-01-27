@@ -86,8 +86,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::pair<char, char>> input = aoc_2022_02::transform_input(aoc::io::get_input_list<std::string>("input.txt", year, day));
 
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << '\n';
-
+    aoc::io::header(year, day);
     aoc::timer(0, aoc_2022_02::solve_all, input, false);
 
     return 0;

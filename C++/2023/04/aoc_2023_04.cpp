@@ -101,8 +101,7 @@ int main(int argc, char **argv) {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc::io::header(year, day);
     parsed_input input = aoc_2023_04::parse_input(data);
     aoc::timer(0, solve_all, input, 0);
 

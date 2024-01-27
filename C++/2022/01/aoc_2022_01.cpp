@@ -1,3 +1,5 @@
+#include "aoc_io.hpp"
+#include "aoc_timer.hpp"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -32,6 +34,7 @@ uint64_t top_three(const std::vector<std::string> &data) {
     return std::reduce(top.begin(), top.end());
 }
 } // namespace day01::calories
+
 int test() {
     std::vector<std::string> test_data{"1000", "2000", "3000", "", "4000", "", "5000", "6000", "", "7000", "8000", "9000", "", "10000"};
     assert(day01::calories::max_calories(test_data) == 24000);
@@ -39,31 +42,32 @@ int test() {
     return 0;
 }
 
-int parse_and_run(std::string path) {
-    std::vector<std::string> data;
-    std::fstream             file(path);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open " << std::quoted(path) << "\n";
-        return 1;
-    }
-    std::string line;
-    while (std::getline(file, line)) {
-        data.push_back(line);
-    }
-    namespace krn = std::chrono;
-    using Clock = krn::high_resolution_clock;
-    using ms = krn::microseconds;
-
-    krn::time_point<Clock, ms> p = krn::time_point_cast<ms>(Clock::now());
-    std::cout << "The elf with the maximum number of calorie is carrying " << day01::calories::max_calories(data) << " calories worth of food.\n";
-    std::cout << std::setprecision(10) << krn::duration<double, std::ratio<1, 1000>>(Clock::now() - p) << '\n';
-    p = krn::time_point_cast<ms>(Clock::now());
-    std::cout << "The top 3 elfs are carrying " << day01::calories::top_three(data) << " calories worth of food.\n";
-    std::cout << std::setprecision(10) << krn::duration<double, std::ratio<1, 1000>>(Clock::now() - p) << '\n';
+int solve_all(const std::vector<std::string> &data) {
+    aoc::timer(1, day01::calories::max_calories, data);
+    aoc::timer(2, day01::calories::top_three, data);
 
     return 0;
 }
 
-int main(void) {
-    return parse_and_run("c:/home/yy11510/projects/adventofcode/data/2022/01/input.txt");
+int main(int argc, char **argv) {
+    std::vector<std::string> data;
+
+    char sourcefile[20];
+    int  year = 2022;
+    int  day = 1;
+
+    if (argc > 1) {
+        if (std::string(argv[1]) == "--test") {
+            data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
+        } else {
+            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+        }
+    } else {
+        data = aoc::io::get_input_list<std::string>("input.txt", year, day);
+    }
+
+    aoc::io::header(year, day);
+    aoc::timer(0, solve_all, data, 0);
+
+    return 0;
 }

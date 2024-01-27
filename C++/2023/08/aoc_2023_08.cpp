@@ -13,12 +13,12 @@ using network_t = std::map<std::string, node_t>;
 using instructions_t = std::string;
 using aoc_data_t = std::vector<std::string>;
 
-std::pair<instructions_t, network_t> clean_input(aoc_data_t input_data) {
+std::pair<instructions_t, network_t> clean_input(const aoc_data_t &input_data) {
     network_t      network;
     instructions_t instructions = input_data[0];
 
-    for (aoc_data_t::iterator it = input_data.begin() + 2; it < input_data.end(); it++) {
-        auto        row = *it;
+    for (aoc_data_t::const_iterator it = input_data.begin() + 2; it < input_data.end(); it++) {
+        const auto &row = *it;
         std::string node = row.substr(0, 3);
 
         std::pair<std::string, std::string> destination;
@@ -87,9 +87,11 @@ std::int64_t solve_part_2(const std::pair<instructions_t, network_t> &data) {
     return std::accumulate(steps_required.begin(), steps_required.end(), steps_required[0], std::lcm<std::int64_t, std::int64_t>);
 }
 
-void *solve_all(const std::pair<instructions_t, network_t> &data) {
-    aoc::timer(1, solve_part_1, data, 1);
-    aoc::timer(2, solve_part_2, data, 1);
+void *solve_all(const aoc_data_t &data) {
+    auto parsed_data = aoc_2023_08::clean_input(data);
+
+    aoc::timer(1, solve_part_1, parsed_data);
+    aoc::timer(2, solve_part_2, parsed_data);
     return NULL;
 }
 
@@ -112,10 +114,8 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> data = aoc::io::get_input_list<std::string>(filename, year, day);
 
-    auto parsed_data = aoc_2023_08::clean_input(data);
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
-    aoc::timer(0, aoc_2023_08::solve_all, parsed_data, 0);
+    aoc::io::header(year, day);
+    aoc::timer(0, aoc_2023_08::solve_all, data, 0);
 
     return 0;
 }

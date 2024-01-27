@@ -74,8 +74,7 @@ int main(int argc, char **argv) {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc::io::header(year, day);
     aoc::timer(0, aoc_2022_03::solve_all, data, 0);
 
     return 0;

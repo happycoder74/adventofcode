@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
     std::vector<int> data;
     data = aoc::io::get_input_list<int>(filename, year, day);
 
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << '\n';
+    aoc::io::header(year, day);
     aoc::timer(0, aoc_2021_01::solve_all, data, false);
 
     return 0;
