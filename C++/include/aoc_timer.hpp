@@ -11,7 +11,7 @@ using duration = std::chrono::duration<double>;
 
 namespace aoc {
 
-template <typename T, typename U> void timer(int part, T (*func)(const U &), U data, bool show_res) {
+template <typename T, typename U> void timer(int part, T (*func)(const U &), U data, bool show_res = true) {
     auto     t1 = Clock::now();
     T        result = func(data);
     auto     t2 = Clock::now();

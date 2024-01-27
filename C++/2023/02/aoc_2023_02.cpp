@@ -9,29 +9,29 @@
 using cube_t = std::map<std::string, int>;
 using game_t = std::map<int, cube_t>;
 
-game_t find_games(std::vector<std::string> data) {
+game_t find_games(const std::vector<std::string> &data) {
     game_t games;
-    for (auto line : data) {
+    for (auto &line : data) {
         std::map<std::string, int> cubes = {
             {"green", 0},
             {"red",   0},
             {"blue",  0}
         };
-        std::string::size_type pos = line.find(":");
+        std::string::size_type pos = line.find(':');
 
         int         game_no = std::stoi(line.substr(4, pos));
         std::string game_str = line.substr(pos + 1);
 
-        while ((pos = game_str.find(";")) != std::string::npos) {
+        while ((pos = game_str.find(';')) != std::string::npos) {
             game_str.replace(pos, 1, ",");
         }
 
         for (const auto &s : game_str | std::views::split(std::string(","))) {
             std::string sv = std::string(s.begin() + 1, s.end());
 
-            int cube_count = std::stoi(sv.substr(0, sv.find(" ")));
+            int cube_count = std::stoi(sv.substr(0, sv.find(' ')));
 
-            std::string color = sv.substr(sv.find(" ") + 1);
+            std::string color = sv.substr(sv.find(' ') + 1);
             cubes[color] = std::max(cube_count, cubes[color]);
         }
         games[game_no] = cubes;
@@ -39,7 +39,7 @@ game_t find_games(std::vector<std::string> data) {
     return games;
 };
 
-std::string solve_part_1(std::vector<std::string> data) {
+std::string solve_part_1(const std::vector<std::string> &data) {
     game_t games = find_games(data);
 
     auto winners = games | std::views::transform([](const auto &item) -> int {
@@ -55,7 +55,7 @@ std::string solve_part_1(std::vector<std::string> data) {
     return std::string(std::format("{}", std::reduce(winners.begin(), winners.end())));
 }
 
-std::string solve_part_2(std::vector<std::string> data) {
+std::string solve_part_2(const std::vector<std::string> &data) {
     game_t games = find_games(data);
 
     auto winners = games | std::views::transform([](const auto &item) -> int {
@@ -67,7 +67,7 @@ std::string solve_part_2(std::vector<std::string> data) {
     return std::string(std::format("{}", std::reduce(winners.begin(), winners.end())));
 }
 
-void *solve_all(std::vector<std::string> data) {
+void *solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
         aoc::timer(1, solve_part_1, data, 1);

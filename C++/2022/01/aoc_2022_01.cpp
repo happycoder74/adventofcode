@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <concepts>
 #include <cstdint>
 #include <fstream>
 #include <iomanip>
@@ -9,7 +8,6 @@
 #include <numeric>
 #include <ranges>
 #include <string>
-#include <string_view>
 #include <vector>
 
 namespace day01::calories {
@@ -58,10 +56,10 @@ int parse_and_run(std::string path) {
 
     krn::time_point<Clock, ms> p = krn::time_point_cast<ms>(Clock::now());
     std::cout << "The elf with the maximum number of calorie is carrying " << day01::calories::max_calories(data) << " calories worth of food.\n";
-    std::cout << std::setprecision(10) << krn::duration<double, std::ratio<1, 1000>>(Clock::now() - p) << std::endl;
+    std::cout << std::setprecision(10) << krn::duration<double, std::ratio<1, 1000>>(Clock::now() - p) << '\n';
     p = krn::time_point_cast<ms>(Clock::now());
     std::cout << "The top 3 elfs are carrying " << day01::calories::top_three(data) << " calories worth of food.\n";
-    std::cout << std::setprecision(10) << krn::duration<double, std::ratio<1, 1000>>(Clock::now() - p) << std::endl;
+    std::cout << std::setprecision(10) << krn::duration<double, std::ratio<1, 1000>>(Clock::now() - p) << '\n';
 
     return 0;
 }

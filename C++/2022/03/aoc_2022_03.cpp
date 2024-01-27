@@ -1,6 +1,6 @@
 #include "aoc_io.hpp"
+#include "aoc_timer.hpp"
 #include <algorithm>
-#include <iostream>
 #include <iterator>
 #include <set>
 #include <string>
@@ -15,8 +15,9 @@ static int prio(char p) {
     return p - 'a' + 1;
 }
 
-std::vector<std::pair<std::string, std::string>> clean_input(std::vector<std::string> input_data) {
+std::vector<std::pair<std::string, std::string>> clean_input(const std::vector<std::string> &input_data) {
     std::vector<std::pair<std::string, std::string>> rucksacks;
+    rucksacks.reserve(input_data.size());
     for (auto &row : input_data) {
         std::pair<std::string, std::string> packs;
         packs.first = row.substr(0, row.length() / 2);
@@ -26,23 +27,7 @@ std::vector<std::pair<std::string, std::string>> clean_input(std::vector<std::st
     return rucksacks;
 }
 
-std::vector<std::string> parse(std::string path) {
-    std::vector<std::string> data;
-
-    std::fstream file(path);
-
-    if (!file.is_open()) {
-        std::cerr << "Failed to open " << std::quoted(path) << "\n";
-    }
-    std::string line;
-    while (std::getline(file, line)) {
-        data.push_back(line);
-    }
-
-    return data;
-}
-
-int solve_part_1(std::vector<std::pair<std::string, std::string>> data) {
+int solve_part_1(const std::vector<std::pair<std::string, std::string>> &data) {
     std::int32_t prio_sum = 0;
 
     for (auto &pack : data) {
@@ -56,28 +41,42 @@ int solve_part_1(std::vector<std::pair<std::string, std::string>> data) {
 
     return prio_sum;
 }
+
+void *solve_all(const std::vector<std::string> &data) {
+    std::vector<std::pair<std::string, std::string>> input;
+
+    input = clean_input(data);
+
+    if (data.size() > 0) {
+        aoc::timer(1, solve_part_1, input, 1);
+        // aoc::timer(2, solve_part_2, data, 1);
+    }
+
+    return NULL;
+}
+
 } // namespace aoc_2022_03
 
 int main(int argc, char **argv) {
-    std::string filename;
-    const int   year = 2022;
-    const int   day = 3;
+    std::vector<std::string> data;
+
+    char sourcefile[20];
+    int  year = 2022;
+    int  day = 3;
 
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {
-            filename = "test_input.txt";
+            data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
         } else {
-            filename = argv[1];
+            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
         }
     } else {
-        filename = "input.txt";
+        data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
-    std::vector<std::string> data = aoc::io::get_input_list<std::string>(filename, year, day);
-
-    auto parsed_data = aoc_2022_03::clean_input(data);
-
-    std::cout << "Part 1 Answer: " << aoc_2022_03::solve_part_1(parsed_data) << std::endl;
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    aoc::timer(0, aoc_2022_03::solve_all, data, 0);
 
     return 0;
 }

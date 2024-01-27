@@ -12,7 +12,7 @@ static unsigned distance(std::pair<int, int> g1, std::pair<int, int> g2) {
     return std::abs(g2.first - g1.first) + std::abs(g2.second - g1.second);
 }
 
-uint64_t solver(std::vector<std::string> data, int multiplier = 2) {
+uint64_t solver(const std::vector<std::string> &data, int multiplier = 2) {
     /* Solution concept
      *
      * - Find the initial positions of the galaxies.
@@ -46,7 +46,7 @@ uint64_t solver(std::vector<std::string> data, int multiplier = 2) {
     }
 
     // Find blank rows
-    for (std::vector<std::string>::iterator it = data.begin(); it != data.end(); it++) {
+    for (std::vector<std::string>::const_iterator it = data.begin(); it != data.end(); it++) {
         std::string::size_type pos;
 
         pos = (*it).find("#");
@@ -90,15 +90,15 @@ uint64_t solver(std::vector<std::string> data, int multiplier = 2) {
     return distances;
 }
 
-std::string solve_part_1(std::vector<std::string> data) {
+std::string solve_part_1(const std::vector<std::string> &data) {
     return std::format("{}", aoc::aoc_2023_11::solver(data));
 }
 
-std::string solve_part_2(std::vector<std::string> data) {
+std::string solve_part_2(const std::vector<std::string> &data) {
     return std::format("{}", aoc::aoc_2023_11::solver(data, 1000000));
 }
 
-void *solve_all(std::vector<std::string> data) {
+void *solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
         aoc::timer(1, solve_part_1, data, 1);
@@ -115,8 +115,8 @@ int main(int argc, char **argv) {
     std::vector<std::string> data;
 
     char sourcefile[20];
-    int  year = 2023;
 
+    int year = 2023;
     int day = 11;
 
     if (argc > 1) {
@@ -129,8 +129,8 @@ int main(int argc, char **argv) {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    std::cout << std::format("{:=<50}", "") << "\n";
+    std::cout << std::format("Solution for {}, day {:02d}", year, day) << "\n";
     aoc::timer(0, aoc::aoc_2023_11::solve_all, data, 0);
 
     return 0;

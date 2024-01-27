@@ -1,6 +1,5 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -171,18 +170,18 @@ std::int32_t Schematic::find_gears() {
     return gear_ratio;
 }
 
-std::string solve_part_1(std::vector<std::string> data) {
+std::string solve_part_1(const std::vector<std::string> &data) {
     Schematic schema(data);
 
     return std::format("{}", schema.find_parts());
 }
 
-std::string solve_part_2(std::vector<std::string> data) {
+std::string solve_part_2(const std::vector<std::string> &data) {
     Schematic schema(data);
     return std::format("{}", schema.find_gears());
 }
 
-void *solve_all(std::vector<std::string> data) {
+void *solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
         aoc::timer(1, solve_part_1, data, 1);

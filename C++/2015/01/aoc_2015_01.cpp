@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
-    std::cout << level << std::endl;
-    std::cout << counter << std::endl;
+    aoc::io::header(year, day);
+    std::cout << level << '\n';
+    std::cout << counter << '\n';
     return 0;
 }

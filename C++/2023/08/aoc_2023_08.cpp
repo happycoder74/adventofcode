@@ -1,7 +1,6 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
-#include <iostream>
 #include <map>
 #include <numeric>
 #include <string>
@@ -58,7 +57,7 @@ std::int64_t get_steps(std::string node, instructions_t instructions, network_t 
     return steps_required;
 }
 
-std::int64_t solve_part_1(std::pair<instructions_t, network_t> data) {
+std::int64_t solve_part_1(const std::pair<instructions_t, network_t> &data) {
     std::int64_t steps = 0;
 
     std::string    node = "AAA";
@@ -72,7 +71,7 @@ std::int64_t lcm(std::int64_t a, std::int64_t b) {
     return (a * b) / (std::gcd(a, b));
 }
 
-std::int64_t solve_part_2(std::pair<instructions_t, network_t> data) {
+std::int64_t solve_part_2(const std::pair<instructions_t, network_t> &data) {
     std::int32_t   prio_sum = 0;
     instructions_t instructions = data.first;
     network_t      network = data.second;
@@ -88,7 +87,7 @@ std::int64_t solve_part_2(std::pair<instructions_t, network_t> data) {
     return std::accumulate(steps_required.begin(), steps_required.end(), steps_required[0], std::lcm<std::int64_t, std::int64_t>);
 }
 
-void *solve_all(std::pair<instructions_t, network_t> data) {
+void *solve_all(const std::pair<instructions_t, network_t> &data) {
     aoc::timer(1, solve_part_1, data, 1);
     aoc::timer(2, solve_part_2, data, 1);
     return NULL;

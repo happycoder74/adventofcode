@@ -5,18 +5,19 @@
 #include <vector>
 
 namespace aoc_2022_02 {
-std::vector<std::pair<char, char>> transform_input(std::vector<std::string> input) {
+std::vector<std::pair<char, char>> transform_input(const std::vector<std::string> &input) {
     std::ifstream file;
 
     std::vector<std::pair<char, char>> return_vector;
 
+    return_vector.reserve(input.size());
     for (auto &item : input) {
         return_vector.push_back(std::make_pair(item[0], item[2]));
     }
     return return_vector;
 }
 
-int solve_part_1(std::vector<std::pair<char, char>> input) {
+int solve_part_1(const std::vector<std::pair<char, char>> &input) {
     std::map<char, int> shape_points = {
         {'X', 1},
         {'Y', 2},
@@ -36,7 +37,7 @@ int solve_part_1(std::vector<std::pair<char, char>> input) {
     return sum;
 }
 
-int solve_part_2(std::vector<std::pair<char, char>> input) {
+int solve_part_2(const std::vector<std::pair<char, char>> &input) {
     std::map<char, int> shape_points = {
         {'X', 1},
         {'Y', 2},
@@ -70,9 +71,9 @@ int solve_part_2(std::vector<std::pair<char, char>> input) {
     return points;
 }
 
-int solve_all(std::vector<std::pair<char, char>> input) {
-    aoc::timer<int, std::pair<char, char>>(1, aoc_2022_02::solve_part_1, input, true);
-    aoc::timer<int, std::pair<char, char>>(2, aoc_2022_02::solve_part_2, input, true);
+int solve_all(const std::vector<std::pair<char, char>> &input) {
+    aoc::timer(1, aoc_2022_02::solve_part_1, input, true);
+    aoc::timer(2, aoc_2022_02::solve_part_2, input, true);
 
     return 0;
 }
@@ -85,9 +86,9 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::pair<char, char>> input = aoc_2022_02::transform_input(aoc::io::get_input_list<std::string>("input.txt", year, day));
 
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
+    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << '\n';
 
-    aoc::timer<int, std::pair<char, char>>(0, aoc_2022_02::solve_all, input, false);
+    aoc::timer(0, aoc_2022_02::solve_all, input, false);
 
     return 0;
 }
