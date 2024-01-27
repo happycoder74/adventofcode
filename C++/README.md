@@ -39,7 +39,7 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; |               |               |
-|  2  |                  |               |               |
+|  2  | &#11088;&#11088; |               |               |
 |  3  |                  |               |               |
 |  4  |                  |               |               |
 |  5  |                  |               |               |
