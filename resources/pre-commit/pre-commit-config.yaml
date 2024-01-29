@@ -1,18 +1,18 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v1.2.3
+  rev: v4.5.0
   hooks:
   -   id: trailing-whitespace
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v17.0.2
+  rev: v17.0.6
   hooks:
   - id: clang-format
 - repo: https://gitea.strandkarr.net/christian/pre-commit-rust-format.git
-  rev: v0.1.1
+  rev: f10157474c510a197f504d6520b2d6797fe10246
   hooks:
   - id: rust-format
 - repo: https://github.com/psf/black
-  rev: 23.11.0
+  rev: 24.1.1
   hooks:
   - id: black
     args: [
@@ -20,6 +20,6 @@ repos:
         "100"
         ]
 - repo: https://github.com/PyCQA/isort
-  rev: 5.12.0
+  rev: 5.13.2
   hooks:
   - id: isort
