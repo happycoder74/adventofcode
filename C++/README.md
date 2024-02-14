@@ -16,8 +16,8 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 | 11  | &#11088;&#11088; |               |               |Very "loopy" approach, but working nicely for these sizes of input.
 
 ## 2019:
-| Day | Stars            | Timing Part 1 | Timing Part 2 |
-|:---:|:-----------------|--------------:|--------------:|
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:-------------
 |  1  | &#11088;&#11088; |               |               |
 |  2  |                  |               |               |
 |  3  | &#11088;&#11088; |               |               |
@@ -26,8 +26,8 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 |  6  |                  |               |               |
 
 ## 2017:
-| Day | Stars            | Timing Part 1 | Timing Part 2 |
-|:---:|:-----------------|--------------:|--------------:|
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:-------------
 |  1  | &#11088;&#11088; |               |               |
 |  2  |                  |               |               |
 |  3  |                  |               |               |
@@ -36,11 +36,11 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 |  6  |                  |               |               |
 
 ## 2015:
-| Day | Stars            | Timing Part 1 | Timing Part 2 |
-|:---:|:-----------------|--------------:|--------------:|
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:-------------
 |  1  | &#11088;&#11088; |               |               |
 |  2  | &#11088;&#11088; |               |               |
-|  3  |                  |               |               |
+|  3  | &#11088;&#11088; |               |               | Fun with classes
 |  4  |                  |               |               |
 |  5  |                  |               |               |
 |  6  |                  |               |               |
