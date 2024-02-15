@@ -15,12 +15,12 @@ The 2023 solutions use the [cargo-aoc](https://github.com/gobanos/cargo-aoc) hel
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
 |  1  | &#11088;&#11088; | This one was fairly straightforward... |
-|:---:|:-----------------|:---------------------------------------|
+|  2  | &#11088;&#11088; |                                        |
 
 
 ## 2015:
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
-|  1  | &#11088;&#11088; |                                        |
-|:---:|:-----------------|:---------------------------------------|
+|  1  | &#11088;&#11088; | Overly complicated structure for a very simple problem. Trying to understand traits and their implementation. |
+|  3  | &#11088;&#11088; |                                        |
 

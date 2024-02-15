@@ -46,8 +46,20 @@ fn solve_part_2(input: &[(Cards, Cards)]) -> AocReturn {
 }
 
 pub fn main() {
-    let input = get_input(2023, 4);
+    let input = get_input(2023, 4, false);
     let data = parse_input(&input);
     report("Part 1", solve_part_1(&data));
     report("Part 2", solve_part_2(&data));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_part_1() {
+        let input = aoc_utils::get_input(2023, 4, true);
+        let cards = parse_input(&input);
+        assert_eq!(13, solve_part_1(&cards).result)
+    }
 }
