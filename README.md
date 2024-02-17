@@ -11,10 +11,12 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 ## Year 2022
 + 36 &#11088; in [Python](python/README.md)
 + 4 &#11088; in [C](C/README.md)
++ 5 &#11088; in [C++](C++/README.md)
 
 ## Year 2021
 + 42 &#11088; in [Python](python/README.md)
 + 18 &#11088; in [C](C/README.md)
++ 2 &#11088; in [C++](C++/README.md)
 + 5 &#11088; in [Rust](Rust/README.md)
 + 2 &#11088; in PHP (day 1)
 
@@ -24,10 +26,11 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 ## Year 2019
 + 2 &#11088; in [Python](python/README.md)
 + 11 &#11088; in [C](C/README.md)
-+ 2 &#11088; in [C++](C++/README.md)
++ 4 &#11088; in [C++](C++/README.md)
 
 ## Year 2017
 + 2 &#11088; in [C](C/README.md)
++ 4 &#11088; in [C++](C++/README.md)
 
 ## Year 2016
 + 16 &#11088; in [Python](python/README.md)
