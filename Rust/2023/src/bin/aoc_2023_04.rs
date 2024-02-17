@@ -1,7 +1,6 @@
 use std::time::Instant;
 use std::collections::HashSet;
 use aoc_utils::input::get_input;
-use aoc_utils::types::AocReturn;
 use aoc_utils::output::report;
 
 type Cards = HashSet<i32>;
@@ -26,7 +25,7 @@ pub fn parse_input(input: &str) -> Vec<(Cards, Cards)> {
     numbers
 }
 
-fn solve_part_1(input: &[(Cards, Cards)]) -> AocReturn {
+fn solve_part_1(input: &[(Cards, Cards)]) -> (i32, std::time::Duration) {
     let start_time = Instant::now();
     let result: i32 = input
         .iter()
@@ -36,13 +35,13 @@ fn solve_part_1(input: &[(Cards, Cards)]) -> AocReturn {
             n => 1 << (n - 1),
         })
         .sum();
-    AocReturn {result, duration: Instant::now() - start_time}
+    (result, Instant::now() - start_time)
 }
 
-fn solve_part_2(input: &[(Cards, Cards)]) -> AocReturn {
+fn solve_part_2(input: &[(Cards, Cards)]) -> (i32, std::time::Duration) {
     let start_time = Instant::now();
     let result = input.len() as i32;
-    AocReturn {result, duration: Instant::now() - start_time}
+    (result, Instant::now() - start_time)
 }
 
 pub fn main() {
@@ -60,6 +59,6 @@ mod tests {
     fn test_part_1() {
         let input = aoc_utils::get_input(2023, 4, true);
         let cards = parse_input(&input);
-        assert_eq!(13, solve_part_1(&cards).result)
+        assert_eq!(13, solve_part_1(&cards).0)
     }
 }
