@@ -1,6 +1,5 @@
 use std::time::Instant;
 use aoc_utils::output::report;
-use aoc_utils::types::AocReturn;
 use aoc_utils::input::get_input;
 
 struct Commands {
@@ -9,7 +8,7 @@ struct Commands {
     up: i32
 }
 
-fn solve_part_1(x: &str) -> AocReturn {
+fn solve_part_1(x: &str) -> (i32, std::time::Duration) {
     let start_time = Instant::now();
     let mut commands = Commands{forward: 0, down: 0, up: 0};
 
@@ -24,10 +23,10 @@ fn solve_part_1(x: &str) -> AocReturn {
         }
     }
 
-    AocReturn {result: commands.forward * (commands.down - commands.up), duration: Instant::now() - start_time}
+    (commands.forward * (commands.down - commands.up), Instant::now() - start_time)
 }
 
-fn solve_part_2(input: &str) -> AocReturn {
+fn solve_part_2(input: &str) -> (i32, std::time::Duration) {
     let start_time = Instant::now();
     let mut horizontal = 0;
     let mut aim = 0;
@@ -46,10 +45,7 @@ fn solve_part_2(input: &str) -> AocReturn {
             _ => ()
         }
     }
-    AocReturn {
-        result: horizontal * depth,
-        duration: Instant::now() - start_time
-    }
+    (horizontal * depth, Instant::now() - start_time)
 }
 
 fn main() {
@@ -75,12 +71,12 @@ forward 2
     #[test]
     fn test_part_1() {
         let input = get_input();
-        assert_eq!(150, solve_part_1(&input).result);
+        assert_eq!(150, solve_part_1(&input).0);
     }
 
     #[test]
     fn test_part_2() {
         let input = get_input();
-        assert_eq!(900, solve_part_2(&input).result);
+        assert_eq!(900, solve_part_2(&input).0);
     }
 }

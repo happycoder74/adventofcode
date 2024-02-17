@@ -1,14 +1,11 @@
 use std::time::Instant;
 use aoc_utils::output::report;
 use aoc_utils::input::get_input;
-use aoc_utils::types::AocReturn;
 
-fn solve_part_1(input: &str) -> AocReturn {
+fn solve_part_1(input: &str) -> (u32, std::time::Duration) {
     let start_time = Instant::now();
-    // let lines = input.lines();
     let width = input.find("\n").unwrap();
     let count = input.len() / (width + 1);
-    println!("{} - {}", width, count);
 
     let gamma = input
         .lines()
@@ -25,19 +22,18 @@ fn solve_part_1(input: &str) -> AocReturn {
         .map(|(i, b)| ((b >= count / 2 ) as u32) << i)
         .sum::<u32>();
 
-    println!("{:?}", gamma);
-    AocReturn {
-        result: (gamma * (!gamma & ((1 << width) - 1))) as i32,
-        duration: Instant::now() - start_time
-    }
+    (
+        (gamma * (!gamma & ((1 << width) - 1))),
+        Instant::now() - start_time
+    )
 }
 
-fn solve_part_2(input: &str) -> AocReturn {
+fn solve_part_2(input: &str) -> (&str, std::time::Duration) {
     let start_time = Instant::now();
-    AocReturn {
-        result: input.len() as i32,
-        duration: Instant::now() - start_time
-    }
+    (
+        "Not implemented",
+        Instant::now() - start_time
+    )
 }
 
 fn main() {
@@ -55,13 +51,13 @@ mod tests {
     #[test]
     fn test_part_1() {
         let input = get_input(2021, 3, true);
-        let result = solve_part_1(&input).result;
+        let result = solve_part_1(&input).0;
         assert_eq!(198, result);
     }
 
     #[test]
     fn test_part_2() {
         let input = get_input(2021, 3, true);
-        assert_eq!(230, solve_part_2(&input).result);
+        assert_eq!(230, solve_part_2(&input).0);
     }
 }
