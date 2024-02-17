@@ -11,8 +11,9 @@
 namespace aoc::io {
 
 inline void header(int year, int day) {
-    std::cout << std::format("{:=<50}", "") << '\n';
+    std::cout << std::format("{:=<55}", "") << '\n';
     std::cout << std::format("Solution for {:d}, day {:02d}", year, day) << '\n';
+    std::cout << std::format("{:-<55}", "") << '\n';
 }
 
 std::string get_input_bare(const std::string &fn);
