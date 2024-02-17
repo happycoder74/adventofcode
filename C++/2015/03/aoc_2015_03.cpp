@@ -36,7 +36,7 @@ class SantaAgent {
                 std::cerr << "Invalid instruction" << '\n';
                 exit(EXIT_FAILURE);
         }
-        coords[loc] += 1;
+        coords.insert({loc, 1});
     };
     int get_locations() {
         return coords.size();
