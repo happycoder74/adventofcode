@@ -7,6 +7,10 @@ class Helpers:
     def sign(number):
         return 1 if number > 0 else -1
 
+    @staticmethod
+    def manhattan(pos):
+        return abs(pos[0]) + abs(pos[1])
+
 
 def sign(number):
     return 1 if number > 0 else -1
