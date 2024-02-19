@@ -62,9 +62,11 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  4  | &#11088;&#11088; | 0.016 s       | 0.016 s       |
 
 ## 2017:
-| Day | Stars            | Timing Part 1 | Timing Part 2 |
-|:---:|:-----------------|--------------:|--------------:|
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:----------------
 |  1  | &#11088;&#11088; |               |               |
+|  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |
+
 
 
 ## 2016:
