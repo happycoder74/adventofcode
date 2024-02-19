@@ -1,7 +1,5 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -30,8 +28,8 @@ int solve_part_2(const std::vector<int> &data) {
 }
 
 int solve_all(const std::vector<int> &data) {
-    aoc::timer(1, aoc_2021_01::solve_part_1, data);
-    aoc::timer(2, aoc_2021_01::solve_part_2, data);
+    aoc::timer(1, solve_part_1, data);
+    aoc::timer(2, solve_part_2, data);
 
     return 0;
 }
@@ -40,7 +38,7 @@ int solve_all(const std::vector<int> &data) {
 int main(int argc, char **argv) {
     std::string filename;
     const int   year = 2021;
-    const int   day = 1;
+    const int   day  = 1;
 
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {

@@ -37,8 +37,9 @@ int solve_all(const std::string &line) {
 
 int main(int argc, char **argv) {
     std::string filename;
-    const int   year = 2017;
-    const int   day = 1;
+
+    const int year = 2017;
+    const int day  = 1;
 
     std::vector<std::string> data;
 
