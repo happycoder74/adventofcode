@@ -51,12 +51,12 @@ class AocRunner(object):
         class_list: Any = self.get_classes()
         for year, cls in class_list:
             print(f"Year {year} - {cls.__name__}")
-            print("=================================")
+            print("{0:=<60}".format(""))
             try:
                 cls(filename=self.filename, data=self.data).solve_all()
             except ModuleNotFoundError:
                 print("Unable to import submodule")
-            print("=================================")
+            print("{0:=<60}".format(""))
             print("")
 
     def get_classes(self) -> list[Any]:
