@@ -9,3 +9,4 @@ edition.workspace = true
 
 [dependencies]
 aoc_utils.workspace = true
+itertools = "0.12.1"

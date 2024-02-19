@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 fn main() {
     let input = aoc_utils::get_input(2017, 2, false);
     let parsed = parse_input(&input);
@@ -33,13 +35,11 @@ fn solve_part_2(input: &Vec<Vec<u32>>) -> (u32, std::time::Duration) {
     let start_time = std::time::Instant::now();
     let mut result: u32 = 0;
 
-    for line in input.iter() {
-        for num in line {
-            for num2 in line {
-                match (num != num2) && ((num % num2) == 0) {
-                    true => result += num / num2,
+    for line in input {
+        for num in line.iter().permutations(2) {
+            match (num[0] % num[1]) == 0 {
+                    true => result += num[0] / num[1],
                     false => ()
-                }
             }
         }
     }
