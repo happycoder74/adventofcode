@@ -1,5 +1,6 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
+#include <climits>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -25,8 +26,8 @@ class Schematic {
 
 Schematic::Schematic(std::vector<std::string> data) {
     this->limits.second = static_cast<int32_t>(data.size());
-    this->limits.first = static_cast<int32_t>(data[0].size());
-    this->next_col = INT_MAX;
+    this->limits.first  = static_cast<int32_t>(data[0].size());
+    this->next_col      = INT_MAX;
 
     int32_t j = 0;
     for (auto &row : data) {
@@ -70,7 +71,7 @@ std::int32_t Schematic::find_parts() {
     std::int32_t num_parts = 0;
     for (std::int32_t j = 0; j < this->limits.second; j++) {
         int  num_start = -1;
-        bool keep = false;
+        bool keep      = false;
         for (std::int32_t i = 0; i <= this->limits.first; i++) {
             char point = this->grid_map[{j, i}];
             if (isdigit(point)) {
@@ -91,7 +92,7 @@ std::int32_t Schematic::find_parts() {
                     num_parts += std::atoi(buf);
                 }
                 num_start = -1;
-                keep = false;
+                keep      = false;
             }
         }
     }
@@ -100,7 +101,7 @@ std::int32_t Schematic::find_parts() {
 
 std::int32_t Schematic::find_number(std::int32_t row, std::int32_t col) {
     int start = col;
-    int end = col;
+    int end   = col;
     if (!isdigit(this->grid_map[{row, col}])) {
         return 0;
     }
@@ -156,7 +157,7 @@ std::int32_t Schematic::find_gears() {
                 if ((grid_map.contains({row, col})) && (isdigit(this->grid_map[{row, col}]))) {
                     numbers.push_back(find_number(row, col));
                     if (this->next_col != INT_MAX) {
-                        col = this->next_col;
+                        col            = this->next_col;
                         this->next_col = INT_MAX;
                     }
                 }
@@ -196,7 +197,7 @@ int main(int argc, char **argv) {
 
     char sourcefile[20];
     int  year = 2023;
-    int  day = 3;
+    int  day  = 3;
 
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {

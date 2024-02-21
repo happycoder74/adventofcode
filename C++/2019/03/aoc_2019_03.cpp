@@ -1,6 +1,7 @@
 #include "aoc_io.hpp"
 #include "aoc_string.hpp"
 #include "aoc_timer.hpp"
+#include <climits>
 #include <iostream>
 #include <map>
 #include <ranges>
@@ -68,7 +69,7 @@ static Container transform_input(const std::vector<std::string> &instructions) {
     }
 
     std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> data;
-    data.first = find_intersections(wire_coords.front(), wire_coords.back());
+    data.first  = find_intersections(wire_coords.front(), wire_coords.back());
     data.second = wire_stepmap;
 
     return data;
@@ -84,7 +85,7 @@ int solve_part_2(const Container &data) {
     int signal = INT_MAX;
     for (const auto &p : data.first) {
         auto second = data.second;
-        signal = std::min(signal, second.front()[p.first] + second.back()[p.first]);
+        signal      = std::min(signal, second.front()[p.first] + second.back()[p.first]);
     }
 
     return signal;
@@ -103,7 +104,7 @@ int main(int argc, char **argv) {
     std::string filename;
     std::string line;
     const int   year = 2019;
-    const int   day = 3;
+    const int   day  = 3;
 
     std::vector<std::string> data;
 
