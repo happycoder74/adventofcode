@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 600
 #include "aoc_timer.h"
 #include "aoc_alloc.h"
 #include <stdio.h>
@@ -20,12 +21,8 @@ Duration convert_duration(double elapsed) {
         sprintf(duration.unit, "ms");
     } else if (elapsed > 1e3) {
         duration.duration = elapsed / 1e3;
-#ifndef _WIN32
+        // Need a UTF-8 enabled terminal to display correctly
         sprintf(duration.unit, "\u03BCs");
-#else
-        sprintf(duration.unit, "\xE6s");
-#endif
-
     } else {
         duration.duration = elapsed;
         sprintf(duration.unit, "ns");
@@ -61,7 +58,7 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
 }
 
 #else
-#define _XOPEN_SOURCE 600
+#include <time.h>
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
     double          elapsed, elapsed_unit;
     struct timespec start, stop;

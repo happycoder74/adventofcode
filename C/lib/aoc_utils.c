@@ -3,7 +3,7 @@
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
-#include "glib.h"
+#include <limits.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -168,15 +168,21 @@ char *point_to_string(Point p, char *buf) {
     return buf;
 }
 
-unsigned int point_hash(const void *p) {
-    Point    *point = (Point *)p;
-    uint64_t *int_hash = (uint64_t *)malloc(sizeof(uint64_t));
-    *int_hash = point->x;
-    *int_hash <<= sizeof(UINT_MAX) * 4;
-    *int_hash ^= point->y;
+unsigned int64_hash(uint64_t value) {
+    // Implementation from glib-v2.X
+    const uint64_t bits = value;
 
-    unsigned int return_value = g_int64_hash(int_hash);
-    free(int_hash);
+    return (unsigned)((bits >> 32) ^ (bits & 0xffffffffU));
+}
+
+unsigned int point_hash(const void *p) {
+    Point   *point = (Point *)p;
+    uint64_t int_hash = point->x;
+    int_hash <<= sizeof(UINT_MAX) * 4;
+    int_hash ^= point->y;
+
+    unsigned int return_value = int64_hash(int_hash);
+
     return return_value;
 }
 
