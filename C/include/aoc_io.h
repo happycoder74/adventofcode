@@ -7,6 +7,7 @@ int         download_input(int year, int day);
 AocSList   *get_input_list(char *filename, int year, int day);
 AocArrayPtr get_input(char *filename, int year, int day);
 AocArrayPtr get_input_new(char *filename, int year, int day);
+void        aoc_header(unsigned year, unsigned day);
 
 #ifdef __MINGW32__
 #include <stdio.h>
