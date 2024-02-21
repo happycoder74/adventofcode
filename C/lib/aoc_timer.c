@@ -32,8 +32,8 @@ Duration convert_duration(double elapsed) {
     return duration;
 }
 
-void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, gboolean show_res) {
-    gdouble         elapsed, elapsed_unit;
+void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
+    double          elapsed, elapsed_unit;
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
