@@ -33,17 +33,17 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
-        if (g_strstr_len(line, 4, "rect")) {
+        if (strstr(line, "rect")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = INIT;
             sscanf(line, "rect %dx%d", &instruction->value1, &instruction->value2);
             aoc_ptr_array_append(instruction_list, instruction);
-        } else if (g_strstr_len(line, 10, "rotate col")) {
+        } else if (strstr(line, "rotate col")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = COL;
             sscanf(line, "rotate column x=%d by %d", &instruction->value1, &instruction->value2);
             aoc_ptr_array_append(instruction_list, instruction);
-        } else if (g_strstr_len(line, 10, "rotate row")) {
+        } else if (strstr(line, "rotate row")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = ROW;
             sscanf(line, "rotate row y=%d by %d", &instruction->value1, &instruction->value2);

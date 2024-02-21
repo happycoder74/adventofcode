@@ -40,6 +40,22 @@ int          point_manhattan_distance(Point, Point);
 int          point_distance(Point, Point);
 bool         point_on_line(Point p, Line line);
 
+#define MIN(_X_, _Y_) (((_X_) < (_Y_)) ? (_X_) : (_Y_))
+#ifdef MAX
+#undef MAX
+#endif
+#define MAX(_X_, _Y_) (((_X_) > (_Y_)) ? (_X_) : (_Y_))
+
+#ifdef TRUE
+#undef TRUE
+#endif
+#define TRUE 1
+
+#ifdef FALSE
+#undef FALSE
+#endif
+#define FALSE 0
+
 // Legacy support functions
 // Returns max and min value in integer array
 int max(int *, int);
