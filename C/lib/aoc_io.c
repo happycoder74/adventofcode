@@ -211,6 +211,12 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     return data;
 }
 
+void aoc_header(unsigned year, unsigned day) {
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    printf("================================================\n");
+}
+
 #ifdef __MINGW32__
 ssize_t getline(char **buf, size_t *bufsiz, FILE *fp) {
     return getdelim(buf, bufsiz, '\n', fp);
@@ -258,12 +264,6 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
             ptr = nbuf + d;
         }
     }
-}
-
-void aoc_header(unsigned year, unsigned day) {
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
-    printf("================================================\n");
 }
 
 #endif
