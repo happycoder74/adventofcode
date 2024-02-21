@@ -112,10 +112,11 @@ void grid_print(Grid *grid, int final) {
     for (row = 0; row < grid->rows; row++) {
         for (col = 0; col < grid->columns; col++) {
             i = row * grid->columns + col;
-            if (grid->grid[i] > 0)
-                printf("%c", 219);
-            else
+            if (grid->grid[i] > 0) {
+                printf("\u2588");
+            } else {
                 printf(" ");
+            }
         }
         printf("\n");
     }
