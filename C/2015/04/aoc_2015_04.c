@@ -3,6 +3,7 @@
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
+#include <glib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -50,7 +51,6 @@ void *solve_part_2_bin(AocData_t *data) {
 void *solve_all(AocData_t *data) {
 
     if (data->data) {
-        printf("Solving using bin\n");
         timer_func(1, solve_part_1_bin, data, 1);
         timer_func(2, solve_part_2_bin, data, 1);
     }
