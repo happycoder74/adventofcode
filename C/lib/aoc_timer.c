@@ -1,9 +1,6 @@
-#define _XOPEN_SOURCE 600 // enable the clock_gettime functionality
 #include "aoc_timer.h"
 #include "aoc_alloc.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <unistd.h>
 
 typedef struct Duration {
@@ -37,6 +34,34 @@ Duration convert_duration(double elapsed) {
     return duration;
 }
 
+#ifdef _WIN32
+// clang-format off
+#include <windows.h>
+#include <winbase.h>
+// clang-format off
+void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+    LARGE_INTEGER endTime;
+    char         *result = (char *)func(aocdata);
+    QueryPerformanceCounter(&endTime);
+    double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+    Duration duration = convert_duration(timeDifference);
+    if (show_res) {
+        printf("Part %d answer: %-20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+    } else {
+        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+    }
+
+    if (result) {
+        aoc_free(result);
+    }
+}
+
+#else
+#define _XOPEN_SOURCE 600
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
     double          elapsed, elapsed_unit;
     struct timespec start, stop;
@@ -56,3 +81,4 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
     if (result)
         aoc_free(result);
 }
+#endif
