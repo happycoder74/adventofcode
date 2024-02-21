@@ -2,6 +2,7 @@
 #include "aoc_list.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
+#include "aoc_utils.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <stdio.h>
@@ -257,6 +258,12 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
             ptr = nbuf + d;
         }
     }
+}
+
+void aoc_header(unsigned year, unsigned day) {
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    printf("================================================\n");
 }
 
 #endif
