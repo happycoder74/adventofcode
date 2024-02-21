@@ -26,7 +26,7 @@ Duration convert_duration(double elapsed) {
 #ifndef _WIN32
         sprintf(duration.unit, "\u03BCs");
 #else
-        sprintf(duration.unit, "\xE5s");
+        sprintf(duration.unit, "\xE6s");
 #endif
 
     } else {
