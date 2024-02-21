@@ -23,7 +23,12 @@ Duration convert_duration(double elapsed) {
         sprintf(duration.unit, "ms");
     } else if (elapsed > 1e3) {
         duration.duration = elapsed / 1e3;
+#ifndef _WIN32
         sprintf(duration.unit, "\u03BCs");
+#else
+        sprintf(duration.unit, "\xE5s");
+#endif
+
     } else {
         duration.duration = elapsed;
         sprintf(duration.unit, "ns");
