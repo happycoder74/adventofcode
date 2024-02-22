@@ -4,72 +4,99 @@
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
-#include "glib.h"
+#include <regex.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <tre/tre.h>
 
-#ifndef G_REGEX_MATCH_DEFAULT
-#define G_REGEX_MATCH_DEFAULT 0
-#endif
+uint32_t count_matches(regex_t *pattern, const char *string, int method) {
+    regmatch_t match_info[20];
+    int        error = 0;
+    uint32_t   count = 0;
+    uint32_t   offset = 0;
+    char       error_string[100];
 
-uint32_t count_matches(GRegex *pattern, char *string) {
-    GMatchInfo *match_info;
-    uint32_t    count = 0;
-
-    g_regex_match(pattern, string, G_REGEX_MATCH_DEFAULT, &match_info);
-    while (g_match_info_matches(match_info)) {
-        count++;
-        g_match_info_next(match_info, NULL);
+    if (method == 1) {
+        while (!(error = regexec(pattern, string + offset, 20, match_info, 0))) {
+            offset += match_info->rm_so + 1;
+            count++;
+        }
+    } else {
+        error = regexec(pattern, string, 20, match_info, 0);
+        int counter = 1;
+        if (!error) {
+            while (match_info[count].rm_so >= 0) {
+                count++;
+            }
+        }
     }
-    g_match_info_free(match_info);
+
+    if (error) {
+        regerror(error, pattern, error_string, 100);
+        if (error != 1) {
+            fprintf(stderr, "Got error: %s (%d)\n", error_string, error);
+        }
+    }
 
     return count;
 }
 
 void *solve_part_1(AocData_t *data) {
-    GRegex *regex_wovel, *regex_double_letter, *regex_invalid;
+    regex_t regex_wovel, regex_double_letter, regex_invalid;
     int     count = 0;
     size_t  i;
     char   *line;
+    int     error;
+    char    error_string[100];
 
-    regex_wovel = g_regex_new("[aeiou]", 0, 0, NULL);
-    regex_double_letter = g_regex_new("(.)\\1", 0, 0, NULL);
-    regex_invalid = g_regex_new("(ab|cd|pq|xy)", 0, 0, NULL);
+    error = regcomp(&regex_wovel, "[aeiou]", REG_EXTENDED);
+    if (error) {
+        regerror(error, &regex_wovel, error_string, 100);
+    }
+    error = regcomp(&regex_double_letter, "(.)\\1", REG_EXTENDED);
+    if (error) {
+        regerror(error, &regex_double_letter, error_string, 100);
+    }
+    error = regcomp(&regex_invalid, "(ab|cd|pq|xy)", REG_EXTENDED);
+    if (error) {
+        regerror(error, &regex_invalid, error_string, 100);
+    }
 
     for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
-        if ((count_matches(regex_wovel, line) >= 3) && (count_matches(regex_double_letter, line) > 0) && (count_matches(regex_invalid, line) == 0)) {
+        if ((count_matches(&regex_wovel, line, 1) >= 3) && (count_matches(&regex_double_letter, line, 2) > 0) && (count_matches(&regex_invalid, line, 2) == 0)) {
             count++;
         }
     }
-
-    g_regex_unref(regex_wovel);
-    g_regex_unref(regex_double_letter);
-    g_regex_unref(regex_invalid);
 
     return strdup_printf("%d", count);
 }
 
 void *solve_part_2(AocData_t *data) {
-    GRegex  *regex_pairs, *regex_repeat;
+    regex_t  regex_pairs, regex_repeat;
     uint32_t count = 0;
     size_t   i;
     char    *line;
+    int      error;
+    char     error_string[100];
 
-    regex_pairs = g_regex_new("([a-z][a-z])\\w*\\1", 0, 0, NULL);
-    regex_repeat = g_regex_new("(.)\\w\\1", 0, 0, NULL);
+    error = regcomp(&regex_pairs, "\\w*([a-z][a-z])\\w*\\1", REG_EXTENDED);
+    if (error) {
+        regerror(error, &regex_pairs, error_string, 100);
+    }
+    error = regcomp(&regex_repeat, "(.)\\w\\1", REG_EXTENDED);
+    if (error) {
+        regerror(error, &regex_repeat, error_string, 100);
+    }
 
     for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
-        if ((count_matches(regex_pairs, line) > 0) && (count_matches(regex_repeat, line) > 0)) {
+        if ((count_matches(&regex_pairs, line, 2) > 0) && (count_matches(&regex_repeat, line, 2) > 0)) {
             count++;
         }
     }
-
-    g_regex_unref(regex_pairs);
-    g_regex_unref(regex_repeat);
 
     return strdup_printf("%d", count);
 }
