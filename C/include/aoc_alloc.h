@@ -1,6 +1,7 @@
 #ifndef __AOC_ALLOC_H_
 #define __AOC_ALLOC_H_
 
+#include <stdint.h>
 #include <stdlib.h>
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
