@@ -1,5 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
@@ -8,7 +9,7 @@
 #include <string.h>
 
 int get_requested(int row, int col) {
-    if (row == 0)
+    if (row == 0) {
         switch (col) {
             case 0:
                 return 2;
@@ -17,9 +18,11 @@ int get_requested(int row, int col) {
             case 2:
                 return 1;
         }
-    if (row == 1)
+    }
+    if (row == 1) {
         return col;
-    if (row == 2)
+    }
+    if (row == 2) {
         switch (col) {
             case 0:
                 return 1;
@@ -28,6 +31,7 @@ int get_requested(int row, int col) {
             case 2:
                 return 0;
         }
+    }
     return -1;
 }
 
@@ -84,26 +88,13 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2022;
+    const unsigned day = 2;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, NULL);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new("test_input.txt", year, day);
-        } else {
-            data = aoc_data_new(argv[1], year, day);
-        }
-    } else {
-        data = aoc_data_new("input.txt", year, day);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

@@ -1,5 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -29,8 +30,9 @@ void sf_number_free(SFNumber *sn) {
 
 void sf_number_print(SFNumber *sn) {
     int i;
-    if (!sn)
+    if (!sn) {
         return;
+    }
 
     if (sn->size <= 0) {
         return;
@@ -227,16 +229,17 @@ SFNumber *sf_number_from_string(char *sf_string) {
     SFNumber *sf;
     SFVal    *sfv_p;
 
-    for (i = 0; i < (int)strlen((char *)sf_string); i++) {
-        if (isdigit(sf_string[i]))
+    for (i = 0; i < (int)strlen(sf_string); i++) {
+        if (isdigit(sf_string[i])) {
             size++;
+        }
     }
     sf = sf_number_new(size);
 
     int level = 0;
     sfv_p = &(sf->number[0]);
-    for (i = 0; i < (int)strlen((char *)sf_string); i++) {
-        level = str_count((char *)sf_string, '[', 0, i) - str_count((char *)sf_string, ']', 0, i);
+    for (i = 0; i < (int)strlen(sf_string); i++) {
+        level = str_count(sf_string, '[', 0, i) - str_count(sf_string, ']', 0, i);
         if (isdigit(sf_string[i])) {
             sfv_p->num = sf_string[i] - '0';
             sfv_p->level = level;
@@ -254,7 +257,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
     numbers = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
     for (i = 0; i < aoc_array_length(data); i++) {
-        sn = sf_number_from_string((char *)aoc_str_array_index(data, i));
+        sn = sf_number_from_string(aoc_str_array_index(data, i));
         aoc_ptr_array_append(numbers, sn);
     }
 
@@ -305,26 +308,13 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2021;
+    const unsigned day = 18;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

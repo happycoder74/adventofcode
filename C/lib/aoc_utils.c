@@ -20,7 +20,7 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
+AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*parse_function)(AocArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof(AocData_t));
 
     data->filename = strdup(filename);
@@ -36,10 +36,24 @@ AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArray *(*cle
         exit(EXIT_FAILURE);
     }
 
-    if (clean_function) {
-        data->data = clean_function(input_data);
+    if (parse_function) {
+        data->data = parse_function(input_data);
     } else {
         data->data = input_data;
+    }
+    return data;
+}
+
+AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day, AocArrayPtr (*parse_func)(AocArrayPtr)) {
+    AocData_t *data;
+    if (argc > 1) {
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, parse_func);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, parse_func);
+        }
+    } else {
+        data = aoc_data_new_clean("input.txt", year, day, parse_func);
     }
     return data;
 }

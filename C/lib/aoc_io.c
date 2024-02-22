@@ -2,6 +2,7 @@
 #include "aoc_list.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
+#include "aoc_utils.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <stdio.h>
@@ -208,6 +209,12 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     free(path);
 
     return data;
+}
+
+void aoc_header(unsigned year, unsigned day) {
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    printf("================================================\n");
 }
 
 #ifdef __MINGW32__

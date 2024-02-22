@@ -1,5 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -31,8 +32,9 @@ static int g_hash_table_set_compare(GHashTable *a, GHashTable *b) {
     GHashTableIter iter;
     void          *key, *value;
 
-    if (g_hash_table_size(a) != g_hash_table_size(b))
+    if (g_hash_table_size(a) != g_hash_table_size(b)) {
         return FALSE;
+    }
 
     g_hash_table_iter_init(&iter, a);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
@@ -51,8 +53,9 @@ static int g_hash_table_set_difference(GHashTable *a, GHashTable *b) {
     diff_size = g_hash_table_size(a);
     g_hash_table_iter_init(&iter, a);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
-        if (g_hash_table_contains(b, key))
+        if (g_hash_table_contains(b, key)) {
             diff_size -= 1;
+        }
     }
     return diff_size >= 0 ? diff_size : 0;
 }
@@ -64,8 +67,9 @@ static int g_hash_table_set_intersection(GHashTable *a, GHashTable *b) {
 
     g_hash_table_iter_init(&iter, a);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
-        if (g_hash_table_contains(b, key))
+        if (g_hash_table_contains(b, key)) {
             common_keys += 1;
+        }
     }
     return common_keys;
 }
@@ -241,26 +245,13 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2021;
+    const unsigned day = 8;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

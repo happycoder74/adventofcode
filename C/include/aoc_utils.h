@@ -17,6 +17,7 @@
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data);
 void       aoc_data_free(AocData_t *data);
 AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*clean_function)(AocArrayPtr));
+AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day, AocArrayPtr(parse_func)(AocArrayPtr));
 
 bool   is_horisontal(Line);
 bool   is_vertical(Line);
