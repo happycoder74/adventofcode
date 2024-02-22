@@ -1,5 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
@@ -10,8 +11,9 @@
 #include <string.h>
 
 int32_t prio(char c) {
-    if (isupper(c))
+    if (isupper(c)) {
         return c - 'A' + 27;
+    }
     return c - 'a' + 1;
 }
 
@@ -51,8 +53,9 @@ void *solve_part_1(AocData_t *data) {
         AocArrayPtr common_items = aoc_array_sized_new(AOC_ARRAY_CHAR, 20);
         for (uint16_t j = 0; j < strlen(packs[0]); j++) {
             if (strchr(packs[1], packs[0][j]) != NULL) {
-                if (!aoc_char_array_contains(common_items, packs[0][j]))
+                if (!aoc_char_array_contains(common_items, packs[0][j])) {
                     aoc_char_array_append(common_items, packs[0][j]);
+                }
             }
         }
 
@@ -88,8 +91,9 @@ void *solve_part_2(AocData_t *data) {
         char *str1 = aoc_str_array_index(group, 1);
         for (uint32_t k = 0; k < strlen(str); k++) {
             if (strchr(str1, str[k]) != NULL) {
-                if (!aoc_char_array_contains(common_items, str[k]))
+                if (!aoc_char_array_contains(common_items, str[k])) {
                     aoc_char_array_append(common_items, str[k]);
+                }
             }
         }
         str1 = aoc_str_array_index(group, 2);
@@ -124,33 +128,15 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2022;
+    const unsigned day = 3;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
-    for (uint32_t segment = 0; segment < aoc_data_length(data); segment++) {
-        char **packs = (char **)aoc_ptr_array_index(data->data, segment);
-        aoc_free(packs[0]);
-        aoc_free(packs[1]);
-    }
     aoc_data_free(data);
 
     return aoc_mem_gc();
