@@ -1,75 +1,89 @@
-#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_io.h"
+#include "aoc_regex.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include <glib.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define NMATCH 20
+
+int check_match(regmatch_t *match_info, const char *string) {
+    for (unsigned i = 0; i < 3; i++) {
+        if (match_info[0].rm_so < 0) {
+            return 0;
+        }
+    }
+    return !(string[match_info[1].rm_so] == string[match_info[2].rm_so]);
+}
+
+void print_match(regmatch_t *match_info, const char *string) {
+    printf("%s\n", string);
+    int index = 0;
+    while (match_info[index].rm_so >= 0) {
+        regmatch_t mo = match_info[index];
+        printf(" (%d, %d)\n", mo.rm_so, mo.rm_eo);
+        index++;
+    }
+}
+
+int check_abba(regex_t *abba, const char *string) {
+    regmatch_t abbaMatch[NMATCH];
+
+    int error = regexec(abba, string, NMATCH, abbaMatch, 0);
+    return (!error) && check_match(abbaMatch, string);
+}
+
+int check_hypernet(regex_t *regex, regex_t *hypernet, char *str) {
+    regmatch_t hypernetMatch[NMATCH];
+    unsigned   offset = 0;
+
+    int error = regexec(hypernet, str + offset, NMATCH, hypernetMatch, 0);
+    while (!error) {
+        char *hn_string = get_match_string(hypernetMatch, str + offset);
+        if (check_abba(regex, hn_string)) {
+            free(hn_string);
+            return 0;
+        }
+        free(hn_string);
+        offset += hypernetMatch[1].rm_eo;
+        if (offset >= strlen(str)) {
+            break;
+        }
+        error = regexec(hypernet, str + offset, NMATCH, hypernetMatch, 0);
+    }
+    return error;
+}
+
 void *solve_part_1(AocData_t *aoc_data) {
-    GError      *regex_error = NULL;
-    GMatchInfo  *matchInfo, *hypernetInfo, *abba_hn_info;
-    char        *str;
-    unsigned int i;
-    int          count = 0;
-    char        *matchStr, *hypernetStr;
-    short        ok;
+    int      error = 0;
+    unsigned count = 0;
+    regex_t  abba, hypernet;
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
-    GRegex *abba = g_regex_new("(.)((?!\\1).)\\2\\1", 0, 0, &regex_error);
-    if (regex_error) {
-        fprintf(stderr, "Error in pattern\n%s\n", regex_error->message);
-        exit(EXIT_FAILURE);
-    }
-    GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &regex_error);
-    if (regex_error) {
-        fprintf(stderr, "Error in pattern\n%s\n", regex_error->message);
-        exit(EXIT_FAILURE);
-    }
+    char abba_pattern[] = "([a-z])([a-z])\\2\\1";
+    char hyper_pattern[] = "(\\[\\w+\\])";
+    // error = regcomp(&abba, "(.)((?!\\1).)\\2\\1", REG_EXTENDED);
+    error = regcomp(&abba, abba_pattern, REG_EXTENDED);
+    regex_error(error, &abba);
 
-    for (i = 0; i < aoc_array_length(data); i++) {
-        str = aoc_str_array_index(data, i);
-        g_regex_match(abba, str, 0, &matchInfo);
-        g_regex_match(hypernet, str, 0, &hypernetInfo);
-        ok = g_match_info_matches(matchInfo);
-        while (g_match_info_matches(matchInfo) && ok) {
-            matchStr = g_match_info_fetch(matchInfo, 0);
-            if (matchStr != NULL) {
-                while (g_match_info_matches(hypernetInfo) && ok) {
-                    hypernetStr = g_match_info_fetch(hypernetInfo, 0);
-                    if (hypernetStr != NULL) {
-                        g_regex_match(abba, hypernetStr, 0, &abba_hn_info);
-                        if (g_match_info_get_match_count(abba_hn_info) != 0) {
-                            ok = FALSE;
-                        }
-                    }
-                    g_match_info_next(hypernetInfo, &regex_error);
-                    if (hypernetStr) {
-                        free(hypernetStr);
-                    }
-                }
-            }
-            if (matchStr) {
-                free(matchStr);
-            }
+    error = regcomp(&hypernet, hyper_pattern, REG_EXTENDED);
+    regex_error(error, &hypernet);
 
-            g_match_info_next(matchInfo, &regex_error);
-            if (!ok) {
-                break;
+    for (unsigned i = 0; i < data->length; i++) {
+        char *str = aoc_str_array_index(data, i);
+        if (check_hypernet(&abba, &hypernet, str)) {
+            if (check_abba(&abba, str)) {
+                count++;
             }
         }
-        if (ok) {
-            count++;
-        }
     }
-
-    g_regex_unref(abba);
-    g_regex_unref(hypernet);
 
     return strdup_printf("%d", count);
 }
@@ -125,6 +139,14 @@ void *solve_all(AocData_t *data) {
     return NULL;
 }
 
+// int main(int argc, char *argv[]) {
+//
+//     test_check_abba("[bddb]", true);
+//     test_check_hyper("abcd[bddb]xyyx", false);
+//
+//     return EXIT_SUCCESS;
+// }
+
 int main(int argc, char **argv) {
 
     const unsigned year = 2016;
@@ -136,6 +158,4 @@ int main(int argc, char **argv) {
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
-
-    return aoc_mem_gc();
 }
