@@ -124,7 +124,9 @@ void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, con
  */
 void aoc_free_internal(void *ptr, const char *function, const char *file, int line) {
     /* Delete ptr from mem_table if present */
-    g_hash_table_remove(mem_table, ptr);
+    if (mem_table) {
+        g_hash_table_remove(mem_table, ptr);
+    }
 #ifdef DEBUG_VERBOSE
     fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr, g_hash_table_size(mem_table), function, file, line);
     fflush(stderr);
@@ -134,9 +136,11 @@ void aoc_free_internal(void *ptr, const char *function, const char *file, int li
     free(ptr);
 
     // If table is empty, free up table and set global pointer to NULL.
-    if (g_hash_table_size(mem_table) == 0) {
-        g_hash_table_destroy(mem_table);
-        mem_table = NULL;
+    if (mem_table) {
+        if (g_hash_table_size(mem_table) == 0) {
+            g_hash_table_destroy(mem_table);
+            mem_table = NULL;
+        }
     }
 }
 
