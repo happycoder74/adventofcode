@@ -18,16 +18,36 @@ void *solve_part_1(AocData_t *data) {
     char   *line;
     int     error;
 
-    error = regcomp(&regex_wovel, "[aeiou]", REG_EXTENDED);
+    error = regcomp(&regex_wovel, "[aeiou].\\{0,\\}[aeiou].\\{0,\\}[aeiou]", 0);
     regex_error(error, &regex_wovel);
-    error = regcomp(&regex_double_letter, "(.)\\1", REG_EXTENDED);
+    error = regcomp(&regex_double_letter, "\\(.\\)\\1", 0);
     regex_error(error, &regex_double_letter);
     error = regcomp(&regex_invalid, "(ab|cd|pq|xy)", REG_EXTENDED);
     regex_error(error, &regex_invalid);
 
     for (i = 0; i < aoc_data_length(data); i++) {
+        int count_wovels = 0;
+        int count_doubles = 0;
+        int count_invalid = 0;
+
         line = aoc_str_array_index(data->data, i);
-        if ((regex_match_count(&regex_wovel, line) >= 3) && (regex_match_count(&regex_double_letter, line) > 0) && (regex_match_count(&regex_invalid, line) == 0)) {
+
+        error = regexec(&regex_wovel, line, 0, NULL, 0);
+        if(!error) {
+            count_wovels = 1;
+        }
+
+        error = regexec(&regex_double_letter, line, 0, NULL, 0);
+        if(!error) {
+            count_doubles = 1;
+        }
+
+        error = regexec(&regex_invalid, line, 0, NULL, REG_EXTENDED);
+        if(error == 1) {
+            count_invalid = 1;
+        }
+        
+        if (count_wovels && count_doubles && count_invalid) {
             count++;
         }
     }
@@ -42,9 +62,9 @@ void *solve_part_2(AocData_t *data) {
     char    *line;
     int      error;
 
-    error = regcomp(&regex_pairs, "\\w*([a-z][a-z])\\w*\\1", REG_EXTENDED);
+    error = regcomp(&regex_pairs, "[a-z]*([a-z][a-z])[a-z]*\\1", REG_EXTENDED);
     regex_error(error, &regex_pairs);
-    error = regcomp(&regex_repeat, "(.)\\w\\1", REG_EXTENDED);
+    error = regcomp(&regex_repeat, "(.)[a-z]\\1", REG_EXTENDED);
     regex_error(error, &regex_repeat);
 
     for (i = 0; i < aoc_data_length(data); i++) {
