@@ -1,17 +1,9 @@
+#include "aoc_regex.h"
 #include <regex.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-void regex_error(int errcode, regex_t *regex) {
-    char error_string[100];
-    if ((errcode) && (errcode != 1)) {
-        regerror(errcode, regex, error_string, 100);
-        fprintf(stderr, "Regex Error: (%s)\n", error_string);
-        exit(EXIT_FAILURE);
-    }
-}
 
 // Need to free result in calling function
 char *get_match_string(regmatch_t *match_info, const char *string) {
