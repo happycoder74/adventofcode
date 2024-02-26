@@ -5,7 +5,7 @@
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
-#include <regex.h>
+#include <pcre2posix.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,9 +20,9 @@ void *solve_part_1(AocData_t *data) {
 
     error = regcomp(&regex_wovel, "[aeiou].*[aeiou].*[aeiou]", 0);
     regex_error(error, &regex_wovel);
-    error = regcomp(&regex_double_letter, "\\(.\\)\\1", 0);
+    error = regcomp(&regex_double_letter, "(.)\\1", 0);
     regex_error(error, &regex_double_letter);
-    error = regcomp(&regex_invalid, "(ab|cd|pq|xy)", REG_EXTENDED);
+    error = regcomp(&regex_invalid, "(ab|cd|pq|xy)", 0);
     regex_error(error, &regex_invalid);
 
     for (i = 0; i < aoc_data_length(data); i++) {
@@ -33,20 +33,20 @@ void *solve_part_1(AocData_t *data) {
         line = aoc_str_array_index(data->data, i);
 
         error = regexec(&regex_wovel, line, 0, NULL, 0);
-        if(!error) {
+        if (!error) {
             count_wovels = 1;
         }
 
         error = regexec(&regex_double_letter, line, 0, NULL, 0);
-        if(!error) {
+        if (!error) {
             count_doubles = 1;
         }
 
-        error = regexec(&regex_invalid, line, 0, NULL, REG_EXTENDED);
-        if(error == 1) {
+        error = regexec(&regex_invalid, line, 0, NULL, 0);
+        if (error == REG_NOMATCH) {
             count_invalid = 1;
         }
-        
+
         if (count_wovels && count_doubles && count_invalid) {
             count++;
         }
@@ -62,9 +62,9 @@ void *solve_part_2(AocData_t *data) {
     char    *line;
     int      error;
 
-    error = regcomp(&regex_pairs, "\\(..\\).*\\1", 0);
+    error = regcomp(&regex_pairs, "(..).*\\1", 0);
     regex_error(error, &regex_pairs);
-    error = regcomp(&regex_repeat, "\\(.\\).\\1", 0);
+    error = regcomp(&regex_repeat, "(.).\\1", 0);
     regex_error(error, &regex_repeat);
 
     for (i = 0; i < aoc_data_length(data); i++) {
@@ -73,12 +73,12 @@ void *solve_part_2(AocData_t *data) {
         int count_repeat = 0;
 
         error = regexec(&regex_pairs, line, 0, NULL, 0);
-        if(!error) {
+        if (!error) {
             count_pairs = 1;
         }
 
         error = regexec(&regex_repeat, line, 0, NULL, 0);
-        if(!error) {
+        if (!error) {
             count_repeat = 1;
         }
 
