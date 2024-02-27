@@ -1,11 +1,12 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_io.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 int fuel_cost(int fuel) {
     fuel = (fuel / 3) - 2;
@@ -17,7 +18,7 @@ int fuel_cost(int fuel) {
 }
 
 AocArrayPtr clean_data(AocArrayPtr data) {
-    AocArrayPtr return_data = aoc_int32_array_new();
+    AocArrayPtr  return_data = aoc_int32_array_new();
     unsigned int i;
     unsigned int val;
 
@@ -31,7 +32,7 @@ AocArrayPtr clean_data(AocArrayPtr data) {
 void *solve_part_1(AocData_t *data) {
     unsigned int i;
     unsigned int fuel = 0;
-    int val;
+    int          val;
 
     for (i = 0; i < aoc_data_length(data); i++) {
         val = aoc_int32_array_index(aoc_data_get(data), i);
@@ -42,7 +43,7 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     unsigned int i;
-    int val;
+    int          val;
     unsigned int fuel = 0;
     unsigned int sum_fuel = 0;
 
@@ -65,29 +66,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int year, day;
+    const unsigned year = 2019;
+    const unsigned day = 1;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_data);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_data);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_data);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_data);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

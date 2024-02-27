@@ -1,21 +1,23 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_io.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include "aoc_types.h"
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 void *solve_part_1(AocData_t *aoc_data) {
-    GError *regex_error = NULL;
-    GMatchInfo *matchInfo, *hypernetInfo, *abba_hn_info;
-    char *str;
+    GError      *regex_error = NULL;
+    GMatchInfo  *matchInfo, *hypernetInfo, *abba_hn_info;
+    char        *str;
     unsigned int i;
-    int count = 0;
-    char *matchStr, *hypernetStr;
-    short ok;
+    int          count = 0;
+    char        *matchStr, *hypernetStr;
+    short        ok;
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
@@ -34,11 +36,11 @@ void *solve_part_1(AocData_t *aoc_data) {
         str = aoc_str_array_index(data, i);
         g_regex_match(abba, str, 0, &matchInfo);
         g_regex_match(hypernet, str, 0, &hypernetInfo);
-        ok = g_match_info_matches (matchInfo);
-        while (g_match_info_matches (matchInfo) && ok) {
+        ok = g_match_info_matches(matchInfo);
+        while (g_match_info_matches(matchInfo) && ok) {
             matchStr = g_match_info_fetch(matchInfo, 0);
             if (matchStr != NULL) {
-                while (g_match_info_matches (hypernetInfo) && ok) {
+                while (g_match_info_matches(hypernetInfo) && ok) {
                     hypernetStr = g_match_info_fetch(hypernetInfo, 0);
                     if (hypernetStr != NULL) {
                         g_regex_match(abba, hypernetStr, 0, &abba_hn_info);
@@ -47,19 +49,23 @@ void *solve_part_1(AocData_t *aoc_data) {
                         }
                     }
                     g_match_info_next(hypernetInfo, &regex_error);
-                    if (hypernetStr)
+                    if (hypernetStr) {
                         free(hypernetStr);
+                    }
                 }
             }
-            if(matchStr)
+            if (matchStr) {
                 free(matchStr);
+            }
 
-            g_match_info_next (matchInfo, &regex_error);
-            if (!ok)
+            g_match_info_next(matchInfo, &regex_error);
+            if (!ok) {
                 break;
+            }
         }
-        if (ok)
+        if (ok) {
             count++;
+        }
     }
 
     g_regex_unref(abba);
@@ -69,12 +75,12 @@ void *solve_part_1(AocData_t *aoc_data) {
 }
 
 void *solve_part_2(AocData_t *aoc_data) {
-    char *string;
-    int count;
-    GError *err = NULL;
+    char       *string;
+    int         count;
+    GError     *err = NULL;
     GMatchInfo *abaInfo, *hypernetInfo;
-    char *aba_str, *hypernet_str, *supernet_str;
-    char bab_str[4];
+    char       *aba_str, *hypernet_str, *supernet_str;
+    char        bab_str[4];
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
@@ -94,7 +100,7 @@ void *solve_part_2(AocData_t *aoc_data) {
         supernet_str = g_strjoinv("|", g_regex_split(g_regex_new("\\[\\w+\\]", 0, 0, &err), string, 0));
 
         g_regex_match(aba, supernet_str, 0, &abaInfo);
-        while (g_match_info_matches(abaInfo)){
+        while (g_match_info_matches(abaInfo)) {
             aba_str = g_match_info_fetch(abaInfo, 1);
             sprintf(bab_str, "%c%c%c", aba_str[1], aba_str[0], aba_str[1]);
             if (strstr(hypernet_str, bab_str)) {
@@ -120,29 +126,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int year, day;
+    const unsigned year = 2016;
+    const unsigned day = 7;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, NULL);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new("test_input.txt", year, day);
-        } else {
-            data = aoc_data_new(argv[1], year, day);
-        }
-    } else {
-        data = aoc_data_new("input.txt", year, day);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

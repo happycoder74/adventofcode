@@ -1,7 +1,17 @@
+# Ignore all, unignore files with ext, unignore directories.
+# results in all files without extension (e.g. executables on Unix)
+# will be ignored.
+*
+!*.*
+!*/
+!Makefile
+
+# ignore build files and Windows executables
 *.o
 *.exe
-*.stackdump
 *.x
+
+*.stackdump
 *.a
 *.debug
 .cookie
@@ -27,4 +37,4 @@ python/pyproject.toml
 .cache
 .*~undo-tree~
 *~
-venv
+venv*

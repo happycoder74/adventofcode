@@ -1,9 +1,9 @@
+#include "aoc_array.h"
 #include "aoc_types.h"
+#include <criterion/criterion.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <criterion/criterion.h>
-#include "aoc_array.h"
 
 AocArrayPtr array = NULL;
 
@@ -15,7 +15,7 @@ void aoc_array_teardown(void) {
     aoc_int64_array_free(array);
 }
 
-TestSuite(aoc_array, .init=aoc_array_setup, .fini=aoc_array_teardown);
+TestSuite(aoc_array, .init = aoc_array_setup, .fini = aoc_array_teardown);
 
 Test(aoc_array, test_int64_array_new) {
     cr_expect_not_null(array, "Expected new array to not be NULL");
@@ -96,4 +96,3 @@ Test(aoc_array, test_int64_array_prepend_to_existing) {
     cr_expect(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
     cr_expect_eq(2, array->length, "Expected length to be [2] but got [%d]", (int)array->length);
 }
-

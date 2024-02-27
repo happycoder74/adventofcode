@@ -1,9 +1,9 @@
+#include "aoc_array.h"
 #include "aoc_types.h"
+#include <criterion/criterion.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <criterion/criterion.h>
 #include <string.h>
-#include "aoc_array.h"
 
 AocArrayPtr array = NULL;
 
@@ -15,7 +15,7 @@ void aoc_array_teardown(void) {
     aoc_array_free(array, false);
 }
 
-TestSuite(aoc_array, .init=aoc_array_setup, .fini=aoc_array_teardown);
+TestSuite(aoc_array, .init = aoc_array_setup, .fini = aoc_array_teardown);
 
 Test(aoc_array, test_ptr_array_new) {
     cr_expect(array != NULL, "Expected new array to not be NULL");
@@ -26,7 +26,7 @@ Test(aoc_array, test_ptr_array_new_length) {
 }
 
 Test(aoc_array, test_ptr_array_append) {
-    char str[] = "Test String";
+    char  str[] = "Test String";
     char *test_string = (char *)calloc(strlen(str) + 1, sizeof(char));
     test_string = strcpy(test_string, str);
     aoc_ptr_array_append(array, test_string);
@@ -36,7 +36,7 @@ Test(aoc_array, test_ptr_array_append) {
 }
 
 Test(aoc_array, test_ptr_array_prepend_to_empty) {
-    char str[] = "Test String";
+    char  str[] = "Test String";
     char *test_string = (char *)calloc(strlen(str) + 1, sizeof(char));
     test_string = strcpy(test_string, str);
     aoc_ptr_array_prepend(array, test_string);
@@ -59,8 +59,8 @@ Test(aoc_array, test_ptr_array_index) {
 }
 
 Test(aoc_array, test_ptr_array_remove_index) {
-    int *val1 = (int *)malloc(sizeof(int));
-    int *val2 = (int *)malloc(sizeof(int));
+    int    *val1 = (int *)malloc(sizeof(int));
+    int    *val2 = (int *)malloc(sizeof(int));
     double *val3 = (double *)malloc(sizeof(double));
 
     aoc_ptr_array_append(array, val1);

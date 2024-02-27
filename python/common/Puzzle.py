@@ -1,17 +1,15 @@
+import os
 import sys
-from common import timer
 from pathlib import Path
+
+from common.timer import timer
 
 
 class Puzzle(object):
-    def __init_subclass__(cls, year=None, day=None, stripped=True, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls.year = year
-        cls.day = day
+    year: int | None
+    day: int | None
 
-    def __init__(
-        self, year=None, day=None, filename=None, data=None, stripped=True
-    ):
+    def __init__(self, year=None, day=None, filename=None, data=None, stripped=True):
         self.filename = filename
         if year is not None:
             self.year = year
@@ -21,19 +19,27 @@ class Puzzle(object):
             data = self.get_input(stripped=stripped)
         self.data = self.clean_input(data)
 
+    def __init_subclass__(cls, year=None, day=None, stripped=True, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.year = year
+        cls.day = day
+
     def get_input(self, mode=None, stripped=True):
-        if self.filename is None or self.filename == "test_input.txt":
-            if self.filename:
-                fn = self.filename
-            else:
-                fn = "input.txt"
+        if envpath := os.getenv("AOC_DATA_LOCATION"):
+            filename = Path(envpath) / Path(f"{self.year}") / Path(f"{self.day:02d}")
+        else:
             filename = (
                 Path(__file__).parent.parent.parent
                 / Path("data")
                 / Path(f"{self.year}")
                 / Path(f"{self.day:02d}")
-                / Path(fn)
             )
+        if self.filename is None:
+            fn = "input.txt"
+            filename = filename / Path(fn)
+        elif self.filename == "test_input.txt":
+            fn = self.filename
+            filename = filename / Path(fn)
         else:
             filename = self.filename
         try:

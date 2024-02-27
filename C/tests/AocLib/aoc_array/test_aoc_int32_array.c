@@ -1,9 +1,9 @@
+#include "aoc_array.h"
+#include "aoc_types.h"
+#include <criterion/criterion.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <criterion/criterion.h>
-#include "aoc_array.h"
-#include "aoc_types.h"
 
 AocArrayPtr array = NULL;
 AocArrayPtr array2 = NULL;
@@ -17,7 +17,7 @@ void aoc_int32_array_teardown(void) {
     aoc_int32_array_free(array2);
 }
 
-TestSuite(aoc_int32_array, .init=aoc_int32_array_setup, .fini=aoc_int32_array_teardown);
+TestSuite(aoc_int32_array, .init = aoc_int32_array_setup, .fini = aoc_int32_array_teardown);
 
 Test(aoc_int32_array, test_int32_array_new) {
     cr_expect(array != NULL, "Expected new array to not be NULL");
@@ -100,7 +100,7 @@ Test(aoc_int32_array, test_int32_array_prepend_to_existing) {
 }
 
 Test(aoc_int32_array, test_int32_array_copy) {
-    int32_t values[5] = {1,2,3,5,7};
+    int32_t values[5] = {1, 2, 3, 5, 7};
 
     for (int i = 0; i < 5; i++) {
         aoc_int32_array_append(array, values[i]);
@@ -111,8 +111,7 @@ Test(aoc_int32_array, test_int32_array_copy) {
     int32_t *data = (int32_t *)aoc_array_get_data(array);
     int32_t *data2 = (int32_t *)aoc_array_get_data(array2);
     cr_expect_neq(data, data2, "Seem to be same array, not copied");
-    for(uint32_t i = 0; i < 5; i++) {
+    for (uint32_t i = 0; i < 5; i++) {
         cr_expect_eq(aoc_int32_array_index(array, i), aoc_int32_array_index(array2, i), "Expected array2[%d] = %d but got %d", i, values[i], aoc_int32_array_index(array2, i));
     }
 }
-

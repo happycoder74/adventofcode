@@ -1,18 +1,20 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_io.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <glib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include "aoc_types.h"
-#include "aoc_utils.h"
-#include "aoc_string.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
 
 AocArrayPtr clean_input(AocArrayPtr data) {
-    char *dataline;
+    char       *dataline;
     AocArrayPtr return_data;
-    Line line;
+    Line        line;
 
     return_data = aoc_line_array_new();
     for (unsigned int i = 0; i < aoc_array_length(data); i++) {
@@ -36,20 +38,18 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 }
 
 int mark_points(GHashTable *hashtable, Line line, int diagonal) {
-    Point point;
-    int value;
-    void *old_value;
-    int count = 0;
+    Point  point;
+    int    value;
+    void  *old_value;
+    int    count = 0;
     Point *key;
 
     if (!diagonal && is_diagonal(line)) {
         return 0;
     }
 
-    for (point = line.p0;
-         (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy));
-         point.x += line.stepx, point.y += line.stepy) {
-        if(g_hash_table_lookup_extended(hashtable, &point, NULL, &old_value)) {
+    for (point = line.p0; (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy)); point.x += line.stepx, point.y += line.stepy) {
+        if (g_hash_table_lookup_extended(hashtable, &point, NULL, &old_value)) {
             count++;
             value = (int)(int64_t)(old_value) + 1;
         } else {
@@ -63,11 +63,11 @@ int mark_points(GHashTable *hashtable, Line line, int diagonal) {
 }
 
 void *solve_problem(AocArrayPtr data, int diagonal) {
-    GHashTable *hashtable;
-    Line line;
+    GHashTable    *hashtable;
+    Line           line;
     GHashTableIter iter;
-    int count;
-    void *key, *value;
+    int            count;
+    void          *key, *value;
 
     hashtable = g_hash_table_new(point_hash, point_equal);
 
@@ -78,7 +78,7 @@ void *solve_problem(AocArrayPtr data, int diagonal) {
 
     count = 0;
     g_hash_table_iter_init(&iter, hashtable);
-    while(g_hash_table_iter_next(&iter, &key, &value)) {
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
         if ((int)(int64_t)(value) > 1)
             count++;
     }
@@ -101,33 +101,21 @@ void *solve_all(AocData_t *data) {
     if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
-    } return NULL;
+    }
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int year, day;
+    const unsigned year = 2021;
+    const unsigned day = 5;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

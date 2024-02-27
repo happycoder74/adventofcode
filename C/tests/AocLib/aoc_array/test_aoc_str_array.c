@@ -1,10 +1,10 @@
+#include "aoc_array.h"
 #include "aoc_types.h"
+#include "criterion/internal/assert.h"
+#include <criterion/criterion.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <criterion/criterion.h>
-#include "aoc_array.h"
-#include "criterion/internal/assert.h"
 
 AocArrayPtr array = NULL;
 
@@ -16,7 +16,7 @@ void aoc_array_teardown(void) {
     free(array);
 }
 
-TestSuite(aoc_array, .init=aoc_array_setup, .fini=aoc_array_teardown);
+TestSuite(aoc_array, .init = aoc_array_setup, .fini = aoc_array_teardown);
 
 Test(aoc_array, test_str_array_new) {
     cr_expect(array != NULL, "Expected new array to not be NULL");
@@ -31,7 +31,6 @@ Test(aoc_array, test_str_array_append_string_literal) {
     char **data = (char **)aoc_array_get_data(array);
     cr_expect(!strcmp(data[0], "Test String"), "Expected value to be \"Test String\"");
 }
-
 
 Test(aoc_array, test_str_array_index) {
     aoc_str_array_append(array, "One");

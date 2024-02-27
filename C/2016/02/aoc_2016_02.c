@@ -1,11 +1,13 @@
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_io.h"
+#include "aoc_string.h"
+#include "aoc_timer.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "aoc_types.h"
-#include "aoc_utils.h"
-#include "aoc_array.h"
-#include "aoc_timer.h"
-#include "aoc_string.h"
 
 typedef struct {
     int x;
@@ -19,16 +21,16 @@ typedef enum {
 } KeyPadLayout;
 
 typedef struct {
-    KeyPadLayout layout;
-    unsigned int rows;
-    unsigned int columns;
-    Directions_t directions[4];
-    char **keys;
-    char *code;
+    KeyPadLayout  layout;
+    unsigned int  rows;
+    unsigned int  columns;
+    Directions_t  directions[4];
+    char        **keys;
+    char         *code;
     unsigned int *pos;
 } KeyPad_t;
 
-#define NOT_FOUND -1
+#define NOT_FOUND (-1)
 unsigned int command_get_index(char *commands, char command) {
     char needle[2];
     sprintf(needle, "%c", command);
@@ -40,9 +42,9 @@ unsigned int command_get_index(char *commands, char command) {
 }
 
 KeyPad_t *keypad_init(KeyPadLayout layout) {
-    KeyPad_t *keypad = NULL;
+    KeyPad_t    *keypad = NULL;
     unsigned int i, j, index;
-    char *keys[] = {"123456789", "0010002340567890ABC000D00"};
+    char        *keys[] = {"123456789", "0010002340567890ABC000D00"};
 
     keypad = (KeyPad_t *)calloc(1, sizeof(KeyPad_t));
     keypad->layout = layout;
@@ -56,7 +58,7 @@ KeyPad_t *keypad_init(KeyPadLayout layout) {
         keypad->pos[0] = 1;
         keypad->pos[1] = 1;
     } else {
-        keypad->rows= 5;
+        keypad->rows = 5;
         keypad->columns = 5;
         keypad->pos[0] = 0;
         keypad->pos[1] = 2;
@@ -66,7 +68,7 @@ KeyPad_t *keypad_init(KeyPadLayout layout) {
     for (i = 0; i < keypad->rows; i++) {
         keypad->keys[i] = (char *)calloc(keypad->columns, sizeof(char));
         for (j = 0; j < keypad->columns; j++) {
-            index = (j + i*keypad->columns);
+            index = (j + i * keypad->columns);
             keypad->keys[i][j] = keys[layout][index];
         }
     }
@@ -95,14 +97,13 @@ void keypad_destroy(KeyPad_t *keypad) {
 
 char keypad_digit(KeyPad_t *keypad, unsigned int *pos) {
     char digit;
-    if ((pos[0] <= keypad->columns - 1) &&
-        (pos[1] <= keypad->rows - 1)) {
+    if ((pos[0] <= keypad->columns - 1) && (pos[1] <= keypad->rows - 1)) {
         digit = keypad->keys[pos[1]][pos[0]];
         if (digit != '0') {
             return digit;
         }
     }
-    return 0;
+    return aoc_mem_gc();
 }
 
 unsigned int *keypad_key(KeyPad_t *keypad, char key) {
@@ -134,7 +135,7 @@ char keypad_keystring(KeyPad_t *keypad, char *line) {
 }
 
 char *keypad_get_code(KeyPad_t *keypad, AocArrayPtr data) {
-    char *line = NULL;
+    char        *line = NULL;
     unsigned int i;
     unsigned int data_length;
 
@@ -149,7 +150,7 @@ char *keypad_get_code(KeyPad_t *keypad, AocArrayPtr data) {
 
 void *solve_part_1(AocData_t *data) {
     KeyPad_t *keypad = NULL;
-    char *return_string;
+    char     *return_string;
 
     keypad = keypad_init(KP_STD);
     return_string = strdup(keypad_get_code(keypad, aoc_data_get(data)));
@@ -159,7 +160,7 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     KeyPad_t *keypad = NULL;
-    char *return_string;
+    char     *return_string;
 
     keypad = keypad_init(KP_ALT);
     return_string = strdup(keypad_get_code(keypad, aoc_data_get(data)));
@@ -178,29 +179,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int year, day;
+    const unsigned year = 2016;
+    const unsigned day = 2;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, NULL);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new("test_input.txt", year, day);
-        } else {
-            data = aoc_data_new(argv[1], year, day);
-        }
-    } else {
-        data = aoc_data_new("input.txt", year, day);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }
