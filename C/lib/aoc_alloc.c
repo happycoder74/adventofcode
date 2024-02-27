@@ -1,3 +1,5 @@
+#ifndef NDEBUG
+
 #include "aoc_hash.h"
 #include "glib.h"
 #include <inttypes.h>
@@ -167,3 +169,5 @@ uint64_t aoc_mem_gc(void) {
     mem_table = NULL;
     return size;
 }
+
+#endif
