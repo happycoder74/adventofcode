@@ -5,8 +5,7 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <glib.h>
-#include <regex.h>
+#include <pcre2posix.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,16 +19,6 @@ int check_match(regmatch_t *match_info, const char *string) {
         }
     }
     return !(string[match_info[1].rm_so] == string[match_info[2].rm_so]);
-}
-
-void print_match(regmatch_t *match_info, const char *string) {
-    printf("%s\n", string);
-    int index = 0;
-    while (match_info[index].rm_so >= 0) {
-        regmatch_t mo = match_info[index];
-        printf(" (%d, %d)\n", mo.rm_so, mo.rm_eo);
-        index++;
-    }
 }
 
 int check_abba(regex_t *abba, const char *string) {
@@ -69,7 +58,7 @@ void *solve_part_1(AocData_t *aoc_data) {
 
     char abba_pattern[] = "([a-z])([a-z])\\2\\1";
     char hyper_pattern[] = "(\\[\\w+\\])";
-    // error = regcomp(&abba, "(.)((?!\\1).)\\2\\1", REG_EXTENDED);
+
     error = regcomp(&abba, abba_pattern, REG_EXTENDED);
     regex_error(error, &abba);
 
@@ -89,40 +78,61 @@ void *solve_part_1(AocData_t *aoc_data) {
 }
 
 void *solve_part_2(AocData_t *aoc_data) {
-    char       *string;
-    int         count;
-    GError     *err = NULL;
-    GMatchInfo *abaInfo, *hypernetInfo;
-    char       *aba_str, *hypernet_str, *supernet_str;
-    char        bab_str[4];
+    char *string;
+    int   count;
+    int   error;
+
+    char *aba_str, *hypernet_str, *supernet_str;
+    char  bab_str[4];
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
-    GRegex *aba = g_regex_new("(?=((\\w)((?!\\2)\\w)\\2))", 0, 0, &err);
-    GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &err);
+    regex_t    aba, hypernet;
+    regmatch_t aba_match[10], hypernet_match[10];
+    const char aba_pattern[] = "(?=((\\w)((?!\\2)\\w)\\2))";
+    const char hypernet_pattern[] = "(\\[\\w+\\])";
+
+    error = regcomp(&aba, aba_pattern, 0);
+    error = regcomp(&hypernet, hypernet_pattern, 0);
+
     count = 0;
+    const int c_nmatch = 10;
 
     for (unsigned int i = 0; i < aoc_array_length(data); i++) {
         string = aoc_str_array_index(data, i);
-        g_regex_match(hypernet, string, 0, &hypernetInfo);
-
+        error = regexec(&hypernet, string, c_nmatch, hypernet_match, 0);
+        regex_error(error, &hypernet);
         hypernet_str = strdup("");
-        while (g_match_info_matches(hypernetInfo)) {
-            hypernet_str = g_strjoin("", hypernet_str, g_match_info_fetch(hypernetInfo, 1), NULL);
-            g_match_info_next(hypernetInfo, &err);
+        unsigned offset = 0;
+        while (!error) {
+            char **string_list = calloc(3, sizeof(char *));
+            string_list[0] = hypernet_str;
+            char *substring = get_match_string(hypernet_match, string + offset);
+            string_list[1] = substring;
+            hypernet_str = str_join("", string_list, 2);
+            free(substring);
+            offset += hypernet_match[0].rm_eo;
+            error = regexec(&hypernet, string + offset, c_nmatch, hypernet_match, 0);
         }
-        supernet_str = g_strjoinv("|", g_regex_split(g_regex_new("\\[\\w+\\]", 0, 0, &err), string, 0));
 
-        g_regex_match(aba, supernet_str, 0, &abaInfo);
-        while (g_match_info_matches(abaInfo)) {
-            aba_str = g_match_info_fetch(abaInfo, 1);
-            sprintf(bab_str, "%c%c%c", aba_str[1], aba_str[0], aba_str[1]);
+        char **re_split = regex_split("\\[\\w+\\]", string, 0);
+        supernet_str = str_join("|", re_split, 10);
+
+        error = regexec(&aba, supernet_str, c_nmatch, aba_match, 0);
+        offset = 0;
+        while (!error) {
+            aba_str = get_match_string(aba_match, supernet_str + offset);
+            snprintf(bab_str, 4, "%c%c%c", aba_str[1], aba_str[0], aba_str[1]);
             if (strstr(hypernet_str, bab_str)) {
                 count++;
                 break;
             }
-            g_match_info_next(abaInfo, &err);
+            free(aba_str);
+            // Do not offset to end of substring, in case of overlapping matches.
+            offset += 1;
+            error = regexec(&aba, supernet_str + offset, c_nmatch, aba_match, 0);
         }
+        aoc_str_freev(re_split);
         free(supernet_str);
         free(hypernet_str);
     }

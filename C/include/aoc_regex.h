@@ -18,5 +18,6 @@
 /* void     regex_error(int errcode, regex_t *regex); */
 char    *get_match_string(regmatch_t *match_info, const char *string);
 uint32_t regex_match_count(regex_t *pattern, const char *string);
+char   **regex_split(const char *pattern, const char *string, unsigned n_splits);
 
 #endif // !AOC_REGEX_H
