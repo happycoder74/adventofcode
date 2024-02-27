@@ -1,5 +1,5 @@
 #include "aoc_string.h"
-#include "aoc_alloc.h"
+#include "aoc_array.h"
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
@@ -11,7 +11,7 @@
 
 char *strdup(const char *s) {
     size_t size = (strlen(s) + 1) * sizeof(char);
-    char  *p = aoc_malloc(size);
+    char  *p = malloc(size);
     if (p) {
         memcpy(p, s, size);
     }
@@ -19,7 +19,7 @@ char *strdup(const char *s) {
 }
 
 char *strconcat(const char *s1, const char *s2) {
-    char *return_string = (char *)aoc_malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
+    char *return_string = (char *)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
     char *pointer;
 
     pointer = stpcpy(return_string, s1);
@@ -75,7 +75,7 @@ char *str_join(const char *delimiter, char **str_list, size_t length) {
     }
     res_length += (length - 1) * strlen(delimiter) + 1;
 
-    result = (char *)aoc_malloc(sizeof(char) * res_length);
+    result = (char *)malloc(sizeof(char) * res_length);
     ptr = stpcpy(result, str_list[0]);
     for (i = 1; (i < length) && (str_list[i] != NULL); i++) {
         ptr = stpcpy(ptr, delimiter);
@@ -118,7 +118,7 @@ char *substr(char *str, int start, int end) {
     assert(start < (int)strlen(str));
     assert(start <= end);
 
-    substr = (char *)aoc_malloc(sizeof(char) * (end - start + 1));
+    substr = (char *)malloc(sizeof(char) * (end - start + 1));
     for (i = 0; i < (end - start); i++) {
         substr[i] = str[start + i];
     }
@@ -157,7 +157,7 @@ char *strdup_printf(const char *format, ...) {
     if (length < 0) {
         return NULL;
     }
-    string = (char *)aoc_malloc(sizeof(char) * (length + 1));
+    string = (char *)malloc(sizeof(char) * (length + 1));
     va_start(args, format);
     length = vsnprintf(string, length + 1, format, args);
     va_end(args);
@@ -165,19 +165,16 @@ char *strdup_printf(const char *format, ...) {
 }
 
 char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
-    char      **return_split;
     char       *s = NULL;
     const char *remainder;
-    uint32_t    reserved_size;
-    uint32_t    n_tokens = 0;
+    AocArrayPtr return_split = NULL;
 
     if (max_tokens < 1) {
         max_tokens = INT_MAX;
-        reserved_size = 21;
+        return_split = aoc_ptr_array_new();
     } else {
-        reserved_size = max_tokens + 1;
+        return_split = aoc_array_new(AOC_ARRAY_PTR, max_tokens + 1);
     }
-    return_split = (char **)aoc_calloc(reserved_size, sizeof(char *));
 
     remainder = str;
 
@@ -186,27 +183,32 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
         size_t delimiter_length = strlen(delimiter);
         while (--max_tokens && s) {
             size_t length = s - remainder;
-            return_split[n_tokens++] = strndup(remainder, length);
+            char  *new_string = strndup(remainder, length);
+            aoc_ptr_array_append(return_split, new_string);
             remainder = s + delimiter_length;
             s = strstr(remainder, delimiter);
         }
     }
 
     if (*remainder) {
-        return_split[n_tokens++] = strdup(remainder);
+        char *new_string = strdup(remainder);
+        aoc_ptr_array_append(return_split, new_string);
     }
 
-    return_split[n_tokens] = NULL;
+    char *end_ptr = NULL;
+    aoc_ptr_array_append(return_split, end_ptr);
 
-    return return_split;
+    char **return_value = (char **)aoc_array_get_data(return_split);
+
+    return return_value;
 }
 
 void aoc_str_freev(char **str_array) {
     if (str_array) {
         for (size_t i = 0; str_array[i] != NULL; i++) {
-            aoc_free(str_array[i]);
+            free(str_array[i]);
         }
-        aoc_free(str_array);
+        free(str_array);
     }
 }
 /**
@@ -236,7 +238,7 @@ char *strndup(const char *str, size_t n) {
     char *new_str;
 
     if (str) {
-        new_str = (char *)aoc_calloc(n + 1, sizeof(char));
+        new_str = (char *)calloc(n + 1, sizeof(char));
         strncpy(new_str, str, n);
         new_str[n] = '\0';
     } else {

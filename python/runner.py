@@ -3,13 +3,14 @@ import argparse
 import importlib
 import os
 import sys
-
 from typing import Any
 
 from common import timer
 
 
 class AocRunner(object):
+    year: str | int
+
     def __init__(
         self,
         year: str | None = None,
@@ -22,14 +23,12 @@ class AocRunner(object):
         if year is not None:
             self.year = year
         else:
-            year = "2022"
+            self.year = "2023"
         self.days: list[Any] = []
         if day:
             for d in day.split(","):
                 if "-" in d:
-                    self.days.extend(
-                        range(int(d.split("-")[0]), int(d.split("-")[1]) + 1)
-                    )
+                    self.days.extend(range(int(d.split("-")[0]), int(d.split("-")[1]) + 1))
                 else:
                     self.days.append(int(d))
         self.data: list[Any] | None = None
@@ -52,17 +51,16 @@ class AocRunner(object):
         class_list: Any = self.get_classes()
         for year, cls in class_list:
             print(f"Year {year} - {cls.__name__}")
-            print("=================================")
+            print("{0:=<60}".format(""))
             try:
                 cls(filename=self.filename, data=self.data).solve_all()
             except ModuleNotFoundError:
                 print("Unable to import submodule")
-            print("=================================")
+            print("{0:=<60}".format(""))
             print("")
 
     def get_classes(self) -> list[Any]:
         class_list: list[Any] = list()
-        self.year: str
         if self.days:
             days = self.days
         else:
@@ -71,7 +69,7 @@ class AocRunner(object):
         if self.year is not None:
             year_list = [int(self.year)]
         else:
-            year_list = range(2015, 2023)
+            year_list = range(2015, 2024)
 
         for year in year_list:
             for day in days:
@@ -96,14 +94,11 @@ class AocRunner(object):
                         sys.path.remove(source_path)
                 else:
                     print(f"{source_file=} not found")
-        self.year = year
         return class_list
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="runner.py", description="Run Advent of Code solutions"
-    )
+    parser = argparse.ArgumentParser(prog="runner.py", description="Run Advent of Code solutions")
     parser.add_argument("filename", nargs="?", help="Filename to be used")
     parser.add_argument("--test", help="Run test case", action="store_true")
     parser.add_argument("-y", "--year", help="Year to be run")

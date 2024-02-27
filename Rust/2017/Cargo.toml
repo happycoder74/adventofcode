@@ -1,0 +1,12 @@
+[package]
+name = "aoc_2017"
+description.workspace = true
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+aoc_utils.workspace = true
+itertools = "0.12.1"

@@ -1,11 +1,9 @@
 #include "aoc_utils.h"
-#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_io.h"
-#include "aoc_list.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
-#include "glib.h"
+#include <limits.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -22,14 +20,15 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*clean_function)(AocArray *)) {
-    AocData_t *data = (AocData_t *)aoc_malloc(sizeof(AocData_t));
+AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*parse_function)(AocArray *)) {
+    AocData_t *data = (AocData_t *)malloc(sizeof(AocData_t));
 
     data->filename = strdup(filename);
     data->year = year;
     data->day = day;
     data->data = NULL;
     data->free_segments = 1;
+    data->user_data = NULL;
 
     AocArrayPtr input_data = get_input(filename, year, day);
     if (!input_data) {
@@ -37,23 +36,41 @@ AocData_t *aoc_data_new_clean(gchar *filename, int year, int day, AocArray *(*cl
         exit(EXIT_FAILURE);
     }
 
-    if (clean_function) {
-        data->data = clean_function(input_data);
+    if (parse_function) {
+        data->data = parse_function(input_data);
     } else {
         data->data = input_data;
     }
     return data;
 }
 
+AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day, AocArrayPtr (*parse_func)(AocArrayPtr)) {
+    AocData_t *data;
+    if (argc > 1) {
+        if (!strncmp(argv[1], "--test", 6)) {
+            data = aoc_data_new_clean("test_input.txt", year, day, parse_func);
+        } else {
+            data = aoc_data_new_clean(argv[1], year, day, parse_func);
+        }
+    } else {
+        data = aoc_data_new_clean("input.txt", year, day, parse_func);
+    }
+    return data;
+}
+
 void aoc_data_free(AocData_t *data) {
     if (data->filename) {
-        aoc_free(data->filename);
+        free(data->filename);
     }
 
     if (data->data) {
         aoc_array_free(data->data, data->data->free_segments);
     }
-    aoc_free(data);
+    if (data->user_data) {
+        free(data->user_data);
+    }
+
+    free(data);
 }
 
 int max(int *arr, int length) {
@@ -152,7 +169,7 @@ int point_manhattan_distance(Point p0, Point p1) {
 }
 
 int point_distance(Point p0, Point p1) {
-    return sqrt((p0.x - p1.x) * (p0.x - p1.x) + (p0.y - p1.y) * (p0.y - p1.y));
+    return (int)sqrt((p0.x - p1.x) * (p0.x - p1.x) + (p0.y - p1.y) * (p0.y - p1.y));
 }
 
 void point_print(Point p) {
@@ -165,19 +182,25 @@ char *point_to_string(Point p, char *buf) {
     return buf;
 }
 
-unsigned int point_hash(const void *p) {
-    Point    *point = (Point *)p;
-    uint64_t *int_hash = (uint64_t *)aoc_malloc(sizeof(uint64_t));
-    *int_hash = point->x;
-    *int_hash <<= sizeof(UINT_MAX) * 4;
-    *int_hash ^= point->y;
+unsigned int64_hash(uint64_t value) {
+    // Implementation from glib-v2.X
+    const uint64_t bits = value;
 
-    unsigned int return_value = g_int64_hash(int_hash);
-    aoc_free(int_hash);
+    return (unsigned)((bits >> 32) ^ (bits & 0xffffffffU));
+}
+
+unsigned int point_hash(const void *p) {
+    Point   *point = (Point *)p;
+    uint64_t int_hash = point->x;
+    int_hash <<= sizeof(UINT_MAX) * 4;
+    int_hash ^= point->y;
+
+    unsigned int return_value = int64_hash(int_hash);
+
     return return_value;
 }
 
-int point_equal(gconstpointer pp1, gconstpointer pp2) {
+int point_equal(const void *pp1, const void *pp2) {
     Point *p1, *p2;
     p1 = (Point *)pp1;
     p2 = (Point *)pp2;
@@ -263,7 +286,7 @@ Point point_new(int x, int y) {
 }
 
 Point *point_new_m(int x, int y) {
-    Point *p = (Point *)aoc_malloc(sizeof(Point));
+    Point *p = (Point *)malloc(sizeof(Point));
     p->x = x;
     p->y = y;
 
@@ -275,8 +298,9 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     int   x1, x2, x3, x4;
     int   y1, y2, y3, y4;
 
-    if (is_parallel(line1, line2))
+    if (is_parallel(line1, line2)) {
         return NULL;
+    }
 
     x1 = line1.p0.x;
     y1 = line1.p0.y;
@@ -290,10 +314,6 @@ Point *line_intersection(Line line1, Line line2, Point *intersection_point) {
     t = (float)((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / (float)((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
 
     u = (float)((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / (float)((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-
-#ifndef NDEBUG
-    printf("t = %f, u = %f\n", t, u);
-#endif /* ifdef ndef NDEBUG */
 
     if (!((0 <= t) && (t <= 1.0)) || !((0 <= u) && (u <= 1.0))) {
         return NULL;
@@ -312,11 +332,6 @@ void line_array_print(AocArrayPtr lines) {
 }
 
 bool point_on_line(Point p, Line line) {
-    // int d1 = sqrt(pow(p.x - line.p0.x, 2) + pow(p.y - line.p0.y, 2));
-    // int d2 = sqrt(pow(p.x - line.p1.x, 2) + pow(p.y - line.p0.y, 2));
-    // int d = sqrt(pow(line.p1.x - line.p0.x, 2) + pow(line.p1.y - line.p0.y, 2));
-    // printf("Distance diff: %d\n", d1+d2 - d);
-    // return d == d1 + d2;
     if (is_vertical(line)) {
         return ((MIN(line.p0.y, line.p1.y) <= p.y) && (p.y <= MAX(line.p0.y, line.p1.y)) && (line.p0.x == p.x));
     } else if (is_horisontal(line)) {

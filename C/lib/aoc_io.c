@@ -1,12 +1,13 @@
-#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_list.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
+#include "aoc_utils.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int download_input(int year, int day) {
     FILE *fp = NULL;
@@ -27,7 +28,7 @@ int download_input(int year, int day) {
     fp = fopen(path, "r");
     if (!fp) {
         fprintf(stderr, "Could not open cookie-file\n");
-        aoc_free(path);
+        free(path);
         return EXIT_FAILURE;
     }
 
@@ -38,8 +39,8 @@ int download_input(int year, int day) {
     if (curl) {
         CURLcode res;
         FILE    *output_file = NULL;
-
-        char *cookie = strdup_printf("session=%s", cookie_contents);
+        char     errbuf[CURL_ERROR_SIZE];
+        char    *cookie = strdup_printf("session=%s", cookie_contents);
 
         char *output_filename = strdup_printf("%s/%d/%02d/input.txt", data_home, year, day);
         output_file = fopen(output_filename, "w");
@@ -48,17 +49,18 @@ int download_input(int year, int day) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, output_file);
         curl_easy_setopt(curl, CURLOPT_URL, input_url);
         curl_easy_setopt(curl, CURLOPT_COOKIE, cookie);
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "\"github.com/happycoder74/adventofcode/C/lib/aoc_io.c\"");
 
         res = curl_easy_perform(curl);
 
-        aoc_free(cookie);
-        aoc_free(input_url);
-        aoc_free(output_filename);
+        free(cookie);
+        free(input_url);
+        free(output_filename);
         fclose(output_file);
 
         if (res != CURLE_OK) {
-            fprintf(stderr, "Error in Curl response, %d\n", res);
+            fprintf(stderr, "Error in Curl response, (%d) - '%s'\n", res, errbuf);
             return EXIT_FAILURE;
         }
         curl_easy_cleanup(curl);
@@ -100,8 +102,8 @@ AocSList *get_input_list(char *filename, int year, int day) {
         data = aoc_slist_prepend(data, data_line);
     }
 
-    aoc_free(file);
-    aoc_free(path);
+    free(file);
+    free(path);
 
     return aoc_slist_reverse(data);
 }
@@ -141,7 +143,7 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     if (file) {
-        aoc_free(file);
+        free(file);
     }
 
     return data;
@@ -193,20 +195,26 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         char *to_trim = strdup(line);
         data_line = strdup(str_trim(to_trim));
         aoc_ptr_array_append(data, data_line);
-        aoc_free(to_trim);
+        free(to_trim);
     }
 
 #ifdef __MINGW32__
-    aoc_free(line);
+    free(line);
 #endif
     fclose(fp);
     if (file != filename) {
-        aoc_free(file);
+        free(file);
     }
 
-    aoc_free(path);
+    free(path);
 
     return data;
+}
+
+void aoc_header(unsigned year, unsigned day) {
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    printf("================================================\n");
 }
 
 #ifdef __MINGW32__
@@ -219,7 +227,7 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
 
     if (*buf == NULL || *bufsiz == 0) {
         *bufsiz = BUFSIZ;
-        *buf = aoc_realloc(*buf, *bufsiz);
+        *buf = realloc(*buf, *bufsiz);
         if ((*buf) == NULL) {
             return -1;
         }
@@ -246,7 +254,7 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
             char   *nbuf;
             size_t  nbufsiz = *bufsiz * 2;
             ssize_t d = ptr - *buf;
-            nbuf = aoc_realloc(*buf, nbufsiz);
+            nbuf = realloc(*buf, nbufsiz);
             if ((nbuf) == NULL) {
                 return -1;
             }

@@ -32,6 +32,7 @@ typedef struct {
     int         day;
     int         free_segments;
     AocArrayPtr data;
+    void       *user_data;
 } AocData_t;
 
 typedef struct point {
@@ -52,5 +53,5 @@ typedef struct AocSList {
 } AocSList;
 
 #undef MAX
-#define MAX(_a_, _b_) (((_a_) > (_b_)) ? (_a_) : (_b_))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif

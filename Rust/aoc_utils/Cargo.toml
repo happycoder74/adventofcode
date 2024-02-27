@@ -1,0 +1,11 @@
+[package]
+name = "aoc_utils"
+description = "Helper functions for Advent of Code in Rust"
+authors = ["Christian Lundh <christianlundh1974@gmail.com"]
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/happycoder74/adventofcode"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

@@ -1,6 +1,7 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_grid.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -33,17 +34,17 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
-        if (g_strstr_len(line, 4, "rect")) {
+        if (strstr(line, "rect")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = INIT;
             sscanf(line, "rect %dx%d", &instruction->value1, &instruction->value2);
             aoc_ptr_array_append(instruction_list, instruction);
-        } else if (g_strstr_len(line, 10, "rotate col")) {
+        } else if (strstr(line, "rotate col")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = COL;
             sscanf(line, "rotate column x=%d by %d", &instruction->value1, &instruction->value2);
             aoc_ptr_array_append(instruction_list, instruction);
-        } else if (g_strstr_len(line, 10, "rotate row")) {
+        } else if (strstr(line, "rotate row")) {
             instruction = (Instruction *)malloc(sizeof(Instruction));
             instruction->command = ROW;
             sscanf(line, "rotate row y=%d by %d", &instruction->value1, &instruction->value2);
@@ -112,10 +113,11 @@ void grid_print(Grid *grid, int final) {
     for (row = 0; row < grid->rows; row++) {
         for (col = 0; col < grid->columns; col++) {
             i = row * grid->columns + col;
-            if (grid->grid[i] > 0)
-                printf("%c", 219);
-            else
+            if (grid->grid[i] > 0) {
+                printf("\u2588");
+            } else {
                 printf(" ");
+            }
         }
         printf("\n");
     }
@@ -181,26 +183,13 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2016;
+    const unsigned day = 8;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
