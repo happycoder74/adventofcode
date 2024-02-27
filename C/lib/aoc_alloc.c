@@ -1,3 +1,5 @@
+#ifndef NDEBUG
+
 #include "aoc_hash.h"
 #include "glib.h"
 #include <inttypes.h>
@@ -32,7 +34,11 @@ static void init_mem_table(void) {
  * Add address to memory table unless NULL is returned.
  * If DEBUG_VERBOSE is defined the details is logged to stderr.
  */
+#ifdef DEBUG_VERBOSE
 void *aoc_malloc_internal(size_t size, const char *function, const char *file, int line) {
+#else
+void *aoc_malloc_internal(size_t size) {
+#endif
     if (!mem_table) {
         init_mem_table();
     }
@@ -64,7 +70,11 @@ void *aoc_malloc_internal(size_t size, const char *function, const char *file, i
  * Add address to memory table unless NULL is returned.
  * If DEBUG_VERBOSE is defined the details is logged to stderr.
  */
+#ifdef DEBUG_VERBOSE
 void *aoc_calloc_internal(size_t n_elements, size_t element_size, const char *function, const char *file, int line) {
+#else
+void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
+#endif
     void *addr = calloc(n_elements, element_size);
 
     if (!addr) {
@@ -94,7 +104,11 @@ void *aoc_calloc_internal(size_t n_elements, size_t element_size, const char *fu
  * (meaning realloc failed) the old ptr is added to the memory table.
  * If DEBUG_VERBOSE is defined the details is logged to stderr.
  */
+#ifdef DEBUG_VERBOSE
 void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, const char *file, int line) {
+#else
+void *aoc_realloc_internal(void *ptr, size_t new_size) {
+#endif
     g_hash_table_remove(mem_table, ptr);
     void *addr = realloc(ptr, new_size);
 
@@ -122,7 +136,11 @@ void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, con
  * Removes the address from the allocation table and if DEBUG_VERBOSE is
  * defined the details is logged to stderr.
  */
+#ifdef DEBUG_VERBOSE
 void aoc_free_internal(void *ptr, const char *function, const char *file, int line) {
+#else
+void aoc_free_internal(void *ptr) {
+#endif
     /* Delete ptr from mem_table if present */
     if (mem_table) {
         g_hash_table_remove(mem_table, ptr);
@@ -167,3 +185,5 @@ uint64_t aoc_mem_gc(void) {
     mem_table = NULL;
     return size;
 }
+
+#endif

@@ -1,9 +1,9 @@
 #include "aoc_string.h"
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
-#include <math.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -39,16 +39,19 @@ char *str_trim(char *str) {
     char *end;
 
     /* Trim leading space */
-    while (isspace((unsigned char)*str))
+    while (isspace((unsigned char)*str)) {
         str++;
+    }
 
-    if (*str == '\0') /* All spaces? */
+    if (*str == '\0') { /* All spaces? */
         return str;
+    }
 
     /* Trim trailing space */
     end = str + strlen(str) - 1;
-    while (end > str && isspace((unsigned char)*end))
+    while (end > str && isspace((unsigned char)*end)) {
         end--;
+    }
 
     /* Write new null terminator character */
     end[1] = '\0';
@@ -130,7 +133,7 @@ int str_startswith(char *str, char *start_str) {
 
     sstr = substr(str, 0, (int)strlen(start_str));
     result = !strcmp(start_str, sstr);
-    free(sstr);
+    aoc_free(sstr);
     return result;
 }
 
@@ -140,7 +143,7 @@ int str_endswith(char *str, char *end_str) {
 
     sstr = substr(str, (int)-strlen(end_str), (int)strlen(str));
     result = !strcmp(end_str, sstr);
-    free(sstr);
+    aoc_free(sstr);
     return result;
 }
 
