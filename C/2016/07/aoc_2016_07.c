@@ -25,7 +25,7 @@ int check_abba(regex_t *abba, const char *string) {
     regmatch_t abbaMatch[NMATCH];
 
     int error = regexec(abba, string, NMATCH, abbaMatch, 0);
-    return (!error) && check_match(abbaMatch, string);
+    return (!error);
 }
 
 int check_hypernet(regex_t *regex, regex_t *hypernet, char *str) {
@@ -56,7 +56,7 @@ void *solve_part_1(AocData_t *aoc_data) {
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
-    char abba_pattern[] = "([a-z])([a-z])\\2\\1";
+    char abba_pattern[] = "(.)((?!\\1).)\\2\\1";
     char hyper_pattern[] = "(\\[\\w+\\])";
 
     error = regcomp(&abba, abba_pattern, REG_EXTENDED);
