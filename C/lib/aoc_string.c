@@ -1,4 +1,5 @@
 #include "aoc_string.h"
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include <assert.h>
 #include <ctype.h>
