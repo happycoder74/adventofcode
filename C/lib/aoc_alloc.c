@@ -144,11 +144,11 @@ void aoc_free_internal(void *ptr) {
     /* Delete ptr from mem_table if present */
     if (mem_table) {
         g_hash_table_remove(mem_table, ptr);
-    }
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr, g_hash_table_size(mem_table), function, file, line);
-    fflush(stderr);
+        fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr, g_hash_table_size(mem_table), function, file, line);
+        fflush(stderr);
 #endif
+    }
 
     // Free the memory
     free(ptr);
