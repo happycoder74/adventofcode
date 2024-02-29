@@ -135,7 +135,7 @@ bool aoc_hash_table_insert(AocHashTablePtr ht, const AocKey key, const void *obj
     return 1;
 }
 
-static bool key_equal(AocKey key1, AocKey key2) {
+inline static bool key_equal(AocKey key1, AocKey key2) {
     if (key1.type != key2.type) {
         return false;
     }
@@ -155,6 +155,9 @@ static bool key_equal(AocKey key1, AocKey key2) {
             break;
         case AOC_KEY_STR:
             return !strcmp((char *)key1.key, (char *)key2.key);
+            break;
+        case AOC_KEY_PTR:
+            return key1.key == key2.key;
             break;
         case AOC_KEY_POINT:
             {
@@ -309,7 +312,7 @@ size_t aoc_hash_table_count(AocHashTablePtr hash_table) {
     return hash_table->count;
 }
 
-int32_t int32_value(entry *value) {
+inline int32_t int32_value(entry *value) {
     if (value->object != NULL) {
         return *(int32_t *)value->object;
     } else {
@@ -317,14 +320,14 @@ int32_t int32_value(entry *value) {
     }
 }
 
-int64_t int64_value(entry *value) {
+inline int64_t int64_value(entry *value) {
     if (value->object != NULL) {
         return *(int64_t *)value->object;
     } else {
         return INT64_MAX;
     }
 }
-uint32_t uint32_value(entry *value) {
+inline uint32_t uint32_value(entry *value) {
     if (value->object != NULL) {
         return *(uint32_t *)value->object;
     } else {
@@ -332,7 +335,7 @@ uint32_t uint32_value(entry *value) {
     }
 }
 
-uint64_t uint64_value(entry *value) {
+inline uint64_t uint64_value(entry *value) {
     if (value->object != NULL) {
         return *(uint64_t *)value->object;
     } else {
@@ -340,15 +343,15 @@ uint64_t uint64_value(entry *value) {
     }
 }
 
-char *str_value(entry *value) {
+inline char *str_value(entry *value) {
     return (char *)value->object;
 }
 
-Point point_value(entry *value) {
+inline Point point_value(entry *value) {
     return *(Point *)value->object;
 }
 
-AocKey int32_key(int32_t key) {
+inline AocKey int32_key(int32_t key) {
     AocKey k;
 
     int32_t *keyval = (int32_t *)k.key;
@@ -358,7 +361,7 @@ AocKey int32_key(int32_t key) {
     return k;
 }
 
-AocKey uint32_key(uint32_t key) {
+inline AocKey uint32_key(uint32_t key) {
     AocKey k;
 
     uint32_t *keyval = (uint32_t *)k.key;
@@ -368,7 +371,7 @@ AocKey uint32_key(uint32_t key) {
     return k;
 }
 
-AocKey int64_key(int64_t key) {
+inline AocKey int64_key(int64_t key) {
     AocKey k;
 
     int32_t *keyval = (int32_t *)k.key;
@@ -378,7 +381,7 @@ AocKey int64_key(int64_t key) {
     return k;
 }
 
-AocKey uint64_key(uint64_t key) {
+inline AocKey uint64_key(uint64_t key) {
     AocKey k;
 
     uint64_t *keyval = (uint64_t *)k.key;
@@ -388,7 +391,7 @@ AocKey uint64_key(uint64_t key) {
     return k;
 }
 
-AocKey str_key(const char *key) {
+inline AocKey str_key(const char *key) {
     AocKey k;
 
     memcpy(k.key, key, strlen(key) + 1);
@@ -397,7 +400,7 @@ AocKey str_key(const char *key) {
     return k;
 }
 
-AocKey point_key(const Point key) {
+inline AocKey point_key(const Point key) {
     AocKey k;
 
     memcpy(k.key, &key, sizeof(Point));
@@ -406,7 +409,18 @@ AocKey point_key(const Point key) {
     return k;
 }
 
-uint32_t aoc_hash(AocKey key) {
+inline AocKey ptr_key(const void *key) {
+    AocKey k;
+
+    for (unsigned i = 0; i < 8; i++) {
+        k.key[i] = ((uint8_t *)key)[i];
+    }
+    k.type = AOC_KEY_PTR;
+
+    return k;
+}
+
+inline uint32_t aoc_hash(AocKey key) {
     AocKeyType type = key.type;
 
     if ((type == AOC_KEY_INT32) || (type == AOC_KEY_UINT32)) {
@@ -430,6 +444,9 @@ uint32_t aoc_hash(AocKey key) {
         int_hash ^= point->y;
 
         return (unsigned)((int_hash >> 32) ^ (int_hash & 0xffffffffU));
+    } else if (type == AOC_KEY_PTR) {
+        uint64_t value = *(uint64_t *)key.key;
+        return (uint32_t)value;
     } else {
         return 0;
     }

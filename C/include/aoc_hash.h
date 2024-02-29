@@ -14,6 +14,7 @@ typedef enum {
     AOC_KEY_UINT64,
     AOC_KEY_STR,
     AOC_KEY_POINT,
+    AOC_KEY_PTR,
     AOC_KEY_COUNT
 } AocKeyType;
 
@@ -23,6 +24,7 @@ typedef enum {
     AOC_HASH_INT64,
     AOC_HASH_UINT64,
     AOC_HASH_STR,
+    AOC_HASH_PTR,
     AOC_HASH_COUNT
 } AocHashType;
 
@@ -45,6 +47,7 @@ AocKey int64_key(int64_t value);
 AocKey uint32_key(uint32_t value);
 AocKey uint64_key(uint64_t value);
 AocKey str_key(const char *value);
+AocKey ptr_key(const void *value);
 AocKey point_key(const Point value);
 
 uint32_t aoc_hash(AocKey key);
