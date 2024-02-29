@@ -13,7 +13,7 @@ CRITERION_CFLAGS=-I/$(SYS_LIB_LOCATION)/local/include
 CRITERION_LDLIBS=-L/$(SYS_LIB_LOCATION)/local/lib -lcriterion
 
 # AdventOfCode specific variables
-AOC_HOME=/home/$(USERNAME)/projects/adventofcode/C
+AOC_HOME=/home/$(USERNAME)/projects/adventofcode-c/C
 AOC_CFLAGS=-I$(AOC_HOME)/include
 AOC_LDFLAGS=-L$(AOC_HOME)/debug/lib -laoc
 AOC_LIBDIR=$(AOC_HOME)/debug/lib
