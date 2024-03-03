@@ -1,17 +1,16 @@
 #ifndef NDEBUG
 
 #include "aoc_hash.h"
-#include "glib.h"
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-GHashTable *mem_table = NULL;
+AocHashTable *mem_table = NULL;
 
 static int gc_free(void *key, void *value, void *user_data) {
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "gc:      %p (size = %u)\n", key, *(int *)((char *)mem_table + sizeof(gsize) + 2 * sizeof(int)));
+    fprintf(stderr, "gc:      %p (size = %u)\n", key, *(int *)((char *)mem_table + sizeof(size_t) + 2 * sizeof(int)));
     fflush(stderr);
 #endif
     free(key);
@@ -19,7 +18,7 @@ static int gc_free(void *key, void *value, void *user_data) {
 }
 
 static void init_mem_table(void) {
-    mem_table = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
+    mem_table = aoc_hash_table_create(AOC_KEY_PTR);
 }
 
 /**
@@ -49,9 +48,9 @@ void *aoc_malloc_internal(size_t size) {
     }
 
     /* Add addr to hash_table here */
-    g_hash_table_add(mem_table, addr);
+    aoc_hash_table_insert(mem_table, addr, addr);
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "malloc:  %p (size = %u) - %s - %s:%d\n", addr, g_hash_table_size(mem_table), function, file, line);
+    fprintf(stderr, "malloc:  %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table), function, file, line);
     fflush(stderr);
 #endif
     return addr;
@@ -82,9 +81,9 @@ void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
     }
 
     /* Add addr to hash_table here */
-    g_hash_table_add(mem_table, addr);
+    aoc_hash_table_insert(mem_table, addr, addr);
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "calloc:  %p (size = %u) - %s - %s:%d\n", addr, g_hash_table_size(mem_table), function, file, line);
+    fprintf(stderr, "calloc:  %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table), function, file, line);
     fflush(stderr);
 #endif
 
@@ -109,18 +108,18 @@ void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, con
 #else
 void *aoc_realloc_internal(void *ptr, size_t new_size) {
 #endif
-    g_hash_table_remove(mem_table, ptr);
+    aoc_hash_table_delete(mem_table, ptr);
     void *addr = realloc(ptr, new_size);
 
     if (addr) {
         /* Add addr to hash_table here */
-        g_hash_table_add(mem_table, addr);
+        aoc_hash_table_insert(mem_table, addr, addr);
 #ifdef DEBUG_VERBOSE
-        fprintf(stderr, "realloc: %p (size = %u) - %s - %s:%d\n", addr, g_hash_table_size(mem_table), function, file, line);
+        fprintf(stderr, "realloc: %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table), function, file, line);
         fflush(stderr);
 #endif
     } else {
-        g_hash_table_add(mem_table, ptr);
+        aoc_hash_table_insert(mem_table, ptr, ptr);
     }
 
     return addr;
@@ -143,9 +142,9 @@ void aoc_free_internal(void *ptr) {
 #endif
     /* Delete ptr from mem_table if present */
     if (mem_table) {
-        g_hash_table_remove(mem_table, ptr);
+        aoc_hash_table_delete(mem_table, ptr);
 #ifdef DEBUG_VERBOSE
-        fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr, g_hash_table_size(mem_table), function, file, line);
+        fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr, aoc_hash_table_count(mem_table), function, file, line);
         fflush(stderr);
 #endif
     }
@@ -155,9 +154,8 @@ void aoc_free_internal(void *ptr) {
 
     // If table is empty, free up table and set global pointer to NULL.
     if (mem_table) {
-        if (g_hash_table_size(mem_table) == 0) {
-            g_hash_table_destroy(mem_table);
-            mem_table = NULL;
+        if (aoc_hash_table_count(mem_table) == 0) {
+            aoc_hash_table_destroy(&mem_table);
         }
     }
 }
@@ -170,18 +168,18 @@ void aoc_free_internal(void *ptr) {
  */
 uint64_t aoc_mem_gc(void) {
 
-    if (!(mem_table) || (g_hash_table_size(mem_table) == 0)) {
+    if (!(mem_table) || (aoc_hash_table_count(mem_table) == 0)) {
         return 0;
     }
 
-    uint64_t size = g_hash_table_size(mem_table);
+    uint64_t size = aoc_hash_table_count(mem_table);
     if (size) {
         fprintf(stderr, "%" PRIu64 " elements remaining\n", size);
         fflush(stderr);
     }
 
-    g_hash_table_foreach_remove(mem_table, gc_free, NULL);
-    g_hash_table_destroy(mem_table);
+    /* g_hash_table_foreach_remove(mem_table, gc_free, NULL); */
+    aoc_hash_table_destroy(&mem_table);
     mem_table = NULL;
     return size;
 }
