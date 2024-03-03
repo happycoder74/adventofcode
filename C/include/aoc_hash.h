@@ -1,5 +1,5 @@
-#ifndef AOC_HASH_H
-#define AOC_HASH_H
+#ifndef AOC_GENHASH_H
+#define AOC_GENHASH_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -42,38 +42,33 @@ uint64_t uint64_value(AocHashEntry *value);
 char    *str_value(AocHashEntry *value);
 Point    point_value(AocHashEntry *value);
 
-AocKey int32_key(int32_t value);
-AocKey int64_key(int64_t value);
-AocKey uint32_key(uint32_t value);
-AocKey uint64_key(uint64_t value);
-AocKey str_key(const char *value);
-AocKey ptr_key(const void *value);
-AocKey point_key(const Point value);
-
-uint32_t aoc_hash(AocKey key);
-
 typedef struct _aoc_hash_table AocHashTable;
 typedef AocHashTable          *AocHashTablePtr;
 
-typedef uint64_t (*str_hashfunction)(const char *key, size_t);
-typedef uint64_t (*ptr_hashfunction)(const void *key, size_t);
-typedef uint64_t (*int32_hashfunction)(const int32_t key);
-typedef uint64_t (*int64_hashfunction)(const int64_t key, size_t);
-typedef uint64_t (*uint32_hashfunction)(const uint32_t key, size_t);
-typedef uint64_t (*uint64_hashfunction)(const uint64_t key, size_t);
-typedef uint64_t (*point_hashfunction)(const Point key, size_t);
-typedef uint64_t (*line_hashfunction)(const Line key, size_t);
+typedef uint32_t (*str_hashfunction)(const char *key, size_t);
+typedef uint32_t (*ptr_hashfunction)(const void *key, size_t);
+typedef uint32_t (*int32_hashfunction)(const int32_t key);
+typedef uint32_t (*int64_hashfunction)(const int64_t key, size_t);
+typedef uint32_t (*uint32_hashfunction)(const uint32_t key, size_t);
+typedef uint32_t (*uint64_hashfunction)(const uint64_t key, size_t);
+typedef uint32_t (*point_hashfunction)(const Point key, size_t);
+typedef uint32_t (*line_hashfunction)(const Line key, size_t);
 
-typedef uint32_t (*hash_function)(const AocKey key);
+typedef uint32_t (*hash_function)(const void *key);
+typedef bool (*key_equal_func)(const void *key1, const void *key2);
+typedef void (*free_func)(void *ptr);
 
-AocHashTablePtr aoc_hash_table_create(uint32_t size, hash_function hf, AocKeyType type);
+AocHashTablePtr aoc_hash_table_create(AocKeyType type);
+AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, free_func key_free_function, free_func value_free_function, AocKeyType type);
 
-AocHashEntry *aoc_hash_table_lookup_new(AocHashTablePtr ht, AocKey key);
-void         *aoc_hash_table_lookup(AocHashTablePtr ht, AocKey key);
-bool          aoc_hash_table_insert(AocHashTablePtr ht, const AocKey key, const void *obj);
+AocHashEntry *aoc_hash_table_lookup_entry(AocHashTablePtr ht, const void *key);
+void         *aoc_hash_table_lookup(AocHashTablePtr ht, const void *key);
+bool          aoc_hash_table_insert(AocHashTablePtr ht, const void *key, const void *obj);
+bool          aoc_hash_table_replace(AocHashTablePtr ht, const void *key, const void *obj);
+bool          aoc_hash_table_add(AocHashTablePtr ht, const void *key);
 
-void  aoc_hash_table_destroy(AocHashTablePtr ht);
-void *aoc_hash_table_delete(AocHashTablePtr ht, AocKey key);
+void  aoc_hash_table_destroy(AocHashTablePtr *ht);
+void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key);
 
 size_t aoc_hash_table_size(AocHashTablePtr hash_table);
 size_t aoc_hash_table_count(AocHashTablePtr hash_table);

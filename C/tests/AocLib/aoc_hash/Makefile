@@ -32,7 +32,7 @@ SRCS=$(wildcard $(SRC)/*.c)
 OBJ=obj
 OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
 
-TESTS=$(wildcard test_aoc_*_*.c)
+TESTS=$(wildcard test_aoc_*.c)
 
 TESTBINS=$(patsubst %.c, $(BIN)/%.exe, $(TESTS))
 

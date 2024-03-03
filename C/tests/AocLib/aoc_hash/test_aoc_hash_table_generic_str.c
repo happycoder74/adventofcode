@@ -10,7 +10,7 @@ AocKey         *keys = NULL;
 char          **values = NULL;
 
 void aoc_hash_table_setup(void) {
-    hash_table = aoc_hash_table_create(3, aoc_hash, AOC_KEY_STR);
+    hash_table = aoc_hash_table_create(AOC_KEY_STR);
 }
 
 void aoc_hash_table_teardown(void) {
@@ -35,22 +35,22 @@ Test(aoc_hash_table, test_hash_table_create) {
 Test(aoc_hash_table, test_hash_table_insert_lookup) {
     int32_t *value = (int32_t *)malloc(sizeof(int32_t));
     *value = 5;
-    aoc_hash_table_insert(hash_table, str_key("KEY1"), value);
+    aoc_hash_table_insert(hash_table, "KEY1", value);
     value = (int32_t *)malloc(sizeof(int32_t));
     *value = 10;
-    aoc_hash_table_insert(hash_table, str_key("KEY2"), value);
+    aoc_hash_table_insert(hash_table, "KEY2", value);
 
-    int32_t *data = (int32_t *)aoc_hash_table_lookup(hash_table, str_key("KEY1"));
+    int32_t *data = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY1");
     int32_t  expected = 5;
     int32_t  actual = *data;
     cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
 
-    data = (int32_t *)aoc_hash_table_lookup(hash_table, str_key("KEY2"));
+    data = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY2");
     expected = 10;
     actual = *data;
     cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
 
-    data = (int32_t *)aoc_hash_table_lookup(hash_table, str_key("KEY1"));
+    data = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY1");
     expected = 5;
     actual = *data;
     cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);

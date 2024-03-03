@@ -19,12 +19,12 @@ int solver(AocArrayPtr data, uint32_t agents) {
     Point        *key;
 
     position = (Point *)calloc(agents, sizeof(Point));
-    visited = aoc_hash_table_create(3000, NULL, AOC_KEY_POINT);
+    visited = aoc_hash_table_create_custom(0, NULL, free, free, AOC_KEY_POINT);
 
     key = (Point *)calloc(1, sizeof(Point));
     key->x = position[position_index].x;
     key->y = position[position_index].y;
-    aoc_hash_table_insert(visited, point_key(*key), key);
+    aoc_hash_table_add(visited, key);
 
     line = aoc_str_array_index(data, 0);
     for (size_t c = 0; c < strlen(line); c++) {
@@ -48,7 +48,7 @@ int solver(AocArrayPtr data, uint32_t agents) {
         key = (Point *)calloc(1, sizeof(Point));
         key->x = position[position_index].x;
         key->y = position[position_index].y;
-        aoc_hash_table_insert(visited, point_key(*key), key);
+        aoc_hash_table_add(visited, key);
     }
     visited_size = aoc_hash_table_count(visited);
 
