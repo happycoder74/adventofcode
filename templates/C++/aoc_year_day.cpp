@@ -1,16 +1,16 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-#include <iomanip>
-#include <ranges>
+
+#include <chrono>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <map>
+#include <ranges>
 #include <string>
 #include <vector>
-#include <chrono>
 
 typedef std::chrono::high_resolution_clock Clock;
-
 
 std::string solve_part_1(std::vector<std::string> instructions) {
     std::string return_string;
@@ -30,9 +30,8 @@ std::string solve_all(std::vector<std::string> instructions) {
 }
 
 int main(int argc, char **argv) {
-    std::string filename;
+    std::string              filename;
     std::vector<std::string> instructions;
-
 
     filename = argc > 1 ? argv[1] : "input.txt";
 
@@ -42,5 +41,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
-

@@ -1,11 +1,12 @@
-#include <string.h>
-#include <stdlib.h>
-#include <glib.h>
-#include "aoc_types.h"
-#include "aoc_utils.h"
+#include "aoc_alloc.h"
+#include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
-#include "aoc_array.h"
+#include "aoc_types.h"
+#include "aoc_utils.h"
+#include <stdlib.h>
+#include <string.h>
 
 int sort_function(const void *a, const void *b) {
     int *int_a = (int *)a;
@@ -13,7 +14,6 @@ int sort_function(const void *a, const void *b) {
 
     return (*int_a) - (*int_b);
 }
-
 
 int arr_index(int *arr, int value, int length) {
     // Search for first occurance of value in array
@@ -29,17 +29,18 @@ int arr_index(int *arr, int value, int length) {
 }
 
 char **transpose_array(AocArrayPtr data, int *columns) {
-    char **col_array;
-    int i, col;
+    char       **col_array;
+    int          i, col;
     unsigned int row;
-    char *line;
+    char        *line;
 
     (*columns) = strlen(aoc_str_array_index(data, 0));
 
     // Initialize and allocate memory for columns
     col_array = (char **)calloc(*columns, sizeof(char *));
-    for (i = 0; i < *columns; i++)
+    for (i = 0; i < *columns; i++) {
         col_array[i] = (char *)calloc(aoc_array_length(data) + 1, sizeof(char));
+    }
 
     // "Transpose" the input array and make sure the char* arrays
     // are NULL terminated.
@@ -47,24 +48,23 @@ char **transpose_array(AocArrayPtr data, int *columns) {
         line = aoc_str_array_index(data, row);
         for (col = 0; col < *columns; col++) {
             col_array[col][row] = line[col];
-            if (row == aoc_array_length(data) -1) {
+            if (row == aoc_array_length(data) - 1) {
                 col_array[col][row + 1] = '\0';
             }
         }
     }
 
     return col_array;
-
 }
 
 void *solve_part_1(AocData_t *data) {
     unsigned int i;
-    int col;
-    int columns;
-    char **col_array;
-    char message[20];
-    int count[26];
-    int max_index;
+    int          col;
+    int          columns;
+    char       **col_array;
+    char         message[20];
+    int          count[26];
+    int          max_index;
 
     // Allocation of memory for base arrays
     col_array = transpose_array(aoc_data_get(data), &columns);
@@ -95,13 +95,12 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     unsigned int i;
-    int col;
-    int columns;
-    char **col_array;
-    char message[20] = "";
-    int count[26];
-    int min_index;
-
+    int          col;
+    int          columns;
+    char       **col_array;
+    char         message[20] = "";
+    int          count[26];
+    int          min_index;
 
     // Allocation of memory for base arrays
     col_array = transpose_array(aoc_data_get(data), &columns);
@@ -116,7 +115,7 @@ void *solve_part_2(AocData_t *data) {
             count[col_array[col][i] - 'a']++;
         }
         min_index = arr_index(count, min_non_zero(count, 26), 26);
-        message[col+1] = '\0';
+        message[col + 1] = '\0';
         message[col] = (char)(min_index + 'a');
     }
 
@@ -133,7 +132,7 @@ void *solve_part_2(AocData_t *data) {
 
 void *solve_all(AocData_t *data) {
 
-    if (data->data) {
+    if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
@@ -142,25 +141,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int year, day;
+    const unsigned year = 2016;
+    const unsigned day = 6;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, NULL);
 
-    if (argc > 1) {
-        data = aoc_data_new(argv[1], year, day);
-    } else {
-        data = aoc_data_new("input.txt", year, day);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

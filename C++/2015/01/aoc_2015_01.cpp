@@ -1,52 +1,58 @@
+#include "aoc_io.hpp"
+#include "aoc_timer.hpp"
+#include <chrono>
 #include <cstdint>
-#include <format>
-#include <fstream>
 #include <iostream>
+#include <ratio>
 #include <string>
 
-std::string get_line_data(std::string filename, uint16_t year, uint8_t day) {
-    std::string line_data;
-    std::ifstream ifs;
-    std::string fn;
-    std::string path(std::format("/home/yy11510/projects/adventofcode/data/{}/{:02d}/", year, day));
-    if (std::string(filename) == "input.txt") {
-        fn = path + filename;
-    } else {
-        fn = filename;
-    }
-    ifs = std::ifstream(fn);
-    std::getline(ifs, line_data);
-    return line_data;
-}
-
+using Clock = std::chrono::high_resolution_clock;
+using duration = std::chrono::duration<double>;
 
 int main(int argc, char **argv) {
-    std::int16_t level = 0;
+    std::int16_t  level = 0;
     std::uint16_t counter = 0;
+    std::string   filename;
+
     bool basement_found = false;
-    std::string filename;
+
+    const int year = 2015;
+    const int day = 1;
 
     if (argc > 1) {
-        filename = argv[1];
+        if (std::string(argv[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = argv[1];
+        }
     } else {
         filename = "input.txt";
     }
 
+    std::vector<std::string> line = aoc::io::get_input_list<std::string>(filename, year, day);
 
-    std::string line = get_line_data(filename, 2015, 1);
+    auto t1 = Clock::now();
 
-    for (auto ch: line) {
+    std::chrono::time_point<Clock> t2;
+
+    for (auto ch : line[0]) {
         ch == '(' ? level++ : level--;
-        if(!basement_found) {
+        if (!basement_found) {
             counter++;
             if (level == -1) {
+                t2 = Clock::now();
                 basement_found = true;
             }
         }
     }
+    auto t3 = Clock::now();
 
-    std::cout << level << std::endl;
-    std::cout << counter << std::endl;
+    auto elapsed_part_1 = aoc::convert_duration(t3 - t1);
+    auto elapsed_part_2 = aoc::convert_duration(t2 - t1);
+
+    aoc::io::header(year, day);
+    std::cout << "Part 1 answer: " << std::format("{:<20}", level) << std::format("{:>20}", elapsed_part_1) << '\n';
+    std::cout << "Part 2 answer: " << std::format("{:<20}", counter) << std::format("{:>20}", elapsed_part_2) << '\n';
+
     return 0;
 }
-

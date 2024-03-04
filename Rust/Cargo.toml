@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+    "2015", "2017",
+    "2021",
+    "2023",
+]
+
+[workspace.package]
+description = "Solutions for Advent of Code"
+version = "0.1.0"
+authors = ["Christian Lundh <christianlundh1974@gmail.com"]
+edition = "2021"
+
+[workspace.dependencies]
+aoc_utils = { version = "0.1.0", path = "aoc_utils" }
