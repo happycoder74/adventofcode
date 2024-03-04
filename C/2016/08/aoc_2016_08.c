@@ -51,6 +51,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
             aoc_ptr_array_append(instruction_list, instruction);
         }
     }
+    aoc_str_array_free_all(data);
     return instruction_list;
 }
 
@@ -151,13 +152,16 @@ void *solve_part_1(AocData_t *data) {
             case ROW:
                 rotate_row(grid, instruction);
                 break;
+            default:
+                fprintf(stderr, "Error in commands");
+                exit(EXIT_FAILURE);
         }
         grid_print(grid, 0);
     }
 
     int count = 0;
-    for (row = 0; row < 6; row++) {
-        for (col = 0; col < 50; col++) {
+    for (row = 0; row < grid->rows; row++) {
+        for (col = 0; col < grid->columns; col++) {
             index = row * grid->columns + col;
             count += grid->grid[index];
         }

@@ -189,12 +189,12 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         }
     }
 
-    data = aoc_ptr_array_new();
+    data = aoc_str_array_new();
 
     while ((getline(&line, &line_length, fp)) != -1) {
         char *to_trim = strdup(line);
         data_line = strdup(str_trim(to_trim));
-        aoc_ptr_array_append(data, data_line);
+        aoc_str_array_append(data, data_line);
         free(to_trim);
     }
 
