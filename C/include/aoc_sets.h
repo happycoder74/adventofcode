@@ -1,31 +1,35 @@
 #ifndef _AOC_SETS_H_
 #define _AOC_SETS_H_
 
-#include <glib.h>
+#include "aoc_hash.h"
+#include "aoc_types.h"
 
 typedef enum {
-    SET_INT,
-    SET_LONG,
-    SET_CHAR,
-    SET_STR,
-    SET_FLOAT,
-    SET_DOUBLE,
-    SET_COUNT
-} SetType;
+    AOC_SET_INT32,
+    AOC_SET_INT64,
+    AOC_SET_UINT32,
+    AOC_SET_UINT64,
+    AOC_SET_CHAR,
+    AOC_SET_STR,
+    AOC_SET_PTR,
+    AOC_SET_UCHAR,
+    AOC_SET_LINE,
+    AOC_SET_POINT,
+    AOC_SET_COUNT
+} AocSetType;
 
 typedef struct {
-    GHashTable *set;
-    SetType settype;
-} Set;
+    AocHashTable *set;
+    AocSetType    settype;
+} AocSet;
 
-Set *set_new(SetType settype);
-Set *set_new_with_data(GArray *data, SetType settype);
-Set *set_intersect(Set *set1, Set *set2);
-Set *set_difference(Set *set1, Set *set2);
-Set *set_union(Set *set1, Set *set2);
-GArray *set_get_values(Set *set);
+AocSet   *aoc_set_new_with_data(AocArray *data, AocSetType settype);
+AocSet   *aoc_set_intersect(AocSet *set1, AocSet *set2);
+AocSet   *aoc_set_difference(AocSet *set1, AocSet *set2);
+AocSet   *aoc_set_union(AocSet *set1, AocSet *set2);
+AocArray *aoc_set_get_values(AocSet *set);
 
-void set_free(Set *set);
-int set_add(Set *set, gconstpointer value);
-void set_print(Set *);
+void aoc_set_free(AocSet *set);
+int  aoc_set_add(AocSet *set, const void *value);
+
 #endif
