@@ -12,7 +12,7 @@ void aoc_array_setup(void) {
 }
 
 void aoc_array_teardown(void) {
-    aoc_array_free(array, false);
+    aoc_ptr_array_free(array);
 }
 
 TestSuite(aoc_array, .init = aoc_array_setup, .fini = aoc_array_teardown);
@@ -31,7 +31,9 @@ Test(aoc_array, test_ptr_array_append) {
     test_string = strcpy(test_string, str);
     aoc_ptr_array_append(array, test_string);
     char **data = (char **)aoc_array_get_data(array);
-    cr_expect(!strcmp((char *)data[0], "Test String"), "Expected value to be \"Test String\"");
+    char  *result = data[0];
+
+    cr_expect(!strcmp(result, "Test String"), "Expected value to be '%s', but got '%s'", str, result);
     free(test_string);
 }
 
@@ -52,7 +54,8 @@ Test(aoc_array, test_ptr_array_index) {
     aoc_ptr_array_append(array, val2);
 
     int *data = aoc_ptr_array_index(array, 1);
-    cr_expect(val2 == data, "Expected value to be \"Two\"");
+
+    cr_expect(val2 == data, "Expected '%p', got '%p'", (void *)val2, (void *)data);
 
     free(val1);
     free(val2);

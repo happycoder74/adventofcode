@@ -69,15 +69,15 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     AocArrayPtr groups = aoc_ptr_array_new();
-    AocArrayPtr group = aoc_ptr_array_new();
+    AocArrayPtr group = aoc_str_array_new();
 
     for (uint32_t i = 0; i < aoc_data_length(data); i++) {
         char **packs = aoc_ptr_array_index(aoc_data_get(data), i);
         char  *pack = str_join("", packs, 2);
-        aoc_ptr_array_append(group, pack);
+        aoc_str_array_append(group, pack);
         if ((((i + 1) % 3) == 0) && (i > 0)) {
             aoc_ptr_array_append(groups, group);
-            group = aoc_ptr_array_new();
+            group = aoc_str_array_new();
         }
     }
 

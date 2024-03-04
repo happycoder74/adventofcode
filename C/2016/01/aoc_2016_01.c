@@ -13,10 +13,8 @@ int solution(AocArrayPtr data, int part_two) {
     char **split_string;
     int    i;
     Point *pos;
-    Point *current;
 
-    AocHashTable *locations;
-    AocArrayPtr   directions;
+    AocHashTable *locations = NULL;
 
     typedef struct {
         char direction;
@@ -24,17 +22,14 @@ int solution(AocArrayPtr data, int part_two) {
     } step_t;
 
     step_t *step = (step_t *)malloc(sizeof(step_t));
-
-    directions = aoc_ptr_array_new();
     locations = aoc_hash_table_create(AOC_KEY_POINT);
-    Point *direction1 = point_new_m(1, 0);
-    aoc_ptr_array_append(directions, direction1);
-    Point *direction2 = point_new_m(0, 1);
-    aoc_ptr_array_append(directions, direction2);
-    Point *direction3 = point_new_m(-1, 0);
-    aoc_ptr_array_append(directions, direction3);
-    Point *direction4 = point_new_m(0, -1);
-    aoc_ptr_array_append(directions, direction4);
+
+    Point directions[4] = {
+        {1,  0 },
+        {0,  1 },
+        {-1, 0 },
+        {0,  -1}
+    };
 
     pos = point_new_m(0, 0);
 
@@ -49,9 +44,8 @@ int solution(AocArrayPtr data, int part_two) {
         sscanf(split_string[i], "%c%d", &step->direction, &step->steps);
         index = index + (step->direction == 'R' ? 1 : -1);
         index = (index >= 0 ? index % 4 : 4 + (index % -4));
-        current = (Point *)aoc_ptr_array_index(directions, index);
         for (s = 0; s < step->steps; s++) {
-            point_move(pos, *current);
+            point_move(pos, directions[index]);
             if (part_two) {
                 Point *check_key = point_new_m(pos->x, pos->y);
                 if (aoc_hash_table_lookup(locations, check_key)) {
@@ -60,7 +54,6 @@ int solution(AocArrayPtr data, int part_two) {
                     free(step);
                     free(check_key);
                     aoc_str_freev(split_string);
-                    aoc_array_free(directions, true);
 
                     aoc_hash_table_destroy(&locations);
 
@@ -71,12 +64,9 @@ int solution(AocArrayPtr data, int part_two) {
         }
     }
     int return_value = abs(pos->x) + abs(pos->y);
-    printf("Reached end\n");
     free(pos);
     free(step);
     aoc_str_freev(split_string);
-    aoc_array_free(directions, true);
-
     aoc_hash_table_destroy(&locations);
     return return_value;
 }
