@@ -3,10 +3,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 AocHashTablePtr hash_table = NULL;
 AocHashTablePtr hash_table2 = NULL;
-AocKey         *keys = NULL;
+void          **keys = NULL;
 char          **values = NULL;
 
 void aoc_hash_table_setup(void) {
@@ -14,16 +15,7 @@ void aoc_hash_table_setup(void) {
 }
 
 void aoc_hash_table_teardown(void) {
-    if (hash_table) {
-        free(hash_table);
-    }
-
-    if (keys) {
-        free(keys);
-    }
-    if (values) {
-        free(values);
-    }
+    aoc_hash_table_destroy(&hash_table);
 }
 
 TestSuite(aoc_hash_table, .init = aoc_hash_table_setup, .fini = aoc_hash_table_teardown);
@@ -56,6 +48,14 @@ Test(aoc_hash_table, test_hash_table_insert_lookup) {
     cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
 }
 
+Test(aoc_hash_table, aoc_hash_table_custom_str_table) {
+    AocHashTablePtr ht = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_KEY_STR);
+
+    aoc_hash_table_add(ht, strdup("First key"));
+
+    aoc_hash_table_destroy(&ht);
+}
+
 /* Test(aoc_hash_table, test_hash_table_delete) { */
 /*     int32_t *value = (int32_t *)malloc(sizeof(int32_t)); */
 /*     *value = 5; */
@@ -77,5 +77,6 @@ Test(aoc_hash_table, test_hash_table_insert_lookup) {
 /*     cr_expect_eq(expected, actual, "Expected size of %d, but got %d", expected, actual); */
 /*     expected = values[4]; */
 /*     actual = *(int32_t *)aoc_hash_table_lookup(hash_table, keys[4]); */
-/*     cr_expect_eq(expected, actual, "Expected value of key: %d to be %d but got %d", *(int32_t*)keys[4].key, expected, actual); */
+/*     cr_expect_eq(expected, actual, "Expected value of key: %d to be %d but got %d",
+ * *(int32_t*)keys[4].key, expected, actual); */
 /* } */
