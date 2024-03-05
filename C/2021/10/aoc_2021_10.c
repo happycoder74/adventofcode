@@ -1,5 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
@@ -10,35 +11,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-GHashTable *init_brackets(void) {
-    GHashTable *brackets;
-    brackets = g_hash_table_new(g_str_hash, g_str_equal);
+char *opening[] = {"(", "[", "{", "<"};
+char *closing[] = {")", "]", "}", ">"};
 
-    g_hash_table_insert(brackets, "(", ")");
-    g_hash_table_insert(brackets, "[", "]");
-    g_hash_table_insert(brackets, "{", "}");
-    g_hash_table_insert(brackets, "<", ">");
+#define aoc_int32_hash_table_lookup(_hashtable_, _key_) *(int32_t *)aoc_hash_table_lookup(_hashtable_, _key_)
+
+AocHashTable *init_brackets(void) {
+    AocHashTable *brackets;
+    brackets = aoc_hash_table_create(AOC_KEY_STR);
+
+    for (unsigned i = 0; i < 4; i++) {
+        aoc_hash_table_insert(brackets, opening[i], closing[i]);
+    }
 
     return brackets;
 }
 
-GHashTable *init_points(const int *point_array) {
-    GHashTable *points;
-    points = g_hash_table_new(g_str_hash, g_str_equal);
-    g_hash_table_insert(points, ")", (void *)(int64_t)(point_array[0]));
-    g_hash_table_insert(points, "]", (void *)(int64_t)(point_array[1]));
-    g_hash_table_insert(points, "}", (void *)(int64_t)(point_array[2]));
-    g_hash_table_insert(points, ">", (void *)(int64_t)(point_array[3]));
-
+AocHashTable *init_points(const int *point_array) {
+    AocHashTable *points;
+    points = aoc_hash_table_create(AOC_KEY_STR);
+    for (unsigned i = 0; i < 4; i++) {
+        aoc_hash_table_insert(points, closing[i], (void *)(&point_array[i]));
+    }
     return points;
 }
 
 void *solve_part_1(AocData_t *data) {
-    GQueue     *stack;
-    GHashTable *brackets, *points;
-    char       *line;
-    int         error_points = 0;
-    const int   point_array[] = {3, 57, 1197, 25137};
+    GQueue       *stack;
+    AocHashTable *brackets, *points;
+    char         *line;
+    int           error_points = 0;
+    const int     point_array[] = {3, 57, 1197, 25137};
 
     brackets = init_brackets();
     points = init_points(point_array);
@@ -49,22 +52,24 @@ void *solve_part_1(AocData_t *data) {
         for (unsigned int i = 0; i < strlen(line); i++) {
             char *key = strdup_printf("%c", line[i]);
             char *last_bracket;
-            if (g_hash_table_contains(brackets, key)) {
+            if (aoc_hash_table_lookup(brackets, key)) {
                 g_queue_push_tail(stack, key);
             } else {
                 last_bracket = g_queue_peek_tail(stack);
-                if (strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
-                    error_points += (int)(int64_t)(g_hash_table_lookup(points, key));
+                char *lookup_bracket = (char *)aoc_hash_table_lookup(brackets, last_bracket);
+                if (strcmp(key, lookup_bracket)) {
+                    error_points += *(int *)(aoc_hash_table_lookup(points, key));
                     break;
                 } else {
                     last_bracket = g_queue_pop_tail(stack);
                 }
+                free(key);
             }
         }
         g_queue_free_full(stack, free);
     }
-    g_hash_table_destroy(brackets);
-    g_hash_table_destroy(points);
+    aoc_hash_table_destroy(&brackets);
+    aoc_hash_table_destroy(&points);
     return strdup_printf("%d", error_points);
 }
 
@@ -80,15 +85,15 @@ static int int64_compare(const void *a, const void *b) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    GQueue     *stack;
-    GHashTable *brackets, *points;
-    char       *line;
-    int8_t      valid;
-    char       *key;
-    char       *last_bracket;
-    int64_t     complete_points;
-    AocArrayPtr result;
-    const int   point_array[] = {1, 2, 3, 4};
+    GQueue       *stack;
+    AocHashTable *brackets, *points;
+    char         *line;
+    int8_t        valid;
+    char         *key;
+    char         *last_bracket;
+    int64_t       complete_points;
+    AocArrayPtr   result;
+    const int     point_array[] = {1, 2, 3, 4};
 
     brackets = init_brackets();
     points = init_points(point_array);
@@ -101,11 +106,11 @@ void *solve_part_2(AocData_t *data) {
         line = aoc_str_array_index(aoc_data_get(data), j);
         for (unsigned int i = 0; i < strlen(line); i++) {
             key = strdup_printf("%c", line[i]);
-            if (g_hash_table_contains(brackets, key)) {
+            if (aoc_hash_table_lookup(brackets, key)) {
                 g_queue_push_tail(stack, key);
             } else {
                 last_bracket = g_queue_peek_tail(stack);
-                if (strcmp(key, (char *)g_hash_table_lookup(brackets, last_bracket))) {
+                if (strcmp(key, (char *)aoc_hash_table_lookup(brackets, last_bracket))) {
                     valid = FALSE;
                     break;
                 } else {
@@ -115,14 +120,15 @@ void *solve_part_2(AocData_t *data) {
         }
         if (valid) {
             while ((last_bracket = g_queue_pop_tail(stack))) {
-                complete_points = complete_points * 5 + (int64_t)(g_hash_table_lookup(points, g_hash_table_lookup(brackets, last_bracket)));
+                complete_points *= 5;
+                complete_points += aoc_int32_hash_table_lookup(points, aoc_hash_table_lookup(brackets, last_bracket));
             }
             aoc_int64_array_append(result, complete_points);
         }
         g_queue_free_full(stack, free);
     }
-    g_hash_table_destroy(brackets);
-    g_hash_table_destroy(points);
+    aoc_hash_table_destroy(&brackets);
+    aoc_hash_table_destroy(&points);
     aoc_int64_array_sort(result, int64_compare);
 
     return strdup_printf("%lld", aoc_int64_array_index(result, aoc_array_length(result) / 2));
@@ -131,8 +137,8 @@ void *solve_part_2(AocData_t *data) {
 void *solve_all(AocData_t *data) {
 
     if (aoc_data_get(data)) {
-        timer_func(1, solve_part_1, data, 1);
-        timer_func(2, solve_part_2, data, 1);
+        timer_func_bench(1, solve_part_1, data, 1, 0, 100);
+        timer_func_bench(2, solve_part_2, data, 1, 0, 100);
     }
 
     return NULL;
