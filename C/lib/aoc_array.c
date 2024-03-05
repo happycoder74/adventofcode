@@ -56,6 +56,11 @@ int aoc_array_contains(AocArrayPtr array, void *value) {
                     return 1;
                 }
                 break;
+            case AOC_ARRAY_DOUBLE:
+                if (aoc_double_array_index(array, i) == *(double *)value) {
+                    return 1;
+                }
+                break;
             default:
                 break;
         }
@@ -101,6 +106,11 @@ int aoc_array_find(AocArrayPtr array, void *value) {
                     return (int)i;
                 }
                 break;
+            case AOC_ARRAY_DOUBLE:
+                if (aoc_uint64_array_index(array, i) == *(uint64_t *)value) {
+                    return (int)i;
+                }
+                break;
             default:
                 break;
         }
@@ -136,6 +146,7 @@ static char* aoc_type_string(AocArrayType type) {
         "AOC_ARRAY_LINE",
         "AOC_ARRAY_POINT",
         "AOC_ARRAY_PTR",
+        "AOC_ARRAY_DOUBLE",
         NULL
     };
     // clang-format on
@@ -187,6 +198,9 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
             break;
         case AOC_ARRAY_LINE:
             array->element_size = sizeof(Line);
+            break;
+        case AOC_ARRAY_DOUBLE:
+            array->element_size = sizeof(double);
             break;
         default:
             fprintf(stderr, "Requested array type (%s) is not implemented in %s\n", aoc_type_string(array_type), "aoc_array_new()");

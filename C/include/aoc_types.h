@@ -15,6 +15,7 @@ typedef enum AocArrayType {
     AOC_ARRAY_UCHAR,
     AOC_ARRAY_LINE,
     AOC_ARRAY_POINT,
+    AOC_ARRAY_DOUBLE,
     AOC_ARRAY_COUNT
 } AocArrayType;
 
