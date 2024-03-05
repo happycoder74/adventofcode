@@ -68,17 +68,6 @@ void *solve_part_1(AocData_t *data) {
     return strdup_printf("%d", error_points);
 }
 
-static int int64_compare(const void *a, const void *b) {
-    int64_t v_a = *(int64_t *)a;
-    int64_t v_b = *(int64_t *)b;
-
-    if (v_a == v_b) {
-        return 0;
-    } else {
-        return (int)((v_a - v_b) / (llabs(v_a - v_b)));
-    }
-}
-
 void *solve_part_2(AocData_t *data) {
     GQueue     *stack;
     GHashTable *brackets, *points;
