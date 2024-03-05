@@ -2,6 +2,7 @@
 #include "aoc_string.h"
 #include "aoc_types.h"
 #include <inttypes.h>
+#include <math.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -116,6 +117,39 @@ int aoc_array_find(AocArrayPtr array, void *value) {
         }
     }
     return -1;
+}
+
+int int32_compare(const void *a, const void *b) {
+    int64_t v_a = *(int64_t *)a;
+    int64_t v_b = *(int64_t *)b;
+
+    if (v_a == v_b) {
+        return 0;
+    } else {
+        return (int)((v_a - v_b) / (llabs(v_a - v_b)));
+    }
+}
+
+int int64_compare(const void *a, const void *b) {
+    int64_t v_a = *(int64_t *)a;
+    int64_t v_b = *(int64_t *)b;
+
+    if (v_a == v_b) {
+        return 0;
+    } else {
+        return (int)((v_a - v_b) / (llabs(v_a - v_b)));
+    }
+}
+
+int double_compare(const void *a, const void *b) {
+    double v_a = *(double *)a;
+    double v_b = *(double *)b;
+
+    if (v_a == v_b) {
+        return 0;
+    } else {
+        return (int)((v_a - v_b) / (fabs(v_a - v_b)));
+    }
 }
 
 void aoc_array_sort(AocArrayPtr array, int (*compare_function)(const void *, const void *)) {
@@ -560,4 +594,31 @@ AocArrayPtr aoc_array_new_from_data(AocArrayType array_type, void *data, size_t 
 
 void *aoc_array_last(AocArrayPtr array) {
     return aoc_array_index(array, array->length - 1);
+}
+
+double aoc_double_array_sum(AocArrayPtr array) {
+    double sum = 0.0;
+
+    for (unsigned i = 0; i < array->length; i++) {
+        double *v = (double *)(((AocGenArray *)array)->data + i * sizeof(double));
+        sum += *v;
+    }
+
+    return sum;
+}
+
+double aoc_double_array_mean(AocArrayPtr array) {
+    return aoc_double_array_sum(array) / (double)array->length;
+}
+
+double aoc_double_array_stddev(AocArrayPtr array) {
+    double mean = aoc_double_array_mean(array);
+    double var = 0;
+
+    for (unsigned i = 0; i < array->length; i++) {
+        double *v = (double *)(((AocGenArray *)array)->data + i * sizeof(double));
+        var += pow(*v - mean, 2);
+    }
+
+    return sqrt(var / array->length);
 }
