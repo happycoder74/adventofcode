@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 600
 #include "aoc_timer.h"
 #include "aoc_alloc.h"
 #include <stdio.h>
@@ -112,7 +113,7 @@ void timer_func_bench(int part, void *(func)(AocData_t *), AocData_t *aocdata, i
     }
 }
 #else
-#define _XOPEN_SOURCE 600
+#include <time.h>
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
     double          elapsed, elapsed_unit;
     struct timespec start, stop;

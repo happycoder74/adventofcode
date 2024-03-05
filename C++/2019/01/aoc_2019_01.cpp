@@ -13,8 +13,11 @@ static int fuel_cost(int fuel) {
     return fuel + fuel_cost(fuel);
 }
 
-std::vector<int> clean_input(std::vector<std::string> instructions) {
+std::vector<int> clean_input(const std::vector<std::string> &instructions) {
     std::vector<int> return_instructions;
+
+    return_instructions.reserve(instructions.size());
+
     for (auto &row : instructions) {
         return_instructions.push_back(std::stoi(row));
     }
@@ -22,7 +25,7 @@ std::vector<int> clean_input(std::vector<std::string> instructions) {
     return return_instructions;
 }
 
-int solve_part_1(std::vector<int> instructions) {
+int solve_part_1(const std::vector<int> &instructions) {
 
     auto fuel = instructions | std::views::transform([](const int &mass) -> int { return mass / 3 - 2; });
 
@@ -30,7 +33,7 @@ int solve_part_1(std::vector<int> instructions) {
     return result;
 }
 
-int solve_part_2(std::vector<int> instructions) {
+int solve_part_2(const std::vector<int> &instructions) {
 
     auto fuel = instructions | std::views::transform([](const int &mass) -> int { return fuel_cost(mass); });
 
@@ -38,10 +41,10 @@ int solve_part_2(std::vector<int> instructions) {
     return result;
 }
 
-std::string solve_all(std::vector<std::string> instructions) {
+std::string solve_all(const std::vector<std::string> &instructions) {
     std::vector<int> parsed = clean_input(instructions);
-    aoc::timer<int>(1, solve_part_1, parsed, true);
-    aoc::timer<int>(2, solve_part_2, parsed, true);
+    aoc::timer(1, solve_part_1, parsed);
+    aoc::timer(2, solve_part_2, parsed);
 
     return std::string("");
 }
@@ -65,8 +68,8 @@ int main(int argc, char **argv) {
 
     instructions = aoc::io::get_input_list<std::string>(filename, year, day);
 
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
-    aoc::timer<std::string>(0, solve_all, instructions, false);
+    aoc::io::header(year, day);
+    aoc::timer(0, solve_all, instructions, false);
 
     return 0;
 }

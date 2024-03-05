@@ -4,6 +4,7 @@
 *
 !*.*
 !*/
+!Makefile
 
 # ignore build files and Windows executables
 *.o
@@ -36,4 +37,4 @@ python/pyproject.toml
 .cache
 .*~undo-tree~
 *~
-venv
+venv*

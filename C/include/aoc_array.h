@@ -107,13 +107,22 @@
 
 // Point array function macros
 #define aoc_ptr_array_new()                      (aoc_array_new(AOC_ARRAY_PTR, 0))
-#define aoc_ptr_array_index(arr_, index_)        ((void *)*(uint64_t *)aoc_array_index(arr_, index_))
-#define aoc_ptr_array_append(arr_, value_)       (aoc_array_append(arr_, &(value_)));
-#define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, &(value_)));
+#define aoc_ptr_array_index(arr_, index_)        (aoc_array_index(arr_, index_))
+#define aoc_ptr_array_append(arr_, value_)       (aoc_array_append(arr_, value_));
+#define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, value_));
 #define aoc_ptr_array_free(arr_)                 (aoc_array_free(arr_, false))
 #define aoc_ptr_array_free_all(arr_)             (aoc_array_free(arr_, true))
 #define aoc_ptr_array_sort(_arr, func)           (aoc_array_sort(_arr, func))
 
+// double array function macros
+#define aoc_double_array_new()                   (aoc_array_new(AOC_ARRAY_DOUBLE, 0))
+#define aoc_double_array_index(arr_, index_)     (*(double *)(aoc_array_index(arr_, index_)))
+#define aoc_double_array_free(arr_)              (aoc_array_free(arr_, false))
+#define aoc_double_array_free_all(arr_)          (aoc_array_free(arr_, true))
+#define aoc_double_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
+#define aoc_double_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
+#define aoc_double_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_DOUBLE) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_double_array_prepend(_arr_, _val_)   (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_DOUBLE) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 // Point (struct Point) array function macros
 
 // Function declarations

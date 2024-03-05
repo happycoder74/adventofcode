@@ -1,7 +1,6 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
-#include <iostream>
 #include <string>
 
 namespace aoc_2017_01 {
@@ -20,17 +19,17 @@ int solution(std::string line, int step) {
     return sum;
 }
 
-int solve_part_1(std::string line) {
+int solve_part_1(const std::string &line) {
     return solution(line, 1);
 }
 
-int solve_part_2(std::string line) {
+int solve_part_2(const std::string &line) {
     return solution(line, static_cast<int>(line.length()) / 2);
 }
 
-int solve_all(std::string line) {
-    aoc::timer(1, aoc_2017_01::solve_part_1, line, true);
-    aoc::timer(2, aoc_2017_01::solve_part_2, line, true);
+int solve_all(const std::string &line) {
+    aoc::timer(1, aoc_2017_01::solve_part_1, line);
+    aoc::timer(2, aoc_2017_01::solve_part_2, line);
 
     return 0;
 }
@@ -38,8 +37,9 @@ int solve_all(std::string line) {
 
 int main(int argc, char **argv) {
     std::string filename;
-    const int   year = 2017;
-    const int   day = 1;
+
+    const int year = 2017;
+    const int day  = 1;
 
     std::vector<std::string> data;
 
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 
     data = aoc::io::get_input_list<std::string>(filename, year, day);
 
-    std::cout << "Solution for " << std::format("{:d}/{:02d}", year, day) << std::endl;
+    aoc::io::header(year, day);
     aoc::timer(0, aoc_2017_01::solve_all, data[0], false);
 
     return 0;

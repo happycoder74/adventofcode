@@ -1,4 +1,4 @@
-TEST_SUITES=$(shell find . -maxdepth 1 -type d -name "a*")
+TEST_SUITES=$(shell bash -c 'fd --max-depth 1 --type d --glob "a*"')
 
 .PHONY:	all all-verbose
 

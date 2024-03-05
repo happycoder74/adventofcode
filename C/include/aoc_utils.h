@@ -17,6 +17,7 @@
 AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data);
 void       aoc_data_free(AocData_t *data);
 AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*clean_function)(AocArrayPtr));
+AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day, AocArrayPtr(parse_func)(AocArrayPtr));
 
 bool   is_horisontal(Line);
 bool   is_vertical(Line);
@@ -39,6 +40,26 @@ int          point_equal(const void *, const void *);
 int          point_manhattan_distance(Point, Point);
 int          point_distance(Point, Point);
 bool         point_on_line(Point p, Line line);
+void         point_move(Point *p, Point delta);
+
+#ifdef MIN
+#undef MIN
+#endif
+#define MIN(_X_, _Y_) (((_X_) < (_Y_)) ? (_X_) : (_Y_))
+#ifdef MAX
+#undef MAX
+#endif
+#define MAX(_X_, _Y_) (((_X_) > (_Y_)) ? (_X_) : (_Y_))
+
+#ifdef TRUE
+#undef TRUE
+#endif
+#define TRUE 1
+
+#ifdef FALSE
+#undef FALSE
+#endif
+#define FALSE 0
 
 // Legacy support functions
 // Returns max and min value in integer array
