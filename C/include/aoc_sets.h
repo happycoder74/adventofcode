@@ -4,19 +4,7 @@
 #include "aoc_hash.h"
 #include "aoc_types.h"
 
-typedef enum {
-    AOC_SET_INT32,
-    AOC_SET_INT64,
-    AOC_SET_UINT32,
-    AOC_SET_UINT64,
-    AOC_SET_CHAR,
-    AOC_SET_STR,
-    AOC_SET_PTR,
-    AOC_SET_UCHAR,
-    AOC_SET_LINE,
-    AOC_SET_POINT,
-    AOC_SET_COUNT
-} AocSetType;
+typedef AocType AocSetType;
 
 typedef struct {
     AocHashTable *set;
