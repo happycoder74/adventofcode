@@ -2,10 +2,6 @@
 CC=gcc
 COMPILER_FLAGS=-g -Wall -Wextra -pedantic -std=c99
 
-#GLib specific variables
-GLIB_CFLAGS=`pkg-config glib-2.0 --cflags`
-GLIB_LDFLAGS=`pkg-config glib-2.0 --libs`
-
 SYS_LIB_LOCATION=$(shell ([ -d /mingw64 ] && echo "mingw64") || echo "usr")
 
 # Criterion specific variables
@@ -13,14 +9,14 @@ CRITERION_CFLAGS=-I/$(SYS_LIB_LOCATION)/local/include
 CRITERION_LDLIBS=-L/$(SYS_LIB_LOCATION)/local/lib -lcriterion
 
 # AdventOfCode specific variables
-AOC_HOME=/home/yy11510/projects/adventofcode/C
+AOC_HOME=/home/yy11510/projects/adventofcode-c/C
 AOC_CFLAGS=-I$(AOC_HOME)/include
 AOC_LDFLAGS=-L$(AOC_HOME)/debug/lib -laoc
 AOC_LIBDIR=$(AOC_HOME)/debug/lib
 
 # Build the command line flags
-CFLAGS = $(COMPILER_FLAGS) $(AOC_CFLAGS) $(GLIB_CFLAGS) $(CRITERION_CFLAGS)
-LDLIBS = $(GLIB_LDFLAGS) $(AOC_LDFLAGS) $(AOC_LIB) $(CRITERION_LDLIBS)
+CFLAGS = $(COMPILER_FLAGS) $(AOC_CFLAGS) $(CRITERION_CFLAGS)
+LDLIBS = $(AOC_LDFLAGS) $(AOC_LIB) $(CRITERION_LDLIBS)
 
 # Build make variables used in targets
 BIN=bin

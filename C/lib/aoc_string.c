@@ -165,6 +165,19 @@ char *strdup_printf(const char *format, ...) {
     return string;
 }
 
+char *strdup_vprintf(const char *format, va_list args) {
+    char *string;
+    int   length;
+
+    length = vsnprintf(NULL, 0, format, args);
+    if (length < 0) {
+        return NULL;
+    }
+    string = (char *)malloc(sizeof(char) * (length + 1));
+    length = vsnprintf(string, length + 1, format, args);
+    return string;
+}
+
 char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
     char       *s = NULL;
     const char *remainder;

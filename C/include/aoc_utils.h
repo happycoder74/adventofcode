@@ -40,7 +40,11 @@ int          point_equal(const void *, const void *);
 int          point_manhattan_distance(Point, Point);
 int          point_distance(Point, Point);
 bool         point_on_line(Point p, Line line);
+void         point_move(Point *p, Point delta);
 
+#ifdef MIN
+#undef MIN
+#endif
 #define MIN(_X_, _Y_) (((_X_) < (_Y_)) ? (_X_) : (_Y_))
 #ifdef MAX
 #undef MAX

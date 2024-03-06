@@ -17,6 +17,7 @@ char  *substr(char *, int, int);
 int    str_startswith(char *str, char *start_str);
 int    str_endswith(char *, char *);
 char  *strdup_printf(const char *format, ...);
+char  *strdup_vprintf(const char *format, va_list args);
 char **str_split(const char *string, const char *delimiter, uint32_t max_tokens);
 
 ssize_t getline(char **, size_t *, FILE *);

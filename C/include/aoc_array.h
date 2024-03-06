@@ -107,12 +107,22 @@
 
 // Point array function macros
 #define aoc_ptr_array_new()                      (aoc_array_new(AOC_ARRAY_PTR, 0))
-#define aoc_ptr_array_index(arr_, index_)        ((void *)*(uint64_t *)aoc_array_index(arr_, index_))
-#define aoc_ptr_array_append(arr_, value_)       (aoc_array_append(arr_, &(value_)));
-#define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, &(value_)));
+#define aoc_ptr_array_index(arr_, index_)        (aoc_array_index(arr_, index_))
+#define aoc_ptr_array_append(arr_, value_)       (aoc_array_append(arr_, value_));
+#define aoc_ptr_array_prepend(arr_, value_)      (aoc_array_prepend(arr_, value_));
 #define aoc_ptr_array_free(arr_)                 (aoc_array_free(arr_, false))
 #define aoc_ptr_array_free_all(arr_)             (aoc_array_free(arr_, true))
 #define aoc_ptr_array_sort(_arr, func)           (aoc_array_sort(_arr, func))
+
+// double array function macros
+#define aoc_double_array_new()                   (aoc_array_new(AOC_ARRAY_DOUBLE, 0))
+#define aoc_double_array_index(arr_, index_)     (*(double *)(aoc_array_index(arr_, index_)))
+#define aoc_double_array_free(arr_)              (aoc_array_free(arr_, false))
+#define aoc_double_array_free_all(arr_)          (aoc_array_free(arr_, true))
+#define aoc_double_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
+#define aoc_double_array_sort(_arr, func)        (aoc_array_sort(_arr, func))
+#define aoc_double_array_append(_arr_, _val_)    (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_DOUBLE) ? (aoc_array_append(_arr_, &(_val_))) : NULL))
+#define aoc_double_array_prepend(_arr_, _val_)   (ISNULL(_arr_) ? NULL : (ISTYPE(_arr_, AOC_ARRAY_DOUBLE) ? (aoc_array_prepend(_arr_, &(_val_))) : NULL))
 
 // Point (struct Point) array function macros
 
@@ -126,7 +136,7 @@ AocArrayPtr aoc_uint64_array_set_index(AocArrayPtr array, size_t index, uint64_t
 void *aoc_str_array_append(AocArrayPtr array, char *str);
 void *aoc_str_array_prepend(AocArrayPtr array, char *str);
 
-void        aoc_array_sort(AocArrayPtr arr, int (*compare_function)(const void *e1, const void *e2));
+void        aoc_array_sort(AocArrayPtr arr, AocCompareFunc func);
 AocArray   *aoc_array_new(AocArrayType array_type, size_t length);
 void        aoc_array_print(AocArray *array);
 void       *aoc_array_append(AocArray *array, void *value);
@@ -143,4 +153,10 @@ int         aoc_array_find(AocArrayPtr array, void *value);
 AocArrayPtr aoc_array_new_from_data(AocArrayType array_type, void *data, size_t length);
 void       *aoc_array_last(AocArrayPtr array);
 
+int int32_compare(const void *a, const void *b);
+int int64_compare(const void *a, const void *b);
+int double_compare(const void *a, const void *b);
+
+double aoc_double_array_mean(AocArrayPtr array);
+double aoc_double_array_stddev(AocArrayPtr array);
 #endif // !__AOC_ARRAY_H__
