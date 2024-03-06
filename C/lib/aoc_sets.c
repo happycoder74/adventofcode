@@ -1,6 +1,7 @@
 #include "aoc_sets.h"
 #include "aoc_array.h"
 #include "aoc_hash.h"
+#include "aoc_string.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>

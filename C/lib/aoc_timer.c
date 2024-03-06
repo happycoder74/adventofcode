@@ -1,8 +1,8 @@
-#include "aoc_types.h"
 #define _XOPEN_SOURCE 600
+#include "aoc_timer.h"
 #include "aoc_alloc.h"
 #include "aoc_array.h"
-#include "aoc_timer.h"
+#include "aoc_types.h"
 #include <stdio.h>
 #ifndef _WIN32
 #include <time.h>
