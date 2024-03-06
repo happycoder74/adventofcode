@@ -23,6 +23,9 @@ typedef struct {
     AocSetType    settype;
 } AocSet;
 
+#define aoc_set_size(_set_) (((_set_) != NULL) ? ((ssize_t)aoc_hash_table_count(_set_->set)) : (-1))
+
+AocSet   *aoc_set_new(AocSetType settype);
 AocSet   *aoc_set_new_with_data(AocArray *data, AocSetType settype);
 AocSet   *aoc_set_intersect(AocSet *set1, AocSet *set2);
 AocSet   *aoc_set_difference(AocSet *set1, AocSet *set2);

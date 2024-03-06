@@ -8,6 +8,7 @@ target_sources(
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_io.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_list.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_regex.c
+	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_sets.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_string.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_alloc.c

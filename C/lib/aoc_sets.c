@@ -1,6 +1,7 @@
 #include "aoc_sets.h"
 #include "aoc_array.h"
 #include "aoc_hash.h"
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,28 +23,32 @@ AocSet *aoc_set_new_with_data(AocArrayPtr data, AocSetType settype) {
     result->settype = settype;
 
     switch (result->settype) {
-        case AOC_SET_INT32:
-            result->set = aoc_hash_table_create(AOC_KEY_PTR);
+        case AOC_INT32:
+            {
+                AocArrayPtr new_array = aoc_array_copy(data);
+                int32_t    *values = (int32_t *)aoc_array_get_data(new_array);
+            }
+            result->set = aoc_hash_table_create(AOC_INT32);
             for (i = 0; i < data->length; i++) {
-                int32_t val = aoc_int32_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(int64_t)(val));
+                int32_t *val = &aoc_int32_array_index(data, i);
+                aoc_hash_table_add(result->set, val);
             }
             break;
-        case AOC_SET_CHAR:
+        case AOC_CHAR:
             for (i = 0; i < data->length; i++) {
                 char val = aoc_char_array_index(data, i);
                 aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
             }
             break;
-        case AOC_SET_UINT32:
-            result->set = aoc_hash_table_create(AOC_KEY_PTR);
+        case AOC_UINT32:
+            result->set = aoc_hash_table_create(AOC_PTR);
             for (i = 0; i < data->length; i++) {
                 int32_t val = aoc_int32_array_index(data, i);
                 aoc_hash_table_add(result->set, (void *)(int64_t)(val));
             }
             break;
-        case AOC_SET_STR:
-            result->set = aoc_hash_table_create(AOC_KEY_STR);
+        case AOC_STR:
+            result->set = aoc_hash_table_create(AOC_STR);
             for (i = 0; i < data->length; i++) {
                 char *val = strdup(aoc_str_array_index(data, i));
                 aoc_hash_table_add(result->set, val);
@@ -58,11 +63,8 @@ AocSet *aoc_set_new_with_data(AocArrayPtr data, AocSetType settype) {
 }
 
 AocSet *aoc_set_intersect(AocSet *set1, AocSet *set2) {
-    AocSet  *result;
-    void   **keys;
-    void    *key;
-    uint32_t length;
-    uint32_t i;
+    AocSet *result;
+    void   *key;
 
     if (!set1 || !set2) {
         fprintf(stderr, "NULL set given\n");
@@ -77,7 +79,7 @@ AocSet *aoc_set_intersect(AocSet *set1, AocSet *set2) {
     AocHashIterator iter;
     aoc_hash_table_iter_init(&iter, set1->set);
 
-    result->set = aoc_hash_table_create(AOC_KEY_PTR);
+    result->set = aoc_hash_table_create(AOC_PTR);
     while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
         if (aoc_hash_table_contains(set2->set, key)) {
             aoc_hash_table_add(result->set, key);
@@ -103,9 +105,6 @@ AocSet *aoc_set_intersect(AocSet *set1, AocSet *set2) {
 /* } */
 
 AocArrayPtr aoc_set_get_values(AocSet *set) {
-    uint32_t    length;
-    uint32_t    i;
-    uint32_t    val;
     AocArrayPtr return_array;
     void       *key;
 
@@ -114,8 +113,17 @@ AocArrayPtr aoc_set_get_values(AocSet *set) {
     aoc_hash_table_iter_init(&iter, set->set);
     while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
         switch (set->settype) {
-            case AOC_SET_INT32:
-                aoc_int32_array_append(return_array, key);
+            case AOC_INT32:
+                aoc_int32_array_append(return_array, *(int32_t *)key);
+                break;
+            case AOC_INT64:
+                aoc_int64_array_append(return_array, *(int64_t *)key);
+                break;
+            case AOC_UINT32:
+                aoc_uint32_array_append(return_array, *(uint32_t *)key);
+                break;
+            case AOC_UINT64:
+                aoc_uint64_array_append(return_array, *(uint64_t *)key);
                 break;
             default:
                 fprintf(stderr, "Not yet implemented");
@@ -126,11 +134,8 @@ AocArrayPtr aoc_set_get_values(AocSet *set) {
 }
 
 AocSet *aoc_set_difference(AocSet *set1, AocSet *set2) {
-    AocSet  *result;
-    void   **keys;
-    void    *key;
-    uint32_t length;
-    uint32_t i;
+    AocSet *result;
+    void   *key;
 
     if (!set1 || !set2) {
         fprintf(stderr, "NULL set given\n");
@@ -145,7 +150,7 @@ AocSet *aoc_set_difference(AocSet *set1, AocSet *set2) {
     AocHashIterator iter;
     aoc_hash_table_iter_init(&iter, set1->set);
 
-    result->set = aoc_hash_table_create(AOC_KEY_PTR);
+    result->set = aoc_hash_table_create(AOC_PTR);
     while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
         if (!aoc_hash_table_contains(set2->set, key)) {
             aoc_hash_table_add(result->set, key);
@@ -160,14 +165,11 @@ int aoc_set_add(AocSet *set, const void *value) {
 }
 
 AocSet *aoc_set_union(AocSet *set1, AocSet *set2) {
-    AocSet  *result;
-    void   **keys;
-    void    *key;
-    uint32_t length;
-    uint32_t i;
+    AocSet *result;
+    void   *key;
 
     if (!set1 || !set2) {
-        fprintf(stderr, "NULL set given\n");
+        fprintf(stderr, "Set is not initialized\n");
     }
 
     if (set1->settype != set2->settype) {
@@ -180,7 +182,7 @@ AocSet *aoc_set_union(AocSet *set1, AocSet *set2) {
     AocHashIterator iter;
     aoc_hash_table_iter_init(&iter, set1->set);
 
-    result->set = aoc_hash_table_create(AOC_KEY_PTR);
+    result->set = aoc_hash_table_create(AOC_PTR);
     while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
         aoc_hash_table_add(result->set, key);
     }
@@ -198,38 +200,58 @@ void aoc_set_free(AocSet *set) {
     }
 }
 
-void set_print(Set *set) {
+void set_print(AocSet *set) {
     AocArrayPtr values;
     if (set == NULL) {
-        fprintf(stderr, "Set is undefined\n");
+        fprintf(stderr, "Set is not initialized\n");
         return;
     }
 
-    values = set_get_values(set);
-    if (aoc_array_length(values) == 0) {
+    values = aoc_set_get_values(set);
+    if (aoc_hash_table_count(set->set) == 0) {
         printf("Set is empty\n");
         return;
     }
     switch (set->settype) {
-        case SET_INT:
+        case AOC_INT32:
             for (size_t i = 0; i < aoc_array_length(values); i++) {
-                g_print("%s%d", i == 0 ? "{" : ", ", aoc_int_array_index(values, i));
+                printf("%s %d", i == 0 ? "{" : ", ", aoc_int32_array_index(values, i));
             }
-            g_print("}\n");
+            printf("}\n");
             break;
-        case SET_CHAR:
+        case AOC_UINT32:
             for (size_t i = 0; i < aoc_array_length(values); i++) {
-                g_print("%s'%c'", i == 0 ? "{" : ", ", aoc_char_array_index(values, i));
+                printf("%s %u", i == 0 ? "{" : ", ", aoc_uint32_array_index(values, i));
             }
-            g_print("}\n");
+            printf("}\n");
             break;
-        case SET_STR:
+        case AOC_INT64:
             for (size_t i = 0; i < aoc_array_length(values); i++) {
-                g_print("%s'%s'", i == 0 ? "{" : ", ", aoc_str_array_index(values, i));
+                printf("%s %" PRId64, i == 0 ? "{" : ", ", aoc_int64_array_index(values, i));
             }
-            g_print("}\n");
+            printf("}\n");
+            break;
+        case AOC_UINT64:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s %" PRIu64, i == 0 ? "{" : ", ", aoc_uint64_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_CHAR:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s'%c'", i == 0 ? "{" : ", ", aoc_char_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_STR:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s'%s'", i == 0 ? "{" : ", ", aoc_str_array_index(values, i));
+            }
+            printf("}\n");
             break;
         default:
+            fprintf(stderr, "Print functionality not implemented for given set-type\n");
+            exit(EXIT_FAILURE);
             break;
     }
 }
