@@ -1,6 +1,7 @@
 #include "aoc_array.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
+#include "aoc_utils.h"
 #include <inttypes.h>
 #include <math.h>
 #include <stddef.h>
@@ -156,11 +157,6 @@ void aoc_array_sort(AocArrayPtr array, int (*compare_function)(const void *, con
     AocGenArray *arr = (AocGenArray *)array;
 
     qsort(arr->data, arr->length, arr->element_size, compare_function);
-}
-
-static char *point_to_string(Point p, char *buf) {
-    sprintf(buf, "Point(%d, %d)", p.x, p.y);
-    return buf;
 }
 
 size_t aoc_array_capacity(AocArrayPtr array) {
