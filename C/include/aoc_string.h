@@ -1,6 +1,7 @@
 #ifndef __AOC_STRING_H__
 #define __AOC_STRING_H__
 
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>

@@ -29,7 +29,7 @@ Line   line_new(Point, Point);
 Point *point_new_m(int, int);
 Point  point_new(int, int);
 void   point_print(Point);
-char  *point_to_string(Point, char *);
+char  *point_to_string(Point, char *, unsigned);
 void   line_array_print(AocArrayPtr lines);
 int    line_length(Line);
 

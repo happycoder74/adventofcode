@@ -449,13 +449,13 @@ void aoc_array_print(AocArray *array) {
                 break;
             case AOC_POINT:
                 printf("%s%s%s", i == 0 ? "{" : "",
-                       point_to_string(aoc_point_array_index(array, i), buffer),
+                       point_to_string(aoc_point_array_index(array, i), buffer, 100),
                        i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_LINE:
                 l = aoc_line_array_index(array, i);
-                printf("%s%s -> %s%s", i == 0 ? "{" : "", point_to_string(l.p0, buffer),
-                       point_to_string(l.p1, buffer),
+                printf("%s%s -> %s%s", i == 0 ? "{" : "", point_to_string(l.p0, buffer, 100),
+                       point_to_string(l.p1, buffer, 100),
                        i == aoc_array_length(array) - 1 ? "}\n" : ", ");
                 break;
             case AOC_PTR:

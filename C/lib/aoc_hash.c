@@ -1,5 +1,4 @@
 #include "aoc_hash.h"
-#include <corecrt.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
