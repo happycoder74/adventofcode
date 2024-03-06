@@ -22,7 +22,7 @@ int solution_bin(AocData_t *data, const char *cmp_string) {
     char *base = aoc_str_array_index(data->data, 0);
 
     while (!found) {
-        sprintf(string, "%s%d", base, ++number);
+        snprintf(string, 100, "%s%d", base, ++number);
         g_checksum_update(checksum, (unsigned char *)string, -1);
         length = 100;
         g_checksum_get_digest(checksum, hashcode, &length);

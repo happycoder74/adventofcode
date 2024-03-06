@@ -16,7 +16,7 @@ bool check_rules(int number, int part) {
     int  n_digits = 0, min_double_digits = INT_MAX;
     int  i;
 
-    sprintf(str, "%d", number);
+    snprintf(str, 7, "%d", number);
     d = str[0];
 
     if (part == 1) {

@@ -23,7 +23,7 @@ char **str_split(const char *string, const char *delimiter, uint32_t max_tokens)
 
 ssize_t getline(char **, size_t *, FILE *);
 ssize_t getdelim(char **, size_t *, int, FILE *);
-char   *stpcpy(char *__restrict__, const char *__restrict__);
+char   *aoc_stpcpy(char *__restrict__, const char *__restrict__);
 char   *strdup(const char *str);
 char   *strndup(const char *str, size_t n);
 char   *strconcat(const char *str1, const char *str2);
