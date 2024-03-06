@@ -30,7 +30,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     Instruction *instruction;
     AocArrayPtr  instruction_list;
 
-    instruction_list = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
+    instruction_list = aoc_array_sized_new(AOC_PTR, aoc_array_length(data));
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);

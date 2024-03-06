@@ -22,7 +22,7 @@ int solution(AocArrayPtr data, int part_two) {
     } step_t;
 
     step_t *step = (step_t *)malloc(sizeof(step_t));
-    locations = aoc_hash_table_create(AOC_KEY_POINT);
+    locations = aoc_hash_table_create(AOC_POINT);
 
     Point directions[4] = {
         {1,  0 },

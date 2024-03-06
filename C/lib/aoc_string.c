@@ -187,7 +187,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
         max_tokens = INT_MAX;
         return_split = aoc_ptr_array_new();
     } else {
-        return_split = aoc_array_new(AOC_ARRAY_PTR, max_tokens + 1);
+        return_split = aoc_array_new(AOC_PTR, max_tokens + 1);
     }
 
     remainder = str;

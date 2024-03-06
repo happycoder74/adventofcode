@@ -14,11 +14,12 @@
 char *opening[] = {"(", "[", "{", "<"};
 char *closing[] = {")", "]", "}", ">"};
 
-#define aoc_int32_hash_table_lookup(_hashtable_, _key_) *(int32_t *)aoc_hash_table_lookup(_hashtable_, _key_)
+#define aoc_int32_hash_table_lookup(_hashtable_, _key_)                                            \
+    *(int32_t *)aoc_hash_table_lookup(_hashtable_, _key_)
 
 AocHashTable *init_brackets(void) {
     AocHashTable *brackets;
-    brackets = aoc_hash_table_create(AOC_KEY_STR);
+    brackets = aoc_hash_table_create(AOC_STR);
 
     for (unsigned i = 0; i < 4; i++) {
         aoc_hash_table_insert(brackets, opening[i], closing[i]);
@@ -29,7 +30,7 @@ AocHashTable *init_brackets(void) {
 
 AocHashTable *init_points(const int *point_array) {
     AocHashTable *points;
-    points = aoc_hash_table_create(AOC_KEY_STR);
+    points = aoc_hash_table_create(AOC_STR);
     for (unsigned i = 0; i < 4; i++) {
         aoc_hash_table_insert(points, closing[i], (void *)(&point_array[i]));
     }
@@ -110,7 +111,8 @@ void *solve_part_2(AocData_t *data) {
         if (valid) {
             while ((last_bracket = g_queue_pop_tail(stack))) {
                 complete_points *= 5;
-                complete_points += aoc_int32_hash_table_lookup(points, aoc_hash_table_lookup(brackets, last_bracket));
+                complete_points += aoc_int32_hash_table_lookup(
+                    points, aoc_hash_table_lookup(brackets, last_bracket));
             }
             aoc_int64_array_append(result, complete_points);
         }

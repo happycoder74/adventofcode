@@ -78,7 +78,9 @@ static size_t aoc_hash_table_index(AocHashTable *hashtable, const void *key) {
 
 static AocHashTablePtr aoc_hash_table_rehash(AocHashTablePtr hashtable) {
     size_t          new_size = next_prime(hashtable->size * 2 - 1);
-    AocHashTablePtr ht = aoc_hash_table_create_custom(new_size, hashtable->hash, hashtable->key_free_func, hashtable->value_free_func, hashtable->type);
+    AocHashTablePtr ht =
+        aoc_hash_table_create_custom(new_size, hashtable->hash, hashtable->key_free_func,
+                                     hashtable->value_free_func, hashtable->type);
 
     void **keys = hashtable->keys;
     void **values = hashtable->values;
@@ -102,7 +104,8 @@ static AocHashTablePtr aoc_hash_table_rehash(AocHashTablePtr hashtable) {
     return hashtable;
 }
 
-AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, free_func kff, free_func vff, AocKeyType type) {
+AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, free_func kff,
+                                             free_func vff, AocKeyType type) {
     AocHashTablePtr ht = (AocHashTablePtr)calloc(1, sizeof(AocHashTable));
     ht->size = size <= 17 ? 17 : next_prime(size);
     ht->count = 0;
@@ -110,28 +113,28 @@ AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, fr
         ht->hash = hf;
     } else {
         switch (type) {
-            case AOC_KEY_INT32:
+            case AOC_INT32:
                 ht->hash = int32_hash;
                 break;
-            case AOC_KEY_UINT32:
+            case AOC_UINT32:
                 ht->hash = uint32_hash;
                 break;
-            case AOC_KEY_INT64:
+            case AOC_INT64:
                 ht->hash = int64_hash;
                 break;
-            case AOC_KEY_UINT64:
+            case AOC_UINT64:
                 ht->hash = uint64_hash;
                 break;
-            case AOC_KEY_STR:
+            case AOC_STR:
                 ht->hash = str_hash;
                 break;
-            case AOC_KEY_PTR:
+            case AOC_PTR:
                 ht->hash = ptr_hash;
                 break;
-            case AOC_KEY_POINT:
+            case AOC_POINT:
                 ht->hash = point_hash;
                 break;
-            case AOC_KEY_CHAR:
+            case AOC_CHAR:
                 ht->hash = char_hash;
                 break;
             default:
@@ -148,28 +151,28 @@ AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, fr
     ht->value_free_func = vff;
 
     switch (ht->type) {
-        case AOC_KEY_INT32:
+        case AOC_INT32:
             ht->key_equal = int32_equal;
             break;
-        case AOC_KEY_UINT32:
+        case AOC_UINT32:
             ht->key_equal = uint32_equal;
             break;
-        case AOC_KEY_INT64:
+        case AOC_INT64:
             ht->key_equal = int64_equal;
             break;
-        case AOC_KEY_UINT64:
+        case AOC_UINT64:
             ht->key_equal = uint64_equal;
             break;
-        case AOC_KEY_STR:
+        case AOC_STR:
             ht->key_equal = str_equal;
             break;
-        case AOC_KEY_PTR:
+        case AOC_PTR:
             ht->key_equal = ptr_equal;
             break;
-        case AOC_KEY_POINT:
+        case AOC_POINT:
             ht->key_equal = point_equal;
             break;
-        case AOC_KEY_CHAR:
+        case AOC_CHAR:
             ht->key_equal = char_equal;
             break;
         default:
@@ -211,7 +214,8 @@ void aoc_hash_table_destroy(AocHashTablePtr *hashtable) {
     *hashtable = NULL;
 }
 
-static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, const void *obj, bool replace) {
+static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, const void *obj,
+                                          bool replace) {
     bool value_exists = false;
     if (!ht) {
         return 0;
@@ -360,7 +364,8 @@ void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
                 if (ht->key_free_func) {
                     ht->key_free_func(table->keys[i]);
                 }
-                memmove(table->keys + i, table->keys + i + 1, sizeof(void *) * (table->count - i - 1));
+                memmove(table->keys + i, table->keys + i + 1,
+                        sizeof(void *) * (table->count - i - 1));
                 break;
             }
         }
@@ -412,7 +417,8 @@ AocHashEntry *aoc_hash_table_pop(AocHashTablePtr ht, const void *key) {
     for (size_t i = 0; i < table->count; i++) {
         if (ht->key_equal(table->keys[i], key)) {
             if (i < ht->count - 1) {
-                memcpy(table->keys + i, table->keys + i + 1, sizeof(void *) * (table->count - i - 1));
+                memcpy(table->keys + i, table->keys + i + 1,
+                       sizeof(void *) * (table->count - i - 1));
                 break;
             }
         }
@@ -435,12 +441,12 @@ bool aoc_hash_table_add(AocHashTablePtr ht, const void *key) {
 }
 
 inline static uint32_t aoc_hash(AocKeyType type, const void *key) {
-    if ((type == AOC_KEY_INT32) || (type == AOC_KEY_UINT32)) {
+    if ((type == AOC_INT32) || (type == AOC_UINT32)) {
         return *(uint32_t *)key;
-    } else if ((type == AOC_KEY_INT64) || (type == AOC_KEY_UINT64)) {
+    } else if ((type == AOC_INT64) || (type == AOC_UINT64)) {
         const uint64_t *bits = (uint64_t *)key;
         return (uint32_t)((*bits >> 32) ^ (*bits & 0xffffffffU));
-    } else if (type == AOC_KEY_STR) {
+    } else if (type == AOC_STR) {
         const void        *v = key;
         const signed char *p;
         uint64_t           h = 5381;
@@ -449,16 +455,16 @@ inline static uint32_t aoc_hash(AocKeyType type, const void *key) {
             h = (h << 5) + h + *p;
         }
         return h;
-    } else if (type == AOC_KEY_POINT) {
+    } else if (type == AOC_POINT) {
         Point   *point = (Point *)key;
         uint64_t int_hash = point->x;
         int_hash <<= sizeof(UINT_MAX) * 4;
         int_hash ^= point->y;
 
         return (unsigned)((int_hash >> 32) ^ (int_hash & 0xffffffffU));
-    } else if (type == AOC_KEY_PTR) {
+    } else if (type == AOC_PTR) {
         return (uint32_t)(uint64_t)key;
-    } else if (type == AOC_KEY_CHAR) {
+    } else if (type == AOC_CHAR) {
         return (uint32_t) * (uint8_t *)key;
     } else {
         return 0;
@@ -466,35 +472,35 @@ inline static uint32_t aoc_hash(AocKeyType type, const void *key) {
 }
 
 inline static uint32_t int32_hash(const void *key) {
-    return aoc_hash(AOC_KEY_INT32, key);
+    return aoc_hash(AOC_INT32, key);
 }
 
 inline static uint32_t uint32_hash(const void *key) {
-    return aoc_hash(AOC_KEY_UINT32, key);
+    return aoc_hash(AOC_UINT32, key);
 }
 
 inline static uint32_t int64_hash(const void *key) {
-    return aoc_hash(AOC_KEY_INT64, key);
+    return aoc_hash(AOC_INT64, key);
 }
 
 inline static uint32_t uint64_hash(const void *key) {
-    return aoc_hash(AOC_KEY_UINT64, key);
+    return aoc_hash(AOC_UINT64, key);
 }
 
 inline static uint32_t str_hash(const void *key) {
-    return aoc_hash(AOC_KEY_STR, key);
+    return aoc_hash(AOC_STR, key);
 }
 
 inline static uint32_t ptr_hash(const void *key) {
-    return aoc_hash(AOC_KEY_PTR, key);
+    return aoc_hash(AOC_PTR, key);
 }
 
 inline static uint32_t point_hash(const void *key) {
-    return aoc_hash(AOC_KEY_POINT, key);
+    return aoc_hash(AOC_POINT, key);
 }
 
 inline static uint32_t char_hash(const void *key) {
-    return aoc_hash(AOC_KEY_CHAR, key);
+    return aoc_hash(AOC_CHAR, key);
 }
 
 void aoc_hash_table_iter_init(AocHashIterator *iter, AocHashTablePtr hash_table) {

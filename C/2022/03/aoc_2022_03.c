@@ -50,7 +50,7 @@ void *solve_part_1(AocData_t *data) {
     int prio_sum = 0;
     for (uint16_t i = 0; i < aoc_data_length(data); i++) {
         packs = aoc_ptr_array_index(aoc_data_get(data), i);
-        AocArrayPtr common_items = aoc_array_sized_new(AOC_ARRAY_CHAR, 20);
+        AocArrayPtr common_items = aoc_array_sized_new(AOC_CHAR, 20);
         for (uint16_t j = 0; j < strlen(packs[0]); j++) {
             if (strchr(packs[1], packs[0][j]) != NULL) {
                 if (!aoc_char_array_contains(common_items, packs[0][j])) {

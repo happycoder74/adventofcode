@@ -106,7 +106,7 @@ AocHashTable **decode_signal(char *signal) {
     aoc_str_array_sort(signal_parts, signal_sort);
 
     for (j = 0; j < aoc_array_length(signal_parts); j++) {
-        set = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_KEY_CHAR);
+        set = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_CHAR);
         char *part = aoc_str_array_index(signal_parts, j);
         for (size_t k = 0; k < strlen(part); k++) {
             letter_key = (char *)malloc(sizeof(char));
@@ -118,17 +118,23 @@ AocHashTable **decode_signal(char *signal) {
     for (size_t i = 0; i < aoc_array_length(signal_sets); i++) {
         set = (AocHashTable *)aoc_ptr_array_index(signal_sets, i);
         if (aoc_hash_table_count(set) == 5) {
-            if (aoc_hash_table_set_intersection(set, (AocHashTable *)aoc_ptr_array_index(signal_sets, signal_set_key[1])) == 2) {
+            if (aoc_hash_table_set_intersection(set, (AocHashTable *)aoc_ptr_array_index(
+                                                         signal_sets, signal_set_key[1])) == 2) {
                 signal_set_key[3] = i;
-            } else if (aoc_hash_table_set_intersection(set, (AocHashTable *)aoc_ptr_array_index(signal_sets, signal_set_key[4])) == 2) {
+            } else if (aoc_hash_table_set_intersection(set, (AocHashTable *)aoc_ptr_array_index(
+                                                                signal_sets, signal_set_key[4])) ==
+                       2) {
                 signal_set_key[2] = i;
             } else {
                 signal_set_key[5] = i;
             }
         } else if (aoc_hash_table_count(set) == 6) {
-            if (aoc_hash_table_set_difference(set, (AocHashTable *)aoc_ptr_array_index(signal_sets, signal_set_key[4])) == 2) {
+            if (aoc_hash_table_set_difference(set, (AocHashTable *)aoc_ptr_array_index(
+                                                       signal_sets, signal_set_key[4])) == 2) {
                 signal_set_key[9] = i;
-            } else if (aoc_hash_table_set_difference(set, (AocHashTable *)aoc_ptr_array_index(signal_sets, signal_set_key[5])) == 2) {
+            } else if (aoc_hash_table_set_difference(set, (AocHashTable *)aoc_ptr_array_index(
+                                                              signal_sets, signal_set_key[5])) ==
+                       2) {
                 signal_set_key[0] = i;
             } else {
                 signal_set_key[6] = i;
@@ -159,7 +165,7 @@ AocArrayPtr decode(AocHashTable **keys, char *signal) {
 
     size_t j = 0;
     while (parts[j] != NULL) {
-        set = aoc_hash_table_create(AOC_KEY_CHAR);
+        set = aoc_hash_table_create(AOC_CHAR);
         for (size_t k = 0; k < strlen(parts[j]); k++) {
             letter_key = parts[j][k];
             aoc_hash_table_add(set, &letter_key);

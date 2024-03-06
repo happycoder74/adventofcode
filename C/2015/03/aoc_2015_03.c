@@ -19,7 +19,7 @@ int solver(AocArrayPtr data, uint32_t agents) {
     Point        *key;
 
     position = (Point *)calloc(agents, sizeof(Point));
-    visited = aoc_hash_table_create_custom(0, NULL, free, free, AOC_KEY_POINT);
+    visited = aoc_hash_table_create_custom(0, NULL, free, free, AOC_POINT);
 
     key = (Point *)calloc(1, sizeof(Point));
     key->x = position[position_index].x;

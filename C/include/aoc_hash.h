@@ -7,19 +7,7 @@
 
 #include "aoc_types.h"
 
-typedef enum {
-    AOC_KEY_INT32,
-    AOC_KEY_INT64,
-    AOC_KEY_UINT32,
-    AOC_KEY_UINT64,
-    AOC_KEY_CHAR,
-    AOC_KEY_STR,
-    AOC_KEY_PTR,
-    AOC_KEY_UCHAR,
-    AOC_KEY_LINE,
-    AOC_KEY_POINT,
-    AOC_KEY_COUNT
-} AocKeyType;
+typedef AocType AocKeyType;
 
 typedef struct entry AocHashEntry;
 
@@ -37,7 +25,9 @@ typedef bool (*key_equal_func)(const void *key1, const void *key2);
 typedef void (*free_func)(void *ptr);
 
 AocHashTablePtr aoc_hash_table_create(AocKeyType type);
-AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, free_func key_free_function, free_func value_free_function, AocKeyType type);
+AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf,
+                                             free_func key_free_function,
+                                             free_func value_free_function, AocKeyType type);
 
 AocHashEntry *aoc_hash_table_lookup_entry(AocHashTablePtr ht, const void *key);
 void         *aoc_hash_table_lookup(AocHashTablePtr ht, const void *key);
