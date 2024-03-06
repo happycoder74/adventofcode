@@ -19,7 +19,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
 
     result = aoc_ptr_array_new();
     for (i = 0; i < aoc_array_length(data); i++) {
-        split_line = aoc_str_split(aoc_str_array_index(data, i), "|", -1);
+        split_line = aoc_str_split(aoc_str_array_index(data, i), "|", 0);
         aoc_ptr_array_append(result, split_line);
     }
 
@@ -97,7 +97,7 @@ GHashTable **decode_signal(char *signal) {
 
     signal_sets = aoc_ptr_array_new();
     signal_parts = aoc_str_array_new();
-    parts = aoc_str_split(str_trim(signal), " ", -1);
+    parts = aoc_str_split(str_trim(signal), " ", 0);
     size_t j = 0;
     while (parts[j] != NULL) {
         aoc_str_array_append(signal_parts, parts[j]);
@@ -153,7 +153,7 @@ AocArrayPtr decode(GHashTable **keys, char *signal) {
     GHashTable *set;
     char        letter_key;
 
-    parts = aoc_str_split(str_trim(signal), " ", -2);
+    parts = aoc_str_split(str_trim(signal), " ", 0);
     signal_sets = aoc_ptr_array_new();
     message = aoc_int32_array_new();
 
@@ -192,7 +192,7 @@ void *solve_part_1(AocData_t *data) {
 
     for (size_t i = 0; i < aoc_data_length(data); i++) {
         split_line = (char **)aoc_ptr_array_index(aoc_data_get(data), i);
-        output_value = aoc_str_split(str_trim(split_line[1]), " ", -1);
+        output_value = aoc_str_split(str_trim(split_line[1]), " ", 0);
 
         int j = 0;
         while ((val = output_value[j]) != NULL) {
