@@ -23,8 +23,8 @@ char *strconcat(const char *s1, const char *s2) {
     char *return_string = (char *)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
     char *pointer;
 
-    pointer = stpcpy(return_string, s1);
-    stpcpy(pointer, s2);
+    pointer = aoc_stpcpy(return_string, s1);
+    aoc_stpcpy(pointer, s2);
 
     return return_string;
 }
@@ -77,10 +77,10 @@ char *str_join(const char *delimiter, char **str_list, size_t length) {
     res_length += (length - 1) * strlen(delimiter) + 1;
 
     result = (char *)malloc(sizeof(char) * res_length);
-    ptr = stpcpy(result, str_list[0]);
+    ptr = aoc_stpcpy(result, str_list[0]);
     for (i = 1; (i < length) && (str_list[i] != NULL); i++) {
-        ptr = stpcpy(ptr, delimiter);
-        ptr = stpcpy(ptr, str_list[i]);
+        ptr = aoc_stpcpy(ptr, delimiter);
+        ptr = aoc_stpcpy(ptr, str_list[i]);
     }
     return result;
 }
@@ -240,7 +240,7 @@ void aoc_str_freev(char **str_array) {
  * its definition is provided in case the compiler lowers other libcalls to
  * stpcpy.
  */
-char *stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
+char *aoc_stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
     while ((*dest++ = *src++) != '\0') {
         /* nothing */
         ;

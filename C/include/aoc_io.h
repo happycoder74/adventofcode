@@ -13,7 +13,6 @@ void        aoc_header(unsigned year, unsigned day);
 #include <stdio.h>
 ssize_t getline(char **, size_t *, FILE *);
 ssize_t getdelim(char **, size_t *, int, FILE *);
-char   *stpcpy(char *__restrict__, const char *__restrict__);
 #endif
 
 #endif

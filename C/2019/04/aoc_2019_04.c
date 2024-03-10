@@ -4,6 +4,7 @@
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,7 @@ bool check_rules(int number, int part) {
     int  n_digits = 0, min_double_digits = INT_MAX;
     int  i;
 
-    sprintf(str, "%d", number);
+    snprintf(str, 7, "%d", number);
     d = str[0];
 
     if (part == 1) {

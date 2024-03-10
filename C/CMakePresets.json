@@ -3,7 +3,7 @@
   "configurePresets": [
     {
       "name": "ninja-release",
-      "binaryDir": "${sourceDir}/release",
+      "binaryDir": "${sourceDir}/build",
       "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
