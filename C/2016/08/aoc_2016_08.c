@@ -1,7 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_grid.h"
-#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
@@ -139,7 +138,7 @@ void *solve_part_1(AocData_t *data) {
 
     grid_print(grid, 1);
 
-    return strdup_printf("%d", aoc_hash_table_count(grid->grid));
+    return strdup_printf("%d", aoc_grid_elements(grid));
 }
 
 void *solve_part_2(AocData_t *data) {
