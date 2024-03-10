@@ -34,8 +34,9 @@ void aoc_stack_push(AocStackPtr stack, void *item) {
 }
 
 void *aoc_stack_pop(AocStackPtr stack) {
-    if (stack->stack_pointer < 0)
+    if (stack->stack_pointer < 0) {
         return NULL;
+    }
 
     void *data = stack->data[stack->stack_pointer];
     stack->stack_pointer -= 1;
@@ -46,4 +47,12 @@ void aoc_stack_free(AocStackPtr stack) {
     free(stack->data);
     stack->stack_pointer = -1;
     stack->data = NULL;
+}
+
+void *aoc_stack_peek(AocStackPtr stack) {
+    if (stack->stack_pointer < 0) {
+        return NULL;
+    }
+
+    return stack->data[stack->stack_pointer];
 }
