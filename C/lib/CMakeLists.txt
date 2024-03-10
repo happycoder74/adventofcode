@@ -4,6 +4,7 @@ add_library(aoc)
 target_sources(
     aoc
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_array.c
+	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_grid.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_hash.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_io.c
 	PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_list.c
