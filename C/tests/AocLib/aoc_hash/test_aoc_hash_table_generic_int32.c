@@ -29,7 +29,7 @@ void aoc_hash_table_load_6(void) {
 }
 
 void aoc_hash_table_setup(void) {
-    hash_table = aoc_hash_table_create_custom(0, NULL, NULL, free, AOC_KEY_INT32);
+    hash_table = aoc_hash_table_create_custom(0, NULL, NULL, free, AOC_INT32);
 }
 
 void aoc_hash_table_teardown(void) {
