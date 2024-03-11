@@ -11,7 +11,7 @@ void          **keys = NULL;
 char          **values = NULL;
 
 void aoc_hash_table_setup(void) {
-    hash_table = aoc_hash_table_create(AOC_KEY_STR);
+    hash_table = aoc_hash_table_create(AOC_STR);
 }
 
 void aoc_hash_table_teardown(void) {
@@ -49,7 +49,7 @@ Test(aoc_hash_table, test_hash_table_insert_lookup) {
 }
 
 Test(aoc_hash_table, aoc_hash_table_custom_str_table) {
-    AocHashTablePtr ht = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_KEY_STR);
+    AocHashTablePtr ht = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_STR);
 
     aoc_hash_table_add(ht, strdup("First key"));
 

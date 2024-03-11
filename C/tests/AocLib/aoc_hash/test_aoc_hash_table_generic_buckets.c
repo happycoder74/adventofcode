@@ -10,7 +10,7 @@ uint32_t custom_hash(const void *key) {
 }
 
 void aoc_hash_table_setup(void) {
-    hash_table = aoc_hash_table_create_custom(0, custom_hash, NULL, NULL, AOC_KEY_INT32);
+    hash_table = aoc_hash_table_create_custom(0, custom_hash, NULL, NULL, AOC_INT32);
 }
 
 void aoc_hash_table_teardown(void) {

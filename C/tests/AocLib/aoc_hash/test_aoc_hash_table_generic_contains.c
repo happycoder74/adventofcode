@@ -8,8 +8,8 @@ AocHashTablePtr hash_table = NULL;
 AocHashTablePtr hash_table_str = NULL;
 
 void aoc_hash_table_setup(void) {
-    hash_table = aoc_hash_table_create_custom(0, NULL, NULL, NULL, AOC_KEY_PTR);
-    hash_table_str = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_KEY_STR);
+    hash_table = aoc_hash_table_create_custom(0, NULL, NULL, NULL, AOC_PTR);
+    hash_table_str = aoc_hash_table_create_custom(0, NULL, free, NULL, AOC_STR);
 }
 
 void aoc_hash_table_teardown(void) {
