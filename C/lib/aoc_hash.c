@@ -544,10 +544,5 @@ bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value) {
 }
 
 bool aoc_hash_table_contains(AocHashTablePtr ht, const void *key) {
-
-    unsigned index = aoc_hash_table_index(ht, key);
-    if (ht->elements[index] != NULL) {
-        return true;
-    }
-    return false;
+    return (aoc_hash_table_lookup(ht, key) != NULL);
 }
