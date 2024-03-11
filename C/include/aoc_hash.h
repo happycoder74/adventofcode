@@ -17,6 +17,8 @@ typedef AocHashTable          *AocHashTablePtr;
 struct _hash_iterator {
     AocHashTablePtr hash_table;
     int32_t         position;
+    void          **keys;
+    void          **values;
 };
 typedef struct _hash_iterator AocHashIterator;
 
@@ -31,6 +33,8 @@ AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf,
 
 AocHashEntry *aoc_hash_table_lookup_entry(AocHashTablePtr ht, const void *key);
 void         *aoc_hash_table_lookup(AocHashTablePtr ht, const void *key);
+bool          aoc_hash_table_lookup_extended(AocHashTablePtr ht, const void *key, void **orig_key,
+                                             void **value);
 bool          aoc_hash_table_insert(AocHashTablePtr ht, const void *key, const void *obj);
 bool          aoc_hash_table_replace(AocHashTablePtr ht, const void *key, const void *obj);
 bool          aoc_hash_table_add(AocHashTablePtr ht, const void *key);
@@ -39,8 +43,11 @@ bool          aoc_hash_table_contains(AocHashTablePtr ht, const void *key);
 void  aoc_hash_table_destroy(AocHashTablePtr *ht);
 void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key);
 
-size_t aoc_hash_table_size(AocHashTablePtr hash_table);
-size_t aoc_hash_table_count(AocHashTablePtr hash_table);
+size_t      aoc_hash_table_size(AocHashTablePtr hash_table);
+size_t      aoc_hash_table_count(AocHashTablePtr hash_table);
+AocArrayPtr aoc_hash_table_get_keys(AocHashTablePtr hash_table);
+AocArrayPtr aoc_hash_table_get_values(AocHashTablePtr hash_table);
+AocArrayPtr aoc_hash_table_get_values_if(AocHashTablePtr hash_table, bool(cmp_func)(const void *));
 
 void aoc_hash_table_iter_init(AocHashIterator *iter, AocHashTablePtr hash_table);
 bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value);

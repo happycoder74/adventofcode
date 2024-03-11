@@ -1,4 +1,6 @@
 #include "aoc_hash.h"
+#include "aoc_array.h"
+#include "aoc_types.h"
 #include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -44,8 +46,6 @@ struct _aoc_hash_table {
     free_func      value_free_func;
     key_equal_func key_equal;
     entry        **elements;
-    void         **keys;
-    void         **values;
 };
 
 static int is_prime(size_t number) {
@@ -82,21 +82,22 @@ static AocHashTablePtr aoc_hash_table_rehash(AocHashTablePtr hashtable) {
         aoc_hash_table_create_custom(new_size, hashtable->hash, hashtable->key_free_func,
                                      hashtable->value_free_func, hashtable->type);
 
-    void **keys = hashtable->keys;
-    void **values = hashtable->values;
-
-    for (size_t i = 0; i < hashtable->count; i++) {
-        aoc_hash_table_insert(ht, keys[i], values[i]);
+    for (size_t i = 0; i < hashtable->size; i++) {
+        entry *e = hashtable->elements[i];
+        if (e != NULL) {
+            do {
+                void *key = e->key;
+                void *value = e->object;
+                aoc_hash_table_insert(ht, key, value);
+                e = e->next;
+            } while (e != NULL);
+        }
     }
-    free(hashtable->keys);
-    free(hashtable->values);
     free(hashtable->elements);
 
     hashtable->type = ht->type;
     hashtable->size = ht->size;
     hashtable->count = ht->count;
-    hashtable->keys = ht->keys;
-    hashtable->values = ht->values;
     hashtable->elements = ht->elements;
 
     free(ht);
@@ -143,8 +144,6 @@ AocHashTablePtr aoc_hash_table_create_custom(uint32_t size, hash_function hf, fr
         }
     }
     ht->type = type;
-    ht->keys = (void **)calloc(ht->size, sizeof(void *));
-    ht->values = (void **)calloc(ht->size, sizeof(void *));
     ht->elements = (entry **)calloc(ht->size, sizeof(entry *));
 
     ht->key_free_func = kff;
@@ -190,25 +189,22 @@ void aoc_hash_table_destroy(AocHashTablePtr *hashtable) {
     AocHashTablePtr ht = *hashtable;
     if (ht) {
         if (ht->elements) {
+            for (unsigned i = 0; i < ht->size; i++) {
+                entry *e = ht->elements[i];
+                if (e) {
+                    do {
+                        if (ht->key_free_func) {
+                            ht->key_free_func(e->key);
+                        }
+                        if (ht->value_free_func) {
+                            ht->value_free_func(e->object);
+                        }
+                        e = e->next;
+                    } while (e != NULL);
+                }
+            }
             free(ht->elements);
         }
-        if (ht->keys) {
-            for (unsigned key = 0; key < ht->count; key++) {
-                if (ht->key_free_func) {
-                    ht->key_free_func(ht->keys[key]);
-                }
-            }
-            free(ht->keys);
-        }
-        if (ht->values) {
-            for (unsigned val = 0; val < ht->count; val++) {
-                if (ht->value_free_func) {
-                    ht->value_free_func(ht->values[val]);
-                }
-            }
-            free(ht->values);
-        }
-
         free(ht);
     }
     *hashtable = NULL;
@@ -218,40 +214,73 @@ static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, c
                                           bool replace) {
     bool value_exists = false;
     if (!ht) {
-        return 0;
-    }
-    if (aoc_hash_table_lookup(ht, key)) {
-        if (!replace) {
-            return 0;
-        } else {
-            value_exists = true;
-        }
-    }
-    if (!obj) {
-        return 0;
+        return false;
     }
 
-    if (ht->count >= 0.75 * ht->size) {
-        ht = aoc_hash_table_rehash(ht);
+    entry *e = NULL;
+    bool   key_exists = false;
+
+    e = aoc_hash_table_lookup_entry(ht, key);
+    if (e) {
+        if (!replace) {
+            return false;
+        } else {
+            key_exists = true;
+        }
+    } else {
+        e = (AocHashEntry *)malloc(sizeof(AocHashEntry));
     }
 
     size_t index = aoc_hash_table_index(ht, key);
 
-    entry *e = malloc(sizeof(entry));
     e->object = (void *)obj;
     e->key = (void *)key;
-    e->next = ht->elements[index];
-    ht->elements[index] = e;
-    ht->keys[ht->count] = (void *)key;
-    ht->values[ht->count] = (void *)obj;
-    ht->count += 1;
-    return !value_exists;
+    if (!key_exists) {
+        e->next = ht->elements[index];
+        ht->elements[index] = e;
+        ht->count += 1;
+    }
+    if (ht->count >= 0.75 * ht->size) {
+        ht = aoc_hash_table_rehash(ht);
+    }
+    return !key_exists;
 }
 
+/****
+ *
+ * aoc_hash_table_insert:
+ *
+ * @ht: pointer to a AocHashTable
+ * @key: address to key to insert
+ * @value: The value to associate with the key
+ *
+ * Returns: 'true' if the key did not exist
+ *          'false' otherwise
+ *
+ * Inserts value in table using key. If the key already exists in table, no change is made and the
+ * function returns false. Otherwise the key/value pair is added and function returns true.
+ *
+ ****/
 bool aoc_hash_table_insert(AocHashTablePtr ht, const void *key, const void *obj) {
     return aoc_hash_table_insert_replace(ht, key, obj, false);
 }
 
+/****
+ *
+ * aoc_hash_table_replace:
+ *
+ * @ht: pointer to a AocHashTable
+ * @key: address to key to insert
+ * @value: The value to associate with the key
+ *
+ * Returns: 'true' if the key did not exist
+ *          'false' otherwise
+ *
+ *
+ * Inserts value in table using key. If the key already exists in table, its associated value is
+ * updated with 'value'
+ *
+ ****/
 bool aoc_hash_table_replace(AocHashTablePtr ht, const void *key, const void *obj) {
     return aoc_hash_table_insert_replace(ht, key, obj, true);
 }
@@ -354,22 +383,11 @@ void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
         prev->next = tmp->next;
     }
     void *result = tmp->object;
+    if (ht->key_free_func) {
+        ht->key_free_func(tmp->key);
+    }
     free(tmp);
 
-    // need also to remove the key from the 'keys' array
-    AocHashTable *table = ht;
-    for (size_t i = 0; i < table->count; i++) {
-        if (ht->key_equal(table->keys[i], key)) {
-            if (i < ht->count - 1) {
-                if (ht->key_free_func) {
-                    ht->key_free_func(table->keys[i]);
-                }
-                memmove(table->keys + i, table->keys + i + 1,
-                        sizeof(void *) * (table->count - i - 1));
-                break;
-            }
-        }
-    }
     ht->count -= 1;
 
     return result;
@@ -412,17 +430,6 @@ AocHashEntry *aoc_hash_table_pop(AocHashTablePtr ht, const void *key) {
     }
     entry *result = tmp;
 
-    // need also to remove the key from the 'keys' array
-    AocHashTable *table = ht;
-    for (size_t i = 0; i < table->count; i++) {
-        if (ht->key_equal(table->keys[i], key)) {
-            if (i < ht->count - 1) {
-                memcpy(table->keys + i, table->keys + i + 1,
-                       sizeof(void *) * (table->count - i - 1));
-                break;
-            }
-        }
-    }
     ht->count -= 1;
 
     return result;
@@ -513,13 +520,27 @@ void aoc_hash_table_iter_init(AocHashIterator *iter, AocHashTablePtr hash_table)
 
     iter->position = -1;
     iter->hash_table = hash_table;
+    iter->keys = (void **)calloc(hash_table->count, sizeof(void *));
+    iter->values = (void **)calloc(hash_table->count, sizeof(void *));
+    unsigned key_idx = 0;
+    for (unsigned idx = 0; idx < hash_table->size; idx++) {
+        entry *e = hash_table->elements[idx];
+        if (e != NULL) {
+            do {
+                iter->keys[key_idx] = e->key;
+                iter->values[key_idx] = e->object;
+                key_idx++;
+                e = e->next;
+            } while (e != NULL);
+        }
+    }
 }
 
 bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value) {
     if (!iter) {
         return false;
     }
-    if (!(iter->position < (ssize_t)iter->hash_table->count)) {
+    if (!(iter->position < (ssize_t)iter->hash_table->size)) {
         return false;
     }
 
@@ -530,13 +551,13 @@ bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value) {
             iter->position = position;
             return false;
         }
-    } while (!iter->hash_table->keys[position]);
+    } while (!iter->keys[position]);
 
     if (key != NULL) {
-        *key = iter->hash_table->keys[position];
+        *key = iter->keys[position];
     }
     if (value != NULL) {
-        *value = iter->hash_table->values[position];
+        *value = iter->values[position];
     }
 
     iter->position = position;
@@ -545,4 +566,70 @@ bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value) {
 
 bool aoc_hash_table_contains(AocHashTablePtr ht, const void *key) {
     return (aoc_hash_table_lookup(ht, key) != NULL);
+}
+
+bool aoc_hash_table_lookup_extended(AocHashTablePtr ht, const void *key, void **orig_key,
+                                    void **value) {
+    entry *e = aoc_hash_table_lookup_entry(ht, key);
+
+    if (e == NULL) {
+        if (orig_key != NULL) {
+            *orig_key = NULL;
+        }
+        if (value != NULL) {
+            *value = NULL;
+        }
+        return false;
+    }
+
+    if (orig_key != NULL) {
+        *orig_key = e->key;
+    }
+    if (value != NULL) {
+        *value = e->object;
+    }
+    return true;
+}
+
+AocArrayPtr aoc_hash_table_get_keys(AocHashTablePtr ht) {
+    AocArrayPtr key_array = aoc_ptr_array_new();
+    for (unsigned ind = 0; ind < ht->size; ind++) {
+        entry *e = ht->elements[ind];
+        if (e != NULL) {
+            do {
+                aoc_ptr_array_append(key_array, e->key);
+                e = e->next;
+            } while (e != NULL);
+        }
+    }
+    return key_array;
+}
+
+AocArrayPtr aoc_hash_table_get_values(AocHashTablePtr ht) {
+    AocArrayPtr value_array = aoc_ptr_array_new();
+    for (unsigned ind = 0; ind < ht->size; ind++) {
+        entry *e = ht->elements[ind];
+        if (e != NULL) {
+            do {
+                aoc_ptr_array_append(value_array, e->object);
+                e = e->next;
+            } while (e != NULL);
+        }
+    }
+    return value_array;
+}
+AocArrayPtr aoc_hash_table_get_values_if(AocHashTablePtr ht, bool(cmp_func)(const void *val)) {
+    AocArrayPtr value_array = aoc_ptr_array_new();
+    for (unsigned ind = 0; ind < ht->size; ind++) {
+        entry *e = ht->elements[ind];
+        if (e != NULL) {
+            do {
+                if (cmp_func(e->object)) {
+                    aoc_ptr_array_append(value_array, e->object);
+                }
+                e = e->next;
+            } while (e != NULL);
+        }
+    }
+    return value_array;
 }
