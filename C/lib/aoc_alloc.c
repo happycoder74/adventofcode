@@ -10,7 +10,8 @@ AocHashTable *mem_table = NULL;
 
 static int gc_free(void *key, void *value, void *user_data) {
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "gc:      %p (size = %u)\n", key, *(int *)((char *)mem_table + sizeof(size_t) + 2 * sizeof(int)));
+    fprintf(stderr, "gc:      %p (size = %u)\n", key,
+            *(int *)((char *)mem_table + sizeof(size_t) + 2 * sizeof(int)));
     fflush(stderr);
 #endif
     free(key);
@@ -18,7 +19,7 @@ static int gc_free(void *key, void *value, void *user_data) {
 }
 
 static void init_mem_table(void) {
-    mem_table = aoc_hash_table_create(AOC_KEY_PTR);
+    mem_table = aoc_hash_table_create(AOC_PTR);
 }
 
 /**
@@ -50,7 +51,8 @@ void *aoc_malloc_internal(size_t size) {
     /* Add addr to hash_table here */
     aoc_hash_table_insert(mem_table, addr, addr);
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "malloc:  %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table), function, file, line);
+    fprintf(stderr, "malloc:  %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table),
+            function, file, line);
     fflush(stderr);
 #endif
     return addr;
@@ -70,7 +72,8 @@ void *aoc_malloc_internal(size_t size) {
  * If DEBUG_VERBOSE is defined the details is logged to stderr.
  */
 #ifdef DEBUG_VERBOSE
-void *aoc_calloc_internal(size_t n_elements, size_t element_size, const char *function, const char *file, int line) {
+void *aoc_calloc_internal(size_t n_elements, size_t element_size, const char *function,
+                          const char *file, int line) {
 #else
 void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
 #endif
@@ -83,7 +86,8 @@ void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
     /* Add addr to hash_table here */
     aoc_hash_table_insert(mem_table, addr, addr);
 #ifdef DEBUG_VERBOSE
-    fprintf(stderr, "calloc:  %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table), function, file, line);
+    fprintf(stderr, "calloc:  %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table),
+            function, file, line);
     fflush(stderr);
 #endif
 
@@ -104,7 +108,8 @@ void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
  * If DEBUG_VERBOSE is defined the details is logged to stderr.
  */
 #ifdef DEBUG_VERBOSE
-void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, const char *file, int line) {
+void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, const char *file,
+                           int line) {
 #else
 void *aoc_realloc_internal(void *ptr, size_t new_size) {
 #endif
@@ -115,7 +120,8 @@ void *aoc_realloc_internal(void *ptr, size_t new_size) {
         /* Add addr to hash_table here */
         aoc_hash_table_insert(mem_table, addr, addr);
 #ifdef DEBUG_VERBOSE
-        fprintf(stderr, "realloc: %p (size = %u) - %s - %s:%d\n", addr, aoc_hash_table_count(mem_table), function, file, line);
+        fprintf(stderr, "realloc: %p (size = %u) - %s - %s:%d\n", addr,
+                aoc_hash_table_count(mem_table), function, file, line);
         fflush(stderr);
 #endif
     } else {
@@ -144,7 +150,8 @@ void aoc_free_internal(void *ptr) {
     if (mem_table) {
         aoc_hash_table_delete(mem_table, ptr);
 #ifdef DEBUG_VERBOSE
-        fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr, aoc_hash_table_count(mem_table), function, file, line);
+        fprintf(stderr, "free:    %p (size = %u) - %s - %s:%d\n", ptr,
+                aoc_hash_table_count(mem_table), function, file, line);
         fflush(stderr);
 #endif
     }

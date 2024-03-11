@@ -74,8 +74,8 @@ void *solve_part_2(AocData_t *data) {
 
     for (unsigned i = 0; i < races->length; i++) {
         DataPoint_t *dp = aoc_ptr_array_index(races, i);
-        sprintf(time_string, "%s%d", time_string[0] == '\0' ? "" : time_string, dp->race_time);
-        sprintf(distance_string, "%s%d", distance_string[0] == '\0' ? "" : distance_string, dp->race_distance);
+        snprintf(time_string, 100, "%s%d", time_string[0] == '\0' ? "" : time_string, dp->race_time);
+        snprintf(distance_string, 100, "%s%d", distance_string[0] == '\0' ? "" : distance_string, dp->race_distance);
     }
 
     quadratic(-1, atoi(time_string), -(double)atoll(distance_string), solutions);

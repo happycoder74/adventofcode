@@ -1,9 +1,12 @@
-#include "aoc_types.h"
 #define _XOPEN_SOURCE 600
+#include "aoc_timer.h"
 #include "aoc_alloc.h"
 #include "aoc_array.h"
-#include "aoc_timer.h"
+#include "aoc_types.h"
 #include <stdio.h>
+#ifndef _WIN32
+#include <time.h>
+#endif
 #include <unistd.h>
 
 typedef struct Duration {
@@ -17,18 +20,18 @@ Duration convert_duration(double elapsed) {
 
     if (elapsed > 1e9) {
         duration.duration = elapsed / 1e9;
-        sprintf(duration.unit, "s");
+        snprintf(duration.unit, 5, "s");
     } else if (elapsed > 1e6) {
         duration.duration = elapsed / 1e6;
-        sprintf(duration.unit, "ms");
+        snprintf(duration.unit, 5, "ms");
     } else if (elapsed > 1e3) {
         duration.duration = elapsed / 1e3;
         // Need a UTF-8 enabled terminal to display correctly
         // chcp 65001 in windows command
-        sprintf(duration.unit, "\u03BCs");
+        snprintf(duration.unit, 5, "\u03BCs");
     } else {
         duration.duration = elapsed;
-        sprintf(duration.unit, "ns");
+        snprintf(duration.unit, 5, "ns");
     }
 
     return duration;
@@ -59,31 +62,53 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
         aoc_free(result);
     }
 }
+#endif
 
 void timer_func_bench(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res, unsigned warmup, unsigned iterations) {
+    char *result = NULL;
+#ifdef _WIN32
     LARGE_INTEGER freq;
     QueryPerformanceFrequency(&freq);
     LARGE_INTEGER startTime;
     QueryPerformanceCounter(&startTime);
     LARGE_INTEGER endTime;
-
+#else
+    struct timespec start, stop;
+#endif
     AocArrayPtr warmup_timings = aoc_double_array_new();
     AocArrayPtr benchmark_timings = aoc_double_array_new();
 
     for (unsigned warmup_counter = 0; warmup_counter < warmup; warmup_counter++) {
+#ifdef _WIN32
         QueryPerformanceCounter(&startTime);
-        char         *result = (char *)func(aocdata);
+#else
+        clock_gettime(CLOCK_REALTIME, &start);
+#endif
+        result = (char *)func(aocdata);
+#ifdef _WIN32
         QueryPerformanceCounter(&endTime);
         double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+        clock_gettime(CLOCK_REALTIME, &stop);
+        double   timeDifference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
         aoc_double_array_append(warmup_timings, timeDifference);
     }
 
-    char *result = NULL;
     for (unsigned bench_counter = 0; bench_counter <= iterations; bench_counter++) {
+#ifdef _WIN32
         QueryPerformanceCounter(&startTime);
+#else
+        clock_gettime(CLOCK_REALTIME, &start);
+#endif
         result = (char *)func(aocdata);
+#ifdef _WIN32
         QueryPerformanceCounter(&endTime);
         double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+        clock_gettime(CLOCK_REALTIME, &stop);
+        double   timeDifference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
         aoc_double_array_append(benchmark_timings, timeDifference);
     }
 
@@ -104,10 +129,10 @@ void timer_func_bench(int part, void *(func)(AocData_t *), AocData_t *aocdata, i
         aoc_free(result);
     }
 }
-#else
+
+#ifndef _WIN32
 #include <time.h>
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
-    double          elapsed, elapsed_unit;
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);

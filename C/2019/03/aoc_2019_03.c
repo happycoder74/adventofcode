@@ -1,11 +1,11 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include "glib.h"
 #include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -96,16 +96,15 @@ void *solve_part_1(AocData_t *data) {
     return strdup_printf("%d", min_distance);
 }
 
-AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
-    AocArrayPtr  result = aoc_ptr_array_new();
-    Point      **keys;
-    Point       *key;
-    unsigned int length;
+AocArrayPtr set_intersection(AocHashTable *table1, AocHashTable *table2) {
+    AocArrayPtr     result = aoc_ptr_array_new();
+    AocHashIterator iter;
+    void           *key, *value;
+    unsigned int    length;
 
-    keys = (Point **)g_hash_table_get_keys_as_array(table1, &length);
-    for (unsigned int i = 0; i < length; i++) {
-        key = keys[i];
-        if (g_hash_table_contains(table2, key)) {
+    aoc_hash_table_iter_init(&iter, table1);
+    while (aoc_hash_table_iter_next(&iter, &key, &value)) {
+        if (aoc_hash_table_contains(table2, key)) {
             aoc_ptr_array_append(result, key);
         }
     }
@@ -113,21 +112,21 @@ AocArrayPtr set_intersection(GHashTable *table1, GHashTable *table2) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    AocArrayPtr lines[2];
-    GHashTable *line_coords[2];
-    GHashTable *line_stepmap[2];
-    int         signal = 0, min_signal = INT_MAX;
-    AocArrayPtr intersections;
+    AocArrayPtr   lines[2];
+    AocHashTable *line_coords[2];
+    AocHashTable *line_stepmap[2];
+    int           signal = 0, min_signal = INT_MAX;
+    AocArrayPtr   intersections;
 
     lines[0] = (AocArrayPtr)aoc_ptr_array_index(aoc_data_get(data), 0);
     lines[1] = (AocArrayPtr)aoc_ptr_array_index(aoc_data_get(data), 1);
 
-    line_coords[0] = g_hash_table_new_full(point_hash, point_equal, free, NULL);
-    line_coords[1] = g_hash_table_new_full(point_hash, point_equal, free, NULL);
+    line_coords[0] = aoc_hash_table_create_custom(30, NULL, free, NULL, AOC_POINT);
+    line_coords[1] = aoc_hash_table_create_custom(30, NULL, free, NULL, AOC_POINT);
 
     // Using the same keys as line_coords why no free function is needed
-    line_stepmap[0] = g_hash_table_new_full(point_hash, point_equal, NULL, NULL);
-    line_stepmap[1] = g_hash_table_new_full(point_hash, point_equal, NULL, NULL);
+    line_stepmap[0] = aoc_hash_table_create(AOC_POINT);
+    line_stepmap[1] = aoc_hash_table_create(AOC_POINT);
 
     for (unsigned int wire = 0; wire < 2; wire++) {
         Point       *curr = point_new_m(0, 0);
@@ -147,8 +146,8 @@ void *solve_part_2(AocData_t *data) {
             for (unsigned int j = 0; j < length; j++) {
                 curr = point_new_m(curr->x + step.x, curr->y + step.y);
                 steps += 1;
-                g_hash_table_insert(line_stepmap[wire], curr, (void *)(int64_t)(steps));
-                g_hash_table_add(line_coords[wire], curr);
+                aoc_hash_table_insert(line_stepmap[wire], curr, (void *)(int64_t)(steps));
+                aoc_hash_table_add(line_coords[wire], curr);
             }
         }
     }
@@ -159,14 +158,15 @@ void *solve_part_2(AocData_t *data) {
     for (unsigned int i = 0; i < aoc_array_length(intersections); i++) {
         Point *intersection_point = (Point *)aoc_ptr_array_index(intersections, i);
 
-        signal = (int)(int64_t)(g_hash_table_lookup(line_stepmap[0], intersection_point)) + (int)(int64_t)(g_hash_table_lookup(line_stepmap[1], intersection_point));
+        signal = (int)(int64_t)(aoc_hash_table_lookup(line_stepmap[0], intersection_point)) +
+                 (int)(int64_t)(aoc_hash_table_lookup(line_stepmap[1], intersection_point));
         min_signal = MIN(signal, min_signal);
     }
 
-    g_hash_table_destroy(line_coords[0]);
-    g_hash_table_destroy(line_coords[1]);
-    g_hash_table_destroy(line_stepmap[0]);
-    g_hash_table_destroy(line_stepmap[1]);
+    aoc_hash_table_destroy(&line_coords[0]);
+    aoc_hash_table_destroy(&line_coords[1]);
+    aoc_hash_table_destroy(&line_stepmap[0]);
+    aoc_hash_table_destroy(&line_stepmap[1]);
 
     return strdup_printf("%d", min_signal);
 }

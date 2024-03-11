@@ -1,17 +1,17 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include "glib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-uint32_t count_direct(GHashTable *table, char *key) {
-    AocArrayPtr data = g_hash_table_lookup(table, key);
+uint32_t count_direct(AocHashTable *table, char *key) {
+    AocArrayPtr data = aoc_hash_table_lookup(table, key);
     if (!data) {
         return 0;
     }
@@ -25,24 +25,24 @@ uint32_t count_direct(GHashTable *table, char *key) {
 }
 
 void *solve_part_1(AocData_t *data) {
-    GHashTable *table = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
+    AocHashTable *table = aoc_hash_table_create_custom(0, NULL, free, free, AOC_STR);
 
     AocArrayPtr lines = aoc_data_get(data);
     for (uint32_t i = 0; i < lines->length; i++) {
         char  *line = aoc_str_array_index(lines, i);
-        char **line_split = g_strsplit(line, ")", 0);
+        char **line_split = str_split(line, ")", 0);
         char  *delimiter = strstr(line, ")");
         char  *orb = strndup(line, delimiter - line);
         char  *orbit = line_split[1];
 
-        AocArrayPtr orbiters = g_hash_table_lookup(table, orb);
+        AocArrayPtr orbiters = aoc_hash_table_lookup(table, orb);
 
         if (orbiters) {
             aoc_str_array_append(orbiters, orbit);
         } else {
             AocArrayPtr orbiters = aoc_str_array_new();
             aoc_str_array_append(orbiters, orbit);
-            g_hash_table_insert(table, orb, orbiters);
+            aoc_hash_table_insert(table, orb, orbiters);
         }
         free(line_split);
     }
@@ -50,17 +50,18 @@ void *solve_part_1(AocData_t *data) {
     uint32_t direct_count = count_direct(table, "COM");
     uint32_t indirect_count = 0;
 
-    uint32_t length;
-    char   **keys = (char **)g_hash_table_get_keys_as_array(table, &length);
-    for (uint32_t i = 0; i < length; i++) {
-        char *name = keys[i];
+    uint32_t        length;
+    AocHashIterator iter;
+    void           *key, *value;
+    aoc_hash_table_iter_init(&iter, table);
+    while (aoc_hash_table_iter_next(&iter, &key, &value)) {
+        char *name = key;
         if (strcmp(name, "COM") != 0) {
             indirect_count += count_direct(table, name);
         }
     }
 
-    free(keys);
-    g_hash_table_destroy(table);
+    aoc_hash_table_destroy(&table);
     return strdup_printf("%u", direct_count + indirect_count);
 }
 

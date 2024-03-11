@@ -184,8 +184,8 @@ void point_print(Point p) {
     return;
 }
 
-char *point_to_string(Point p, char *buf) {
-    sprintf(buf, "(%d, %d)", p.x, p.y);
+char *point_to_string(Point p, char *buf, unsigned bufsize) {
+    snprintf(buf, bufsize, "(%d, %d)", p.x, p.y);
     return buf;
 }
 
