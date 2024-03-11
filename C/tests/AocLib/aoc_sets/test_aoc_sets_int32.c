@@ -14,12 +14,12 @@ int32_t     array1[] = {10, 20, 30, 40};
 int32_t     array2[] = {30, 40, 50, 60, 70};
 
 void aoc_sets_setup(void) {
-    initial_data = aoc_array_new_from_data(AOC_ARRAY_INT32, init_array, 1);
-    arr1 = aoc_array_new_from_data(AOC_ARRAY_INT32, array1, 4);
-    arr2 = aoc_array_new_from_data(AOC_ARRAY_INT32, array2, 5);
-    set = aoc_set_new_with_data(initial_data, AOC_SET_INT32);
-    set1 = aoc_set_new_with_data(arr1, AOC_SET_INT32);
-    set2 = aoc_set_new_with_data(arr2, AOC_SET_INT32);
+    initial_data = aoc_array_new_from_data(AOC_INT32, init_array, 1);
+    arr1 = aoc_array_new_from_data(AOC_INT32, array1, 4);
+    arr2 = aoc_array_new_from_data(AOC_INT32, array2, 5);
+    set = aoc_set_new_with_data(initial_data, AOC_INT32);
+    set1 = aoc_set_new_with_data(arr1, AOC_INT32);
+    set2 = aoc_set_new_with_data(arr2, AOC_INT32);
 }
 
 void aoc_sets_teardown(void) {
