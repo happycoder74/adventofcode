@@ -6,12 +6,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 /*
  * Functions to implement:
  * aoc_hash_table_foreach
- * aoc_hash_table_contains
+ *
  * */
 
 inline static uint32_t uint64_hash(const void *key);
@@ -63,7 +62,7 @@ static int is_prime(size_t number) {
 
 static size_t next_prime(size_t number) {
     if (number % 2 == 0) {
-        number += 1;
+        number += (int64_t)(void *)1;
     }
     size_t n = number;
     while (!is_prime(n)) {
@@ -353,13 +352,13 @@ void *aoc_hash_table_lookup(AocHashTablePtr ht, const void *key) {
  * The (internal) entry struct pointer and the key is deleted.
  *
  */
-void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
+void aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
     if (!ht) {
-        return NULL;
+        return;
     }
 
     if (!aoc_hash_table_lookup(ht, key)) {
-        return NULL;
+        return;
     }
 
     size_t index = aoc_hash_table_index(ht, key);
@@ -372,7 +371,7 @@ void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
         tmp = tmp->next;
     }
     if (tmp == NULL) {
-        return NULL;
+        return;
     }
 
     if (prev == NULL) {
@@ -382,15 +381,17 @@ void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
         // deleting elsewhere
         prev->next = tmp->next;
     }
-    void *result = tmp->object;
     if (ht->key_free_func) {
         ht->key_free_func(tmp->key);
+    }
+    if (ht->value_free_func) {
+        ht->value_free_func(tmp->object);
     }
     free(tmp);
 
     ht->count -= 1;
 
-    return result;
+    return;
 }
 
 /*
@@ -399,7 +400,7 @@ void *aoc_hash_table_delete(AocHashTablePtr ht, const void *key) {
  * Deletes an entry from the hash table and return the entry struct.
  * It returns ownership of the entry to the caller.
  */
-AocHashEntry *aoc_hash_table_pop(AocHashTablePtr ht, const void *key) {
+void *aoc_hash_table_pop(AocHashTablePtr ht, const void *key) {
     if (!ht) {
         return NULL;
     }
@@ -427,6 +428,9 @@ AocHashEntry *aoc_hash_table_pop(AocHashTablePtr ht, const void *key) {
     } else {
         // deleting elsewhere
         prev->next = tmp->next;
+    }
+    if (ht->key_free_func) {
+        ht->key_free_func(tmp->key);
     }
     entry *result = tmp;
 
@@ -632,4 +636,42 @@ AocArrayPtr aoc_hash_table_get_values_if(AocHashTablePtr ht, bool(cmp_func)(cons
         }
     }
     return value_array;
+}
+
+void aoc_hash_table_foreach(AocHashTablePtr hash_table, AocHashTableFunc func, void *user_data) {
+    unsigned key_idx = 0;
+    for (unsigned idx = 0; idx < hash_table->size; idx++) {
+        entry *e = hash_table->elements[idx];
+        if (e != NULL) {
+            do {
+                func(e->key, e->object, user_data);
+                e = e->next;
+            } while (e != NULL);
+        }
+    }
+}
+
+void aoc_hash_table_foreach_remove(AocHashTablePtr hash_table, AocHashTableRFunc func,
+                                   void *user_data) {
+    unsigned key_idx = 0;
+
+    for (unsigned idx = 0; idx < hash_table->size; idx++) {
+        entry *e = hash_table->elements[idx];
+        entry *prev = NULL;
+        if (e != NULL) {
+            do {
+                entry *next = e->next;
+                if (func(e->key, e->object, user_data)) {
+                    aoc_hash_table_delete(hash_table, e->key);
+                }
+                e = next;
+            } while (e != NULL);
+        }
+    }
+}
+AocHashTablePtr aoc_hash_table_new_similar(AocHashTablePtr hash_table) {
+    AocHashTablePtr table =
+        aoc_hash_table_create_custom(hash_table->size, hash_table->hash, hash_table->key_free_func,
+                                     hash_table->value_free_func, hash_table->type);
+    return table;
 }
