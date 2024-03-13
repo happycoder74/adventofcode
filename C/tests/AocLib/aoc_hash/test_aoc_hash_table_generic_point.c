@@ -50,7 +50,7 @@ Test(aoc_hash_table, test_hash_table_insert_lookup) {
     cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
 }
 
-Test(aoc_hash_table, test_hash_table_delete) {
+Test(aoc_hash_table, test_hash_table_pop) {
     Point p = {2, 4};
     Point p2 = {-6, 8};
 
@@ -63,8 +63,8 @@ Test(aoc_hash_table, test_hash_table_delete) {
     *value = 10;
     aoc_hash_table_insert(hash_table, key2, value);
 
-    int32_t *return_value = (int32_t *)aoc_hash_table_delete(hash_table, key1);
-    cr_expect_not_null(return_value, "Did not expect return value from delete to be NULL");
+    int32_t *return_value = (int32_t *)aoc_hash_table_pop(hash_table, key1);
+    cr_expect_not_null(return_value, "Did not expect return value from pop to be NULL");
     cr_expect_eq(5, *return_value, "Expected %d, but got %d", 5, *return_value);
 }
 

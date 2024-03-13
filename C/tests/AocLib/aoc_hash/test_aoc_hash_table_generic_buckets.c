@@ -14,10 +14,7 @@ void aoc_hash_table_setup(void) {
 }
 
 void aoc_hash_table_teardown(void) {
-    if (hash_table) {
-        free(hash_table);
-    }
-
+    aoc_hash_table_destroy(&hash_table);
     if (keys) {
         free(keys);
     }

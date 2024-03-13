@@ -56,7 +56,7 @@ Test(aoc_hash_table, aoc_hash_table_custom_str_table) {
     aoc_hash_table_destroy(&ht);
 }
 
-/* Test(aoc_hash_table, test_hash_table_delete) { */
+/* Test(aoc_hash_table, test_hash_table_pop) { */
 /*     int32_t *value = (int32_t *)malloc(sizeof(int32_t)); */
 /*     *value = 5; */
 /*     aoc_hash_table_insert(hash_table, int32_key(30), value); */
@@ -64,8 +64,8 @@ Test(aoc_hash_table, aoc_hash_table_custom_str_table) {
 /*     *value = 10; */
 /*     aoc_hash_table_insert(hash_table, int32_key(20), value); */
 
-/*     int32_t *return_value = (int32_t *)aoc_hash_table_delete(hash_table, int32_key(30)); */
-/*     cr_expect_not_null(return_value, "Did not expect return value from delete to be NULL"); */
+/*     int32_t *return_value = (int32_t *)aoc_hash_table_pop(hash_table, int32_key(30)); */
+/*     cr_expect_not_null(return_value, "Did not expect return value from pop to be NULL"); */
 /*     cr_expect_eq(5, *return_value, "Expected %d, but got %d", 5, *return_value); */
 /* } */
 

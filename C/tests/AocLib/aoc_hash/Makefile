@@ -35,6 +35,9 @@ TESTBINS=$(patsubst %.c, $(BIN)/%.exe, $(TESTS))
 # Make targets
 all: test ## Default target - equal to make test
 
+glib: bin/test_aoc_hash_table_from_glib.exe
+	$< --verbose
+
 test: $(TESTBINS) ## Run all tests
 	@for test in $(TESTBINS); do printf "%s: " `basename $$test .exe`;./$$test; done
 

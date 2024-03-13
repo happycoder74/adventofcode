@@ -71,7 +71,7 @@ Test(aoc_hash_table, test_hash_table_insert_lookup) {
     cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
 }
 
-Test(aoc_hash_table, test_hash_table_delete) {
+Test(aoc_hash_table, test_hash_table_pop) {
     int32_t *value = (int32_t *)malloc(sizeof(int32_t));
     *value = 5;
     int32_t key1 = 30;
@@ -85,8 +85,8 @@ Test(aoc_hash_table, test_hash_table_delete) {
     cr_assert(insert_result);
 
     int32_t  key3 = 30;
-    int32_t *return_value = (int32_t *)aoc_hash_table_delete(hash_table, &key3);
-    cr_expect_not_null(return_value, "Did not expect return value from delete to be NULL");
+    int32_t *return_value = (int32_t *)aoc_hash_table_pop(hash_table, &key3);
+    cr_expect_not_null(return_value, "Did not expect return value from pop to be NULL");
     cr_expect_eq(5, *return_value, "Expected %d, but got %d", 5, *return_value);
 }
 
@@ -98,5 +98,6 @@ Test(aoc_hash_table, test_hash_table_delete) {
 /*     cr_expect_eq(expected, actual, "Expected size of %d, but got %d", expected, actual); */
 /*     expected = values[4]; */
 /*     actual = int32_value(aoc_hash_table_lookup_new(hash_table, int32_key(keys[4]))); */
-/*     cr_expect_eq(expected, actual, "Expected value of key: %d to be %d but got %d", keys[4], expected, actual); */
+/*     cr_expect_eq(expected, actual, "Expected value of key: %d to be %d but got %d", keys[4],
+ * expected, actual); */
 /* } */
