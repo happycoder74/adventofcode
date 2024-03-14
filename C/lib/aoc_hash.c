@@ -432,9 +432,10 @@ void *aoc_hash_table_pop(AocHashTablePtr ht, const void *key) {
     if (ht->key_free_func) {
         ht->key_free_func(tmp->key);
     }
-    entry *result = tmp;
 
     ht->count -= 1;
+    void *result = tmp->object;
+    free(tmp);
 
     return result;
 }
