@@ -1,5 +1,5 @@
 #include "aoc_hash.h"
-#include "criterion/assert.h"
+#include "aoc_string.h"
 #include <criterion/criterion.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,7 +43,8 @@ Test(aoc_hash_table, aoc_hash_table_does_not_contain_key) {
 
     aoc_hash_table_add(hash_table, key);
 
-    cr_expect_not(aoc_hash_table_contains(hash_table, lookup_key), "Expected table to not contain key");
+    cr_expect_not(aoc_hash_table_contains(hash_table, lookup_key),
+                  "Expected table to not contain key");
 }
 
 Test(aoc_hash_table, aoc_hash_table_contains_null) {
@@ -62,11 +63,13 @@ Test(aoc_hash_table, aoc_hash_table_does_not_contain_null) {
     cr_assert(aoc_hash_table_count(hash_table) == 0);
     aoc_hash_table_add(hash_table, key);
 
-    cr_expect_not(aoc_hash_table_contains(hash_table, lookup_key), "Expected table to not contain key");
+    cr_expect_not(aoc_hash_table_contains(hash_table, lookup_key),
+                  "Expected table to not contain key");
 }
 
 Test(aoc_hash_table, aoc_hash_table_empty_does_not_contain_null) {
     void *lookup_key = NULL;
 
-    cr_expect_not(aoc_hash_table_contains(hash_table, lookup_key), "Expected table to not contain key");
+    cr_expect_not(aoc_hash_table_contains(hash_table, lookup_key),
+                  "Expected table to not contain key");
 }

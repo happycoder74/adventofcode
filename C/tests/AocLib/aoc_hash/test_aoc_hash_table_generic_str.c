@@ -1,4 +1,5 @@
 #include "aoc_hash.h"
+#include "aoc_string.h"
 #include <criterion/criterion.h>
 #include <stdint.h>
 #include <stdio.h>
