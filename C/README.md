@@ -34,7 +34,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
 |  2  | &#11088;&#11088; | 0.004 ms      | 0.027 ms      |
-|  3  |                  |               |               |
+|  3  | &#11088;&#11088; |               |               |
 |  4  |                  |               |               |
 |  5  |                  |               |               |
 |  6  | &#11088;&#11088; | 0.371 ms      | 0.678 ms      |
@@ -60,6 +60,8 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  2  | &#11088;&#11088; | 0.004 ms      | 0.027 ms      |
 |  3  | &#11088;&#11088; | 0.881 ms      | 0.545 s       |
 |  4  | &#11088;&#11088; | 0.016 s       | 0.016 s       |
+|  5  | &#11088;&#11088; |               |               |
+|  6  | &#11088;&#11088; |               |               |
 
 ## 2017:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
@@ -67,8 +69,6 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  1  | &#11088;&#11088; |               |               |
 |  2  | &#11088;&#11088; |               |               |
 |  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |
-
-
 
 ## 2016:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
