@@ -33,7 +33,8 @@ START_TEST(test_ptr_array_append) {
     char **data = (char **)aoc_array_get_data(array);
     char  *result = data[0];
 
-    ck_assert_msg(!strcmp(result, "Test String"), "Expected value to be '%s', but got '%s'", str, result);
+    ck_assert_msg(!strcmp(result, "Test String"), "Expected value to be '%s', but got '%s'", str,
+                  result);
     free(test_string);
 }
 END_TEST
@@ -85,9 +86,7 @@ START_TEST(test_ptr_array_remove_index) {
 }
 END_TEST
 
-Suite *test_aoc_ptr_array(void) {
-    Suite *s = suite_create("aoc_ptr_array");
-
+TCase *test_case_ptr_array(void) {
     TCase *test_ptr_array = tcase_create("aoc_ptr_array");
     tcase_add_checked_fixture(test_ptr_array, aoc_ptr_array_setup, aoc_ptr_array_teardown);
     tcase_add_test(test_ptr_array, test_ptr_array_new);
@@ -96,7 +95,6 @@ Suite *test_aoc_ptr_array(void) {
     tcase_add_test(test_ptr_array, test_ptr_array_prepend_to_empty);
     tcase_add_test(test_ptr_array, test_ptr_array_index);
     tcase_add_test(test_ptr_array, test_ptr_array_remove_index);
-    suite_add_tcase(s, test_ptr_array);
 
-    return s;
+    return test_ptr_array;
 }

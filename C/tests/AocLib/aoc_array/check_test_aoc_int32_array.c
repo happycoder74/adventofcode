@@ -1,6 +1,6 @@
 #include "aoc_array.h"
-#include "check.h"
 #include "aoc_types.h"
+#include "check.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,7 +33,8 @@ START_TEST(test_int32_array_append) {
 
     int64_t expected = value;
     int64_t actual = data[0];
-    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected,
+                  (int)actual);
 }
 END_TEST
 
@@ -65,8 +66,8 @@ START_TEST(test_int32_array_index_out_of_bounds) {
     aoc_int32_array_append(array, values[1]);
     aoc_int32_array_append(array, values[2]);
 
-    int32_t data = aoc_int32_array_index(array, 1);
-    ck_assert_msg(data == 7, "Expected value to be 7");
+    int32_t *data = aoc_array_index(array, 3);
+    ck_assert_msg(data == NULL, "Expected to return NULL");
 }
 END_TEST
 
@@ -93,7 +94,8 @@ START_TEST(test_int32_array_prepend_to_empty) {
 
     int32_t expected = value;
     int32_t actual = data[0];
-    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected,
+                  (int)actual);
     ck_assert_msg(1 == array->length, "Expected length to be [1] but got [%d]", (int)array->length);
 }
 END_TEST
@@ -107,10 +109,12 @@ START_TEST(test_int32_array_prepend_to_existing) {
 
     int32_t expected = value;
     int32_t actual = data[0];
-    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected,
+                  (int)actual);
     expected = 5;
     actual = data[1];
-    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected, (int)actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", (int)expected,
+                  (int)actual);
     ck_assert_msg(2 == array->length, "Expected length to be [2] but got [%d]", (int)array->length);
 }
 END_TEST
@@ -128,24 +132,28 @@ START_TEST(test_int32_array_copy) {
     int32_t *data2 = (int32_t *)aoc_array_get_data(array2);
     ck_assert_msg(data != data2, "Seem to be same array, not copied");
     for (uint32_t i = 0; i < 5; i++) {
-        ck_assert_msg(aoc_int32_array_index(array, i) == aoc_int32_array_index(array2, i), "Expected array2[%d] = %d but got %d", i, values[i], aoc_int32_array_index(array2, i));
+        ck_assert_msg(aoc_int32_array_index(array, i) == aoc_int32_array_index(array2, i),
+                      "Expected array2[%d] = %d but got %d", i, values[i],
+                      aoc_int32_array_index(array2, i));
     }
 
     aoc_int32_array_free(array2);
 }
 END_TEST
 
-Suite *test_aoc_int32_array(void) {
-    Suite *s = suite_create("aoc_int32_array");
-
+TCase *test_case_int32_array(void) {
     TCase *test_int32_array = tcase_create("aoc_int32_array");
     tcase_add_checked_fixture(test_int32_array, aoc_int32_array_setup, aoc_int32_array_teardown);
     tcase_add_test(test_int32_array, test_int32_array_new);
     tcase_add_test(test_int32_array, test_int32_array_copy);
     tcase_add_test(test_int32_array, test_int32_array_new_length);
     tcase_add_test(test_int32_array, test_int32_array_append);
+    tcase_add_test(test_int32_array, test_int32_array_append_maxmin);
+    tcase_add_test(test_int32_array, test_int32_array_index);
+    tcase_add_test(test_int32_array, test_int32_array_index_out_of_bounds);
+    tcase_add_test(test_int32_array, test_int32_array_remove_index);
+    tcase_add_test(test_int32_array, test_int32_array_prepend_to_empty);
+    tcase_add_test(test_int32_array, test_int32_array_prepend_to_existing);
 
-    suite_add_tcase(s, test_int32_array);
-
-    return s;
+    return test_int32_array;
 }

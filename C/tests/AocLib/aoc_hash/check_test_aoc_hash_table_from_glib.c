@@ -3,18 +3,18 @@
 #include <check.h>
 #include <stdlib.h>
 
-AocHashTable *hash = NULL;
+static AocHashTable *hash = NULL;
 
-void aoc_hash_table_setup(void) {
+static void aoc_hash_table_setup(void) {
     hash = aoc_hash_table_create(AOC_STR);
 }
 
-void aoc_hash_table_teardown(void) {
+static void aoc_hash_table_teardown(void) {
     aoc_hash_table_destroy(&hash);
 }
 
 START_TEST(test_aoc_hash_table_extended) {
-    const char   *original_key = NULL, *value = NULL;
+    const char *original_key = NULL, *value = NULL;
 
     AocHashTable *hash;
     hash = aoc_hash_table_create_custom(0, NULL, free, free, AOC_STR);
@@ -38,7 +38,8 @@ START_TEST(test_aoc_hash_table_extended) {
 
     ck_assert(aoc_hash_table_lookup_extended(hash, "d", NULL, NULL));
 
-    ck_assert(!aoc_hash_table_lookup_extended(hash, "not a key", (void **)&original_key, (void **)&value));
+    ck_assert(!aoc_hash_table_lookup_extended(hash, "not a key", (void **)&original_key,
+                                              (void **)&value));
     ck_assert_ptr_null(original_key);
     ck_assert_ptr_null(value);
 
@@ -116,7 +117,6 @@ START_TEST(test_foreach) {
         ck_assert(seen_key[i]);
         {}
     }
-
 }
 
 static bool remove_even_foreach(void *key, void *value, void *user_data) {
@@ -218,24 +218,22 @@ START_TEST(test_foreach_remove_even) {
         ck_assert_ptr_nonnull(orig_val);
         ck_assert_str_eq(val, orig_val);
     }
-
 }
 END_TEST
 
-Suite *test_aoc_hash_table(void) {
-    Suite *s = suite_create("aoc_hash_table");
-
+TCase *test_case_aoc_hash_fundamental(void) {
     TCase *test_case_fundamental = tcase_create("aoc_hash_table_fundamental");
     tcase_add_test(test_case_fundamental, test_new_similar);
     tcase_add_test(test_case_fundamental, test_aoc_hash_table_extended);
-    suite_add_tcase(s, test_case_fundamental);
 
+    return test_case_fundamental;
+}
+
+TCase *test_case_aoc_hash_foreach(void) {
     TCase *test_case_foreach = tcase_create("aoc_hash_table_foreach");
     tcase_add_checked_fixture(test_case_foreach, aoc_hash_table_setup, aoc_hash_table_teardown);
     tcase_add_test(test_case_foreach, test_foreach);
     tcase_add_test(test_case_foreach, test_foreach_remove_even);
-    suite_add_tcase(s, test_case_foreach);
 
-    return s;
+    return test_case_foreach;
 }
-
