@@ -3,6 +3,7 @@
 #include "aoc_hash.h"
 #include "aoc_string.h"
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,17 +23,31 @@ AocSet *aoc_set_new_with_data(AocArrayPtr data, AocSetType settype) {
 
     result = aoc_set_new(settype);
     result->settype = settype;
+    result->set = aoc_hash_table_create(result->settype);
 
     switch (result->settype) {
         case AOC_INT32:
-            {
-                AocArrayPtr new_array = aoc_array_copy(data);
-                int32_t    *values = (int32_t *)aoc_array_get_data(new_array);
-            }
-            result->set = aoc_hash_table_create(AOC_INT32);
             for (i = 0; i < data->length; i++) {
-                int32_t *val = &aoc_int32_array_index(data, i);
-                aoc_hash_table_add(result->set, val);
+                int32_t val = aoc_int32_array_index(data, i);
+                aoc_hash_table_add(result->set, (void *)(int64_t)val);
+            }
+            break;
+        case AOC_UINT32:
+            for (i = 0; i < data->length; i++) {
+                int32_t val = aoc_int32_array_index(data, i);
+                aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
+            }
+            break;
+        case AOC_INT64:
+            for (i = 0; i < data->length; i++) {
+                int64_t *val = &aoc_int64_array_index(data, i);
+                aoc_hash_table_add(result->set, (void *)(int64_t)val);
+            }
+            break;
+        case AOC_UINT64:
+            for (i = 0; i < data->length; i++) {
+                int64_t val = aoc_int64_array_index(data, i);
+                aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
             }
             break;
         case AOC_CHAR:
@@ -41,17 +56,15 @@ AocSet *aoc_set_new_with_data(AocArrayPtr data, AocSetType settype) {
                 aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
             }
             break;
-        case AOC_UINT32:
-            result->set = aoc_hash_table_create(AOC_PTR);
+        case AOC_STR:
             for (i = 0; i < data->length; i++) {
-                int32_t val = aoc_int32_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(int64_t)(val));
+                char *val = aoc_str_array_index(data, i);
+                aoc_hash_table_add(result->set, val);
             }
             break;
-        case AOC_STR:
-            result->set = aoc_hash_table_create(AOC_STR);
+        case AOC_PTR:
             for (i = 0; i < data->length; i++) {
-                char *val = strdup(aoc_str_array_index(data, i));
+                void *val = aoc_ptr_array_index(data, i);
                 aoc_hash_table_add(result->set, val);
             }
             break;
