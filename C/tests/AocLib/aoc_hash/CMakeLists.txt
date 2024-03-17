@@ -5,6 +5,7 @@ add_library(
   check_test_aoc_hash_table_from_glib.c
   check_test_aoc_hash_table_generic_buckets.c
   check_test_aoc_hash_table_generic_contains.c
+  check_test_aoc_hash_table_generic_char.c
   )
 
 target_include_directories(
