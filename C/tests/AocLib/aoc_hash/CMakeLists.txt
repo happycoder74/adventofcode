@@ -8,6 +8,7 @@ add_library(
   check_test_aoc_hash_table_generic_char.c
   check_test_aoc_hash_table_generic_int32.c
   check_test_aoc_hash_table_generic_point.c
+  check_test_aoc_hash_table_generic_str.c
   )
 
 target_include_directories(
