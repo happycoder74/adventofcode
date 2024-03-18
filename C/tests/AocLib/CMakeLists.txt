@@ -39,7 +39,7 @@ target_link_libraries(aoc_lib_test
   ${AOC_LIB}
   glib-2.0
   curl
-  check
+  ${CHECK_LIBRARIES}
   m
   )
 
