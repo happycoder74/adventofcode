@@ -1,27 +1,27 @@
 #include "aoc_hash.h"
-#include <criterion/criterion.h>
+#include <check.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-AocHashTablePtr hash_table = NULL;
-AocHashTablePtr hash_table2 = NULL;
+static AocHashTablePtr hash_table = NULL;
+static AocHashTablePtr hash_table2 = NULL;
 
-void aoc_hash_table_setup(void) {
+static void aoc_hash_table_setup(void) {
     hash_table = aoc_hash_table_create_custom(0, NULL, NULL, free, AOC_POINT);
 }
 
-void aoc_hash_table_teardown(void) {
+static void aoc_hash_table_teardown(void) {
     aoc_hash_table_destroy(&hash_table);
 }
+END_TEST
 
-TestSuite(aoc_hash_table, .init = aoc_hash_table_setup, .fini = aoc_hash_table_teardown);
-
-Test(aoc_hash_table, test_hash_table_create) {
-    cr_expect_not_null(hash_table, "Expected new hash_table to not be NULL");
+START_TEST(test_hash_table_create) {
+    ck_assert_ptr_nonnull(hash_table);
 }
+END_TEST
 
-Test(aoc_hash_table, test_hash_table_insert_lookup) {
+START_TEST(test_hash_table_insert_lookup) {
     Point p = {2, 4};
     Point p2 = {-6, 8};
 
@@ -37,20 +37,21 @@ Test(aoc_hash_table, test_hash_table_insert_lookup) {
     int32_t *data = (int32_t *)aoc_hash_table_lookup(hash_table, key1);
     int32_t  expected = 5;
     int32_t  actual = *data;
-    cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", expected, actual);
 
     data = (int32_t *)aoc_hash_table_lookup(hash_table, key2);
     expected = 10;
     actual = *data;
-    cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", expected, actual);
 
     data = (int32_t *)aoc_hash_table_lookup(hash_table, key1);
     expected = 5;
     actual = *data;
-    cr_expect_eq(actual, expected, "Expected value to be [%d] but got [%d]", expected, actual);
+    ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", expected, actual);
 }
+END_TEST
 
-Test(aoc_hash_table, test_hash_table_pop) {
+START_TEST(test_hash_table_pop) {
     Point p = {2, 4};
     Point p2 = {-6, 8};
 
@@ -64,40 +65,55 @@ Test(aoc_hash_table, test_hash_table_pop) {
     aoc_hash_table_insert(hash_table, key2, value);
 
     int32_t *return_value = (int32_t *)aoc_hash_table_pop(hash_table, key1);
-    cr_expect_not_null(return_value, "Did not expect return value from pop to be NULL");
-    cr_expect_eq(5, *return_value, "Expected %d, but got %d", 5, *return_value);
+    ck_assert_ptr_nonnull(return_value);
+    ck_assert_msg(5 == *return_value, "Expected %d, but got %d", 5, *return_value);
 }
+END_TEST
 
-Test(aoc_hash_table, test_hash_table_insert_existing) {
+START_TEST(test_hash_table_insert_existing) {
     Point    p = {2, 4};
     Point   *key1 = &p;
     int32_t *value1 = (int32_t *)malloc(sizeof(int32_t));
     *value1 = 5;
     bool insert_result = aoc_hash_table_insert(hash_table, key1, value1);
-    cr_expect(insert_result, "Expected true value on first insert");
+    ck_assert(insert_result);
     int result = *(int32_t *)aoc_hash_table_lookup(hash_table, key1);
-    cr_expect(result == *value1, "Expected first lookup to be 5");
+    ck_assert_msg(result == *value1, "Expected first lookup to be 5");
     int32_t *value2 = (int32_t *)malloc(sizeof(int32_t));
     *value2 = 10;
     insert_result = aoc_hash_table_insert(hash_table, key1, value2);
-    cr_expect_not(insert_result, "Expected false value on second insert");
+    ck_assert(!insert_result);
     result = *(int32_t *)aoc_hash_table_lookup(hash_table, key1);
-    cr_expect(result == *value1, "Expected second lookup to be 5");
+    ck_assert_msg(result == *value1, "Expected second lookup to be 5");
 }
+END_TEST
 
-Test(aoc_hash_table, test_hash_table_replace_existing) {
+START_TEST(test_hash_table_replace_existing) {
     Point    p = {2, 4};
     Point   *key1 = &p;
     int32_t *value = (int32_t *)malloc(sizeof(int32_t));
     *value = 5;
     bool insert_result = aoc_hash_table_replace(hash_table, key1, value);
-    cr_expect(insert_result, "Expected true value on first insert");
+    ck_assert(insert_result);
     int result = *(int32_t *)aoc_hash_table_lookup(hash_table, key1);
-    cr_expect(result == *value, "Expected first lookup to be 5");
+    ck_assert(result == *value);
     value = (int32_t *)malloc(sizeof(int32_t));
     *value = 10;
     insert_result = aoc_hash_table_replace(hash_table, key1, value);
-    cr_expect_not(insert_result, "Expected false value on second insert");
+    ck_assert(!insert_result);
     result = *(int32_t *)aoc_hash_table_lookup(hash_table, key1);
-    cr_expect(result == *value, "Expected second lookup to be 10");
+    ck_assert(result == *value);
+}
+END_TEST
+
+TCase *test_case_aoc_hash_point(void) {
+    TCase *aoc_hash_point = tcase_create("aoc_hash_point");
+    tcase_add_checked_fixture(aoc_hash_point, aoc_hash_table_setup, aoc_hash_table_teardown);
+    tcase_add_test(aoc_hash_point, test_hash_table_create);
+    tcase_add_test(aoc_hash_point, test_hash_table_insert_lookup);
+    tcase_add_test(aoc_hash_point, test_hash_table_pop);
+    tcase_add_test(aoc_hash_point, test_hash_table_insert_existing);
+    tcase_add_test(aoc_hash_point, test_hash_table_replace_existing);
+
+    return aoc_hash_point;
 }
