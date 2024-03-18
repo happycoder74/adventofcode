@@ -23,12 +23,14 @@ find_library(
 add_subdirectory(aoc_sets)
 add_subdirectory(aoc_array)
 add_subdirectory(aoc_hash)
+add_subdirectory(aoc_grid)
 
 add_executable(aoc_lib_test
   check_aoclib.c
   $<TARGET_OBJECTS:aoc_sets>
   $<TARGET_OBJECTS:aoc_array>
   $<TARGET_OBJECTS:aoc_hash>
+  $<TARGET_OBJECTS:aoc_grid>
   )
 
 target_include_directories(
