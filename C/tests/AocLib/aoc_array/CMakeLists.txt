@@ -2,6 +2,7 @@ add_library(aoc_array
     OBJECT
     check_array.c
     check_test_aoc_int32_array.c
+    check_test_aoc_int64_array.c
     check_test_aoc_ptr_array.c
     check_test_aoc_double_array.c
     check_test_aoc_str_array.c
