@@ -13,6 +13,8 @@ pkg_search_module(GLIB REQUIRED glib-2.0)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(CHECKLIB REQUIRED check)
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(PCRE2 REQUIRED libpcre2-posix)
 
 find_library(
   AOC_LIB
@@ -26,6 +28,7 @@ add_subdirectory(aoc_hash)
 add_subdirectory(aoc_grid)
 add_subdirectory(aoc_string)
 add_subdirectory(aoc_stack)
+add_subdirectory(aoc_regex)
 
 add_executable(aoc_lib_test
   check_aoclib.c
@@ -35,17 +38,20 @@ add_executable(aoc_lib_test
   $<TARGET_OBJECTS:aoc_grid>
   $<TARGET_OBJECTS:aoc_string>
   $<TARGET_OBJECTS:aoc_stack>
+  $<TARGET_OBJECTS:aoc_regex>
   )
 
 target_include_directories(
   aoc_lib_test
   PUBLIC ${CHECKLIB_INCLUDE_DIRS}
+  PUBLIC ${PCRE2_INCLUDE_DIRS}
   )
 
 target_link_libraries(
     aoc_lib_test
     ${GLIB_LDFLAGS}
     ${CHECKLIB_LDFLAGS}
+    ${PCRE2_LDFLAGS}
 )
 target_link_libraries(aoc_lib_test
   ${AOC_LIB}
@@ -53,6 +59,7 @@ target_link_libraries(aoc_lib_test
   curl
   ${CHECK_LIBRARIES}
   ${CHECKLIB_LIBRARIES}
+  ${PCRE2_LIBRARIES}
   pthread
   m
   )
