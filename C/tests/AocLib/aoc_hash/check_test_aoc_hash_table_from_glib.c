@@ -221,10 +221,20 @@ START_TEST(test_foreach_remove_even) {
 }
 END_TEST
 
+START_TEST(test_init_with_str_literal) {
+    int value = 5;
+    aoc_hash_table_insert(hash, "KEY5", &value);
+
+    int return_value = *(int *)aoc_hash_table_lookup(hash, "KEY5");
+    ck_assert(value != return_value);
+}
+END_TEST
+
 TCase *test_case_aoc_hash_fundamental(void) {
     TCase *test_case_fundamental = tcase_create("aoc_hash_table_fundamental");
     tcase_add_test(test_case_fundamental, test_new_similar);
     tcase_add_test(test_case_fundamental, test_aoc_hash_table_extended);
+    tcase_add_test(test_case_fundamental, test_init_with_str_literal);
 
     return test_case_fundamental;
 }
