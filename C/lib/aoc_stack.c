@@ -1,5 +1,6 @@
 #include "aoc_stack.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 struct _AocStack {
     ssize_t stack_pointer;
