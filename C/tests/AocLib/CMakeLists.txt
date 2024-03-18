@@ -11,7 +11,8 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GLIB REQUIRED glib-2.0)
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(CHECK REQUIRED check)
+pkg_search_module(CHECKLIB REQUIRED check)
+
 
 find_library(
   AOC_LIB
@@ -32,14 +33,21 @@ add_executable(aoc_lib_test
 
 target_include_directories(
   aoc_lib_test
-  PUBLIC ${CMAKE_SOURCE_DIR}/aoc_sets{}
+  PUBLIC ${CHECKLIB_INCLUDE_DIRS}
   )
 
+target_link_libraries(
+    aoc_lib_test
+    ${GLIB_LDFLAGS}
+    ${CHECKLIB_LDFLAGS}
+)
 target_link_libraries(aoc_lib_test
   ${AOC_LIB}
   glib-2.0
   curl
   ${CHECK_LIBRARIES}
+  ${CHECKLIB_LIBRARIES}
+  pthread
   m
   )
 
@@ -49,3 +57,5 @@ add_custom_target(
   DEPENDS aoc_lib_test
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
+
+message("CHECKLIB_LDFLAGS = " ${CHECKLIB_LDFLAGS})

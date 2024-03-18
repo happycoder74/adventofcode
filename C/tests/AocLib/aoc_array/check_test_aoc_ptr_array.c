@@ -28,7 +28,7 @@ END_TEST
 START_TEST(test_ptr_array_append) {
     char  str[] = "Test String";
     char *test_string = (char *)calloc(strlen(str) + 1, sizeof(char));
-    test_string = strcpy(test_string, str);
+    test_string = strncpy(test_string, str, (strlen(str) + 1));
     aoc_ptr_array_append(array, test_string);
     char **data = (char **)aoc_array_get_data(array);
     char  *result = data[0];
@@ -42,7 +42,7 @@ END_TEST
 START_TEST(test_ptr_array_prepend_to_empty) {
     char  str[] = "Test String";
     char *test_string = (char *)calloc(strlen(str) + 1, sizeof(char));
-    test_string = strcpy(test_string, str);
+    test_string = strncpy(test_string, str, (strlen(str) + 1));
     aoc_ptr_array_prepend(array, test_string);
     char **data = (char **)aoc_array_get_data(array);
     ck_assert_msg(!strcmp((char *)data[0], str), "Expected value to be %s", str);

@@ -6,6 +6,7 @@ add_library(aoc_sets
 
 target_include_directories(
   aoc_sets
+  PRIVATE ${CHECKLIB_INCLUDE_DIRS}
   PUBLIC $ENV{HOME}/projects/adventofcode-c/C/include
   )
 
