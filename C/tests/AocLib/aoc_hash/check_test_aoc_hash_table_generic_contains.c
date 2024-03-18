@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include "aoc_hash.h"
 #include <check.h>
 #include <stdlib.h>
