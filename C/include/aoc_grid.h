@@ -1,8 +1,8 @@
 #ifndef __AOC_GRID_H__
 #define __AOC_GRID_H__
 
-#include "aoc_hash.h"
 #include "aoc_types.h"
+#include <stdbool.h>
 
 typedef struct {
     void **grid;

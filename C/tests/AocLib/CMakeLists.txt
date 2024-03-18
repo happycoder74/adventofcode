@@ -24,6 +24,7 @@ add_subdirectory(aoc_sets)
 add_subdirectory(aoc_array)
 add_subdirectory(aoc_hash)
 add_subdirectory(aoc_grid)
+add_subdirectory(aoc_string)
 
 add_executable(aoc_lib_test
   check_aoclib.c
@@ -31,6 +32,7 @@ add_executable(aoc_lib_test
   $<TARGET_OBJECTS:aoc_array>
   $<TARGET_OBJECTS:aoc_hash>
   $<TARGET_OBJECTS:aoc_grid>
+  $<TARGET_OBJECTS:aoc_string>
   )
 
 target_include_directories(
