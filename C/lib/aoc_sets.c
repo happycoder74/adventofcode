@@ -25,54 +25,11 @@ AocSet *aoc_set_new_with_data(AocArrayPtr data, AocSetType settype) {
     result->settype = settype;
     result->set = aoc_hash_table_create(result->settype);
 
-    switch (result->settype) {
-        case AOC_INT32:
-            for (i = 0; i < data->length; i++) {
-                int32_t val = aoc_int32_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(int64_t)val);
-            }
-            break;
-        case AOC_UINT32:
-            for (i = 0; i < data->length; i++) {
-                int32_t val = aoc_int32_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
-            }
-            break;
-        case AOC_INT64:
-            for (i = 0; i < data->length; i++) {
-                int64_t *val = &aoc_int64_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(int64_t)val);
-            }
-            break;
-        case AOC_UINT64:
-            for (i = 0; i < data->length; i++) {
-                int64_t val = aoc_int64_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
-            }
-            break;
-        case AOC_CHAR:
-            for (i = 0; i < data->length; i++) {
-                char val = aoc_char_array_index(data, i);
-                aoc_hash_table_add(result->set, (void *)(uint64_t)(val));
-            }
-            break;
-        case AOC_STR:
-            for (i = 0; i < data->length; i++) {
-                char *val = aoc_str_array_index(data, i);
-                aoc_hash_table_add(result->set, val);
-            }
-            break;
-        case AOC_PTR:
-            for (i = 0; i < data->length; i++) {
-                void *val = aoc_ptr_array_index(data, i);
-                aoc_hash_table_add(result->set, val);
-            }
-            break;
-        default:
-            free(result);
-            return NULL;
-            break;
+    for (i = 0; i < data->length; i++) {
+        void *val = aoc_array_index(data, i);
+        aoc_hash_table_add(result->set, val);
     }
+
     return result;
 }
 
