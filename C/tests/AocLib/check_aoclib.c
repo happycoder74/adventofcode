@@ -4,6 +4,7 @@
 #include "aoc_grid/check_grid.h"
 #include "aoc_hash/check_hash.h"
 #include "aoc_sets/check_sets.h"
+#include "aoc_stack/check_stack.h"
 #include "aoc_string/check_aoc_string.h"
 
 int main(void) {
@@ -14,6 +15,7 @@ int main(void) {
     srunner_add_suite(runner, test_aoc_set());
     srunner_add_suite(runner, test_aoc_grid());
     srunner_add_suite(runner, test_aoc_string());
+    srunner_add_suite(runner, test_aoc_stack());
 
     srunner_run_all(runner, CK_NORMAL);
 
