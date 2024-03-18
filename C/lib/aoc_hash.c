@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 /*
  * Functions to implement:
@@ -459,11 +460,11 @@ inline static uint32_t aoc_hash(AocKeyType type, const void *key) {
         const uint64_t *bits = (uint64_t *)key;
         return (uint32_t)((*bits >> 32) ^ (*bits & 0xffffffffU));
     } else if (type == AOC_STR) {
-        const void        *v = key;
-        const signed char *p;
-        uint64_t           h = 5381;
+        const void  *v = key;
+        signed char *p;
+        uint64_t     h = 5381;
 
-        for (p = v; *p != '\0'; p++) {
+        for (p = (signed char *)v; *p != '\0'; p++) {
             h = (h << 5) + h + *p;
         }
         return h;
