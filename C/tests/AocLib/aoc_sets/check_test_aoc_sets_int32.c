@@ -3,17 +3,17 @@
 #include "aoc_types.h"
 #include <check.h>
 
-AocSet     *set = NULL;
-AocSet     *set1 = NULL;
-AocSet     *set2 = NULL;
-AocArrayPtr initial_data = NULL;
-AocArrayPtr arr1 = NULL;
-AocArrayPtr arr2 = NULL;
-int32_t     init_array[] = {20};
-int32_t     array1[] = {10, 20, 30, 40};
-int32_t     array2[] = {30, 40, 50, 60, 70};
+static AocSet     *set = NULL;
+static AocSet     *set1 = NULL;
+static AocSet     *set2 = NULL;
+static AocArrayPtr initial_data = NULL;
+static AocArrayPtr arr1 = NULL;
+static AocArrayPtr arr2 = NULL;
+static int32_t     init_array[] = {20};
+static int32_t     array1[] = {10, 20, 30, 40};
+static int32_t     array2[] = {30, 40, 50, 60, 70};
 
-void aoc_sets_setup(void) {
+static void aoc_sets_setup(void) {
     initial_data = aoc_array_new_from_data(AOC_INT32, init_array, 1);
     arr1 = aoc_array_new_from_data(AOC_INT32, array1, 4);
     arr2 = aoc_array_new_from_data(AOC_INT32, array2, 5);
@@ -22,7 +22,7 @@ void aoc_sets_setup(void) {
     set2 = aoc_set_new_with_data(arr2, AOC_INT32);
 }
 
-void aoc_sets_teardown(void) {
+static void aoc_sets_teardown(void) {
     aoc_array_free(initial_data, 0);
     aoc_array_free(arr1, 0);
     aoc_array_free(arr2, 0);

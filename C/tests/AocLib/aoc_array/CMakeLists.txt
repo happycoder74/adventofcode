@@ -10,6 +10,7 @@ add_library(aoc_array
 target_include_directories(
     aoc_array
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE ${CHECKLIB_INCLUDE_DIRS}
     PRIVATE $ENV{HOME}/projects/adventofcode-c/C/include
 )
 
