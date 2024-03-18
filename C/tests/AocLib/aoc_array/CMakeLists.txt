@@ -3,6 +3,8 @@ add_library(aoc_array
     check_array.c
     check_test_aoc_int32_array.c
     check_test_aoc_ptr_array.c
+    check_test_aoc_double_array.c
+    check_test_aoc_str_array.c
     )
 
 target_include_directories(

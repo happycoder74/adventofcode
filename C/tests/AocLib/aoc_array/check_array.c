@@ -6,6 +6,8 @@ Suite *test_aoc_array(void) {
 
     suite_add_tcase(s, test_case_int32_array());
     suite_add_tcase(s, test_case_ptr_array());
+    suite_add_tcase(s, test_case_double_array());
+    suite_add_tcase(s, test_case_str_array());
 
     return s;
 }
