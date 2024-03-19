@@ -9,19 +9,21 @@ static char *str_dynamic = NULL;
 static char  str_literal[] = "Test string";
 
 static void aoc_string_setup(void) {
-    str_dynamic = (char *)calloc(strlen(str_literal) + 1, sizeof(char));
-    strcpy(str_dynamic, str_literal);
+    size_t length = strlen(str_literal) + 1;
+    str_dynamic = (char *)calloc(length, sizeof(char));
+    strncpy(str_dynamic, str_literal, length);
 }
 
 static void aoc_string_with_whitespace_setup(void) {
     char str_literal_with_ws[] = "   Test string   ";
+    size_t length = strlen(str_literal_with_ws) + 1;
     if (str_dynamic) {
         char *new_ptr =
-            (char *)realloc(str_dynamic, sizeof(char) * (strlen(str_literal_with_ws) + 1));
+            (char *)realloc(str_dynamic, sizeof(char) * length);
         if (new_ptr) {
             str_dynamic = new_ptr;
         }
-        strcpy(str_dynamic, str_literal_with_ws);
+        strncpy(str_dynamic, str_literal_with_ws, length);
     }
 }
 
