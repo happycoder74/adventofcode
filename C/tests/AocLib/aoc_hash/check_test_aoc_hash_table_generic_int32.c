@@ -6,7 +6,6 @@
 #include <stdlib.h>
 
 static AocHashTablePtr hash_table = NULL;
-static AocHashTablePtr hash_table2 = NULL;
 static int32_t        *keys = NULL;
 static int32_t        *values = NULL;
 
@@ -29,6 +28,10 @@ static void aoc_hash_table_load_6(void) {
 
 static void aoc_hash_table_setup(void) {
     hash_table = aoc_hash_table_create_custom(0, NULL, NULL, free, AOC_INT32);
+}
+
+static void aoc_hash_table_setup_in_ptr(void) {
+    hash_table = aoc_hash_table_create(AOC_PTR);
 }
 
 static void aoc_hash_table_teardown(void) {
@@ -103,6 +106,22 @@ START_TEST(aoc_hash_table_loaded) {
                   expected, actual);
 }
 
+START_TEST(aoc_hash_table_int32_in_ptr) {
+    ck_assert_ptr_nonnull(hash_table);
+    int32_t values[] = {10, 30, 70, 100};
+    void   *ptr_values[4];
+    void   *keys[] = {"K1", "K2", "K3", "K4"};
+
+    for (unsigned i = 0; i < 4; i++) {
+        ptr_values[i] = (void *)(int64_t)values[i];
+        bool result = aoc_hash_table_insert(hash_table, keys[i], ptr_values[i]);
+        ck_assert(result);
+    }
+
+    ck_assert_int_eq(values[1], (int32_t)(int64_t)aoc_hash_table_lookup(hash_table, keys[1]));
+}
+END_TEST
+
 TCase *test_case_aoc_hash_int32(void) {
     TCase *aoc_hash_int32 = tcase_create("aoc_hash_table_int32");
 
@@ -119,4 +138,13 @@ TCase *test_case_aoc_hash_int32_loaded(void) {
     tcase_add_checked_fixture(aoc_hash_int32, aoc_hash_table_load_6, aoc_hash_table_teardown);
     tcase_add_test(aoc_hash_int32, aoc_hash_table_loaded);
     return aoc_hash_int32;
+}
+
+TCase *test_case_aoc_hash_int32_in_ptr(void) {
+    TCase *aoc_hash_int32_in_ptr = tcase_create("aoc_hash_table_int32_in_ptr");
+
+    tcase_add_checked_fixture(aoc_hash_int32_in_ptr, aoc_hash_table_setup_in_ptr,
+                              aoc_hash_table_teardown);
+    tcase_add_test(aoc_hash_int32_in_ptr, aoc_hash_table_int32_in_ptr);
+    return aoc_hash_int32_in_ptr;
 }

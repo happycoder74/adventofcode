@@ -11,6 +11,7 @@ TCase *test_case_aoc_hash_contains(void);
 TCase *test_case_aoc_hash_char(void);
 TCase *test_case_aoc_hash_int32(void);
 TCase *test_case_aoc_hash_int32_loaded(void);
+TCase *test_case_aoc_hash_int32_in_ptr(void);
 TCase *test_case_aoc_hash_point(void);
 TCase *test_case_aoc_hash_table_str(void);
 
