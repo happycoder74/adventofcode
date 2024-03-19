@@ -45,14 +45,14 @@ END_TEST
 
 START_TEST(test_value_length_is_one) {
     AocArrayPtr return_values = aoc_set_get_values(set);
-    ck_assert_msg(return_values->length == 1, "Expected 1, got %zu", return_values->length);
+    ck_assert_msg(return_values->length == 1, "Expected 1, got %llu", return_values->length);
 }
 END_TEST
 
 START_TEST(test_value_length_is_four) {
     AocArrayPtr return_values = aoc_set_get_values(set1);
     int32_t     expected = 4;
-    ck_assert_msg((int32_t)return_values->length == expected, "Expected %d, got %zu", expected,
+    ck_assert_msg((int32_t)return_values->length == expected, "Expected %d, got %llu", expected,
                   return_values->length);
 }
 END_TEST
