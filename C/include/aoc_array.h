@@ -171,6 +171,7 @@ void       *aoc_array_append(AocArray *array, void *value);
 void       *aoc_array_prepend(AocArray *array, void *value);
 void       *aoc_array_index(AocArray *array, size_t index);
 void        aoc_array_free(AocArray *array, int free_segments);
+void       *aoc_array_pop_index(AocArrayPtr array, size_t index);
 AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index);
 void       *aoc_array_get_data(AocArrayPtr array);
 AocArrayPtr aoc_array_copy(AocArrayPtr array);
@@ -180,6 +181,7 @@ int         aoc_array_contains(AocArrayPtr array, void *value);
 int         aoc_array_find(AocArrayPtr array, void *value);
 AocArrayPtr aoc_array_new_from_data(AocArrayType array_type, void *data, size_t length);
 void       *aoc_array_last(AocArrayPtr array);
+AocArrayPtr aoc_array_reverse(AocArrayPtr array);
 
 int int32_compare(const void *a, const void *b);
 int int64_compare(const void *a, const void *b);

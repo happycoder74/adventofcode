@@ -469,6 +469,36 @@ void aoc_array_print(AocArray *array) {
     }
 }
 
+void *aoc_array_pop_index(AocArrayPtr array, size_t index) {
+    AocGenArray *arr = (AocGenArray *)array;
+    if (!arr) {
+        return NULL;
+    }
+
+    if (index >= aoc_array_length(arr)) {
+        return NULL;
+    }
+
+    void *result = aoc_array_index(array, index);
+
+    if (index != aoc_array_length(arr) - 1) {
+        if (array->type == AOC_PTR) {
+            memmove(arr->ptr_data + index, arr->ptr_data + index + 1,
+                    sizeof(void *) * (arr->length - index - 1));
+        } else {
+            memmove((arr->data + index * arr->element_size),
+                    (arr->data + (index + 1) * arr->element_size),
+                    arr->element_size * (aoc_array_length(arr) - index - 1));
+        }
+    }
+
+    arr->length -= 1;
+
+    array = aoc_array_shrink(array);
+
+    return result;
+}
+
 AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index) {
     AocGenArray *arr = (AocGenArray *)array;
     if (!arr) {
@@ -635,4 +665,14 @@ double aoc_double_array_stddev(AocArrayPtr array) {
     }
 
     return sqrt(var / array->length);
+}
+
+AocArrayPtr aoc_array_reverse(AocArrayPtr array) {
+    AocArrayPtr reversed = aoc_array_new(array->type, array->length);
+    reversed->free_segments = array->free_segments;
+    for (int32_t i = array->length - 1; i >= 0; i--) {
+        aoc_array_append(reversed, aoc_array_index(array, i));
+    }
+
+    return reversed;
 }
