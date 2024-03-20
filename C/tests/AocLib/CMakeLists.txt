@@ -16,6 +16,9 @@ pkg_search_module(CHECKLIB REQUIRED check)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(PCRE2 REQUIRED libpcre2-posix)
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(CURL REQUIRED libcurl)
+
 add_subdirectory(aoc_sets)
 add_subdirectory(aoc_array)
 add_subdirectory(aoc_hash)
@@ -48,13 +51,13 @@ target_link_directories(
     aoc_lib_test
     PRIVATE ${CMAKE_SOURCE_DIR}/../../debug/lib
 )
+
 target_link_libraries(aoc_lib_test
     PRIVATE ${CMAKE_SOURCE_DIR}/../../debug/lib/libaoc.a
-    glib-2.0
-    curl
-    ${CHECK_LIBRARIES}
-    ${CHECKLIB_LIBRARIES}
-    ${PCRE2_LIBRARIES}
+    ${GLIB_LINK_LIBRARIES}
+    ${CURL_LINK_LIBRARIES}
+    ${CHECKLIB_LINK_LIBRARIES}
+    ${PCRE2_LINK_LIBRARIES}
     pthread
     m
 )
@@ -66,3 +69,12 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+message("GLIB_LINK_LIBRARIES = " ${GLIB_LINK_LIBRARIES})
+message("CURL_LINK_LIBRARIES = " ${CURL_LINK_LIBRARIES})
+message("CHECKLIB_LINK_LIBRARIES = " ${CHECKLIB_LINK_LIBRARIES})
+message("PCRE2_LINK_LIBRARIES = " ${PCRE2_LINK_LIBRARIES})
+
+message("GLIB_LIBRARIES = " ${GLIB_LIBRARIES})
+message("CURL_LIBRARIES = " ${CURL_LIBRARIES})
+message("CHECKLIB_LIBRARIES = " ${CHECKLIB_LIBRARIES})
+message("PCRE2_LIBRARIES = " ${PCRE2_LIBRARIES})
