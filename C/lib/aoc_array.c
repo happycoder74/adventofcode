@@ -2,7 +2,6 @@
 #include "aoc_string.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <corecrt.h>
 #include <inttypes.h>
 #include <math.h>
 #include <stddef.h>
