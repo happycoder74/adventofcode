@@ -22,5 +22,6 @@ AocArray *aoc_set_get_values(AocSet *set);
 
 void aoc_set_free(AocSet *set);
 int  aoc_set_add(AocSet *set, const void *value);
+bool aoc_set_in(AocSet *set, const void *value);
 
 #endif
