@@ -19,7 +19,7 @@ pkg_search_module(PCRE2 REQUIRED libpcre2-posix)
 find_library(
     AOC_LIB
     aoc
-    PATHS $ENV{HOME}/projects/adventofcode-c/C/debug/lib
+    PATHS ${CMAKE_SOURCE_DIR}/../../debug/lib
 )
 
 add_subdirectory(aoc_sets)
@@ -54,8 +54,13 @@ target_link_libraries(
     ${CHECKLIB_LDFLAGS}
     ${PCRE2_LDFLAGS}
 )
+
+target_link_directories(
+    aoc_lib_test
+    PRIVATE ${CMAKE_SOURCE_DIR}/../../debug/lib
+)
 target_link_libraries(aoc_lib_test
-    ${AOC_LIB}
+    aoc
     glib-2.0
     curl
     ${CHECK_LIBRARIES}
@@ -72,4 +77,3 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-message("CHECKLIB_LDFLAGS = " ${CHECKLIB_LDFLAGS})
