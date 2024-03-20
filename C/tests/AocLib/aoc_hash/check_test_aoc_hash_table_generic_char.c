@@ -5,9 +5,6 @@
 #include <stdlib.h>
 
 static AocHashTablePtr hash_table = NULL;
-static AocHashTablePtr hash_table2 = NULL;
-static int32_t        *keys = NULL;
-static int32_t        *values = NULL;
 
 static void aoc_hash_table_setup(void) {
     hash_table = aoc_hash_table_create_custom(0, NULL, NULL, free, AOC_CHAR);

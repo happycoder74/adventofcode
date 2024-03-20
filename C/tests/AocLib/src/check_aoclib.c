@@ -19,7 +19,7 @@ int main(void) {
     srunner_add_suite(runner, test_aoc_stack());
     srunner_add_suite(runner, test_aoc_regex());
 
-    srunner_run_all(runner, CK_NORMAL);
+    srunner_run_all(runner, CK_ENV);
 
     srunner_free(runner);
 
