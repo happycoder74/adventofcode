@@ -11,8 +11,10 @@ AocSet *aoc_set_new(AocSetType settype) {
     AocSet *result;
 
     result = (AocSet *)calloc(1, sizeof(AocSet));
-    result->settype = settype;
-
+    if (result) {
+        result->settype = settype;
+        result->set = aoc_hash_table_create(result->settype);
+    }
     return result;
 }
 
@@ -255,4 +257,8 @@ void set_print(AocSet *set) {
             exit(EXIT_FAILURE);
             break;
     }
+}
+
+bool aoc_set_in(AocSet *set, const void *value) {
+    return aoc_hash_table_contains(set->set, value);
 }
