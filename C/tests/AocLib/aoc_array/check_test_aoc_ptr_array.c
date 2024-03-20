@@ -86,6 +86,33 @@ START_TEST(test_ptr_array_remove_index) {
 }
 END_TEST
 
+START_TEST(test_ptr_array_pop_index) {
+    ck_assert_ptr_nonnull(array);
+    int    *val1 = (int *)malloc(sizeof(int));
+    int    *val2 = (int *)malloc(sizeof(int));
+    double *val3 = (double *)malloc(sizeof(double));
+    double  check_val = 2.5;
+
+    *val1 = 10;
+    *val2 = 20;
+    *val3 = check_val;
+
+    aoc_ptr_array_append(array, val1);
+    aoc_ptr_array_append(array, val2);
+    aoc_ptr_array_append(array, val3);
+
+    ck_assert(array->length == 3);
+    int *return_value = aoc_array_pop_index(array, 1);
+    ck_assert_msg(*return_value == 20, "Expected 20, got %d", *return_value);
+    ck_assert(array->length == 2);
+    ck_assert_int_eq(*(int *)aoc_ptr_array_index(array, 0), 10);
+    ck_assert_double_eq(*(double *)aoc_ptr_array_index(array, 1), check_val);
+
+    free(val1);
+    free(return_value);
+    free(val3);
+}
+
 TCase *test_case_ptr_array(void) {
     TCase *test_ptr_array = tcase_create("aoc_ptr_array");
     tcase_add_checked_fixture(test_ptr_array, aoc_ptr_array_setup, aoc_ptr_array_teardown);
@@ -95,6 +122,7 @@ TCase *test_case_ptr_array(void) {
     tcase_add_test(test_ptr_array, test_ptr_array_prepend_to_empty);
     tcase_add_test(test_ptr_array, test_ptr_array_index);
     tcase_add_test(test_ptr_array, test_ptr_array_remove_index);
+    tcase_add_test(test_ptr_array, test_ptr_array_pop_index);
 
     return test_ptr_array;
 }
