@@ -1,20 +1,18 @@
 import sys
-from common import timer, Puzzle
 from collections import deque
 
+from common import Puzzle, timer
 
-class Node():
+
+class Node:
     def __init__(self, state, parent, action):
         self.state = state
         self.parent = parent
         self.action = action
 
 
-class Trail():
-    def __init__(self,
-                 data: list = None,
-                 start: list = None,
-                 end: tuple = None):
+class Trail:
+    def __init__(self, data: list = None, start: list = None, end: tuple = None):
         self.height = len(data)
         self.width = len(data[0])
         self.start = start
@@ -29,7 +27,7 @@ class Trail():
             ("up", (row - 1, col)),
             ("down", (row + 1, col)),
             ("left", (row, col - 1)),
-            ("right", (row, col + 1))
+            ("right", (row, col + 1)),
         ]
 
         result = []
@@ -45,9 +43,7 @@ class Trail():
     def solve(self):
         # Initialize queue to just the starting position
         queue = deque()
-        queue.extend(
-            [Node(state=s, parent=None, action=None) for s in self.start]
-        )
+        queue.extend([Node(state=s, parent=None, action=None) for s in self.start])
 
         self.explored = set()
 
@@ -71,16 +67,12 @@ class Trail():
 
             self.explored.add(node.state)
             for action, state in self.neighbors(node.state):
-                if (
-                    not any(node.state == state for node in queue)
-                    and state not in self.explored
-                ):
+                if not any(node.state == state for node in queue) and state not in self.explored:
                     child = Node(state=state, parent=node, action=action)
                     queue.append(child)
 
     def print(self):
-        solution = (self.solution[1]
-                    if self.solution is not None else None)
+        solution = self.solution[1] if self.solution is not None else None
         print()
         for i, row in enumerate(self.contents):
             for j, col in enumerate(row):
@@ -105,9 +97,7 @@ class Day12(Puzzle, year=2022, day=12):
             if "E" in row:
                 self.end = (i, row.index("E"))
             return_data.append(
-                [ord('a') if c == 'S' else
-                 ord('z') if c == 'E' else
-                 ord(c) for c in row]
+                [ord("a") if c == "S" else ord("z") if c == "E" else ord(c) for c in row]
             )
         return return_data
 
@@ -116,6 +106,9 @@ class Day12(Puzzle, year=2022, day=12):
         """Solution for part 1"""
         trail = Trail(self.data, [self.start], self.end)
         trail.solve()
+
+        if trail.solution is None:
+            return None
         return len(trail.solution[1])
 
     @timer(part=2)
@@ -124,11 +117,13 @@ class Day12(Puzzle, year=2022, day=12):
         lowpoints = list()
         for i, row in enumerate(self.data):
             for j, col in enumerate(row):
-                if col == ord('a'):
+                if col == ord("a"):
                     lowpoints.append((i, j))
         trail = Trail(self.data, lowpoints, self.end)
         trail.solve()
 
+        if trail.solution is None:
+            return None
         return len(trail.solution[1])
 
 
