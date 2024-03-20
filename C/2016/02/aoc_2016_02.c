@@ -33,7 +33,7 @@ typedef struct {
 #define NOT_FOUND (-1)
 unsigned int command_get_index(char *commands, char command) {
     char needle[2];
-    sprintf(needle, "%c", command);
+    snprintf(needle, 2, "%c", command);
     const char *p = strstr(commands, needle);
     if (p) {
         return (unsigned int)(p - commands);

@@ -164,6 +164,13 @@ Point points_on_line(Line line) {
     return diff;
 }
 
+void point_move(Point *p, Point delta) {
+    if (p) {
+        p->x += delta.x;
+        p->y += delta.y;
+    }
+}
+
 int point_manhattan_distance(Point p0, Point p1) {
     return abs(p0.x - p1.x) + abs(p0.y - p1.y);
 }
@@ -177,8 +184,8 @@ void point_print(Point p) {
     return;
 }
 
-char *point_to_string(Point p, char *buf) {
-    sprintf(buf, "(%d, %d)", p.x, p.y);
+char *point_to_string(Point p, char *buf, unsigned bufsize) {
+    snprintf(buf, bufsize, "(%d, %d)", p.x, p.y);
     return buf;
 }
 

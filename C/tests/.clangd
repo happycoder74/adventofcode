@@ -1,9 +1,0 @@
-CompileFlags:
-  Add: [
-    "-Wall",
-    "-Wextra",
-    "-pedantic",
-    "--target=x86_64-pc-windows-gnu",
-    "-std=c99",
-    "-I/Local/msys64/mingw64/local/include"
-  ]

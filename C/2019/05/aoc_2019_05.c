@@ -11,7 +11,7 @@
 #include <string.h>
 
 AocArrayPtr clean_input(AocArrayPtr data) {
-    AocArrayPtr return_array = aoc_array_new(AOC_ARRAY_INT32, 2000);
+    AocArrayPtr return_array = aoc_array_new(AOC_INT32, 2000);
     char      **instructions = aoc_str_split(aoc_str_array_index(data, 0), ",", 0);
     int         opcode;
 
@@ -51,7 +51,7 @@ void *solve_part_2(AocData_t *data) {
     int         input_value = 5;
 
     IntCodeReturn_t *rv = intcode(instructions, &input_value);
-    int              return_value = aoc_int32_array_index(rv->return_buffer, rv->return_buffer->length - 1);
+    int return_value = aoc_int32_array_index(rv->return_buffer, rv->return_buffer->length - 1);
 
     aoc_int32_array_free(instructions);
     intcode_return_free(rv);

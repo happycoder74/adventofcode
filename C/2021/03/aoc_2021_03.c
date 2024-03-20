@@ -16,7 +16,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr bitfields;
     size_t      i, j, len;
 
-    bitfields = aoc_array_new(AOC_ARRAY_PTR, aoc_array_length(data));
+    bitfields = aoc_array_new(AOC_PTR, aoc_array_length(data));
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);

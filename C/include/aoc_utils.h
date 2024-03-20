@@ -29,7 +29,7 @@ Line   line_new(Point, Point);
 Point *point_new_m(int, int);
 Point  point_new(int, int);
 void   point_print(Point);
-char  *point_to_string(Point, char *);
+char  *point_to_string(Point, char *, unsigned);
 void   line_array_print(AocArrayPtr lines);
 int    line_length(Line);
 
@@ -40,7 +40,11 @@ int          point_equal(const void *, const void *);
 int          point_manhattan_distance(Point, Point);
 int          point_distance(Point, Point);
 bool         point_on_line(Point p, Line line);
+void         point_move(Point *p, Point delta);
 
+#ifdef MIN
+#undef MIN
+#endif
 #define MIN(_X_, _Y_) (((_X_) < (_Y_)) ? (_X_) : (_Y_))
 #ifdef MAX
 #undef MAX

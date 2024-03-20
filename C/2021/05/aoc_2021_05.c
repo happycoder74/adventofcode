@@ -1,11 +1,11 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <glib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     return return_data;
 }
 
-int mark_points(GHashTable *hashtable, Line line, int diagonal) {
+int mark_points(AocHashTable *hashtable, Line line, int diagonal) {
     Point  point;
     int    value;
     void  *old_value;
@@ -48,42 +48,47 @@ int mark_points(GHashTable *hashtable, Line line, int diagonal) {
         return 0;
     }
 
-    for (point = line.p0; (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy)); point.x += line.stepx, point.y += line.stepy) {
-        if (g_hash_table_lookup_extended(hashtable, &point, NULL, &old_value)) {
+    for (point = line.p0;
+         (point.x != (line.p1.x + line.stepx)) || (point.y != (line.p1.y + line.stepy));
+         point.x += line.stepx, point.y += line.stepy) {
+        if ((old_value = aoc_hash_table_lookup(hashtable, &point))) {
             count++;
             value = (int)(int64_t)(old_value) + 1;
         } else {
             value = 1;
         }
         key = point_new_m(point.x, point.y);
-        g_hash_table_insert(hashtable, key, (void *)(int64_t)(value));
+        aoc_hash_table_replace(hashtable, key, (void *)(int64_t)(value));
     }
 
     return count;
 }
 
+bool if_larger_than_1(const void *value) {
+    return (((int)(int64_t)value) > 1);
+}
+
 void *solve_problem(AocArrayPtr data, int diagonal) {
-    GHashTable    *hashtable;
-    Line           line;
-    GHashTableIter iter;
-    int            count;
-    void          *key, *value;
+    AocHashTable   *hashtable;
+    Line            line;
+    AocHashIterator iter;
+    int             count;
+    void           *key, *value;
 
-    hashtable = g_hash_table_new(point_hash, point_equal);
-
-    for (unsigned int i = 0; i < aoc_array_length(data); i++) {
-        line = aoc_line_array_index(data, i);
-        mark_points(hashtable, line, diagonal);
-    }
+    hashtable = aoc_hash_table_create_custom(100, NULL, NULL, NULL, AOC_POINT);
+    /* hashtable = aoc_hash_table_create(AOC_POINT); */
 
     count = 0;
-    g_hash_table_iter_init(&iter, hashtable);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        if ((int)(int64_t)(value) > 1)
-            count++;
+    for (unsigned int i = 0; i < aoc_array_length(data); i++) {
+        line = aoc_line_array_index(data, i);
+        count += mark_points(hashtable, line, diagonal);
     }
 
-    g_hash_table_unref(hashtable);
+    AocArrayPtr values = aoc_hash_table_get_values_if(hashtable, if_larger_than_1);
+    count = values->length;
+    aoc_array_free(values, 0);
+
+    aoc_hash_table_destroy(&hashtable);
 
     return strdup_printf("%d", count);
 }

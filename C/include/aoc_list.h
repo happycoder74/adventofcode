@@ -25,5 +25,4 @@ AocSList *aoc_slist_reverse(AocSList *);
  */
 AocSList *aoc_slist_append(AocSList *, void *);
 
-
 #endif // !__AOC_LIST_H__
