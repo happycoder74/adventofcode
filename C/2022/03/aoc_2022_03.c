@@ -3,6 +3,7 @@
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_types.h"
 #include "aoc_utils.h"
 #include <ctype.h>
 #include <stdint.h>
@@ -40,7 +41,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         aoc_ptr_array_append(rucksacks, packs);
     }
 
-    aoc_array_free(data, data->free_segments);
+    aoc_str_array_free(data);
     return rucksacks;
 }
 
@@ -75,10 +76,15 @@ void *solve_part_2(AocData_t *data) {
         char **packs = aoc_ptr_array_index(aoc_data_get(data), i);
         char  *pack = str_join("", packs, 2);
         aoc_str_array_append(group, pack);
+        free(pack);
         if ((((i + 1) % 3) == 0) && (i > 0)) {
             aoc_ptr_array_append(groups, group);
             group = aoc_str_array_new();
         }
+    }
+
+    if (group->length == 0) {
+        aoc_str_array_free(group);
     }
 
     int prio_sum = 0;
@@ -111,7 +117,7 @@ void *solve_part_2(AocData_t *data) {
     }
     for (uint32_t group = 0; group < aoc_array_length(groups); group++) {
         AocArrayPtr group_ptr = aoc_ptr_array_index(groups, group);
-        aoc_array_free(group_ptr, group_ptr->free_segments);
+        aoc_str_array_free(group_ptr);
     }
     aoc_array_free(groups, 0);
     return strdup_printf("%d", prio_sum);
@@ -137,6 +143,12 @@ int main(int argc, char **argv) {
     aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
+    AocArrayPtr d = data->data;
+    for (unsigned i = 0; i < d->length; i++) {
+        char **packs = (char **)aoc_ptr_array_index(d, i);
+        free(packs[0]);
+        free(packs[1]);
+    }
     aoc_data_free(data);
 
     return aoc_mem_gc();
