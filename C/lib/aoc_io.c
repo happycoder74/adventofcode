@@ -81,7 +81,6 @@ AocSList *get_input_list(char *filename, int year, int day) {
     AocSList *data = NULL;
     char     *line = NULL;
     size_t    line_length = 0;
-    char     *data_line;
     char     *path;
     char     *file = NULL;
 
@@ -105,11 +104,12 @@ AocSList *get_input_list(char *filename, int year, int day) {
         return NULL;
     }
 
+    char *to_trim = NULL;
     while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = str_trim(strdup(line));
-        data = aoc_slist_prepend(data, data_line);
+        to_trim = line;
+        aoc_slist_prepend(data, strdup(str_trim(to_trim)));
     }
-
+    free(to_trim);
     free(file);
     free(path);
 
@@ -119,11 +119,11 @@ AocSList *get_input_list(char *filename, int year, int day) {
 AocArrayPtr get_input_new(char *filename, int year, int day) {
     FILE       *fp;
     AocArrayPtr data;
-    char        line[10000];
-    char       *data_line;
+    char       *line;
     char       *path;
     char       *file = NULL;
     char       *data_location;
+    size_t      line_length = 0;
 
     data_location = getenv("AOC_DATA_LOCATION");
     if ((data_location)) {
@@ -145,9 +145,14 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     data = aoc_str_array_new();
-    while (fgets(line, 10000, fp)) {
-        data_line = str_trim(strdup(line));
-        aoc_str_array_append(data, data_line);
+    char *to_trim = NULL;
+    while ((getline(&line, &line_length, fp)) != -1) {
+        to_trim = line;
+        aoc_str_array_append(data, str_trim(to_trim));
+    }
+    free(to_trim);
+    if ((line != NULL) && (line != to_trim)) {
+        free(line);
     }
 
     if (file) {
@@ -162,7 +167,6 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     AocArrayPtr data;
     char       *line = NULL;
     size_t      line_length = 0;
-    char       *data_line;
     char       *path;
     char       *file = NULL;
     char        wd[255];
@@ -200,16 +204,16 @@ AocArrayPtr get_input(char *filename, int year, int day) {
 
     data = aoc_str_array_new();
 
+    char *to_trim = NULL;
     while ((getline(&line, &line_length, fp)) != -1) {
-        char *to_trim = strdup(line);
-        data_line = strdup(str_trim(to_trim));
-        aoc_str_array_append(data, data_line);
-        free(to_trim);
+        to_trim = line;
+        aoc_str_array_append(data, str_trim(to_trim));
+    }
+    free(to_trim);
+    if ((line != NULL) && (line != to_trim)) {
+        free(line);
     }
 
-#ifdef __MINGW32__
-    free(line);
-#endif
     fclose(fp);
     if (file != filename) {
         free(file);
@@ -274,5 +278,4 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
         }
     }
 }
-
 #endif
