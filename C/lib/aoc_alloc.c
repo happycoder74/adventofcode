@@ -1,4 +1,5 @@
 #ifdef MEMDEBUG
+#define _GNU_SOURCE
 
 #include <dlfcn.h>
 #include <inttypes.h>
@@ -68,7 +69,6 @@ void init_mem_table(void) {
 }
 
 void *malloc(size_t size) {
-    fprintf(stderr, "Calling malloc\n");
     if (!sys_malloc) {
         sys_malloc = (malloc_function)dlsym(RTLD_NEXT, "malloc");
     }
@@ -127,7 +127,7 @@ void *aoc_malloc_internal(size_t size) {
     void *addr = malloc(size);
 
 #ifdef DEBUG_VERBOSE
-    strncpy(record->function, function, 100);
+    strncpy(record->function, function, 99);
     record->line = line;
 #endif
     record->size = size;
@@ -170,7 +170,7 @@ void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
     void      *addr = calloc(n_elements, element_size);
 
 #ifdef DEBUG_VERBOSE
-    strncpy(record->function, function, 100);
+    strncpy(record->function, function, 99);
     record->line = line;
 #endif
     record->size = n_elements * element_size;
@@ -301,8 +301,6 @@ uint64_t aoc_mem_gc(void) {
     mem_table = NULL;
     return size;
 }
-
-#endif
 
 static AocMemTable *aoc_mem_table_create_size(size_t new_size) {
     AocMemTable *table = (AocMemTable *)sys_calloc(1, sizeof(AocMemTable));
@@ -544,3 +542,4 @@ static void aoc_mem_table_foreach(AocMemTable *table, AocMemTableFunc func, void
         }
     }
 }
+#endif

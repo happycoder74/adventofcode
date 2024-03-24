@@ -1,3 +1,4 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_list.h"
 #include "aoc_string.h"
