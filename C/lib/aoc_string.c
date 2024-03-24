@@ -214,7 +214,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
 
     char **return_value = (char **)aoc_array_get_data(return_split);
 
-    aoc_array_free(return_split, 0);
+    free(return_split);
     return return_value;
 }
 
