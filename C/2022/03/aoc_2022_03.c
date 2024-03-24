@@ -25,15 +25,15 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         char *row = aoc_str_array_index(data, i);
         row = str_trim(row);
         uint16_t pack_length = strlen(row) / 2;
-        char    *pack1 = (char *)aoc_calloc(pack_length + 1, sizeof(char));
-        char    *pack2 = (char *)aoc_calloc(pack_length + 1, sizeof(char));
+        char    *pack1 = (char *)calloc(pack_length + 1, sizeof(char));
+        char    *pack2 = (char *)calloc(pack_length + 1, sizeof(char));
 
         memcpy(pack1, row, pack_length * sizeof(char));
         pack1[pack_length] = '\0';
         memcpy(pack2, row + pack_length, pack_length * sizeof(char));
         pack2[pack_length] = '\0';
 
-        char **packs = (char **)aoc_calloc(2, sizeof(char *));
+        char **packs = (char **)calloc(2, sizeof(char *));
 
         packs[0] = pack1;
         packs[1] = pack2;

@@ -1,4 +1,5 @@
 #include "aoc_hash.h"
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_types.h"
 #include <limits.h>
@@ -446,7 +447,7 @@ size_t aoc_hash_table_size(AocHashTablePtr hash_table) {
 }
 
 size_t aoc_hash_table_count(AocHashTablePtr hash_table) {
-    return hash_table->count;
+    return hash_table ? hash_table->count : 0;
 }
 
 bool aoc_hash_table_add(AocHashTablePtr ht, const void *key) {
