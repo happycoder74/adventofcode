@@ -1,12 +1,13 @@
 #ifndef __AOC_ALLOC_H_
 #define __AOC_ALLOC_H_
 
+#ifdef MEMDEBUG
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #define __FUNCTION__ __func__
-#ifdef MEMDEBUG
 #ifdef DEBUG_VERBOSE
 #define malloc(size_) aoc_malloc_internal(size_, __FUNCTION__, __FILENAME__, __LINE__)
 #define calloc(n_elem_, size_)                                                                     \

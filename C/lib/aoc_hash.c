@@ -5,7 +5,6 @@
 #include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -213,7 +212,6 @@ void aoc_hash_table_destroy(AocHashTablePtr *hashtable) {
 
 static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, const void *obj,
                                           bool replace) {
-    bool value_exists = false;
     if (!ht) {
         return false;
     }
@@ -642,7 +640,6 @@ AocArrayPtr aoc_hash_table_get_values_if(AocHashTablePtr ht, bool(cmp_func)(cons
 }
 
 void aoc_hash_table_foreach(AocHashTablePtr hash_table, AocHashTableFunc func, void *user_data) {
-    unsigned key_idx = 0;
     for (unsigned idx = 0; idx < hash_table->size; idx++) {
         entry *e = hash_table->elements[idx];
         if (e != NULL) {
@@ -656,11 +653,9 @@ void aoc_hash_table_foreach(AocHashTablePtr hash_table, AocHashTableFunc func, v
 
 void aoc_hash_table_foreach_remove(AocHashTablePtr hash_table, AocHashTableRFunc func,
                                    void *user_data) {
-    unsigned key_idx = 0;
 
     for (unsigned idx = 0; idx < hash_table->size; idx++) {
         entry *e = hash_table->elements[idx];
-        entry *prev = NULL;
         if (e != NULL) {
             do {
                 entry *next = e->next;
