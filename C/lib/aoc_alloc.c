@@ -345,7 +345,6 @@ void aoc_mem_table_destroy(AocMemTable **table) {
 }
 
 static int aoc_mem_table_insert(AocMemTable *ht, const void *key, const void *obj) {
-    int value_exists = 0;
     if (!ht) {
         return 0;
     }
@@ -531,7 +530,6 @@ static void aoc_mem_table_delete(AocMemTable *table, const void *key) {
 }
 
 static void aoc_mem_table_foreach(AocMemTable *table, AocMemTableFunc func, void *user_data) {
-    unsigned key_idx = 0;
     for (unsigned idx = 0; idx < table->size; idx++) {
         MemEntry *e = table->elements[idx];
         if (e != NULL) {
