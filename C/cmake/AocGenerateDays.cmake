@@ -8,6 +8,8 @@ function (AOC_GENERATE YEAR DAY)
         aoc
         glib-2.0
         m
+        $<$<CONFIG:MEMDEBUG>:dl>
+        $<$<CONFIG:DEBUGVERBOSE>:dl>
         )
     if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
         target_link_libraries(aoc_${YEAR}_${DAY}
