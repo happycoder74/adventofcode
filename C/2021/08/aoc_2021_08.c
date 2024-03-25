@@ -157,7 +157,6 @@ AocArrayPtr decode(AocHashTable **keys, char *signal) {
     AocArrayPtr   signal_sets;
     AocHashTable *signal_set;
     AocHashTable *set;
-    char          letter_key;
 
     parts = aoc_str_split(str_trim(signal), " ", 0);
     signal_sets = aoc_ptr_array_new();
@@ -167,8 +166,7 @@ AocArrayPtr decode(AocHashTable **keys, char *signal) {
     while (parts[j] != NULL) {
         set = aoc_hash_table_create(AOC_CHAR);
         for (size_t k = 0; k < strlen(parts[j]); k++) {
-            letter_key = parts[j][k];
-            aoc_hash_table_add(set, &letter_key);
+            aoc_hash_table_add(set, &parts[j][k]);
         }
         aoc_ptr_array_append(signal_sets, set);
         j++;
