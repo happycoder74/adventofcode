@@ -206,10 +206,11 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    char    **split_line;
-    int       array_sum;
-    uint32_t *decoded;
-    uint32_t  int_message = 0;
+    char         **split_line;
+    int            array_sum;
+    AocHashTable **decoded;
+    AocArrayPtr    message;
+    int            message_sum;
 
     array_sum = 0;
     for (size_t i = 0; i < aoc_data_length(data); i++) {
@@ -217,7 +218,7 @@ void *solve_part_2(AocData_t *data) {
         decoded = decode_signal(str_trim(split_line[0]));
         int_message = decode(decoded, str_trim(split_line[1]));
 
-        array_sum += int_message;
+        array_sum += message_sum;
         free(split_line[0]);
         free(split_line[1]);
         free(decoded);
