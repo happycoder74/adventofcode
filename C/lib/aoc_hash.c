@@ -571,7 +571,21 @@ bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value) {
 }
 
 bool aoc_hash_table_contains(AocHashTablePtr ht, const void *key) {
-    return (aoc_hash_table_lookup(ht, key) != NULL);
+    size_t index = aoc_hash_table_index(ht, key);
+
+    if (ht->elements[index] == NULL) {
+        return false;
+    }
+
+    entry *e = ht->elements[index];
+    while (e) {
+        if (ht->key_equal(e->key, key)) {
+            return true;
+        }
+        e = e->next;
+    }
+
+    return false;
 }
 
 bool aoc_hash_table_lookup_extended(AocHashTablePtr ht, const void *key, void **orig_key,
