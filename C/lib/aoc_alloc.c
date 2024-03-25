@@ -56,6 +56,9 @@ void init_mem_table(void) {
     if (mem_table) {
         return;
     }
+    if (!sys_malloc) {
+        sys_malloc = (malloc_function)dlsym(RTLD_NEXT, "malloc");
+    }
     if (!sys_calloc) {
         sys_calloc = (calloc_function)dlsym(RTLD_NEXT, "calloc");
     }
@@ -330,11 +333,16 @@ void aoc_mem_table_destroy(AocMemTable **table) {
     if (mt->elements) {
         for (unsigned i = 0; i < mt->size; i++) {
             MemEntry *e = mt->elements[i];
+            MemEntry *tmp = NULL;
             if (e) {
                 do {
+                    if (e->object != e->key) {
+                        sys_free(e->object);
+                    }
                     sys_free(e->key);
-                    sys_free(e->object);
+                    tmp = e;
                     e = e->next;
+                    free(tmp);
                 } while (e != NULL);
             }
         }
