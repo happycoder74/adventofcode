@@ -142,21 +142,24 @@ uint32_t *decode_signal(char *signal) {
     return decoded;
 }
 
-uint32_t decode(uint32_t *keys, char *signal) {
-    uint32_t int_message = 0;
-    uint32_t signal_set;
-    uint32_t set;
-    uint32_t signal_sets[10] = {0};
+AocArrayPtr decode(AocHashTable **keys, char *signal) {
+    AocArrayPtr   message;
+    char        **parts;
+    AocArrayPtr   signal_sets;
+    AocHashTable *signal_set;
+    AocHashTable *set;
+
+    parts = aoc_str_split(str_trim(signal), " ", 0);
+    signal_sets = aoc_ptr_array_new();
+    message = aoc_int32_array_new();
 
     size_t j = 0;
-    char  *pos = NULL;
-    char  *prev = signal;
-    while ((pos = strchr(signal + (size_t)pos, ' ')) != NULL) {
-        *pos = '\0';
-        pos = pos - (uintptr_t)signal + 1;
-        set = string_to_bitfield(prev);
-        signal_sets[j] = set;
-        prev = signal + (size_t)pos;
+    while (parts[j] != NULL) {
+        set = aoc_hash_table_create(AOC_CHAR);
+        for (size_t k = 0; k < strlen(parts[j]); k++) {
+            aoc_hash_table_add(set, &parts[j][k]);
+        }
+        aoc_ptr_array_append(signal_sets, set);
         j++;
     }
     set = string_to_bitfield(prev);
