@@ -24,7 +24,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     }
 
     // Note we do not free split line here, since the memory is used in the new array.
-
+    aoc_str_array_free(data);
     return result;
 }
 
@@ -211,13 +211,12 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     char         **split_line;
-    AocArrayPtr    output;
     int            array_sum;
     AocHashTable **decoded;
     AocArrayPtr    message;
     int            message_sum;
 
-    output = aoc_int32_array_new();
+    array_sum = 0;
     for (size_t i = 0; i < aoc_data_length(data); i++) {
         split_line = (char **)aoc_ptr_array_index(aoc_data_get(data), i);
         decoded = decode_signal(str_trim(split_line[0]));
@@ -227,13 +226,10 @@ void *solve_part_2(AocData_t *data) {
             message_sum += (int)pow((double)10, (double)(3 - j)) * aoc_int_array_index(message, j);
         }
 
-        aoc_int_array_append(output, message_sum);
+        array_sum += message_sum;
+        free(split_line[0]);
+        free(split_line[1]);
         free(decoded);
-    }
-
-    array_sum = 0;
-    for (size_t i = 0; i < aoc_array_length(output); i++) {
-        array_sum += aoc_int_array_index(output, i);
     }
 
     return strdup_printf("%d", array_sum);
