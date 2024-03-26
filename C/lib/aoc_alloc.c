@@ -212,7 +212,12 @@ void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, con
 #else
 void *aoc_realloc_internal(void *ptr, size_t new_size) {
 #endif
-    MemRecord *record = aoc_mem_table_pop(mem_table, ptr);
+    MemRecord *record = NULL;
+    if (ptr) {
+        record = aoc_mem_table_pop(mem_table, ptr);
+    } else {
+        record = (MemRecord *)sys_malloc(sizeof(MemRecord));
+    }
 #ifdef DEBUG_VERBOSE
     strncpy(record->function, function, 99);
     record->line = line;
