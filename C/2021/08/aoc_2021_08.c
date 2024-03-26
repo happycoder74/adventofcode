@@ -16,7 +16,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     size_t      i;
     char      **split_line;
 
-    result = aoc_ptr_array_new();
+    result = aoc_array_new(AOC_PTR, data->length);
     for (i = 0; i < aoc_array_length(data); i++) {
         split_line = aoc_str_split(aoc_str_array_index(data, i), "|", 0);
         aoc_ptr_array_append(result, split_line);
@@ -55,7 +55,7 @@ static uint32_t string_to_bitfield(char *str) {
 
 uint32_t *decode_signal(char *signal) {
     int         signal_set_key[10] = {0};
-    AocArrayPtr signal_sets;
+    uint32_t   *signal_sets;
     char      **parts;
     uint32_t    set;
     AocArrayPtr signal_parts;
@@ -65,7 +65,6 @@ uint32_t *decode_signal(char *signal) {
     signal_set_key[4] = 2;
     signal_set_key[8] = 9;
 
-    signal_sets = aoc_uint32_array_new();
     signal_parts = aoc_str_array_new();
     parts = aoc_str_split(signal, " ", 0);
     size_t j = 0;
@@ -74,30 +73,28 @@ uint32_t *decode_signal(char *signal) {
         j++;
     }
 
+    signal_sets = (uint32_t *)calloc(signal_parts->length, sizeof(uint32_t));
     aoc_str_array_sort(signal_parts, signal_sort);
 
     for (j = 0; j < aoc_array_length(signal_parts); j++) {
         char *part = aoc_str_array_index(signal_parts, j);
         set = string_to_bitfield(part);
-        aoc_uint32_array_append(signal_sets, set);
+        signal_sets[j] = set;
     }
-    for (size_t i = 0; i < aoc_array_length(signal_sets); i++) {
-        set = aoc_uint32_array_index(signal_sets, i);
+    for (size_t i = 0; i < aoc_array_length(signal_parts); i++) {
+        set = signal_sets[i];
         if (count_set_bits(set) == 5) {
-            if (count_set_bits(set & aoc_uint32_array_index(signal_sets, signal_set_key[1])) == 2) {
+            if (count_set_bits(set & signal_sets[signal_set_key[1]]) == 2) {
                 signal_set_key[3] = i;
-            } else if (count_set_bits(
-                           set & aoc_uint32_array_index(signal_sets, signal_set_key[4])) == 2) {
+            } else if (count_set_bits(set & signal_sets[signal_set_key[4]]) == 2) {
                 signal_set_key[2] = i;
             } else {
                 signal_set_key[5] = i;
             }
         } else if (count_set_bits(set) == 6) {
-            if (count_set_bits(
-                    set & (set ^ aoc_uint32_array_index(signal_sets, signal_set_key[4]))) == 2) {
+            if (count_set_bits(set & (set ^ signal_sets[signal_set_key[4]])) == 2) {
                 signal_set_key[9] = i;
-            } else if (count_set_bits(set & (set ^ aoc_uint32_array_index(
-                                                       signal_sets, signal_set_key[5]))) == 2) {
+            } else if (count_set_bits(set & (set ^ signal_sets[signal_set_key[5]])) == 2) {
                 signal_set_key[0] = i;
             } else {
                 signal_set_key[6] = i;
@@ -107,17 +104,18 @@ uint32_t *decode_signal(char *signal) {
 
     uint32_t *decoded = (uint32_t *)calloc(10, sizeof(uint32_t));
     for (size_t hkey = 0; hkey < 10; hkey++) {
-        decoded[hkey] = aoc_uint32_array_index(signal_sets, signal_set_key[hkey]);
+        decoded[hkey] = signal_sets[signal_set_key[hkey]];
     }
 
-    aoc_array_free(signal_sets, signal_sets->free_segments);
+    free(signal_sets);
     aoc_str_array_free(signal_parts);
     aoc_str_freev(parts);
 
     return decoded;
 }
 
-AocArrayPtr decode(uint32_t *keys, char *signal) {
+uint32_t decode(uint32_t *keys, char *signal) {
+    uint32_t    int_message = 0;
     AocArrayPtr message;
     char      **parts;
     uint32_t    signal_sets[10];
@@ -133,6 +131,8 @@ AocArrayPtr decode(uint32_t *keys, char *signal) {
         signal_sets[j] = set;
         j++;
     }
+
+    uint32_t multiplier = 1000;
     for (size_t i = 0; i < j; i++) {
         // This is the decoding loop, where the signal is compared to the keys in the
         // decoded list of hash_tables. Again not really sure this is the best way to do this.
@@ -140,6 +140,8 @@ AocArrayPtr decode(uint32_t *keys, char *signal) {
         for (size_t j = 0; j < 10; j++) {
             set = keys[j];
             if (set == signal_set) {
+                int_message += multiplier * j;
+                multiplier /= 10;
                 aoc_int32_array_append(message, j);
             }
         }
@@ -147,7 +149,7 @@ AocArrayPtr decode(uint32_t *keys, char *signal) {
 
     aoc_str_freev(parts);
 
-    return message;
+    return int_message;
 }
 
 void *solve_part_1(AocData_t *data) {
@@ -173,27 +175,22 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    char      **split_line;
-    int         array_sum;
-    uint32_t   *decoded;
-    AocArrayPtr message;
-    int         message_sum;
+    char    **split_line;
+    int       array_sum;
+    uint32_t *decoded;
+    uint32_t  int_message = 0;
+    int       message_sum;
 
     array_sum = 0;
     for (size_t i = 0; i < aoc_data_length(data); i++) {
         split_line = (char **)aoc_ptr_array_index(aoc_data_get(data), i);
         decoded = decode_signal(str_trim(split_line[0]));
-        message = decode(decoded, str_trim(split_line[1]));
-        message_sum = 0;
-        for (size_t j = 0; j < aoc_array_length(message); j++) {
-            message_sum += (int)pow((double)10, (double)(3 - j)) * aoc_int_array_index(message, j);
-        }
+        int_message = decode(decoded, str_trim(split_line[1]));
 
-        array_sum += message_sum;
+        array_sum += int_message;
         free(split_line[0]);
         free(split_line[1]);
         free(decoded);
-        aoc_int32_array_free(message);
     }
 
     return strdup_printf("%d", array_sum);
