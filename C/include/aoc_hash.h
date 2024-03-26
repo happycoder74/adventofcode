@@ -57,6 +57,7 @@ AocArrayPtr aoc_hash_table_get_values(AocHashTablePtr hash_table);
 AocArrayPtr aoc_hash_table_get_values_if(AocHashTablePtr hash_table, bool(cmp_func)(const void *));
 
 void aoc_hash_table_iter_init(AocHashIterator *iter, AocHashTablePtr hash_table);
+void aoc_hash_table_iter_destroy(AocHashIterator *iter);
 bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value);
 
 #endif /* AOC_HASH_H */
