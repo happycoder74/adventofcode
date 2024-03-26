@@ -59,7 +59,7 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
     }
 
     if (result) {
-        aoc_free(result);
+        free(result);
     }
 }
 #endif
@@ -126,7 +126,7 @@ void timer_func_bench(int part, void *(func)(AocData_t *), AocData_t *aocdata, i
     }
 
     if (result) {
-        aoc_free(result);
+        free(result);
     }
 }
 
@@ -148,6 +148,6 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
     }
 
     if (result)
-        aoc_free(result);
+        free(result);
 }
 #endif

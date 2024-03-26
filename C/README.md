@@ -35,9 +35,10 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
 |  2  | &#11088;&#11088; | 0.004 ms      | 0.027 ms      |
 |  3  | &#11088;&#11088; |               |               |
-|  4  |                  |               |               |
+|  4  | &#11088;&#11088; |               |               |
 |  5  |                  |               |               |
 |  6  | &#11088;&#11088; | 0.371 ms      | 0.678 ms      |
+| 12  | &#11088          |               |               |
 
 ## 2021:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |

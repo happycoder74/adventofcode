@@ -98,6 +98,9 @@ AocArrayPtr aoc_set_get_values(AocSet *set) {
             case AOC_UINT64:
                 aoc_uint64_array_append(return_array, *(uint64_t *)key);
                 break;
+            case AOC_CHAR:
+                aoc_char_array_append(return_array, *(char *)key);
+                break;
             default:
                 fprintf(stderr, "Not yet implemented");
                 break;

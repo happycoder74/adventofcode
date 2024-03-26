@@ -26,6 +26,7 @@ AocArrayPtr clean_data(AocArrayPtr data) {
         val = atoi(aoc_str_array_index(data, i));
         aoc_int32_array_append(return_data, val);
     }
+    aoc_str_array_free(data);
     return return_data;
 }
 

@@ -132,7 +132,7 @@ int str_startswith(char *str, char *start_str) {
 
     sstr = substr(str, 0, (int)strlen(start_str));
     result = !strcmp(start_str, sstr);
-    aoc_free(sstr);
+    free(sstr);
     return result;
 }
 
@@ -142,7 +142,7 @@ int str_endswith(char *str, char *end_str) {
 
     sstr = substr(str, (int)-strlen(end_str), (int)strlen(str));
     result = !strcmp(end_str, sstr);
-    aoc_free(sstr);
+    free(sstr);
     return result;
 }
 
@@ -213,6 +213,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
 
     char **return_value = (char **)aoc_array_get_data(return_split);
 
+    free(return_split);
     return return_value;
 }
 
