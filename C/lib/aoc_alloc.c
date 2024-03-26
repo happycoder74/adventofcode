@@ -273,11 +273,14 @@ void aoc_free_internal(void *ptr) {
 
 static void report(void *key, void *value, void *data) {
     MemRecord *record = (MemRecord *)value;
-    fprintf(stderr, "Address: %p (size: %u)", key, (unsigned)record->size);
+    uint32_t  *counter = (uint32_t *)data;
+    fprintf(stderr, "[%3d]: Address: %p (size: %u)", *counter, key, (unsigned)record->size);
 #ifdef DEBUG_VERBOSE
     fprintf(stderr, " from %s:%d", record->function, record->line);
 #endif
     fprintf(stderr, "\n");
+
+    *counter += 1;
 }
 /*
  * aoc_mem_gc:
@@ -297,7 +300,7 @@ uint64_t        aoc_mem_gc(void) {
         fprintf(stderr, "%" PRIu64 " elements remaining\n", size);
     }
 
-    aoc_mem_table_foreach(mem_table, report, NULL);
+    aoc_mem_table_foreach(mem_table, report, &counter);
     fflush(stderr);
     /* g_hash_table_foreach_remove(mem_table, gc_free, NULL); */
     aoc_mem_table_destroy(&mem_table);
