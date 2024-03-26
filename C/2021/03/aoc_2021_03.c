@@ -21,13 +21,14 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
         len = strlen(line);
-        AocArrayPtr bitfield = aoc_int_array_new();
+        AocArrayPtr bitfield = aoc_int32_array_new();
         for (j = 0; j < len; j++) {
             int32_t line_digit = line[j] - '0';
-            aoc_int_array_append(bitfield, line_digit);
+            aoc_int32_array_append(bitfield, line_digit);
         }
         aoc_ptr_array_append(bitfields, bitfield);
     }
+    aoc_str_array_free(data);
     return bitfields;
 }
 
@@ -91,10 +92,10 @@ void *solve_part_1(AocData_t *data) {
         count = 0;
         for (i = 0; i < aoc_data_length(data); i++) {
             bitfield = aoc_ptr_array_index(aoc_data_get(data), i);
-            count += aoc_int_array_index(bitfield, j);
+            count += aoc_int32_array_index(bitfield, j);
         }
         int value = (2 * count / aoc_data_length(data) >= 1);
-        aoc_int_array_append(digits, value);
+        aoc_int32_array_append(digits, value);
     }
 
     gamma_rate = 0;
@@ -104,6 +105,7 @@ void *solve_part_1(AocData_t *data) {
     }
 
     epsilon_rate = gamma_rate ^ ((int)pow(2, aoc_array_length(bitfield)) - 1);
+    aoc_int32_array_free(digits);
     return strdup_printf("%d", gamma_rate * epsilon_rate);
 }
 
@@ -124,6 +126,8 @@ void *solve_part_2(AocData_t *data) {
     AocArrayPtr bitfield;
     AocArrayPtr oxygen_generator = NULL;
     AocArrayPtr co2_scrubber = NULL;
+    AocArrayPtr og_tmp = NULL;
+    AocArrayPtr co2s_tmp = NULL;
 
     bitfield = aoc_ptr_array_index(aoc_data_get(data), 0);
 
@@ -139,19 +143,24 @@ void *solve_part_2(AocData_t *data) {
             oxygen_generator = reduce(aoc_data_get(data), value, j);
             co2_scrubber = reduce(aoc_data_get(data), !value, j);
         } else {
-            // Oxy generator:
             if (aoc_array_length(oxygen_generator) > 1) {
                 value = common_value(oxygen_generator, j, 1);
-                oxygen_generator = reduce(oxygen_generator, value, j);
+                og_tmp = reduce(oxygen_generator, value, j);
+                aoc_array_free(oxygen_generator, 0);
+                oxygen_generator = og_tmp;
             }
             if (aoc_array_length(co2_scrubber) > 1) {
                 value = common_value(co2_scrubber, j, 0);
-                co2_scrubber = reduce(co2_scrubber, value, j);
+                co2s_tmp = reduce(co2_scrubber, value, j);
+                aoc_array_free(co2_scrubber, 0);
+                co2_scrubber = co2s_tmp;
             }
         }
     }
     oxygen_generator_value = bitfield_sum(aoc_ptr_array_index(oxygen_generator, 0));
     co2_scrubber_value = bitfield_sum(aoc_ptr_array_index(co2_scrubber, 0));
+    aoc_array_free(co2_scrubber, 0);
+    aoc_array_free(oxygen_generator, 0);
 
     return strdup_printf("%d", oxygen_generator_value * co2_scrubber_value);
 }
@@ -175,6 +184,11 @@ int main(int argc, char **argv) {
     aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
+    for (unsigned i = 0; i < data->data->length; i++) {
+        AocArrayPtr arr = aoc_array_index(data->data, i);
+        aoc_array_free(arr, arr->free_segments);
+    }
+    data->data->free_segments = 0;
     aoc_data_free(data);
 
     return aoc_mem_gc();
