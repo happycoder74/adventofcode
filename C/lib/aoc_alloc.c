@@ -152,8 +152,7 @@ void *aoc_malloc_internal(size_t size) {
 
 /*
  * aoc_calloc_internal:
- * @n_elements: pointer to memory reallocate
- * @new_size: new size to request
+ * @n_elements: number of elements to allocate
  * @element_size: size of each element
  * @function: name of calling function
  * @file: filename of file where call is made
@@ -196,7 +195,7 @@ void *aoc_calloc_internal(size_t n_elements, size_t element_size) {
 
 /*
  * aoc_realloc_internal:
- * @ptr: pointer to memory reallocate
+ * @ptr: pointer to memory to reallocate. If ptr == NULL then behave like malloc(new_size).
  * @new_size: new size to request
  * @function: name of calling function
  * @file: filename of file where call is made
@@ -213,7 +212,12 @@ void *aoc_realloc_internal(void *ptr, size_t new_size, const char *function, con
 #else
 void *aoc_realloc_internal(void *ptr, size_t new_size) {
 #endif
-    MemRecord *record = aoc_mem_table_pop(mem_table, ptr);
+    MemRecord *record = NULL;
+    if (ptr) {
+        record = aoc_mem_table_pop(mem_table, ptr);
+    } else {
+        record = (MemRecord *)sys_malloc(sizeof(MemRecord));
+    }
 #ifdef DEBUG_VERBOSE
     strncpy(record->function, function, 99);
     record->line = line;
