@@ -232,6 +232,12 @@ static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, c
 
     size_t index = aoc_hash_table_index(ht, key);
 
+    if (ht->key_free_func && key_exists) {
+        ht->key_free_func(e->key);
+    }
+    if (ht->value_free_func && key_exists) {
+        ht->value_free_func(e->object);
+    }
     e->object = (void *)obj;
     e->key = (void *)key;
     if (!key_exists) {
@@ -248,6 +254,7 @@ static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, c
 /****
  *
  * aoc_hash_table_insert:
+ * A
  *
  * @ht: pointer to a AocHashTable
  * @key: address to key to insert
@@ -513,6 +520,11 @@ inline static uint32_t point_hash(const void *key) {
 
 inline static uint32_t char_hash(const void *key) {
     return aoc_hash(AOC_CHAR, key);
+}
+
+void aoc_hash_table_iter_destroy(AocHashIterator *iter) {
+    free(iter->keys);
+    free(iter->values);
 }
 
 void aoc_hash_table_iter_init(AocHashIterator *iter, AocHashTablePtr hash_table) {
