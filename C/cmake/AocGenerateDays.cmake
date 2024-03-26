@@ -8,9 +8,13 @@ function (AOC_GENERATE YEAR DAY)
         aoc
         glib-2.0
         m
-        $<$<CONFIG:MEMDEBUG>:dl>
-        $<$<CONFIG:DEBUGVERBOSE>:dl>
         )
+    if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+        target_link_libraries(aoc_${YEAR}_${DAY}
+            $<$<CONFIG:MEMDEBUG>:dl>
+            $<$<CONFIG:DEBUGVERBOSE>:dl>
+        )
+    endif()
     add_custom_target(run_${YEAR}_${DAY}
         COMMAND aoc_${YEAR}_${DAY}
         DEPENDS aoc_${YEAR}_${DAY}
