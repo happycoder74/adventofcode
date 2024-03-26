@@ -5,7 +5,6 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <bits/stdint-uintn.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
