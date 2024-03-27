@@ -676,3 +676,27 @@ AocArrayPtr aoc_array_reverse(AocArrayPtr array) {
 
     return reversed;
 }
+
+void *aoc_array_steal(AocArrayPtr array, size_t *length) {
+    if (array == NULL) {
+        return NULL;
+    }
+    AocGenArray *arr = (AocGenArray *)array;
+
+    void *data = NULL;
+    if (arr->type == AOC_PTR) {
+        data = arr->ptr_data;
+    } else {
+        data = arr->data;
+    }
+    if (length != NULL) {
+        *length = arr->length;
+    }
+
+    arr->data = NULL;
+    arr->ptr_data = NULL;
+    arr->capacity = 0;
+    arr->element_size = 0;
+
+    return data;
+}
