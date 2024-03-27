@@ -182,6 +182,7 @@ int         aoc_array_find(AocArrayPtr array, void *value);
 AocArrayPtr aoc_array_new_from_data(AocArrayType array_type, void *data, size_t length);
 void       *aoc_array_last(AocArrayPtr array);
 AocArrayPtr aoc_array_reverse(AocArrayPtr array);
+void       *aoc_array_steal(AocArrayPtr array, size_t *length);
 
 int int32_compare(const void *a, const void *b);
 int int64_compare(const void *a, const void *b);
