@@ -1,8 +1,8 @@
 #include "aoc_array.h"
+#include "aoc_alloc.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <corecrt.h>
 #include <inttypes.h>
 #include <math.h>
 #include <stddef.h>
@@ -244,7 +244,7 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
     }
     array->type = array_type;
     array->length = 0;
-    array->capacity = size;
+    array->capacity = MAX(size, 1);
     return (AocArray *)array;
 }
 
