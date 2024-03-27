@@ -141,6 +141,21 @@ START_TEST(test_int32_array_copy) {
 }
 END_TEST
 
+START_TEST(test_int32_array_steal) {
+    int32_t values[5] = {1, 2, 3, 5, 7};
+
+    for (int i = 0; i < 5; i++) {
+        aoc_int32_array_append(array, values[i]);
+    }
+
+    size_t   length;
+    int32_t *array_data = aoc_array_steal(array, &length);
+
+    ck_assert(length == 5);
+    ck_assert_int_eq(values[1], array_data[1]);
+}
+END_TEST
+
 TCase *test_case_int32_array(void) {
     TCase *test_int32_array = tcase_create("aoc_int32_array");
     tcase_add_checked_fixture(test_int32_array, aoc_int32_array_setup, aoc_int32_array_teardown);
@@ -154,6 +169,7 @@ TCase *test_case_int32_array(void) {
     tcase_add_test(test_int32_array, test_int32_array_remove_index);
     tcase_add_test(test_int32_array, test_int32_array_prepend_to_empty);
     tcase_add_test(test_int32_array, test_int32_array_prepend_to_existing);
+    tcase_add_test(test_int32_array, test_int32_array_steal);
 
     return test_int32_array;
 }
