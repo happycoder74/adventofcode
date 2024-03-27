@@ -5,7 +5,6 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,7 +73,7 @@ uint32_t *decode_signal(char *signal) {
     }
 
     signal_sets = (uint32_t *)calloc(signal_parts->length, sizeof(uint32_t));
-    aoc_str_array_sort(signal_parts, signal_sort);
+    /* aoc_str_array_sort(signal_parts, signal_sort); */
 
     for (j = 0; j < aoc_array_length(signal_parts); j++) {
         char *part = aoc_str_array_index(signal_parts, j);
@@ -115,15 +114,13 @@ uint32_t *decode_signal(char *signal) {
 }
 
 uint32_t decode(uint32_t *keys, char *signal) {
-    uint32_t    int_message = 0;
-    AocArrayPtr message;
-    char      **parts;
-    uint32_t    signal_sets[10];
-    uint32_t    signal_set;
-    uint32_t    set;
+    uint32_t int_message = 0;
+    char   **parts;
+    uint32_t signal_sets[10];
+    uint32_t signal_set;
+    uint32_t set;
 
     parts = aoc_str_split(str_trim(signal), " ", 0);
-    message = aoc_int32_array_new();
 
     size_t j = 0;
     while (parts[j] != NULL) {
@@ -142,7 +139,6 @@ uint32_t decode(uint32_t *keys, char *signal) {
             if (set == signal_set) {
                 int_message += multiplier * j;
                 multiplier /= 10;
-                aoc_int32_array_append(message, j);
             }
         }
     }
@@ -179,7 +175,6 @@ void *solve_part_2(AocData_t *data) {
     int       array_sum;
     uint32_t *decoded;
     uint32_t  int_message = 0;
-    int       message_sum;
 
     array_sum = 0;
     for (size_t i = 0; i < aoc_data_length(data); i++) {
