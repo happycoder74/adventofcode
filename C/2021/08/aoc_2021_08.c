@@ -52,6 +52,10 @@ static uint32_t string_to_bitfield(char *str) {
     return field;
 }
 
+static uint32_t bitfield_diff(uint32_t b1, uint32_t b2) {
+    return b1 & (b1 ^ b2);
+}
+
 uint32_t *decode_signal(char *signal) {
     int         signal_set_key[10] = {0};
     uint32_t   *signal_sets;
@@ -73,31 +77,47 @@ uint32_t *decode_signal(char *signal) {
     }
 
     signal_sets = (uint32_t *)calloc(signal_parts->length, sizeof(uint32_t));
-    /* aoc_str_array_sort(signal_parts, signal_sort); */
 
     for (j = 0; j < aoc_array_length(signal_parts); j++) {
         char *part = aoc_str_array_index(signal_parts, j);
         set = string_to_bitfield(part);
         signal_sets[j] = set;
+        switch(strlen(part)) {
+            case 2:
+                signal_set_key[1] = j;
+                break;
+            case 3:
+                signal_set_key[7] = j;
+                break;
+            case 4:
+                signal_set_key[4] = j;
+                break;
+            case 7:
+                signal_set_key[8] = j;
+                break;
+        }
     }
     for (size_t i = 0; i < aoc_array_length(signal_parts); i++) {
         set = signal_sets[i];
-        if (count_set_bits(set) == 5) {
-            if (count_set_bits(set & signal_sets[signal_set_key[1]]) == 2) {
-                signal_set_key[3] = i;
-            } else if (count_set_bits(set & signal_sets[signal_set_key[4]]) == 2) {
-                signal_set_key[2] = i;
-            } else {
-                signal_set_key[5] = i;
-            }
-        } else if (count_set_bits(set) == 6) {
-            if (count_set_bits(set & (set ^ signal_sets[signal_set_key[4]])) == 2) {
-                signal_set_key[9] = i;
-            } else if (count_set_bits(set & (set ^ signal_sets[signal_set_key[5]])) == 2) {
-                signal_set_key[0] = i;
-            } else {
-                signal_set_key[6] = i;
-            }
+        switch(count_set_bits(set)) {
+            case 5:
+                if (count_set_bits(set & signal_sets[signal_set_key[1]]) == 2) {
+                    signal_set_key[3] = i;
+                } else if (count_set_bits(set & signal_sets[signal_set_key[4]]) == 2) {
+                    signal_set_key[2] = i;
+                } else {
+                    signal_set_key[5] = i;
+                }
+                break;
+            case 6:
+                if (count_set_bits(set & (set ^ signal_sets[signal_set_key[4]])) == 2) {
+                    signal_set_key[9] = i;
+                } else if (count_set_bits(bitfield_diff(bitfield_diff(signal_sets[signal_set_key[8]], set), signal_sets[signal_set_key[1]])) == 0) {
+                    signal_set_key[6] = i;
+                } else {
+                    signal_set_key[0] = i;
+                }
+                break;
         }
     }
 
