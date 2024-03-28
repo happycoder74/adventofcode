@@ -77,7 +77,6 @@ uint32_t *decode_signal(char *signal) {
     }
 
     signal_sets = (uint32_t *)calloc(signal_parts->length, sizeof(uint32_t));
-    aoc_str_array_sort(signal_parts, signal_sort);
 
     for (j = 0; j < aoc_array_length(signal_parts); j++) {
         char *part = aoc_str_array_index(signal_parts, j);
