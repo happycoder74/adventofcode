@@ -37,6 +37,7 @@ void     init_mem_table(void);
 
 #else
 
+#include <stdlib.h>
 #define aoc_mem_gc() 0
 void init_mem_table(void);
 

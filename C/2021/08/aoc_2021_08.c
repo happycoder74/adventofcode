@@ -57,28 +57,26 @@ static uint32_t bitfield_diff(uint32_t b1, uint32_t b2) {
 }
 
 uint32_t *decode_signal(char *signal) {
-    int         signal_set_key[10] = {0};
-    uint32_t   *signal_sets;
-    char      **parts;
-    uint32_t    set;
-    AocArrayPtr signal_parts;
+    int      signal_set_key[10] = {0};
+    uint32_t set;
 
     signal_set_key[1] = 0;
     signal_set_key[7] = 1;
     signal_set_key[4] = 2;
     signal_set_key[8] = 9;
 
-    signal_parts = aoc_str_array_new();
-    parts = aoc_str_split(signal, " ", 0);
     size_t j = 0;
 
-    signal_sets = (uint32_t *)calloc(signal_parts->length, sizeof(uint32_t));
+    uint32_t signal_sets[10] = {0};
 
-    for (j = 0; j < aoc_array_length(signal_parts); j++) {
-        char *part = aoc_str_array_index(signal_parts, j);
-        set = string_to_bitfield(part);
+    char *pos = NULL;
+    char *prev = signal;
+    for (j = 0; ((pos = strchr(signal + (size_t)pos, ' ')) != NULL); j++) {
+        *pos = '\0';
+        pos = pos - (uintptr_t)signal + 1;
+        set = string_to_bitfield(prev);
         signal_sets[j] = set;
-        switch(strlen(part)) {
+        switch (strlen(prev)) {
             case 2:
                 signal_set_key[1] = j;
                 break;
@@ -92,10 +90,27 @@ uint32_t *decode_signal(char *signal) {
                 signal_set_key[8] = j;
                 break;
         }
+        prev = signal + (size_t)pos;
     }
-    for (size_t i = 0; i < aoc_array_length(signal_parts); i++) {
+    set = string_to_bitfield(prev);
+    signal_sets[j] = set;
+    switch (strlen(prev)) {
+        case 2:
+            signal_set_key[1] = j;
+            break;
+        case 3:
+            signal_set_key[7] = j;
+            break;
+        case 4:
+            signal_set_key[4] = j;
+            break;
+        case 7:
+            signal_set_key[8] = j;
+            break;
+    }
+    for (size_t i = 0; i < 10; i++) {
         set = signal_sets[i];
-        switch(count_set_bits(set)) {
+        switch (count_set_bits(set)) {
             case 5:
                 if (count_set_bits(set & signal_sets[signal_set_key[1]]) == 2) {
                     signal_set_key[3] = i;
@@ -108,7 +123,9 @@ uint32_t *decode_signal(char *signal) {
             case 6:
                 if (count_set_bits(set & (set ^ signal_sets[signal_set_key[4]])) == 2) {
                     signal_set_key[9] = i;
-                } else if (count_set_bits(bitfield_diff(bitfield_diff(signal_sets[signal_set_key[8]], set), signal_sets[signal_set_key[1]])) == 0) {
+                } else if (count_set_bits(
+                               bitfield_diff(bitfield_diff(signal_sets[signal_set_key[8]], set),
+                                             signal_sets[signal_set_key[1]])) == 0) {
                     signal_set_key[6] = i;
                 } else {
                     signal_set_key[0] = i;
@@ -122,28 +139,29 @@ uint32_t *decode_signal(char *signal) {
         decoded[hkey] = signal_sets[signal_set_key[hkey]];
     }
 
-    free(signal_sets);
-    aoc_str_array_free(signal_parts);
-    aoc_str_freev(parts);
-
     return decoded;
 }
 
 uint32_t decode(uint32_t *keys, char *signal) {
     uint32_t int_message = 0;
-    char   **parts;
-    uint32_t signal_sets[10];
     uint32_t signal_set;
     uint32_t set;
-
-    parts = aoc_str_split(str_trim(signal), " ", 0);
+    uint32_t signal_sets[10] = {0};
 
     size_t j = 0;
-    while (parts[j] != NULL) {
-        set = string_to_bitfield(parts[j]);
+    char  *pos = NULL;
+    char  *prev = signal;
+    while ((pos = strchr(signal + (size_t)pos, ' ')) != NULL) {
+        *pos = '\0';
+        pos = pos - (uintptr_t)signal + 1;
+        set = string_to_bitfield(prev);
         signal_sets[j] = set;
+        prev = signal + (size_t)pos;
         j++;
     }
+    set = string_to_bitfield(prev);
+    signal_sets[j] = set;
+    j++;
 
     uint32_t multiplier = 1000;
     for (size_t i = 0; i < j; i++) {
@@ -158,8 +176,6 @@ uint32_t decode(uint32_t *keys, char *signal) {
             }
         }
     }
-
-    aoc_str_freev(parts);
 
     return int_message;
 }
