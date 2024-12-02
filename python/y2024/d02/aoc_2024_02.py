@@ -37,10 +37,8 @@ class Day02(Puzzle, year=2024, day=2):
             if self.check_row(row):
                 safe_count += 1
             else:
-                for i in range(0, len(row)):
-                    new_row = row.copy()
-                    _ = new_row.pop(i)
-                    if self.check_row(new_row):
+                for i in range(len(row)):
+                    if self.check_row(row[:i] + row[i + 1 :]):
                         safe_count += 1
                         break
 
