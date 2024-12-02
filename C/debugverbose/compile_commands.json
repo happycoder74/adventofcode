@@ -1,0 +1,282 @@
+[
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_array.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_array.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_array.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_grid.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_grid.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_grid.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_hash.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_hash.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_hash.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_io.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_io.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_io.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_list.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_list.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_list.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_regex.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_regex.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_regex.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_sets.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_sets.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_sets.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_stack.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_stack.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_stack.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_string.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_string.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_string.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_timer.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_timer.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_timer.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_alloc.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_alloc.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_alloc.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/lib",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc.dir/aoc_utils.c.o -c /home/christian/projects/adventofcode-c/C/lib/aoc_utils.c",
+  "file": "/home/christian/projects/adventofcode-c/C/lib/aoc_utils.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2015",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2015_01.dir/01/aoc_2015_01.c.o -c /home/christian/projects/adventofcode-c/C/2015/01/aoc_2015_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2015/01/aoc_2015_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2015",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2015_02.dir/02/aoc_2015_02.c.o -c /home/christian/projects/adventofcode-c/C/2015/02/aoc_2015_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2015/02/aoc_2015_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2015",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2015_03.dir/03/aoc_2015_03.c.o -c /home/christian/projects/adventofcode-c/C/2015/03/aoc_2015_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2015/03/aoc_2015_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2015",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2015_04.dir/04/aoc_2015_04.c.o -c /home/christian/projects/adventofcode-c/C/2015/04/aoc_2015_04.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2015/04/aoc_2015_04.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2015",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2015_05.dir/05/aoc_2015_05.c.o -c /home/christian/projects/adventofcode-c/C/2015/05/aoc_2015_05.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2015/05/aoc_2015_05.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2015",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2015_11.dir/11/aoc_2015_11.c.o -c /home/christian/projects/adventofcode-c/C/2015/11/aoc_2015_11.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2015/11/aoc_2015_11.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_01.dir/01/aoc_2016_01.c.o -c /home/christian/projects/adventofcode-c/C/2016/01/aoc_2016_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/01/aoc_2016_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_02.dir/02/aoc_2016_02.c.o -c /home/christian/projects/adventofcode-c/C/2016/02/aoc_2016_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/02/aoc_2016_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_03.dir/03/aoc_2016_03.c.o -c /home/christian/projects/adventofcode-c/C/2016/03/aoc_2016_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/03/aoc_2016_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_05.dir/05/aoc_2016_05.c.o -c /home/christian/projects/adventofcode-c/C/2016/05/aoc_2016_05.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/05/aoc_2016_05.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_06.dir/06/aoc_2016_06.c.o -c /home/christian/projects/adventofcode-c/C/2016/06/aoc_2016_06.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/06/aoc_2016_06.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_07.dir/07/aoc_2016_07.c.o -c /home/christian/projects/adventofcode-c/C/2016/07/aoc_2016_07.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/07/aoc_2016_07.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2016",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2016_08.dir/08/aoc_2016_08.c.o -c /home/christian/projects/adventofcode-c/C/2016/08/aoc_2016_08.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2016/08/aoc_2016_08.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2017",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2017_01.dir/01/aoc_2017_01.c.o -c /home/christian/projects/adventofcode-c/C/2017/01/aoc_2017_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2017/01/aoc_2017_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2017",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2017_02.dir/02/aoc_2017_02.c.o -c /home/christian/projects/adventofcode-c/C/2017/02/aoc_2017_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2017/02/aoc_2017_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2017",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2017_03.dir/03/aoc_2017_03.c.o -c /home/christian/projects/adventofcode-c/C/2017/03/aoc_2017_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2017/03/aoc_2017_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2019_01.dir/01/aoc_2019_01.c.o -c /home/christian/projects/adventofcode-c/C/2019/01/aoc_2019_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/01/aoc_2019_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -I/home/christian/projects/adventofcode-c/C/2019/intcode -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2019_02.dir/02/aoc_2019_02.c.o -c /home/christian/projects/adventofcode-c/C/2019/02/aoc_2019_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/02/aoc_2019_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2019_03.dir/03/aoc_2019_03.c.o -c /home/christian/projects/adventofcode-c/C/2019/03/aoc_2019_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/03/aoc_2019_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2019_04.dir/04/aoc_2019_04.c.o -c /home/christian/projects/adventofcode-c/C/2019/04/aoc_2019_04.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/04/aoc_2019_04.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -I/home/christian/projects/adventofcode-c/C/2019/intcode -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2019_05.dir/05/aoc_2019_05.c.o -c /home/christian/projects/adventofcode-c/C/2019/05/aoc_2019_05.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/05/aoc_2019_05.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2019_06.dir/06/aoc_2019_06.c.o -c /home/christian/projects/adventofcode-c/C/2019/06/aoc_2019_06.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/06/aoc_2019_06.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2019/intcode",
+  "command": "/usr/bin/cc  -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -Wall -Wextra -Wpedantic -Wno-error=unused -Wno-error=unused-parameter -std=c99 -o CMakeFiles/intcode.dir/intcode.c.o -c /home/christian/projects/adventofcode-c/C/2019/intcode/intcode.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2019/intcode/intcode.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_01.dir/01/aoc_2021_01.c.o -c /home/christian/projects/adventofcode-c/C/2021/01/aoc_2021_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/01/aoc_2021_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_02.dir/02/aoc_2021_02.c.o -c /home/christian/projects/adventofcode-c/C/2021/02/aoc_2021_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/02/aoc_2021_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_03.dir/03/aoc_2021_03.c.o -c /home/christian/projects/adventofcode-c/C/2021/03/aoc_2021_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/03/aoc_2021_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_04.dir/04/aoc_2021_04.c.o -c /home/christian/projects/adventofcode-c/C/2021/04/aoc_2021_04.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/04/aoc_2021_04.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_05.dir/05/aoc_2021_05.c.o -c /home/christian/projects/adventofcode-c/C/2021/05/aoc_2021_05.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/05/aoc_2021_05.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_06.dir/06/aoc_2021_06.c.o -c /home/christian/projects/adventofcode-c/C/2021/06/aoc_2021_06.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/06/aoc_2021_06.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_07.dir/07/aoc_2021_07.c.o -c /home/christian/projects/adventofcode-c/C/2021/07/aoc_2021_07.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/07/aoc_2021_07.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_08.dir/08/aoc_2021_08.c.o -c /home/christian/projects/adventofcode-c/C/2021/08/aoc_2021_08.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/08/aoc_2021_08.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_10.dir/10/aoc_2021_10.c.o -c /home/christian/projects/adventofcode-c/C/2021/10/aoc_2021_10.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/10/aoc_2021_10.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2021",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2021_18.dir/18/aoc_2021_18.c.o -c /home/christian/projects/adventofcode-c/C/2021/18/aoc_2021_18.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2021/18/aoc_2021_18.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2022",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2022_01.dir/01/aoc_2022_01.c.o -c /home/christian/projects/adventofcode-c/C/2022/01/aoc_2022_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2022/01/aoc_2022_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2022",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2022_02.dir/02/aoc_2022_02.c.o -c /home/christian/projects/adventofcode-c/C/2022/02/aoc_2022_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2022/02/aoc_2022_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2022",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2022_03.dir/03/aoc_2022_03.c.o -c /home/christian/projects/adventofcode-c/C/2022/03/aoc_2022_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2022/03/aoc_2022_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2022",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2022_04.dir/04/aoc_2022_04.c.o -c /home/christian/projects/adventofcode-c/C/2022/04/aoc_2022_04.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2022/04/aoc_2022_04.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2022",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2022_06.dir/06/aoc_2022_06.c.o -c /home/christian/projects/adventofcode-c/C/2022/06/aoc_2022_06.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2022/06/aoc_2022_06.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2022",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2022_12.dir/12/aoc_2022_12.c.o -c /home/christian/projects/adventofcode-c/C/2022/12/aoc_2022_12.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2022/12/aoc_2022_12.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2023",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2023_01.dir/01/aoc_2023_01.c.o -c /home/christian/projects/adventofcode-c/C/2023/01/aoc_2023_01.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2023/01/aoc_2023_01.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2023",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2023_02.dir/02/aoc_2023_02.c.o -c /home/christian/projects/adventofcode-c/C/2023/02/aoc_2023_02.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2023/02/aoc_2023_02.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2023",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2023_03.dir/03/aoc_2023_03.c.o -c /home/christian/projects/adventofcode-c/C/2023/03/aoc_2023_03.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2023/03/aoc_2023_03.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2023",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2023_04.dir/04/aoc_2023_04.c.o -c /home/christian/projects/adventofcode-c/C/2023/04/aoc_2023_04.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2023/04/aoc_2023_04.c"
+},
+{
+  "directory": "/home/christian/projects/adventofcode-c/C/debugverbose/2023",
+  "command": "/usr/bin/cc  -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/home/christian/projects/adventofcode-c/C/include -g -O0 -ggdb3 -Wall -Wextra -DMEMDEBUG -DDEBUG_VERBOSE -std=c99 -o CMakeFiles/aoc_2023_06.dir/06/aoc_2023_06.c.o -c /home/christian/projects/adventofcode-c/C/2023/06/aoc_2023_06.c",
+  "file": "/home/christian/projects/adventofcode-c/C/2023/06/aoc_2023_06.c"
+}
+]

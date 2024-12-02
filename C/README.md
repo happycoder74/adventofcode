@@ -59,6 +59,8 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 
 ## 2021
 
+## 2021
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
