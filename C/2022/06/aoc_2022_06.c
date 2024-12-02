@@ -14,7 +14,7 @@ int marker(AocArrayPtr data, size_t window) {
     char  *chunk;
 
     chunk = (char *)calloc(window + 1, sizeof(char));
-    string = (char *)aoc_ptr_array_index(data, 0);
+    string = aoc_str_array_index(data, 0);
     for (i = 0; i < strlen(string) - window; i++) {
         chunk[0] = '\0';
         for (j = 0; j < window; j++) {

@@ -6,6 +6,7 @@
 #include "aoc_utils.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 char password_next_letter(char letter) {
     char next_letter;

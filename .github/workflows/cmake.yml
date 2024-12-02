@@ -19,20 +19,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Update apt
-      run: |
-        sudo apt update
+    # - name: Update apt
+    #   run: |
+    #     sudo apt update
     - name: Install dependencies
       run: |
-        sudo apt install libcurl4-openssl-dev
-    - name: Configure CMake
+        sudo apt install libcurl4-openssl-dev check libpcre2-posix3
+    - name: Configure CMake for library
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       working-directory: ${{github.workspace}}/C
-      run: cmake -B ${{github.workspace}}/C/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      # Build your program with the given configuration
+      run: cmake -B ${{github.workspace}}/C/debug -DCMAKE_BUILD_TYPE=Debug .
+    - name: Configure CMake for tests
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      working-directory: ${{github.workspace}}/C/tests/AocLib
+      run: cmake -S ${{github.workspace}}/C/tests/AocLib -B ${{github.workspace}}/C/tests/AocLib/build -DCMAKE_BUILD_TYPE=Debug
+    - name: Build library
       working-directory: ${{github.workspace}}/C
-      run: cmake --build ${{github.workspace}}/C/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/C/debug --config Debug --target aoc
+    - name: Build tests
+      working-directory: ${{github.workspace}}/C/tests/AocLib
+      run: cmake --build ${{github.workspace}}/C/tests/AocLib/build --config debug
+    - name: Run tests
+      working-directory: ${{github.workspace}}/C/tests/AocLib
+      run: cmake --build ${{github.workspace}}/C/tests/AocLib/build --target run_tests
 

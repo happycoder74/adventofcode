@@ -35,7 +35,8 @@ IntCodeReturn_t *intcode(AocArrayPtr instructions, int *input) {
                 val1 = modes[0] == 0 ? aoc_int32_array_index(instructions, op1) : op1;
                 val2 = modes[1] == 0 ? aoc_int32_array_index(instructions, op2) : op2;
 #ifndef NDEBUG
-                printf("OP ADD: %d (%d) + %d (%d) => %d (%d)\n", val1, op1, val2, op2, op3, val1 + val2);
+                printf("OP ADD: %d (%d) + %d (%d) => %d (%d)\n", val1, op1, val2, op2, op3,
+                       val1 + val2);
 #endif
                 aoc_int32_array_set_index(instructions, op3, val1 + val2);
                 i += 4;
@@ -57,8 +58,12 @@ IntCodeReturn_t *intcode(AocArrayPtr instructions, int *input) {
                 // TODO (Christian): Rewrite this to read from an input buffer.
                 if (input == NULL) {
                     printf("Input value: ");
-                    char buf[20];
-                    fgets(buf, 20, stdin);
+                    char  buf[20];
+                    char *s = fgets(buf, 20, stdin);
+                    if (!s) {
+                        fprintf(stderr, "Error in input\n");
+                        exit(EXIT_FAILURE);
+                    }
                     value = atoi(buf);
                 } else {
                     value = *input;

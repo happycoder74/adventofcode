@@ -4,19 +4,22 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum AocArrayType {
-    AOC_ARRAY_CHAR,
-    AOC_ARRAY_UCHAR,
-    AOC_ARRAY_INT32,
-    AOC_ARRAY_UINT32,
-    AOC_ARRAY_INT64,
-    AOC_ARRAY_UINT64,
-    AOC_ARRAY_STR,
-    AOC_ARRAY_LINE,
-    AOC_ARRAY_POINT,
-    AOC_ARRAY_PTR,
-    AOC_ARRAY_COUNT
-} AocArrayType;
+typedef enum {
+    AOC_INT32,
+    AOC_INT64,
+    AOC_UINT32,
+    AOC_UINT64,
+    AOC_CHAR,
+    AOC_STR,
+    AOC_PTR,
+    AOC_UCHAR,
+    AOC_LINE,
+    AOC_POINT,
+    AOC_DOUBLE,
+    AOC_COUNT
+} AocType;
+
+typedef AocType AocArrayType;
 
 typedef struct AocArray {
     AocArrayType type;
@@ -52,6 +55,6 @@ typedef struct AocSList {
     void            *data;
 } AocSList;
 
-#undef MAX
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#endif
+typedef int (*AocCompareFunc)(const void *, const void *);
+
+#endif // _AOC_TYPES_H_

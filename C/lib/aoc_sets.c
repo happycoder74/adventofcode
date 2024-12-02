@@ -1,284 +1,234 @@
-#include <aoc_sets.h>
+#include "aoc_sets.h"
+#include "aoc_array.h"
+#include "aoc_hash.h"
+#include "aoc_string.h"
+#include <inttypes.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-Set *set_new(SetType settype) {
-    Set *result;
+AocSet *aoc_set_new(AocSetType settype) {
+    AocSet *result;
 
-    result = g_new(Set, 1);
-    result->settype = settype;
-
-    return result;
-}
-
-Set *set_new_with_data(GArray *data, SetType settype) {
-    guint i;
-    Set *result;
-
-    result = set_new(settype);
-    result->settype = settype;
-
-    switch (result->settype) {
-        case SET_INT:
-        case SET_CHAR:
-            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
-            for (i = 0; i < data->len; i++) {
-                if (result->settype == SET_CHAR) {
-                    gchar val = g_array_index(data, gchar, i);
-                    g_hash_table_add(result->set, GUINT_TO_POINTER(val));
-                } else {
-                    gint val = g_array_index(data, gint, i);
-                    g_hash_table_add(result->set, GINT_TO_POINTER(val));
-                }
-            }
-            break;
-        case SET_STR:
-            result->set = g_hash_table_new(g_str_hash, g_str_equal);
-            for (i = 0; i < data->len; i++) {
-                char *val = g_strdup(g_array_index(data, char *, i));
-                g_hash_table_add(result->set, val);
-            }
-            break;
-        default:
-            g_free(result);
-            return NULL;
-            break;
+    result = (AocSet *)calloc(1, sizeof(AocSet));
+    if (result) {
+        result->settype = settype;
+        result->set = aoc_hash_table_create(result->settype);
     }
     return result;
 }
 
-Set *set_intersect(Set *set1, Set *set2) {
-    Set *result;
-    gpointer *keys;
-    gpointer key;
-    guint length;
-    guint i;
+AocSet *aoc_set_new_with_data(AocArrayPtr data, AocSetType settype) {
+    uint32_t i;
+    AocSet  *result;
+
+    result = aoc_set_new(settype);
+    result->settype = settype;
+    result->set = aoc_hash_table_create(result->settype);
+
+    for (i = 0; i < data->length; i++) {
+        void *val = aoc_array_index(data, i);
+        aoc_hash_table_add(result->set, val);
+    }
+
+    return result;
+}
+
+AocSet *aoc_set_intersect(AocSet *set1, AocSet *set2) {
+    AocSet *result;
+    void   *key;
 
     if (!set1 || !set2) {
-        g_printerr("NULL set given\n");
+        fprintf(stderr, "NULL set given\n");
     }
 
     if (set1->settype != set2->settype) {
-        g_printerr("Not matching set types\n");
+        fprintf(stderr, "Not matching set types\n");
         return NULL;
     }
 
-    result = set_new(set1->settype);
+    result = aoc_set_new(set1->settype);
+    AocHashIterator iter;
+    aoc_hash_table_iter_init(&iter, set1->set);
 
-    switch (result->settype) {
-        case SET_INT:
-        case SET_CHAR:
-            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
-            keys = g_hash_table_get_keys_as_array(set1->set, &length);
-            for (i = 0; i < length; i++) {
-                key = keys[i];
-                if(g_hash_table_contains(set2->set, key)) {
-                    g_hash_table_add(result->set, key);
-                }
-            }
-            break;
-        case SET_STR:
-            result->set = g_hash_table_new(g_str_hash, g_str_equal);
-            keys = g_hash_table_get_keys_as_array(set1->set, &length);
-            for (i = 0; i < length; i++) {
-                key = keys[i];
-                if(g_hash_table_contains(set2->set, key)) {
-                    g_hash_table_add(result->set, key);
-                }
-            }
-            break;
-        case SET_FLOAT:
-        case SET_DOUBLE:
-        case SET_LONG:
-            g_print("Not yet implemented\n");
-        default:
-            g_free(result);
-            return NULL;
+    result->set = aoc_hash_table_create(AOC_PTR);
+    while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
+        if (aoc_hash_table_contains(set2->set, key)) {
+            aoc_hash_table_add(result->set, key);
+        }
     }
 
     return result;
 }
 
-static gchar *set_string_type(SetType settype) {
-    gchar *settypes[] = {
-        "int",
-        "long",
-        "char",
-        "string",
-        "float",
-        "double"
-    };
-    return settypes[settype];
-}
+/* static char *set_string_type(AocSetType settype) { */
+/*     char *settypes[] = { */
+/*         "int32", */
+/*         "int64", */
+/*         "uint32", */
+/*         "uint64", */
+/*         "char", */
+/*         "string", */
+/*         "float", */
+/*         "double", */
+/*         "pointer" */
+/*     }; */
+/*     return settypes[settype]; */
+/* } */
 
-GArray *set_get_values(Set *set) {
-    guint length;
-    guint i;
-    guint val;
-    GArray *return_array;
-    gpointer *keys;
+AocArrayPtr aoc_set_get_values(AocSet *set) {
+    AocArrayPtr return_array;
+    void       *key;
 
-    keys = g_hash_table_get_keys_as_array(set->set, &length);
-    switch(set->settype) {
-        case SET_INT:
-            return_array = g_array_sized_new(FALSE, FALSE, sizeof(gint), length);
-            for (i = 0; i < length; i++) {
-                val = GPOINTER_TO_INT(keys[i]);
-                g_array_append_val(return_array, val);
-            }
-            break;
-        case SET_CHAR:
-            return_array = g_array_sized_new(FALSE, FALSE, sizeof(guint), length);
-            for (i = 0; i < length; i++) {
-                val = GPOINTER_TO_INT(keys[i]);
-                g_array_append_val(return_array, val);
-            }
-            break;
-        default:
-            g_print("Not yet implemented for type %s\n", set_string_type(set->settype));
-            return NULL;
-            break;
+    return_array = aoc_array_new((AocArrayType)set->settype, aoc_hash_table_count(set->set));
+    AocHashIterator iter;
+    aoc_hash_table_iter_init(&iter, set->set);
+    while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
+        switch (set->settype) {
+            case AOC_INT32:
+                aoc_int32_array_append(return_array, *(int32_t *)key);
+                break;
+            case AOC_INT64:
+                aoc_int64_array_append(return_array, *(int64_t *)key);
+                break;
+            case AOC_UINT32:
+                aoc_uint32_array_append(return_array, *(uint32_t *)key);
+                break;
+            case AOC_UINT64:
+                aoc_uint64_array_append(return_array, *(uint64_t *)key);
+                break;
+            default:
+                fprintf(stderr, "Not yet implemented");
+                break;
+        }
     }
     return return_array;
 }
 
-Set *set_difference(Set *set1, Set *set2) {
-    Set *result;
-    gpointer *keys;
-    gpointer key;
-    guint length;
-    guint i;
-
+AocSet *aoc_set_difference(AocSet *set1, AocSet *set2) {
+    AocSet *result;
+    void   *key;
 
     if (!set1 || !set2) {
-        g_printerr("NULL set given\n");
+        fprintf(stderr, "NULL set given\n");
     }
 
     if (set1->settype != set2->settype) {
-        g_printerr("Not matching set types\n");
+        fprintf(stderr, "Not matching set types\n");
         return NULL;
     }
 
-    result = set_new(set1->settype);
+    result = aoc_set_new(set1->settype);
+    AocHashIterator iter;
+    aoc_hash_table_iter_init(&iter, set1->set);
 
-    switch (result->settype) {
-        case SET_CHAR:
-        case SET_INT:
-            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
-            keys = g_hash_table_get_keys_as_array(set1->set, &length);
-            for (i = 0; i < length; i++) {
-                key = keys[i];
-                if(!g_hash_table_contains(set2->set, key)) {
-                    g_hash_table_add(result->set, key);
-                }
-            }
-            break;
-        case SET_STR:
-        case SET_FLOAT:
-        case SET_DOUBLE:
-        case SET_LONG:
-            g_print("Not yet implemented for set type %s\n", set_string_type(result->settype));
-        default:
-            g_free(result);
-            return NULL;
+    result->set = aoc_hash_table_create(AOC_PTR);
+    while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
+        if (!aoc_hash_table_contains(set2->set, key)) {
+            aoc_hash_table_add(result->set, key);
+        }
     }
 
     return result;
 }
 
-/* int set_add_int(Set *set, int element) {
-    int val;
-
-    for (guint i = 0; i < set->set->len; i++) {
-        val = g_array_index(set->set, int, i);
-        if (val == element) {
-            return 0;
-        }
-    }
-    g_array_append_val(set->set, element);
-
-    return 1;
+int aoc_set_add(AocSet *set, const void *value) {
+    return aoc_hash_table_add(set->set, value);
 }
 
-int set_add_char(Set *set, char element) {
-    char val;
-
-    for (guint i = 0; i < set->set->len; i++) {
-        val = g_array_index(set->set, char, i);
-        if (val == element) {
-            return 0;
-        }
-    }
-    g_array_append_val(set->set, element);
-
-    return 1;
-}
-
-int set_add(Set *set, gconstpointer v) {
-    switch (set->settype) {
-        case SET_INT:
-            return set_add_int(set, (int) (long)v);
-            break;
-        case SET_CHAR:
-            return set_add_char(set, (char) (long)v);
-            break;
-        default:
-            return 0;
-            break;
-    }
-
-}
-*/
-
-Set *set_union(Set *set1, Set *set2) {
-    Set *result;
-    gpointer *keys;
-    gpointer key;
-    guint length;
-    guint i;
+AocSet *aoc_set_union(AocSet *set1, AocSet *set2) {
+    AocSet *result;
+    void   *key;
 
     if (!set1 || !set2) {
-        g_printerr("NULL set given\n");
+        fprintf(stderr, "Set is not initialized\n");
     }
 
     if (set1->settype != set2->settype) {
-        g_printerr("Not matching set types\n");
+        fprintf(stderr, "Not matching set types\n");
         return NULL;
     }
 
-    result = set_new(set1->settype);
+    result = aoc_set_new(set1->settype);
 
-    switch (result->settype) {
-        case SET_CHAR:
-        case SET_INT:
-            result->set = g_hash_table_new(g_direct_hash, g_direct_equal);
-            keys = g_hash_table_get_keys_as_array(set1->set, &length);
-            for (i = 0; i < length; i++) {
-                key = keys[i];
-                g_hash_table_add(result->set, key);
-            }
-            keys = g_hash_table_get_keys_as_array(set2->set, &length);
-            for (i = 0; i < length; i++) {
-                if (!g_hash_table_contains(set1->set, keys[i])) {
-                    g_hash_table_add(result->set, keys[i]);
-                }
-            }
-            break;
-        case SET_STR:
-        case SET_FLOAT:
-        case SET_DOUBLE:
-        case SET_LONG:
-            g_print("Not yet implemented for set type %s\n", set_string_type(result->settype));
-        default:
-            g_free(result);
-            return NULL;
+    AocHashIterator iter;
+    aoc_hash_table_iter_init(&iter, set1->set);
+
+    result->set = aoc_hash_table_create(AOC_PTR);
+    while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
+        aoc_hash_table_add(result->set, key);
+    }
+    aoc_hash_table_iter_init(&iter, set2->set);
+    while (aoc_hash_table_iter_next(&iter, &key, NULL)) {
+        aoc_hash_table_add(result->set, key);
     }
 
     return result;
 }
 
-void set_free(Set *set) {
+void aoc_set_free(AocSet *set) {
     if (set) {
-        g_hash_table_destroy(set->set);
-        g_free(set);
+        aoc_hash_table_destroy(&set->set);
     }
 }
 
+void set_print(AocSet *set) {
+    AocArrayPtr values;
+    if (set == NULL) {
+        fprintf(stderr, "Set is not initialized\n");
+        return;
+    }
+
+    values = aoc_set_get_values(set);
+    if (aoc_hash_table_count(set->set) == 0) {
+        printf("Set is empty\n");
+        return;
+    }
+    switch (set->settype) {
+        case AOC_INT32:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s %d", i == 0 ? "{" : ", ", aoc_int32_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_UINT32:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s %u", i == 0 ? "{" : ", ", aoc_uint32_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_INT64:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s %" PRId64, i == 0 ? "{" : ", ", aoc_int64_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_UINT64:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s %" PRIu64, i == 0 ? "{" : ", ", aoc_uint64_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_CHAR:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s'%c'", i == 0 ? "{" : ", ", aoc_char_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        case AOC_STR:
+            for (size_t i = 0; i < aoc_array_length(values); i++) {
+                printf("%s'%s'", i == 0 ? "{" : ", ", aoc_str_array_index(values, i));
+            }
+            printf("}\n");
+            break;
+        default:
+            fprintf(stderr, "Print functionality not implemented for given set-type\n");
+            exit(EXIT_FAILURE);
+            break;
+    }
+}
+
+bool aoc_set_in(AocSet *set, const void *value) {
+    return aoc_hash_table_contains(set->set, value);
+}

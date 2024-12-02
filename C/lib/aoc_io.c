@@ -20,7 +20,9 @@ int download_input(int year, int day) {
     char *data_home = NULL;
     data_home = getenv("AOC_DATA_LOCATION");
     if (!data_home) {
-        fprintf(stderr, "Could not find data location. Please set environment variable AOC_DATA_LOCATION\n");
+        fprintf(
+            stderr,
+            "Could not find data location. Please set environment variable AOC_DATA_LOCATION\n");
         return EXIT_FAILURE;
     }
     char *path = strdup_printf("%s/%s", data_home, filename);
@@ -32,7 +34,12 @@ int download_input(int year, int day) {
         return EXIT_FAILURE;
     }
 
-    fgets(cookie_contents, sizeof(cookie_contents) / sizeof(char), fp);
+    char *s = fgets(cookie_contents, sizeof(cookie_contents) / sizeof(char), fp);
+    if (!s) {
+        fprintf(stderr, "Failed to read cookie contents\n");
+        free(path);
+        return EXIT_FAILURE;
+    }
     fclose(fp);
 
     CURL *curl = curl_easy_init();
@@ -50,7 +57,8 @@ int download_input(int year, int day) {
         curl_easy_setopt(curl, CURLOPT_URL, input_url);
         curl_easy_setopt(curl, CURLOPT_COOKIE, cookie);
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "\"github.com/happycoder74/adventofcode/C/lib/aoc_io.c\"");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT,
+                         "\"github.com/happycoder74/adventofcode/C/lib/aoc_io.c\"");
 
         res = curl_easy_perform(curl);
 
@@ -175,7 +183,8 @@ AocArrayPtr get_input(char *filename, int year, int day) {
 
     fp = fopen(file, "r");
     if (!(fp)) {
-        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file, getcwd(wd, 255));
+        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file,
+                getcwd(wd, 255));
         fprintf(stderr, "Trying to download...\n");
         int dl_status = download_input(year, day);
         if (!dl_status) {
@@ -189,12 +198,12 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         }
     }
 
-    data = aoc_ptr_array_new();
+    data = aoc_str_array_new();
 
     while ((getline(&line, &line_length, fp)) != -1) {
         char *to_trim = strdup(line);
         data_line = strdup(str_trim(to_trim));
-        aoc_ptr_array_append(data, data_line);
+        aoc_str_array_append(data, data_line);
         free(to_trim);
     }
 

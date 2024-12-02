@@ -93,7 +93,8 @@ int sf_number_eq(SFNumber *sn1, SFNumber *sn2) {
     }
 
     for (i = 0; i < sn1->size; i++) {
-        if ((sn1->number[i].num != sn2->number[i].num) || (sn1->number[i].level != sn2->number[i].level)) {
+        if ((sn1->number[i].num != sn2->number[i].num) ||
+            (sn1->number[i].level != sn2->number[i].level)) {
             return 0;
         }
     }
@@ -255,7 +256,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     unsigned int i;
     SFNumber    *sn;
 
-    numbers = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
+    numbers = aoc_array_sized_new(AOC_PTR, aoc_array_length(data));
     for (i = 0; i < aoc_array_length(data); i++) {
         sn = sf_number_from_string(aoc_str_array_index(data, i));
         aoc_ptr_array_append(numbers, sn);
@@ -285,11 +286,13 @@ void *solve_part_2(AocData_t *data) {
 
     for (i = 0; i < aoc_data_length(data); i++) {
         for (j = i + 1; j < aoc_data_length(data); j++) {
-            sn = sf_number_add(aoc_ptr_array_index(aoc_data_get(data), i), aoc_ptr_array_index(aoc_data_get(data), j));
+            sn = sf_number_add(aoc_ptr_array_index(aoc_data_get(data), i),
+                               aoc_ptr_array_index(aoc_data_get(data), j));
             sn = sf_number_reduce(sn);
             mag = sf_number_magnitude(sn);
             mag_max = MAX(mag, mag_max);
-            sn = sf_number_add(aoc_ptr_array_index(aoc_data_get(data), j), aoc_ptr_array_index(aoc_data_get(data), i));
+            sn = sf_number_add(aoc_ptr_array_index(aoc_data_get(data), j),
+                               aoc_ptr_array_index(aoc_data_get(data), i));
             sn = sf_number_reduce(sn);
             mag = sf_number_magnitude(sn);
             mag_max = MAX(mag, mag_max);

@@ -1,30 +1,30 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
-#include "glib.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 int solver(AocArrayPtr data, uint32_t agents) {
-    char       *line;
-    GHashTable *visited;
-    Point      *position;
-    size_t      visited_size;
-    size_t      position_index = 0;
-    Point      *key;
+    char         *line;
+    AocHashTable *visited;
+    Point        *position;
+    size_t        visited_size;
+    size_t        position_index = 0;
+    Point        *key;
 
     position = (Point *)calloc(agents, sizeof(Point));
-    visited = g_hash_table_new_full(point_hash, point_equal, free, NULL);
+    visited = aoc_hash_table_create_custom(0, NULL, free, free, AOC_POINT);
 
     key = (Point *)calloc(1, sizeof(Point));
     key->x = position[position_index].x;
     key->y = position[position_index].y;
-    g_hash_table_add(visited, key);
+    aoc_hash_table_add(visited, key);
 
     line = aoc_str_array_index(data, 0);
     for (size_t c = 0; c < strlen(line); c++) {
@@ -48,12 +48,11 @@ int solver(AocArrayPtr data, uint32_t agents) {
         key = (Point *)calloc(1, sizeof(Point));
         key->x = position[position_index].x;
         key->y = position[position_index].y;
-        g_hash_table_add(visited, key);
+        aoc_hash_table_add(visited, key);
     }
-    visited_size = g_hash_table_size(visited);
+    visited_size = aoc_hash_table_count(visited);
 
     free(position);
-    g_hash_table_destroy(visited);
     return visited_size;
 }
 

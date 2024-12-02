@@ -1,57 +1,41 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_hash.h"
 #include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
-#include "glib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static void free_key(void *key) {
-    free(key);
-}
-
 int solution(AocArrayPtr data, int part_two) {
-    char      **split_string;
-    int         i;
-    int        *pos;
-    int        *current;
-    GHashTable *locations;
-    AocArrayPtr directions;
+    char **split_string;
+    int    i;
+    Point *pos;
+
+    AocHashTable *locations = NULL;
+
     typedef struct {
         char direction;
         int  steps;
     } step_t;
 
     step_t *step = (step_t *)malloc(sizeof(step_t));
+    locations = aoc_hash_table_create(AOC_POINT);
 
-    directions = aoc_ptr_array_new();
-    locations = g_hash_table_new_full(g_str_hash, g_str_equal, free_key, NULL);
-    pos = (int *)malloc(sizeof(int) * 2);
-    pos[0] = 1;
-    pos[1] = 0;
-    aoc_ptr_array_append(directions, pos);
-    pos = (int *)malloc(sizeof(int) * 2);
-    pos[0] = 0;
-    pos[1] = 1;
-    aoc_ptr_array_append(directions, pos);
-    pos = (int *)malloc(sizeof(int) * 2);
-    pos[0] = -1;
-    pos[1] = 0;
-    aoc_ptr_array_append(directions, pos);
-    pos = (int *)malloc(sizeof(int) * 2);
-    pos[0] = 0;
-    pos[1] = -1;
-    aoc_ptr_array_append(directions, pos);
+    Point directions[4] = {
+        {1,  0 },
+        {0,  1 },
+        {-1, 0 },
+        {0,  -1}
+    };
 
-    pos = (int *)malloc(sizeof(int) * 2);
-    pos[0] = 0;
-    pos[1] = 0;
+    pos = point_new_m(0, 0);
 
     if (part_two) {
-        g_hash_table_add(locations, strdup_printf("(%d, %d)", pos[0], pos[1]));
+        Point *point = point_new_m(pos->x, pos->y);
+        aoc_hash_table_add(locations, point);
     }
     split_string = aoc_str_split(aoc_str_array_index(data, 0), ", ", 0);
     int index = 0;
@@ -60,35 +44,30 @@ int solution(AocArrayPtr data, int part_two) {
         sscanf(split_string[i], "%c%d", &step->direction, &step->steps);
         index = index + (step->direction == 'R' ? 1 : -1);
         index = (index >= 0 ? index % 4 : 4 + (index % -4));
-        current = (int *)aoc_ptr_array_index(directions, index);
         for (s = 0; s < step->steps; s++) {
-            pos[0] = pos[0] + current[0];
-            pos[1] = pos[1] + current[1];
+            point_move(pos, directions[index]);
             if (part_two) {
-                char *check_key = strdup_printf("(%d, %d)", pos[0], pos[1]);
-                if (g_hash_table_contains(locations, check_key)) {
-                    int return_value = abs(pos[0]) + abs(pos[1]);
+                Point *check_key = point_new_m(pos->x, pos->y);
+                if (aoc_hash_table_lookup(locations, check_key)) {
+                    int return_value = abs(pos->x) + abs(pos->y);
                     free(pos);
                     free(step);
                     free(check_key);
                     aoc_str_freev(split_string);
-                    aoc_array_free(directions, true);
 
-                    g_hash_table_destroy(locations);
+                    aoc_hash_table_destroy(&locations);
 
                     return return_value;
                 }
-                g_hash_table_add(locations, check_key);
+                aoc_hash_table_add(locations, check_key);
             }
         }
     }
-    int return_value = abs(pos[0]) + abs(pos[1]);
+    int return_value = abs(pos->x) + abs(pos->y);
     free(pos);
     free(step);
     aoc_str_freev(split_string);
-    aoc_array_free(directions, true);
-
-    g_hash_table_destroy(locations);
+    aoc_hash_table_destroy(&locations);
     return return_value;
 }
 

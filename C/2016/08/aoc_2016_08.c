@@ -7,6 +7,7 @@
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include <locale.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,7 +31,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     Instruction *instruction;
     AocArrayPtr  instruction_list;
 
-    instruction_list = aoc_array_sized_new(AOC_ARRAY_PTR, aoc_array_length(data));
+    instruction_list = aoc_array_sized_new(AOC_PTR, aoc_array_length(data));
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
@@ -51,69 +52,39 @@ AocArrayPtr clean_input(AocArrayPtr data) {
             aoc_ptr_array_append(instruction_list, instruction);
         }
     }
+    aoc_str_array_free_all(data);
     return instruction_list;
 }
 
-void init_area(Grid *grid, Instruction *instruction) {
+void init_area(AocGrid *grid, Instruction *instruction) {
     int row, col;
-    int index;
     for (row = 0; row < instruction->value2; row++) {
         for (col = 0; col < instruction->value1; col++) {
-            index = row * grid->columns + col;
-            grid->grid[index] = 1;
+            int32_t *val = malloc(sizeof(int32_t));
+            *val = 1;
+            aoc_grid_set(grid, row, col, val);
         }
     }
     return;
 }
 
-void rotate_col(Grid *grid, Instruction *instruction) {
-    int *col_to_rotate;
-    int  row;
-    int  i, index;
-
-    col_to_rotate = malloc(sizeof(int) * grid->rows);
-    index = instruction->value1;
-
-    for (row = 0; row < grid->rows; row++) {
-        i = (row + instruction->value2) % grid->rows;
-        col_to_rotate[i] = grid->grid[row * grid->columns + index];
-    }
-
-    for (row = 0; row < grid->rows; row++) {
-        grid->grid[row * grid->columns + index] = col_to_rotate[row];
-    }
-
-    free(col_to_rotate);
+void rotate_col(AocGrid *grid, Instruction *instruction) {
+    aoc_grid_rotate_column(grid, instruction->value1, instruction->value2);
     return;
 }
 
-void rotate_row(Grid *grid, Instruction *instruction) {
-    int *row_to_rotate;
-    int  col;
-    int  i, index;
-
-    row_to_rotate = malloc(sizeof(int) * grid->columns);
-    index = instruction->value1 * grid->columns;
-
-    for (col = 0; col < grid->columns; col++) {
-        i = (col + instruction->value2) % grid->columns;
-        row_to_rotate[i] = grid->grid[col + index];
-    }
-    for (col = 0; col < grid->columns; col++) {
-        grid->grid[col + index] = row_to_rotate[col];
-    }
-
-    free(row_to_rotate);
+void rotate_row(AocGrid *grid, Instruction *instruction) {
+    aoc_grid_rotate_row(grid, instruction->value1, instruction->value2);
     return;
 }
 
-void grid_print(Grid *grid, int final) {
-    int row, col, i;
+void grid_print(AocGrid *grid, int final) {
+    int row, col;
 
-    for (row = 0; row < grid->rows; row++) {
-        for (col = 0; col < grid->columns; col++) {
-            i = row * grid->columns + col;
-            if (grid->grid[i] > 0) {
+    for (row = 0; row < (int)grid->rows; row++) {
+        for (col = 0; col < (int)grid->columns; col++) {
+            int32_t *val = (int32_t *)aoc_grid_get(grid, row, col);
+            if ((val != NULL) && (*val > 0)) {
                 printf("\u2588");
             } else {
                 printf(" ");
@@ -128,15 +99,14 @@ void grid_print(Grid *grid, int final) {
     }
 }
 void *solve_part_1(AocData_t *data) {
-    Grid        *grid;
+    AocGrid     *grid;
     unsigned int i;
-    int          row, col, index;
+    int          row, col;
     Instruction *instruction;
 
-    grid = malloc(sizeof(Grid));
-    grid->rows = 6;
-    grid->columns = 50;
-    grid->grid = calloc((grid->rows * grid->columns), sizeof(int));
+    GridDimensions dimensions = {.rows = 6, .columns = 50};
+
+    grid = aoc_grid_new(&dimensions);
 
     AocArrayPtr d = aoc_data_get(data);
     for (i = 0; i < aoc_data_length(data); i++) {
@@ -151,21 +121,24 @@ void *solve_part_1(AocData_t *data) {
             case ROW:
                 rotate_row(grid, instruction);
                 break;
+            default:
+                fprintf(stderr, "Error in commands");
+                exit(EXIT_FAILURE);
         }
-        grid_print(grid, 0);
+        /* grid_print(grid, 0); */
     }
 
     int count = 0;
-    for (row = 0; row < 6; row++) {
-        for (col = 0; col < 50; col++) {
-            index = row * grid->columns + col;
-            count += grid->grid[index];
+    for (row = 0; row < (int)grid->rows; row++) {
+        for (col = 0; col < (int)grid->columns; col++) {
+            int32_t *val = (int *)aoc_grid_get(grid, row, col);
+            count += (val == NULL ? 0 : *val);
         }
     }
 
     grid_print(grid, 1);
 
-    return strdup_printf("%d", count);
+    return strdup_printf("%d", aoc_grid_elements(grid));
 }
 
 void *solve_part_2(AocData_t *data) {
