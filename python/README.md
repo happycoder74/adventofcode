@@ -11,6 +11,7 @@ common directory.
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
 |:---:|:-----------------|--------------:|--------------:|:--------|
 |  1  | &#11088;&#11088; |               |               |         |
+|  2  | &#11088;&#11088; |               |               |         |
 
 ### 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
