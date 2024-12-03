@@ -3,21 +3,20 @@
 #include <chrono>
 #include <cstdint>
 #include <iostream>
-#include <ratio>
 #include <string>
 
-using Clock = std::chrono::high_resolution_clock;
+using Clock    = std::chrono::high_resolution_clock;
 using duration = std::chrono::duration<double>;
 
 int main(int argc, char **argv) {
-    std::int16_t  level = 0;
+    std::int16_t  level   = 0;
     std::uint16_t counter = 0;
     std::string   filename;
 
     bool basement_found = false;
 
     const int year = 2015;
-    const int day = 1;
+    const int day  = 1;
 
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {
@@ -40,7 +39,7 @@ int main(int argc, char **argv) {
         if (!basement_found) {
             counter++;
             if (level == -1) {
-                t2 = Clock::now();
+                t2             = Clock::now();
                 basement_found = true;
             }
         }
