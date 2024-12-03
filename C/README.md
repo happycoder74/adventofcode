@@ -22,16 +22,11 @@ make run_2021
 
 Replace ```make``` above with whatever build system you choose to use in CMake
 
-## 2024 (Year of the plain C)
+## 2024
 
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
 |:---:|:-----------------|--------------:|--------------:|:--------|
-|  1  | &#11088;&#11088; |               |               | Pretty fun
-|  2  | &#11088;&#11088; |               |               | Probably not the most efficient...
-|  3  | &#11088;&#11088; |               |               | Plain C almost. Using regex
-|  4  | &#11088;&#11088; |               |               | Not pretty. But works.
-|  5  | &#11088;&#11088; |               |               |
-|  6  | &#11088;&#11088; |               |               | Pretty ok with optimization turned on. (duh!!)
+|  1  | &#11088;&#11088; |               |               | Plain C. Pretty fun
 
 ## 2023
 
