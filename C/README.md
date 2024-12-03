@@ -22,6 +22,12 @@ make run_2021
 
 Replace ```make``` above with whatever build system you choose to use in CMake
 
+## 2024
+
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
+|:---:|:-----------------|--------------:|--------------:|:--------|
+|  1  | &#11088;&#11088; |               |               | Plain C. Pretty fun
+
 ## 2023
 
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
