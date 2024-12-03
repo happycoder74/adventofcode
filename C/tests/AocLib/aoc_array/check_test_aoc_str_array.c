@@ -80,6 +80,21 @@ START_TEST(test_str_array_prepend_to_existing) {
 }
 END_TEST
 
+START_TEST(test_str_array_steal) {
+    ck_assert_ptr_nonnull(array);
+    aoc_str_array_append(array, "One");
+    aoc_str_array_append(array, "Two");
+    aoc_str_array_append(array, "Three");
+
+    size_t length;
+    char **array_data = aoc_array_steal(array, &length);
+
+    ck_assert(length == 3);
+    ck_assert_str_eq("One", array_data[0]);
+    ck_assert_str_eq("Three", array_data[2]);
+}
+END_TEST
+
 TCase *test_case_str_array(void) {
     TCase *test_aoc_str_array = tcase_create("test_aoc_str_array");
 
@@ -91,6 +106,7 @@ TCase *test_case_str_array(void) {
     tcase_add_test(test_aoc_str_array, test_str_array_remove_index);
     tcase_add_test(test_aoc_str_array, test_str_array_prepend_to_empty);
     tcase_add_test(test_aoc_str_array, test_str_array_prepend_to_existing);
+    tcase_add_test(test_aoc_str_array, test_str_array_steal);
 
     return test_aoc_str_array;
 }

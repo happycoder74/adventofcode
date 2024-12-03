@@ -17,8 +17,7 @@ typedef struct {
 } DataPoint_t;
 
 AocArrayPtr clean_input(AocArrayPtr data) {
-    DataPoint_t *data_point;
-    AocArrayPtr  return_data = aoc_ptr_array_new();
+    AocArrayPtr return_data = aoc_ptr_array_new();
 
     char *times = aoc_str_array_index(data, 0);
     char *start = strchr(times, ':') + 1;
@@ -74,8 +73,10 @@ void *solve_part_2(AocData_t *data) {
 
     for (unsigned i = 0; i < races->length; i++) {
         DataPoint_t *dp = aoc_ptr_array_index(races, i);
-        snprintf(time_string, 100, "%s%d", time_string[0] == '\0' ? "" : time_string, dp->race_time);
-        snprintf(distance_string, 100, "%s%d", distance_string[0] == '\0' ? "" : distance_string, dp->race_distance);
+        snprintf(time_string, 100, "%s%d", time_string[0] == '\0' ? "" : time_string,
+                 dp->race_time);
+        snprintf(distance_string, 100, "%s%d", distance_string[0] == '\0' ? "" : distance_string,
+                 dp->race_distance);
     }
 
     quadratic(-1, atoi(time_string), -(double)atoll(distance_string), solutions);

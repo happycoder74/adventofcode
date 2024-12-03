@@ -1,4 +1,5 @@
 #include "aoc_array.h"
+#include "aoc_alloc.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
@@ -243,7 +244,7 @@ AocArray *aoc_array_new(AocArrayType array_type, size_t size) {
     }
     array->type = array_type;
     array->length = 0;
-    array->capacity = size;
+    array->capacity = MAX(size, 1);
     return (AocArray *)array;
 }
 
@@ -675,4 +676,28 @@ AocArrayPtr aoc_array_reverse(AocArrayPtr array) {
     }
 
     return reversed;
+}
+
+void *aoc_array_steal(AocArrayPtr array, size_t *length) {
+    if (array == NULL) {
+        return NULL;
+    }
+    AocGenArray *arr = (AocGenArray *)array;
+
+    void *data = NULL;
+    if (arr->type == AOC_PTR) {
+        data = arr->ptr_data;
+    } else {
+        data = arr->data;
+    }
+    if (length != NULL) {
+        *length = arr->length;
+    }
+
+    arr->data = NULL;
+    arr->ptr_data = NULL;
+    arr->capacity = 0;
+    arr->element_size = 0;
+
+    return data;
 }
