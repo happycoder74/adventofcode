@@ -1,8 +1,6 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 void free_matrix(char **matrix, const int dimension, const int rotation) {
     unsigned int rot_dim = dimension;
@@ -137,22 +135,20 @@ int solve_part_2(char **matrix, size_t dimension) {
     unsigned int count = 0;
 
     char pattern[4][5] = {
-        {'M', 'M', 'S', 'S'},
-        {'S', 'M', 'S', 'M'},
-        {'S', 'S', 'M', 'M'},
-        {'M', 'S', 'M', 'S'}
+        {'M', 'M', 'A', 'S', 'S'},
+        {'S', 'M', 'A', 'S', 'M'},
+        {'S', 'S', 'A', 'M', 'M'},
+        {'M', 'S', 'A', 'M', 'S'}
     };
 
-    for (unsigned int i = 1; i < dimension - 1; i++) {
-        for (unsigned int j = 1; j < dimension - 1; j++) {
-            if (matrix[i][j] != 'A') {
-                continue;
-            }
+    for (unsigned int i = 0; i < dimension - 2; i++) {
+        for (unsigned int j = 0; j < dimension - 2; j++) {
             for (unsigned int i_pattern = 0; i_pattern < 4; i_pattern++) {
-                short int match = (matrix[i - 1][j - 1] == pattern[i_pattern][0]);
-                match = match && (matrix[i - 1][j + 1] == pattern[i_pattern][1]);
-                match = match && (matrix[i + 1][j - 1] == pattern[i_pattern][2]);
-                match = match && (matrix[i + 1][j + 1] == pattern[i_pattern][3]);
+                short int match = (matrix[i][j] == pattern[i_pattern][0]);
+                match = match && (matrix[i][j + 2] == pattern[i_pattern][1]);
+                match = match && (matrix[i + 1][j + 1] == pattern[i_pattern][2]);
+                match = match && (matrix[i + 2][j] == pattern[i_pattern][3]);
+                match = match && (matrix[i + 2][j + 2] == pattern[i_pattern][4]);
                 if (match) {
                     count++;
                     break;
@@ -164,15 +160,12 @@ int solve_part_2(char **matrix, size_t dimension) {
     return count;
 }
 
-int main(void) {
+int main() {
 
-    FILE           *fp = NULL;
-    char            filename[255];
-    char          **matrix = NULL;
-    size_t          dimension = 200;
-    struct timespec start, stop;
-
-    clock_gettime(CLOCK_REALTIME, &start);
+    FILE  *fp = NULL;
+    char   filename[255];
+    char **matrix;
+    size_t dimension = 200;
 
     matrix = (char **)malloc(dimension * sizeof(char *));
 
@@ -192,28 +185,9 @@ int main(void) {
         line_counter++;
     }
 
-    clock_gettime(CLOCK_REALTIME, &stop);
-
-    fprintf(stdout, "====================== SOLUTION ========================\n");
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 1: %10d", solve_part_1(matrix, line_counter));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 2: %10d", solve_part_2(matrix, line_counter));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    fprintf(stdout, "=======\n");
+    fprintf(stdout, "Solution to part 1: %d\n", solve_part_1(matrix, line_counter));
+    fprintf(stdout, "Solution to part 2: %d\n", solve_part_2(matrix, line_counter));
 
     free(matrix);
     return 0;
