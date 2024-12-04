@@ -65,6 +65,8 @@ int aoc_array_contains(AocArrayPtr array, void *value) {
                 }
                 break;
             default:
+                fprintf(stderr, "type not implemented");
+                return 0;
                 break;
         }
     }
