@@ -28,6 +28,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |:---:|:-----------------|--------------:|--------------:|:--------|
 |  1  | &#11088;&#11088; |               |               | Plain C. Pretty fun
 |  3  | &#11088;&#11088; |               |               | Plain C almost. Using regex
+|  4  | &#11088;&#11088; |               |               | Not pretty. But works.
 
 ## 2023
 
