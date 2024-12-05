@@ -135,20 +135,22 @@ int solve_part_2(char **matrix, size_t dimension) {
     unsigned int count = 0;
 
     char pattern[4][5] = {
-        {'M', 'M', 'A', 'S', 'S'},
-        {'S', 'M', 'A', 'S', 'M'},
-        {'S', 'S', 'A', 'M', 'M'},
-        {'M', 'S', 'A', 'M', 'S'}
+        {'M', 'M', 'S', 'S'},
+        {'S', 'M', 'S', 'M'},
+        {'S', 'S', 'M', 'M'},
+        {'M', 'S', 'M', 'S'}
     };
 
-    for (unsigned int i = 0; i < dimension - 2; i++) {
-        for (unsigned int j = 0; j < dimension - 2; j++) {
+    for (unsigned int i = 1; i < dimension - 1; i++) {
+        for (unsigned int j = 1; j < dimension - 1; j++) {
+            if (matrix[i][j] != 'A') {
+                continue;
+            }
             for (unsigned int i_pattern = 0; i_pattern < 4; i_pattern++) {
-                short int match = (matrix[i][j] == pattern[i_pattern][0]);
-                match = match && (matrix[i][j + 2] == pattern[i_pattern][1]);
-                match = match && (matrix[i + 1][j + 1] == pattern[i_pattern][2]);
-                match = match && (matrix[i + 2][j] == pattern[i_pattern][3]);
-                match = match && (matrix[i + 2][j + 2] == pattern[i_pattern][4]);
+                short int match = (matrix[i - 1][j - 1] == pattern[i_pattern][0]);
+                match = match && (matrix[i - 1][j + 1] == pattern[i_pattern][1]);
+                match = match && (matrix[i + 1][j - 1] == pattern[i_pattern][2]);
+                match = match && (matrix[i + 1][j + 1] == pattern[i_pattern][3]);
                 if (match) {
                     count++;
                     break;
