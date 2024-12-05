@@ -1,6 +1,8 @@
+#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 void free_matrix(char **matrix, const int dimension, const int rotation) {
     unsigned int rot_dim = dimension;
@@ -164,10 +166,13 @@ int solve_part_2(char **matrix, size_t dimension) {
 
 int main() {
 
-    FILE  *fp = NULL;
-    char   filename[255];
-    char **matrix;
-    size_t dimension = 200;
+    FILE           *fp = NULL;
+    char            filename[255];
+    char          **matrix = NULL;
+    size_t          dimension = 200;
+    struct timespec start, stop;
+
+    clock_gettime(CLOCK_REALTIME, &start);
 
     matrix = (char **)malloc(dimension * sizeof(char *));
 
@@ -187,9 +192,28 @@ int main() {
         line_counter++;
     }
 
-    fprintf(stdout, "=======\n");
-    fprintf(stdout, "Solution to part 1: %d\n", solve_part_1(matrix, line_counter));
-    fprintf(stdout, "Solution to part 2: %d\n", solve_part_2(matrix, line_counter));
+    clock_gettime(CLOCK_REALTIME, &stop);
+
+    fprintf(stdout, "====================== SOLUTION ========================\n");
+    fprintf(stdout, "Preparation time:   ");
+    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    fprintf(stdout, "--------------------------------------------------------\n");
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    fprintf(stdout, "Solution to part 1: %10d", solve_part_1(matrix, line_counter));
+    clock_gettime(CLOCK_REALTIME, &stop);
+    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    clock_gettime(CLOCK_REALTIME, &start);
+    fprintf(stdout, "Solution to part 2: %10d", solve_part_2(matrix, line_counter));
+    clock_gettime(CLOCK_REALTIME, &stop);
+    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    fprintf(stdout, "--------------------------------------------------------\n");
 
     free(matrix);
     return 0;
