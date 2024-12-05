@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,10 +70,13 @@ int solve_part_2(unsigned int data[1000][30], unsigned int dimension) {
 
 int main(void) {
 
-    FILE        *fp = NULL;
-    char         filename[255];
-    unsigned int data[1000][30];
-    char         line[1000];
+    FILE           *fp = NULL;
+    char            filename[255];
+    unsigned int    data[1000][30];
+    char            line[1000];
+    struct timespec start, stop;
+
+    clock_gettime(CLOCK_REALTIME, &start);
 
     sprintf(filename, "%s/2024/02/input.txt", getenv("AOC_DATA_LOCATION"));
 
@@ -96,20 +100,27 @@ int main(void) {
     }
 
     fclose(fp);
-    fprintf(stdout, "=======\n");
-    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &stop);
+
+    fprintf(stdout, "====================== SOLUTION ========================\n");
+    fprintf(stdout, "Preparation time:   ");
+    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    fprintf(stdout, "--------------------------------------------------------\n");
 
     clock_gettime(CLOCK_REALTIME, &start);
     fprintf(stdout, "Solution to part 1: %10d", solve_part_1(data, line_counter));
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.2lf (ms)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) -
-                (start.tv_sec * 1e3 + start.tv_nsec * 1e-6));
+    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
     clock_gettime(CLOCK_REALTIME, &start);
     fprintf(stdout, "Solution to part 2: %10d", solve_part_2(data, line_counter));
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.2lf (ms)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) -
-                (start.tv_sec * 1e3 + start.tv_nsec * 1e-6));
+    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    fprintf(stdout, "--------------------------------------------------------\n");
     return 0;
 }
