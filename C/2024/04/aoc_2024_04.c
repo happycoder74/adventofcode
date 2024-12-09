@@ -164,7 +164,7 @@ int solve_part_2(char **matrix, size_t dimension) {
     return count;
 }
 
-int main() {
+int main(void) {
 
     FILE           *fp = NULL;
     char            filename[255];
