@@ -7,7 +7,7 @@ repos:
   rev: v17.0.6
   hooks:
   - id: clang-format
-- repo: https://gitea.strandkarr.net/christian/pre-commit-rust-format.git
+- repo: https://gitea.strandkarr.org/christian/pre-commit-rust-format.git
   rev: f10157474c510a197f504d6520b2d6797fe10246
   hooks:
   - id: rust-format
