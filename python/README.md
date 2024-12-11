@@ -8,12 +8,13 @@ Implements a class based structure with a Puzzle main class located in the
 common directory.
 
 ### 2024:
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
 |:---:|:-----------------|--------------:|--------------:|:--------|
 |  1  | &#11088;&#11088; |               |               |         |
 |  2  | &#11088;&#11088; |               |               |         |
 |  3  | &#11088;&#11088; |               |               |         |
-|  5  | &#11088;         |               |               |         |
+|  5  | &#11088;&#11088; |               |               |         |
 
 ### 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
