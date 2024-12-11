@@ -1,10 +1,10 @@
 #include "aoc_hash.h"
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_types.h"
 #include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -212,7 +212,6 @@ void aoc_hash_table_destroy(AocHashTablePtr *hashtable) {
 
 static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, const void *obj,
                                           bool replace) {
-    bool value_exists = false;
     if (!ht) {
         return false;
     }
@@ -233,6 +232,12 @@ static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, c
 
     size_t index = aoc_hash_table_index(ht, key);
 
+    if (ht->key_free_func && key_exists) {
+        ht->key_free_func(e->key);
+    }
+    if (ht->value_free_func && key_exists) {
+        ht->value_free_func(e->object);
+    }
     e->object = (void *)obj;
     e->key = (void *)key;
     if (!key_exists) {
@@ -249,6 +254,7 @@ static bool aoc_hash_table_insert_replace(AocHashTablePtr ht, const void *key, c
 /****
  *
  * aoc_hash_table_insert:
+ * A
  *
  * @ht: pointer to a AocHashTable
  * @key: address to key to insert
@@ -446,7 +452,7 @@ size_t aoc_hash_table_size(AocHashTablePtr hash_table) {
 }
 
 size_t aoc_hash_table_count(AocHashTablePtr hash_table) {
-    return hash_table->count;
+    return hash_table ? hash_table->count : 0;
 }
 
 bool aoc_hash_table_add(AocHashTablePtr ht, const void *key) {
@@ -516,6 +522,11 @@ inline static uint32_t char_hash(const void *key) {
     return aoc_hash(AOC_CHAR, key);
 }
 
+void aoc_hash_table_iter_destroy(AocHashIterator *iter) {
+    free(iter->keys);
+    free(iter->values);
+}
+
 void aoc_hash_table_iter_init(AocHashIterator *iter, AocHashTablePtr hash_table) {
     if (!iter) {
         return;
@@ -571,7 +582,21 @@ bool aoc_hash_table_iter_next(AocHashIterator *iter, void **key, void **value) {
 }
 
 bool aoc_hash_table_contains(AocHashTablePtr ht, const void *key) {
-    return (aoc_hash_table_lookup(ht, key) != NULL);
+    size_t index = aoc_hash_table_index(ht, key);
+
+    if (ht->elements[index] == NULL) {
+        return false;
+    }
+
+    entry *e = ht->elements[index];
+    while (e) {
+        if (ht->key_equal(e->key, key)) {
+            return true;
+        }
+        e = e->next;
+    }
+
+    return false;
 }
 
 bool aoc_hash_table_lookup_extended(AocHashTablePtr ht, const void *key, void **orig_key,
@@ -641,7 +666,6 @@ AocArrayPtr aoc_hash_table_get_values_if(AocHashTablePtr ht, bool(cmp_func)(cons
 }
 
 void aoc_hash_table_foreach(AocHashTablePtr hash_table, AocHashTableFunc func, void *user_data) {
-    unsigned key_idx = 0;
     for (unsigned idx = 0; idx < hash_table->size; idx++) {
         entry *e = hash_table->elements[idx];
         if (e != NULL) {
@@ -655,11 +679,9 @@ void aoc_hash_table_foreach(AocHashTablePtr hash_table, AocHashTableFunc func, v
 
 void aoc_hash_table_foreach_remove(AocHashTablePtr hash_table, AocHashTableRFunc func,
                                    void *user_data) {
-    unsigned key_idx = 0;
 
     for (unsigned idx = 0; idx < hash_table->size; idx++) {
         entry *e = hash_table->elements[idx];
-        entry *prev = NULL;
         if (e != NULL) {
             do {
                 entry *next = e->next;

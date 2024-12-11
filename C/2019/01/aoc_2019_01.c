@@ -12,9 +12,9 @@ int fuel_cost(int fuel) {
     fuel = (fuel / 3) - 2;
     if (fuel < 0) {
         return 0;
-    } else {
-        return fuel + fuel_cost(fuel);
     }
+
+    return fuel + fuel_cost(fuel);
 }
 
 AocArrayPtr clean_data(AocArrayPtr data) {
@@ -26,6 +26,7 @@ AocArrayPtr clean_data(AocArrayPtr data) {
         val = atoi(aoc_str_array_index(data, i));
         aoc_int32_array_append(return_data, val);
     }
+    aoc_str_array_free(data);
     return return_data;
 }
 

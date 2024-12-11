@@ -7,7 +7,8 @@
 #include <unistd.h>
 
 // String function macros
-#define aoc_str_split(_string, _delimiter, _max_tokens) (str_split(_string, _delimiter, _max_tokens))
+#define aoc_str_split(_string, _delimiter, _max_tokens)                                            \
+    (str_split(_string, _delimiter, _max_tokens))
 
 // String functions similar to methods of  python strings
 // more to come later
