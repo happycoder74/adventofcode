@@ -88,21 +88,6 @@ int solve_part_1(struct map *map) {
 }
 
 int solve_part_2(struct map map) {
-    /*
-     * The idea for part 2 is to find an obstruction that will lead the guard into the same path as
-     * he has already been on. That means that after the turn at the new obstruction the guard is on
-     * an already visited location and heading in the same direction as he was heading before when
-     * passing that point. That will lead the guard into a loop.
-     *
-     * So if we log not only the visited position of the guard but also the direction we could
-     * compare each new visited point and see if the guard are moving in the same direction. If so
-     * we have found a new good obstruction point.
-     *
-     *
-     * This strategy seem to work, but is incredibly slow. Apparantly there are better solutions to
-     * this problem
-     *
-     */
     unsigned int count = 0;
 
     struct direction initial_direction = {0, -1};
