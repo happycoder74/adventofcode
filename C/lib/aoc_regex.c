@@ -1,6 +1,5 @@
 #include "aoc_regex.h"
 #include "aoc_string.h"
-#include <pcre2posix.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
