@@ -3,7 +3,7 @@ resolver = "2"
 members = [
     "2015", "2017",
     "2021",
-    "2023",
+    "2023", "2024"
 ]
 
 [workspace.package]
