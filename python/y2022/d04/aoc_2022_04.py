@@ -1,4 +1,4 @@
-from common import timer, Puzzle
+from common import Puzzle, timer
 
 
 class Day04(Puzzle, year=2022, day=4):
@@ -9,12 +9,7 @@ class Day04(Puzzle, year=2022, day=4):
             pair = row.strip().split(",")
             p0min, p0max = map(int, pair[0].split("-"))
             p1min, p1max = map(int, pair[1].split("-"))
-            elves.append(
-                [
-                    list(range(p0min, p0max + 1)),
-                    list(range(p1min, p1max + 1))
-                ]
-            )
+            elves.append((p0min, p0max, p1min, p1max))
 
         return elves
 
@@ -22,11 +17,8 @@ class Day04(Puzzle, year=2022, day=4):
     def solve_part_1(self):
         """Solution for part 1"""
         overlaps = 0
-        for pair1, pair2 in self.data:
-            if (
-                all(x in pair2 for x in pair1)
-                or all(x in pair1 for x in pair2)
-            ):
+        for p0min, p0max, p1min, p1max in self.data:
+            if (p0min <= p1min) and (p1max <= p0max) or (p1min <= p0min) and (p0max <= p1max):
                 overlaps += 1
 
         return overlaps
@@ -35,10 +27,8 @@ class Day04(Puzzle, year=2022, day=4):
     def solve_part_2(self):
         """Solution for part 2"""
         overlaps = 0
-        for pair1, pair2 in self.data:
-            if any(x in pair2 for x in pair1) or any(
-                x in pair1 for x in pair2
-            ):
+        for p0min, p0max, p1min, p1max in self.data:
+            if (p1min <= p0min) and (p0min <= p1max) or (p0min <= p1min) and (p1min <= p0max):
                 overlaps += 1
 
         return overlaps
