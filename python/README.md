@@ -17,6 +17,7 @@ common directory.
 |  5  | &#11088;&#11088; |               |               |         |
 |  7  | &#11088;&#11088; |               |               | Inefficient algorithm but works |
 |  8  | &#11088;&#11088; |               |               |         |
+|  9  | &#11088;         |               |               |         |
 
 ### 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
