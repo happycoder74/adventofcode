@@ -18,10 +18,9 @@ class Day07(Puzzle, year=2024, day=7):
     def check_equation(self, equation, concatenate=False) -> bool:
         answer = equation[0]
         operands = equation[1]
+        operatorlist = [operator.add, operator.mul]
         if concatenate:
-            operatorlist = [operator.add, operator.mul, self.concatenate]
-        else:
-            operatorlist = [operator.add, operator.mul]
+            operatorlist.append(self.concatenate)
 
         operators = itertools.product(operatorlist, repeat=len(operands) - 1)
         res = 0
