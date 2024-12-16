@@ -3,8 +3,9 @@
 Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 
 ## Year 2024
-+ 6 &#11088; in [Python](python/README.md)
++ 13 &#11088; in [Python](python/README.md)
 + 10 &#11088; in [C](C/README.md)
++ 1 &#11088; in [Rust](Rust/README.md)
 
 ## Year 2023
 + 23 &#11088; in [Python](python/README.md)
