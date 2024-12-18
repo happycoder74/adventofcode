@@ -1,4 +1,4 @@
-# Install script for directory: /home/christian/projects/adventofcode-c/C/2016
+# Install script for directory: /home/christian/projects/adventofcode-c/C/2023
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

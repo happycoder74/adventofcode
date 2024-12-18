@@ -1,4 +1,4 @@
-# Install script for directory: /home/christian/projects/adventofcode/C/2022
+# Install script for directory: /home/christian/projects/adventofcode-c/C/2022
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "DebugVerbose")
+    set(CMAKE_INSTALL_CONFIG_NAME "Debugverbose")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -39,6 +39,6 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/llvm-objdump-17")
+  set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
 
