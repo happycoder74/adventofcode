@@ -30,7 +30,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  2  | &#11088;&#11088; |               |               | Probably not the most efficient...
 |  3  | &#11088;&#11088; |               |               | Plain C almost. Using regex
 |  4  | &#11088;&#11088; |               |               | Not pretty. But works.
-|  5  | &#11088;         |               |               | Messy.
+|  5  | &#11088;&#11088; |               |               | Messy.
 
 ## 2023
 
