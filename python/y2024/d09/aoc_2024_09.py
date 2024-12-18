@@ -1,3 +1,4 @@
+import sys
 from collections import deque
 from itertools import zip_longest
 
@@ -17,16 +18,6 @@ class Day09(Puzzle, year=2024, day=9):
             (index, (int(v1), int(v2))) if v2 is not None else (index, (int(v1), 0))
             for index, (v1, v2) in enumerate(zip_longest(input[::2], input[1::2]))
         ]
-
-    def print_layout(self):
-        for block in self.new_layout:
-            for _ in range(block[1]):
-                print(block[0], end="")
-        for index, (c, s) in self.disk:
-            for _ in range(c):
-                print(index, end="")
-            for sp in range(s):
-                print(".", end="")
 
     @timer(part=1)
     def solve_part_1(self):
@@ -60,7 +51,7 @@ class Day09(Puzzle, year=2024, day=9):
         print("", end="\n")
         counter = 0
         for blocks in self.new_layout:
-            for c in range(blocks[1]):
+            for _ in range(blocks[1]):
                 checksum += counter * blocks[0]
                 counter += 1
         return checksum
@@ -68,6 +59,34 @@ class Day09(Puzzle, year=2024, day=9):
     @timer(part=2)
     def solve_part_2(self):
         """Solution for part 2"""
-        result = 0
+        self.new_layout = list(self.data)
 
-        return result
+        length = len(self.new_layout)
+        index = length - 1
+        while index > 0:
+            last_item = self.new_layout[index]
+            for ii in range(0, index):
+                item = self.new_layout[ii]
+                if item[1][1] >= last_item[1][0]:
+                    move_item = self.new_layout.pop(index)
+                    self.new_layout.insert(
+                        ii + 1, (move_item[0], (move_item[1][0], item[1][1] - move_item[1][0]))
+                    )
+                    self.new_layout[ii] = (item[0], (item[1][0], 0))
+                    corr_item = self.new_layout[index]
+                    self.new_layout[index] = (
+                        corr_item[0],
+                        (corr_item[1][0], corr_item[1][1] + sum(last_item[1])),
+                    )
+                    index += 1
+                    break
+            index -= 1
+
+        counter = 0
+        checksum = 0
+        for blocks in self.new_layout:
+            for _ in range(blocks[1][0]):
+                checksum += counter * blocks[0]
+                counter += 1
+            counter += blocks[1][1]
+        return checksum
