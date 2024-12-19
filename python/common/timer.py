@@ -30,7 +30,7 @@ def timer(
                         ]
                     )
                 )
-            return result
+            return (result, elapsed_time)
 
         return wrapper
 
