@@ -11,12 +11,12 @@ from runner import AocRunner
 
 
 class Benchmark(object):
-    def __init__(self, year: str = "2015", day: str = "1", iterations=10, bins=10):
+    def __init__(self, year: str = "2015", day: str = "1", iterations=None, bins=None):
         self.year = year
         self.day = day
         self.iterations = int(iterations) if iterations is not None else 10
         self.results = list()
-        self.bins = int(bins)
+        self.bins = int(bins) if bins is not None else 10
 
     def run(self):
         self.results = list()
