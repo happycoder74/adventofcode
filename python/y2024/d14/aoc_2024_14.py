@@ -112,5 +112,6 @@ class Day14(Puzzle, year=2024, day=14):
             if step % 100 == 0:
                 print(".", end="", flush=True)
 
+        print()
         br.print_room()
         return step
