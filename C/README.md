@@ -32,6 +32,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  4  | &#11088;&#11088; |               |               | Not pretty. But works.
 |  5  | &#11088;&#11088; |               |               | Messy.
 | 12  | &#11088;         |               |               | Loop mania
+| 14  | &#11088;&#11088; |               |               | Pretty nice
 
 ## 2023
 
