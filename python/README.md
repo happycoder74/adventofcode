@@ -19,6 +19,9 @@ common directory.
 |  8  | &#11088;&#11088; |               |               |         |
 |  9  | &#11088;&#11088; |               |               |         |
 | 10  | &#11088;&#11088; |               |               | Always fun to reuse something from the "library"        |
+| 11  | &#11088;&#11088; |               |               | Always fun to reuse something from the "library"        |
+| 13  | &#11088;&#11088; |               |               | Numpy isn't always fast.        |
+| 14  | &#11088;&#11088; |               |               | Slow but interesting part 2        |
 
 ### 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |

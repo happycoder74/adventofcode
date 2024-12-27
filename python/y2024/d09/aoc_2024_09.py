@@ -1,4 +1,3 @@
-import sys
 from collections import deque
 from itertools import zip_longest
 
@@ -70,7 +69,8 @@ class Day09(Puzzle, year=2024, day=9):
                 if item[1][1] >= last_item[1][0]:
                     move_item = self.new_layout.pop(index)
                     self.new_layout.insert(
-                        ii + 1, (move_item[0], (move_item[1][0], item[1][1] - move_item[1][0]))
+                        ii + 1,
+                        (move_item[0], (move_item[1][0], item[1][1] - move_item[1][0])),
                     )
                     self.new_layout[ii] = (item[0], (item[1][0], 0))
                     corr_item = self.new_layout[index]
