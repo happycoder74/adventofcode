@@ -55,7 +55,7 @@ class Day13(Puzzle, year=2024, day=13):
             a_presses, a_remainder = divmod(Cx * y1 - Cy * x1, y1 * x0 - x1 * y0)
             if a_remainder:
                 continue
-            b_presses, b_remainder = divmod(Cx - a_presses * x0, x1)
+            b_presses, b_remainder = divmod(-Cx * y0 + Cy * x0, y1 * x0 - x1 * y0)
             if b_remainder:
                 continue
             result += 3 * a_presses + b_presses
