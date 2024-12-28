@@ -1,6 +1,6 @@
 import functools
 import operator
-from collections import Counter
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 
 from common import Puzzle, timer
@@ -47,14 +47,16 @@ class Bathroom:
         self.max_x = max_x
         self.max_y = max_y
 
-        self.robots = [Robot(*l, max_x=max_x, max_y=max_y) for l in robots]
-        self.unique_positions = Counter((r.pos_x, r.pos_y) for r in self.robots)
+        self.robots = [Robot(*rob, max_x=max_x, max_y=max_y) for rob in robots]
+        self.unique_positions = [0] * max_x * max_y
+        for r in self.robots:
+            self.unique_positions[r.pos_x + r.pos_y * r.max_x] += 1
 
     def move_robots(self, steps=1):
         for robot in self.robots:
-            self.unique_positions[(robot.pos_x, robot.pos_y)] -= 1
+            self.unique_positions[robot.pos_x + robot.pos_y * robot.max_x] -= 1
             robot.move(steps)
-            self.unique_positions[(robot.pos_x, robot.pos_y)] += 1
+            self.unique_positions[robot.pos_x + robot.pos_y * robot.max_x] += 1
 
     def safety_factor(self):
         c = Counter(robot.quadrant for robot in self.robots)
@@ -64,13 +66,14 @@ class Bathroom:
     def is_christmas_tree(self):
         # Check if all robots are on a unique position
         # This isn't necessarily the solution but for me it was
-        return self.unique_positions.most_common(1)[0][1] == 1
+        # return self.unique_positions.most_common(1)[0][1] == 1
+        return max(self.unique_positions) == 1
 
     def print_room(self):
         for r in range(self.max_y):
             row = []
             for c in range(self.max_x):
-                if self.unique_positions[(c, r)] > 0:
+                if self.unique_positions[c + r * self.max_x] > 0:
                     row.append("#")
                 else:
                     row.append(".")
