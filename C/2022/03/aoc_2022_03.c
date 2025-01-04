@@ -1,7 +1,9 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_types.h"
 #include "aoc_utils.h"
 #include <ctype.h>
 #include <stdint.h>
@@ -10,8 +12,9 @@
 #include <string.h>
 
 int32_t prio(char c) {
-    if (isupper(c))
+    if (isupper(c)) {
         return c - 'A' + 27;
+    }
     return c - 'a' + 1;
 }
 
@@ -22,15 +25,15 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         char *row = aoc_str_array_index(data, i);
         row = str_trim(row);
         uint16_t pack_length = strlen(row) / 2;
-        char    *pack1 = (char *)aoc_calloc(pack_length + 1, sizeof(char));
-        char    *pack2 = (char *)aoc_calloc(pack_length + 1, sizeof(char));
+        char    *pack1 = (char *)calloc(pack_length + 1, sizeof(char));
+        char    *pack2 = (char *)calloc(pack_length + 1, sizeof(char));
 
         memcpy(pack1, row, pack_length * sizeof(char));
         pack1[pack_length] = '\0';
         memcpy(pack2, row + pack_length, pack_length * sizeof(char));
         pack2[pack_length] = '\0';
 
-        char **packs = (char **)aoc_calloc(2, sizeof(char *));
+        char **packs = (char **)calloc(2, sizeof(char *));
 
         packs[0] = pack1;
         packs[1] = pack2;
@@ -38,7 +41,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
         aoc_ptr_array_append(rucksacks, packs);
     }
 
-    aoc_array_free(data, data->free_segments);
+    aoc_str_array_free(data);
     return rucksacks;
 }
 
@@ -48,11 +51,12 @@ void *solve_part_1(AocData_t *data) {
     int prio_sum = 0;
     for (uint16_t i = 0; i < aoc_data_length(data); i++) {
         packs = aoc_ptr_array_index(aoc_data_get(data), i);
-        AocArrayPtr common_items = aoc_array_sized_new(AOC_ARRAY_CHAR, 20);
+        AocArrayPtr common_items = aoc_array_sized_new(AOC_CHAR, 20);
         for (uint16_t j = 0; j < strlen(packs[0]); j++) {
             if (strchr(packs[1], packs[0][j]) != NULL) {
-                if (!aoc_char_array_contains(common_items, packs[0][j]))
+                if (!aoc_char_array_contains(common_items, packs[0][j])) {
                     aoc_char_array_append(common_items, packs[0][j]);
+                }
             }
         }
 
@@ -66,16 +70,21 @@ void *solve_part_1(AocData_t *data) {
 
 void *solve_part_2(AocData_t *data) {
     AocArrayPtr groups = aoc_ptr_array_new();
-    AocArrayPtr group = aoc_ptr_array_new();
+    AocArrayPtr group = aoc_str_array_new();
 
     for (uint32_t i = 0; i < aoc_data_length(data); i++) {
         char **packs = aoc_ptr_array_index(aoc_data_get(data), i);
         char  *pack = str_join("", packs, 2);
-        aoc_ptr_array_append(group, pack);
+        aoc_str_array_append(group, pack);
+        free(pack);
         if ((((i + 1) % 3) == 0) && (i > 0)) {
             aoc_ptr_array_append(groups, group);
-            group = aoc_ptr_array_new();
+            group = aoc_str_array_new();
         }
+    }
+
+    if (group->length == 0) {
+        aoc_str_array_free(group);
     }
 
     int prio_sum = 0;
@@ -88,8 +97,9 @@ void *solve_part_2(AocData_t *data) {
         char *str1 = aoc_str_array_index(group, 1);
         for (uint32_t k = 0; k < strlen(str); k++) {
             if (strchr(str1, str[k]) != NULL) {
-                if (!aoc_char_array_contains(common_items, str[k]))
+                if (!aoc_char_array_contains(common_items, str[k])) {
                     aoc_char_array_append(common_items, str[k]);
+                }
             }
         }
         str1 = aoc_str_array_index(group, 2);
@@ -107,7 +117,7 @@ void *solve_part_2(AocData_t *data) {
     }
     for (uint32_t group = 0; group < aoc_array_length(groups); group++) {
         AocArrayPtr group_ptr = aoc_ptr_array_index(groups, group);
-        aoc_array_free(group_ptr, group_ptr->free_segments);
+        aoc_str_array_free(group_ptr);
     }
     aoc_array_free(groups, 0);
     return strdup_printf("%d", prio_sum);
@@ -124,32 +134,20 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2022;
+    const unsigned day = 3;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
-    for (uint32_t segment = 0; segment < aoc_data_length(data); segment++) {
-        char **packs = (char **)aoc_ptr_array_index(data->data, segment);
-        aoc_free(packs[0]);
-        aoc_free(packs[1]);
+    AocArrayPtr d = data->data;
+    for (unsigned i = 0; i < d->length; i++) {
+        char **packs = (char **)aoc_ptr_array_index(d, i);
+        free(packs[0]);
+        free(packs[1]);
     }
     aoc_data_free(data);
 

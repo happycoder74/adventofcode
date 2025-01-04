@@ -1,4 +1,6 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
@@ -9,7 +11,7 @@
 #include <string.h>
 
 AocArrayPtr clean_input(AocArrayPtr data) {
-    AocArrayPtr return_array = aoc_array_new(AOC_ARRAY_INT32, 2000);
+    AocArrayPtr return_array = aoc_array_new(AOC_INT32, 2000);
     char      **instructions = aoc_str_split(aoc_str_array_index(data, 0), ",", 0);
     int         opcode;
 
@@ -49,7 +51,7 @@ void *solve_part_2(AocData_t *data) {
     int         input_value = 5;
 
     IntCodeReturn_t *rv = intcode(instructions, &input_value);
-    int              return_value = aoc_int32_array_index(rv->return_buffer, rv->return_buffer->length - 1);
+    int return_value = aoc_int32_array_index(rv->return_buffer, rv->return_buffer->length - 1);
 
     aoc_int32_array_free(instructions);
     intcode_return_free(rv);
@@ -67,29 +69,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2019;
+    const unsigned day = 5;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

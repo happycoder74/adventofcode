@@ -1,20 +1,20 @@
 #include "aoc_alloc.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int fuel_cost(int fuel) {
     fuel = (fuel / 3) - 2;
     if (fuel < 0) {
         return 0;
-    } else {
-        return fuel + fuel_cost(fuel);
     }
+
+    return fuel + fuel_cost(fuel);
 }
 
 AocArrayPtr clean_data(AocArrayPtr data) {
@@ -26,6 +26,7 @@ AocArrayPtr clean_data(AocArrayPtr data) {
         val = atoi(aoc_str_array_index(data, i));
         aoc_int32_array_append(return_data, val);
     }
+    aoc_str_array_free(data);
     return return_data;
 }
 
@@ -66,26 +67,13 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2019;
+    const unsigned day = 1;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_data);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_data);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_data);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_data);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);

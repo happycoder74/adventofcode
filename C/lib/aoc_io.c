@@ -1,7 +1,9 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_list.h"
 #include "aoc_string.h"
 #include "aoc_types.h"
+#include "aoc_utils.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <stdio.h>
@@ -19,7 +21,9 @@ int download_input(int year, int day) {
     char *data_home = NULL;
     data_home = getenv("AOC_DATA_LOCATION");
     if (!data_home) {
-        fprintf(stderr, "Could not find data location. Please set environment variable AOC_DATA_LOCATION\n");
+        fprintf(
+            stderr,
+            "Could not find data location. Please set environment variable AOC_DATA_LOCATION\n");
         return EXIT_FAILURE;
     }
     char *path = strdup_printf("%s/%s", data_home, filename);
@@ -31,7 +35,12 @@ int download_input(int year, int day) {
         return EXIT_FAILURE;
     }
 
-    fgets(cookie_contents, sizeof(cookie_contents) / sizeof(char), fp);
+    char *s = fgets(cookie_contents, sizeof(cookie_contents) / sizeof(char), fp);
+    if (!s) {
+        fprintf(stderr, "Failed to read cookie contents\n");
+        free(path);
+        return EXIT_FAILURE;
+    }
     fclose(fp);
 
     CURL *curl = curl_easy_init();
@@ -49,7 +58,8 @@ int download_input(int year, int day) {
         curl_easy_setopt(curl, CURLOPT_URL, input_url);
         curl_easy_setopt(curl, CURLOPT_COOKIE, cookie);
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "\"github.com/happycoder74/adventofcode/C/lib/aoc_io.c\"");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT,
+                         "\"github.com/happycoder74/adventofcode/C/lib/aoc_io.c\"");
 
         res = curl_easy_perform(curl);
 
@@ -72,7 +82,6 @@ AocSList *get_input_list(char *filename, int year, int day) {
     AocSList *data = NULL;
     char     *line = NULL;
     size_t    line_length = 0;
-    char     *data_line;
     char     *path;
     char     *file = NULL;
 
@@ -96,11 +105,12 @@ AocSList *get_input_list(char *filename, int year, int day) {
         return NULL;
     }
 
+    char *to_trim = NULL;
     while ((getline(&line, &line_length, fp)) != -1) {
-        data_line = str_trim(strdup(line));
-        data = aoc_slist_prepend(data, data_line);
+        to_trim = line;
+        aoc_slist_prepend(data, strdup(str_trim(to_trim)));
     }
-
+    free(to_trim);
     free(file);
     free(path);
 
@@ -110,11 +120,11 @@ AocSList *get_input_list(char *filename, int year, int day) {
 AocArrayPtr get_input_new(char *filename, int year, int day) {
     FILE       *fp;
     AocArrayPtr data;
-    char        line[10000];
-    char       *data_line;
+    char       *line;
     char       *path;
     char       *file = NULL;
     char       *data_location;
+    size_t      line_length = 0;
 
     data_location = getenv("AOC_DATA_LOCATION");
     if ((data_location)) {
@@ -136,9 +146,14 @@ AocArrayPtr get_input_new(char *filename, int year, int day) {
     }
 
     data = aoc_str_array_new();
-    while (fgets(line, 10000, fp)) {
-        data_line = str_trim(strdup(line));
-        aoc_str_array_append(data, data_line);
+    char *to_trim = NULL;
+    while ((getline(&line, &line_length, fp)) != -1) {
+        to_trim = line;
+        aoc_str_array_append(data, str_trim(to_trim));
+    }
+    free(to_trim);
+    if ((line != NULL) && (line != to_trim)) {
+        free(line);
     }
 
     if (file) {
@@ -153,7 +168,6 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     AocArrayPtr data;
     char       *line = NULL;
     size_t      line_length = 0;
-    char       *data_line;
     char       *path;
     char       *file = NULL;
     char        wd[255];
@@ -174,7 +188,8 @@ AocArrayPtr get_input(char *filename, int year, int day) {
 
     fp = fopen(file, "r");
     if (!(fp)) {
-        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file, getcwd(wd, 255));
+        fprintf(stderr, "Can not open file! (%s)\nCurrent working directory = %s\n", file,
+                getcwd(wd, 255));
         fprintf(stderr, "Trying to download...\n");
         int dl_status = download_input(year, day);
         if (!dl_status) {
@@ -188,18 +203,18 @@ AocArrayPtr get_input(char *filename, int year, int day) {
         }
     }
 
-    data = aoc_ptr_array_new();
+    data = aoc_str_array_new();
 
+    char *to_trim = NULL;
     while ((getline(&line, &line_length, fp)) != -1) {
-        char *to_trim = strdup(line);
-        data_line = strdup(str_trim(to_trim));
-        aoc_ptr_array_append(data, data_line);
-        free(to_trim);
+        to_trim = line;
+        aoc_str_array_append(data, str_trim(to_trim));
+    }
+    free(to_trim);
+    if ((line != NULL) && (line != to_trim)) {
+        free(line);
     }
 
-#ifdef __MINGW32__
-    free(line);
-#endif
     fclose(fp);
     if (file != filename) {
         free(file);
@@ -208,6 +223,12 @@ AocArrayPtr get_input(char *filename, int year, int day) {
     free(path);
 
     return data;
+}
+
+void aoc_header(unsigned year, unsigned day) {
+    printf("================================================\n");
+    printf("Solution for %d, day %02d\n", year, day);
+    printf("================================================\n");
 }
 
 #ifdef __MINGW32__
@@ -258,5 +279,4 @@ ssize_t getdelim(char **buf, size_t *bufsiz, int delimiter, FILE *fp) {
         }
     }
 }
-
 #endif

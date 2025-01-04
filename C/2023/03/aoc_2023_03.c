@@ -1,9 +1,12 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
 #include <ctype.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +23,8 @@ static void neighbours(Schematic_t *schema, unsigned y, unsigned x, char *nbs, u
     unsigned nb_index = 0;
     for (short j = -1; j <= 1; j++) {
         for (short i = -1; i <= 1; i++) {
-            if ((((int)y + j) >= 0) && ((y + j) < schema->max_y) && (0 <= ((int)x + i)) && ((x + i) < schema->max_x)) {
+            if ((((int)y + j) >= 0) && ((y + j) < schema->max_y) && (0 <= ((int)x + i)) &&
+                ((x + i) < schema->max_x)) {
                 if (!((i == 0) && (j == 0))) {
                     nbs[nb_index++] = schema->grid[y + j][x + i];
                 }
@@ -143,7 +147,8 @@ static unsigned find_gears(Schematic_t *schema) {
 
         for (unsigned row = j - 1; row <= j + 1; row++) {
             for (unsigned col = i - 1; col <= i + 1; col++) {
-                if ((0 <= (int)row) && (row < schema->max_y) && (0 <= (int)col) && (col < schema->max_x)) {
+                if ((0 <= (int)row) && (row < schema->max_y) && (0 <= (int)col) &&
+                    (col < schema->max_x)) {
                     if (isdigit(schema->grid[row][col])) {
                         numbers[n_numbers++] = find_number(schema, row, col);
                         if (schema->next_col != UINT_MAX) {
@@ -202,29 +207,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2023;
+    const unsigned day = 3;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

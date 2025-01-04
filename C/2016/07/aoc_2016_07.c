@@ -1,109 +1,137 @@
-#include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
+#include "aoc_regex.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define NMATCH 20
+
+int check_match(regmatch_t *match_info, const char *string) {
+    for (unsigned i = 0; i < 3; i++) {
+        if (match_info[0].rm_so < 0) {
+            return 0;
+        }
+    }
+    return !(string[match_info[1].rm_so] == string[match_info[2].rm_so]);
+}
+
+int check_abba(regex_t *abba, const char *string) {
+    regmatch_t abbaMatch[NMATCH];
+
+    int error = regexec(abba, string, NMATCH, abbaMatch, 0);
+    return (!error);
+}
+
+int check_hypernet(regex_t *regex, regex_t *hypernet, char *str) {
+    regmatch_t hypernetMatch[NMATCH];
+    unsigned   offset = 0;
+
+    int error = regexec(hypernet, str + offset, NMATCH, hypernetMatch, 0);
+    while (!error) {
+        char *hn_string = get_match_string(hypernetMatch, str + offset);
+        if (check_abba(regex, hn_string)) {
+            free(hn_string);
+            return 0;
+        }
+        free(hn_string);
+        offset += hypernetMatch[1].rm_eo;
+        if (offset >= strlen(str)) {
+            break;
+        }
+        error = regexec(hypernet, str + offset, NMATCH, hypernetMatch, 0);
+    }
+    return error;
+}
+
 void *solve_part_1(AocData_t *aoc_data) {
-    GError      *regex_error = NULL;
-    GMatchInfo  *matchInfo, *hypernetInfo, *abba_hn_info;
-    char        *str;
-    unsigned int i;
-    int          count = 0;
-    char        *matchStr, *hypernetStr;
-    short        ok;
+    int      error = 0;
+    unsigned count = 0;
+    regex_t  abba, hypernet;
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
-    GRegex *abba = g_regex_new("(.)((?!\\1).)\\2\\1", 0, 0, &regex_error);
-    if (regex_error) {
-        fprintf(stderr, "Error in pattern\n%s\n", regex_error->message);
-        exit(EXIT_FAILURE);
-    }
-    GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &regex_error);
-    if (regex_error) {
-        fprintf(stderr, "Error in pattern\n%s\n", regex_error->message);
-        exit(EXIT_FAILURE);
-    }
+    char abba_pattern[] = "(.)((?!\\1).)\\2\\1";
+    char hyper_pattern[] = "(\\[\\w+\\])";
 
-    for (i = 0; i < aoc_array_length(data); i++) {
-        str = aoc_str_array_index(data, i);
-        g_regex_match(abba, str, 0, &matchInfo);
-        g_regex_match(hypernet, str, 0, &hypernetInfo);
-        ok = g_match_info_matches(matchInfo);
-        while (g_match_info_matches(matchInfo) && ok) {
-            matchStr = g_match_info_fetch(matchInfo, 0);
-            if (matchStr != NULL) {
-                while (g_match_info_matches(hypernetInfo) && ok) {
-                    hypernetStr = g_match_info_fetch(hypernetInfo, 0);
-                    if (hypernetStr != NULL) {
-                        g_regex_match(abba, hypernetStr, 0, &abba_hn_info);
-                        if (g_match_info_get_match_count(abba_hn_info) != 0) {
-                            ok = FALSE;
-                        }
-                    }
-                    g_match_info_next(hypernetInfo, &regex_error);
-                    if (hypernetStr)
-                        free(hypernetStr);
-                }
+    error = regcomp(&abba, abba_pattern, REG_EXTENDED);
+    regex_error(error, &abba);
+
+    error = regcomp(&hypernet, hyper_pattern, REG_EXTENDED);
+    regex_error(error, &hypernet);
+
+    for (unsigned i = 0; i < data->length; i++) {
+        char *str = aoc_str_array_index(data, i);
+        if (check_hypernet(&abba, &hypernet, str)) {
+            if (check_abba(&abba, str)) {
+                count++;
             }
-            if (matchStr)
-                free(matchStr);
-
-            g_match_info_next(matchInfo, &regex_error);
-            if (!ok)
-                break;
         }
-        if (ok)
-            count++;
     }
-
-    g_regex_unref(abba);
-    g_regex_unref(hypernet);
 
     return strdup_printf("%d", count);
 }
 
 void *solve_part_2(AocData_t *aoc_data) {
-    char       *string;
-    int         count;
-    GError     *err = NULL;
-    GMatchInfo *abaInfo, *hypernetInfo;
-    char       *aba_str, *hypernet_str, *supernet_str;
-    char        bab_str[4];
+    char *string;
+    int   count;
+    int   error;
+
+    char *aba_str, *hypernet_str, *supernet_str;
+    char  bab_str[4];
 
     AocArrayPtr data = aoc_data_get(aoc_data);
 
-    GRegex *aba = g_regex_new("(?=((\\w)((?!\\2)\\w)\\2))", 0, 0, &err);
-    GRegex *hypernet = g_regex_new("(\\[\\w+\\])", 0, 0, &err);
+    regex_t    aba, hypernet;
+    regmatch_t aba_match[10], hypernet_match[10];
+    const char aba_pattern[] = "(?=((\\w)((?!\\2)\\w)\\2))";
+    const char hypernet_pattern[] = "(\\[\\w+\\])";
+
+    error = regcomp(&aba, aba_pattern, 0);
+    error = regcomp(&hypernet, hypernet_pattern, 0);
+
     count = 0;
+    const int c_nmatch = 10;
 
     for (unsigned int i = 0; i < aoc_array_length(data); i++) {
         string = aoc_str_array_index(data, i);
-        g_regex_match(hypernet, string, 0, &hypernetInfo);
-
+        error = regexec(&hypernet, string, c_nmatch, hypernet_match, 0);
+        regex_error(error, &hypernet);
         hypernet_str = strdup("");
-        while (g_match_info_matches(hypernetInfo)) {
-            hypernet_str = g_strjoin("", hypernet_str, g_match_info_fetch(hypernetInfo, 1), NULL);
-            g_match_info_next(hypernetInfo, &err);
+        unsigned offset = 0;
+        while (!error) {
+            char **string_list = calloc(3, sizeof(char *));
+            string_list[0] = hypernet_str;
+            char *substring = get_match_string(hypernet_match, string + offset);
+            string_list[1] = substring;
+            hypernet_str = str_join("", string_list, 2);
+            free(substring);
+            offset += hypernet_match[0].rm_eo;
+            error = regexec(&hypernet, string + offset, c_nmatch, hypernet_match, 0);
         }
-        supernet_str = g_strjoinv("|", g_regex_split(g_regex_new("\\[\\w+\\]", 0, 0, &err), string, 0));
 
-        g_regex_match(aba, supernet_str, 0, &abaInfo);
-        while (g_match_info_matches(abaInfo)) {
-            aba_str = g_match_info_fetch(abaInfo, 1);
-            sprintf(bab_str, "%c%c%c", aba_str[1], aba_str[0], aba_str[1]);
+        char **re_split = regex_split("\\[\\w+\\]", string, 0);
+        supernet_str = str_join("|", re_split, 10);
+
+        error = regexec(&aba, supernet_str, c_nmatch, aba_match, 0);
+        offset = 0;
+        while (!error) {
+            aba_str = get_match_string(aba_match, supernet_str + offset);
+            snprintf(bab_str, 4, "%c%c%c", aba_str[1], aba_str[0], aba_str[1]);
             if (strstr(hypernet_str, bab_str)) {
                 count++;
                 break;
             }
-            g_match_info_next(abaInfo, &err);
+            free(aba_str);
+            // Do not offset to end of substring, in case of overlapping matches.
+            offset += 1;
+            error = regexec(&aba, supernet_str + offset, c_nmatch, aba_match, 0);
         }
+        aoc_str_freev(re_split);
         free(supernet_str);
         free(hypernet_str);
     }
@@ -120,30 +148,23 @@ void *solve_all(AocData_t *data) {
     return NULL;
 }
 
+// int main(int argc, char *argv[]) {
+//
+//     test_check_abba("[bddb]", true);
+//     test_check_hyper("abcd[bddb]xyyx", false);
+//
+//     return EXIT_SUCCESS;
+// }
+
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2016;
+    const unsigned day = 7;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, NULL);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new("test_input.txt", year, day);
-        } else {
-            data = aoc_data_new(argv[1], year, day);
-        }
-    } else {
-        data = aoc_data_new("input.txt", year, day);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
-
-    return aoc_mem_gc();
 }

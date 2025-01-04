@@ -1,0 +1,51 @@
+{
+  "id": "Criterion v2.4.2 (bleeding)",
+  "passed": 5,
+  "failed": 1,
+  "errored": 0,
+  "skipped": 0,
+  "test_suites": [
+    {
+      "name": "aoc_array",
+      "passed": 5,
+      "failed": 1,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "test_int32_array_remove_index",
+          "assertions": 4,
+          "status": "PASSED"
+        },
+        {
+          "name": "test_int32_array_new_length",
+          "assertions": 1,
+          "status": "PASSED"
+        },
+        {
+          "name": "test_int32_array_new",
+          "assertions": 1,
+          "status": "PASSED"
+        },
+        {
+          "name": "test_int32_array_index",
+          "assertions": 1,
+          "status": "FAILED",
+          "messages": [
+            "test_aoc_int32_array.c:55: Expected value to be 6"
+          ]
+        },
+        {
+          "name": "test_int32_array_append_maxmin",
+          "assertions": 2,
+          "status": "PASSED"
+        },
+        {
+          "name": "test_int32_array_append",
+          "assertions": 1,
+          "status": "PASSED"
+        }
+      ]
+    }
+  ]
+}

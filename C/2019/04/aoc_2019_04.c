@@ -1,7 +1,10 @@
+#include "aoc_alloc.h"
 #include "aoc_array.h"
+#include "aoc_io.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,15 +16,17 @@ bool check_rules(int number, int part) {
     int  n_digits = 0, min_double_digits = INT_MAX;
     int  i;
 
-    sprintf(str, "%d", number);
+    snprintf(str, 7, "%d", number);
     d = str[0];
 
     if (part == 1) {
         for (int i = 1; i < 6; i++) {
-            if (str[i] < d)
+            if (str[i] < d) {
                 return FALSE;
-            if (str[i] == d)
+            }
+            if (str[i] == d) {
                 double_digit = TRUE;
+            }
             d = str[i];
         }
         return double_digit;
@@ -40,8 +45,9 @@ bool check_rules(int number, int part) {
             }
             d = str[i];
         }
-        if (n_digits > 0)
+        if (n_digits > 0) {
             min_double_digits = MIN(min_double_digits, n_digits);
+        }
         return min_double_digits == 1;
     }
 }
@@ -66,8 +72,9 @@ void *solve_part_1(AocData_t *data) {
     int end = aoc_int32_array_index(aoc_data_get(data), 1);
 
     for (int i = start; i <= end; i++) {
-        if (check_rules(i, 1))
+        if (check_rules(i, 1)) {
             count++;
+        }
     }
     return strdup_printf("%d", count);
 }
@@ -95,29 +102,16 @@ void *solve_all(AocData_t *data) {
 }
 
 int main(int argc, char **argv) {
-    AocData_t *data;
 
-    char sourcefile[20];
-    int  year, day;
+    const unsigned year = 2019;
+    const unsigned day = 4;
 
-    strcpy(sourcefile, aoc_basename(__FILE__));
-    sscanf(sourcefile, "aoc_%4d_%02d.c", &year, &day);
+    AocData_t *data = get_data(argc, argv, year, day, clean_input);
 
-    if (argc > 1) {
-        if (!strncmp(argv[1], "--test", 6)) {
-            data = aoc_data_new_clean("test_input.txt", year, day, clean_input);
-        } else {
-            data = aoc_data_new_clean(argv[1], year, day, clean_input);
-        }
-    } else {
-        data = aoc_data_new_clean("input.txt", year, day, clean_input);
-    }
-
-    printf("================================================\n");
-    printf("Solution for %d, day %02d\n", year, day);
+    aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
     aoc_data_free(data);
 
-    return 0;
+    return aoc_mem_gc();
 }

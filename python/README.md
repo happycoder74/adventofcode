@@ -7,6 +7,22 @@ Includes a runner script `runner.py`. For usage: `python runner.py -h`
 Implements a class based structure with a Puzzle main class located in the
 common directory.
 
+### 2024:
+
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
+|:---:|:-----------------|--------------:|--------------:|:--------|
+|  1  | &#11088;&#11088; |               |               |         |
+|  2  | &#11088;&#11088; |               |               |         |
+|  3  | &#11088;&#11088; |               |               |         |
+|  5  | &#11088;&#11088; |               |               |         |
+|  7  | &#11088;&#11088; |               |               | Inefficient algorithm but works |
+|  8  | &#11088;&#11088; |               |               |         |
+|  9  | &#11088;&#11088; |               |               |         |
+| 10  | &#11088;&#11088; |               |               | Always fun to reuse something from the "library"        |
+| 11  | &#11088;&#11088; |               |               | Always fun to reuse something from the "library"        |
+| 13  | &#11088;&#11088; |               |               | Numpy isn't always fast.        |
+| 14  | &#11088;&#11088; |               |               | Slow but interesting part 2        |
+
 ### 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
 |:---:|:-----------------|--------------:|--------------:|:--------|

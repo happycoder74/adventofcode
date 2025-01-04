@@ -7,19 +7,36 @@ To build run
 ```cmake -B build .```
 
 To run a specific day, for example Day 1 2021 run:
-```cd build
+
+``` bash
+cd build
 make run_2021_01
 ```
 
 Or to run a specific year, for example 2021, run:
-```
+
+``` bash
 cd build
 make run_2021
 ```
 
 Replace ```make``` above with whatever build system you choose to use in CMake
 
+## 2024 (Year of the plain C)
+
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment |
+|:---:|:-----------------|--------------:|--------------:|:--------|
+|  1  | &#11088;&#11088; |               |               | Pretty fun
+|  2  | &#11088;&#11088; |               |               | Probably not the most efficient...
+|  3  | &#11088;&#11088; |               |               | Plain C almost. Using regex
+|  4  | &#11088;&#11088; |               |               | Not pretty. But works.
+|  5  | &#11088;&#11088; |               |               | Messy.
+| 12  | &#11088;         |               |               | Loop mania
+| 13  | &#11088;&#11088; |               |               | Simple, yet nice
+| 14  | &#11088;&#11088; |               |               | Pretty nice
+
 ## 2023
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; |               |               |
@@ -30,16 +47,20 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |:---:|:-----------------|--------------:|--------------:|
 
 ## 2022
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
 |  2  | &#11088;&#11088; | 0.004 ms      | 0.027 ms      |
-|  3  |                  |               |               |
-|  4  |                  |               |               |
+|  3  | &#11088;&#11088; |               |               |
+|  4  | &#11088;&#11088; |               |               |
 |  5  |                  |               |               |
 |  6  | &#11088;&#11088; | 0.371 ms      | 0.678 ms      |
+| 12  | &#11088          |               |               |
 
-## 2021:
+
+## 2021
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
@@ -54,22 +75,26 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 | 18  | &#11088;&#11088; |               |               |
 
 ## 2019
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; | 0.029 ms      | 0.009 ms      |
 |  2  | &#11088;&#11088; | 0.004 ms      | 0.027 ms      |
 |  3  | &#11088;&#11088; | 0.881 ms      | 0.545 s       |
 |  4  | &#11088;&#11088; | 0.016 s       | 0.016 s       |
+|  5  | &#11088;&#11088; |               |               |
+|  6  | &#11088;&#11088; |               |               |
 
-## 2017:
-| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
-|:---:|:-----------------|--------------:|--------------:|:----------------
-|  1  | &#11088;&#11088; |               |               |
-|  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |
+## 2017
 
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment        |
+|:---:|:-----------------|--------------:|--------------:|:---------------|
+|  1  | &#11088;&#11088; |               |               |                |
+|  2  | &#11088;&#11088; |               |               |                |
+|  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |                |
 
+## 2016
 
-## 2016:
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; |               |               |
@@ -80,7 +105,8 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  7  | &#11088;&#11088; |               |               |
 |  8  | &#11088;&#11088; |               |               |
 
-## 2015:
+## 2015
+
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
 |:---:|:-----------------|--------------:|--------------:|
 |  1  | &#11088;&#11088; |      0.030 ms |      0.009 ms |
@@ -89,4 +115,3 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  4  | &#11088;&#11088; |               |               |
 |  5  | &#11088;&#11088; |               |               |
 | 11  | &#11088;&#11088; |               |               |
-

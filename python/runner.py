@@ -49,15 +49,18 @@ class AocRunner(object):
     @timer(part=0, title="Total run time", show_return=False)
     def run(self):
         class_list: Any = self.get_classes()
+        result = None
         for year, cls in class_list:
             print(f"Year {year} - {cls.__name__}")
             print("{0:=<60}".format(""))
             try:
-                cls(filename=self.filename, data=self.data).solve_all()
+                result = cls(filename=self.filename, data=self.data).solve_all()
             except ModuleNotFoundError:
                 print("Unable to import submodule")
             print("{0:=<60}".format(""))
             print("")
+
+        return result
 
     def get_classes(self) -> list[Any]:
         class_list: list[Any] = list()
