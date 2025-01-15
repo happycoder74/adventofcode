@@ -243,4 +243,5 @@ int main(int argc, char **argv) {
     aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
 
     free(garden);
+    return EXIT_SUCCESS;
 }

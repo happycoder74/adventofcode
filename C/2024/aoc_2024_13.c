@@ -100,4 +100,5 @@ int main(int argc, char **argv) {
     timer_func_new_str(2, solve_part_2, &input, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
     aoc_timer_gen("Total time:", &start, &stop, BORDER_BOTTOM | BORDER_TOP);
+    return EXIT_SUCCESS;
 }

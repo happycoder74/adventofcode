@@ -165,5 +165,5 @@ int main(int argc, char **argv) {
     clock_gettime(CLOCK_REALTIME, &stop);
     aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
 
-    return 0;
+    return EXIT_SUCCESS;
 }

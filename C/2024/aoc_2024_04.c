@@ -214,19 +214,12 @@ int main(int argc, char **argv) {
     clock_gettime(CLOCK_REALTIME, &stop);
 
     aoc_header(year, day);
-    fprintf(stdout, "%-20s%20.3lf ms (%lu ns)\n", "Preparation time:   ",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_new(2, solve_part_2, &input, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
-
-    fprintf(stdout, "--------------------------------------------------------\n");
-    fprintf(stdout, "%-20s%20.3lf ms (%lu ns)\n", "Total time:",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_BOTTOM | BORDER_TOP);
 
     free(input.matrix);
-    return 0;
+    return EXIT_SUCCESS;
 }
