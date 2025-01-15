@@ -226,9 +226,9 @@ AocArrayPtr get_input(char *filename, int year, int day) {
 }
 
 void aoc_header(unsigned year, unsigned day) {
-    printf("================================================\n");
+    printf("========================================================\n");
     printf("Solution for %d, day %02d\n", year, day);
-    printf("================================================\n");
+    printf("========================================================\n");
 }
 
 #ifdef __MINGW32__

@@ -1,8 +1,19 @@
+#define _XOPEN_SOURCE 600
+#include <time.h>
 #include <pcre2posix.h>
 #include <stdio.h>
 #include <string.h>
+#include "aoc_io.h"
+#include "aoc_timer.h"
 
-unsigned int solver(unsigned short part, char lines[10][4000], unsigned int nlines) {
+struct Input {
+    char lines[10][4000];
+    unsigned int nlines;
+    unsigned short part;
+};
+
+int solver(void *instructions) {
+    struct Input *input = (struct Input *)instructions;
     regex_t    re;
     size_t     nmatches = 4;
     regmatch_t matches[4];
@@ -13,8 +24,8 @@ unsigned int solver(unsigned short part, char lines[10][4000], unsigned int nlin
 
     unsigned  result = 0;
     short int enabled = 1;
-    for (unsigned int line_counter = 0; line_counter < nlines; line_counter++) {
-        char  *str = lines[line_counter];
+    for (unsigned int line_counter = 0; line_counter < input->nlines; line_counter++) {
+        char  *str = input->lines[line_counter];
         size_t offset = 0;
         while (pcre2_regexec(&re, str + offset, nmatches, matches, 0) == 0) {
             unsigned int counter;
@@ -32,7 +43,7 @@ unsigned int solver(unsigned short part, char lines[10][4000], unsigned int nlin
                     enabled = 1;
                     counter += 1;
                 } else if (strncmp(substring, "don", 3) == 0) {
-                    if (part == 2) {
+                    if (input->part == 2) {
                         enabled = 0;
                     }
                     counter += 1;
@@ -47,18 +58,41 @@ unsigned int solver(unsigned short part, char lines[10][4000], unsigned int nlin
 int main(void) {
 
     FILE *fp = NULL;
-    char  lines[10][4000];
-
     char filename[255];
-    sprintf(filename, "%s/2024/03/input.txt", getenv("AOC_DATA_LOCATION"));
+    const int year = 2024;
+    const int day = 3;
+
+    struct Input input = {0};
+    struct timespec start, stop;
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    sprintf(filename, "%s/%d/%02d/input.txt", getenv("AOC_DATA_LOCATION"), year, day);
 
     fp = fopen(filename, "r");
     unsigned int line_counter = 0;
-    while (fgets(lines[line_counter], 4000, fp) != NULL) {
+    while (fgets(input.lines[line_counter], 4000, fp) != NULL) {
         line_counter++;
     }
     fclose(fp);
+    input.nlines = line_counter;
+    clock_gettime(CLOCK_REALTIME, &stop);
 
-    printf("Solution for part 1: %u\n", solver(1, lines, line_counter));
-    printf("Solution for part 2: %u\n", solver(2, lines, line_counter));
+    aoc_header(year, day);
+    fprintf(stdout, "Preparation time:   ");
+    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    fprintf(stdout, "--------------------------------------------------------\n");
+    input.part = 1;
+    timer_func_new(1, solver, (void *)&input, 1);
+    input.part = 2;
+    timer_func_new(2, solver, (void *)&input, 1);
+    clock_gettime(CLOCK_REALTIME, &stop);
+    fprintf(stdout, "--------------------------------------------------------\n");
+    fprintf(stdout, "Total time:");
+    fprintf(stdout, "%29.3lf ms (%lu ns)\n",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    fprintf(stdout, "--------------------------------------------------------\n");
+    return 0;
 }
