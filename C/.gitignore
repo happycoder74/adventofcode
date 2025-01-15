@@ -10,4 +10,6 @@ debug
 *workspace
 release
 dbgverbose
+.clangd
+compile_commands.json
 
