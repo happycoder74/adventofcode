@@ -81,10 +81,10 @@ void rotate_row(AocGrid *grid, Instruction *instruction) {
 void grid_print(AocGrid *grid, int final) {
     int row, col;
 
-    for (row = 0; row < grid->rows; row++) {
-        for (col = 0; col < grid->columns; col++) {
-            i = row * grid->columns + col;
-            if (grid->grid[i] > 0) {
+    for (row = 0; row < (int)grid->rows; row++) {
+        for (col = 0; col < (int)grid->columns; col++) {
+            int32_t *val = (int32_t *)aoc_grid_get(grid, row, col);
+            if ((val != NULL) && (*val > 0)) {
                 printf("\u2588");
             } else {
                 printf(" ");

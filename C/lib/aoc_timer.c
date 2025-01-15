@@ -3,6 +3,9 @@
 #include "aoc_alloc.h"
 #include "aoc_types.h"
 #include <stdio.h>
+#ifndef _WIN32
+#include <time.h>
+#endif
 #include <unistd.h>
 
 static Duration convert_duration(double elapsed) {
@@ -11,17 +14,18 @@ static Duration convert_duration(double elapsed) {
 
     if (elapsed > 1e9) {
         duration.duration = elapsed / 1e9;
-        sprintf(duration.unit, "s");
+        snprintf(duration.unit, 5, "s");
     } else if (elapsed > 1e6) {
         duration.duration = elapsed / 1e6;
-        sprintf(duration.unit, "ms");
+        snprintf(duration.unit, 5, "ms");
     } else if (elapsed > 1e3) {
         duration.duration = elapsed / 1e3;
         // Need a UTF-8 enabled terminal to display correctly
-        sprintf(duration.unit, "\u03BCs");
+        // chcp 65001 in windows command
+        snprintf(duration.unit, 5, "\u03BCs");
     } else {
         duration.duration = elapsed;
-        sprintf(duration.unit, "ns");
+        snprintf(duration.unit, 5, "ns");
     }
 
     return duration;
@@ -55,10 +59,9 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
 #endif
 
 
-#else
+#ifndef _WIN32
 #include <time.h>
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
-    double          elapsed, elapsed_unit;
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
@@ -74,7 +77,7 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
     }
 
     if (result)
-        aoc_free(result);
+        free(result);
 }
 
 void timer_func_new(int part, int(func)(void *), void *input, int show_res) {
