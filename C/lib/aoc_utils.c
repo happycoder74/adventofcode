@@ -21,8 +21,7 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-AocData_t *aoc_data_new_clean(char *filename, int year, int day,
-                              AocArrayPtr (*parse_function)(AocArray *)) {
+AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*parse_function)(AocArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof(AocData_t));
 
     data->filename = strdup(filename);
@@ -46,11 +45,7 @@ AocData_t *aoc_data_new_clean(char *filename, int year, int day,
     return data;
 }
 
-AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day,
-                    AocArrayPtr (*parse_func)(AocArrayPtr)) {
-#ifdef MEMDEBUG
-    init_mem_table();
-#endif
+AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day, AocArrayPtr (*parse_func)(AocArrayPtr)) {
     AocData_t *data;
     if (argc > 1) {
         if (!strncmp(argv[1], "--test", 6)) {

@@ -55,6 +55,6 @@ typedef struct AocSList {
     void            *data;
 } AocSList;
 
-typedef int (*AocCompareFunc)(const void *, const void *);
-
-#endif // _AOC_TYPES_H_
+#undef MAX
+#define MAX(_a_, _b_) (((_a_) > (_b_)) ? (_a_) : (_b_))
+#endif
