@@ -78,4 +78,23 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
     if (result)
         aoc_free(result);
 }
+
+void timer_func_new(int part, void *(func)(void *), AocData_t *aocdata, int show_res) {
+    struct timespec start, stop;
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    char *result = (char *)func(aocdata);
+    clock_gettime(CLOCK_REALTIME, &stop);
+
+    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
+
+    if (show_res) {
+        printf("Part %d answer: %-20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+    } else {
+        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+    }
+
+    if (result)
+        free(result);
+}
 #endif
