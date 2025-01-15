@@ -61,6 +61,22 @@ void         point_move(Point *p, Point delta);
 #endif
 #define FALSE 0
 
+#define MIN(_X_, _Y_) (((_X_) < (_Y_)) ? (_X_) : (_Y_))
+#ifdef MAX
+#undef MAX
+#endif
+#define MAX(_X_, _Y_) (((_X_) > (_Y_)) ? (_X_) : (_Y_))
+
+#ifdef TRUE
+#undef TRUE
+#endif
+#define TRUE 1
+
+#ifdef FALSE
+#undef FALSE
+#endif
+#define FALSE 0
+
 // Legacy support functions
 // Returns max and min value in integer array
 int max(int *, int);

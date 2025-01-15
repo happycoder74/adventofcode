@@ -26,6 +26,52 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     return result;
 }
 
+static int g_hash_table_set_compare(GHashTable *a, GHashTable *b) {
+    GHashTableIter iter;
+    void          *key, *value;
+
+    if (g_hash_table_size(a) != g_hash_table_size(b)) {
+        return FALSE;
+    }
+
+    g_hash_table_iter_init(&iter, a);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        if (!g_hash_table_contains(b, key)) {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+static int g_hash_table_set_difference(GHashTable *a, GHashTable *b) {
+    int            diff_size;
+    GHashTableIter iter;
+    void          *key, *value;
+
+    diff_size = g_hash_table_size(a);
+    g_hash_table_iter_init(&iter, a);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        if (g_hash_table_contains(b, key)) {
+            diff_size -= 1;
+        }
+    }
+    return diff_size >= 0 ? diff_size : 0;
+}
+
+static int g_hash_table_set_intersection(GHashTable *a, GHashTable *b) {
+    size_t         common_keys = 0;
+    GHashTableIter iter;
+    void          *key, *value;
+
+    g_hash_table_iter_init(&iter, a);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        if (g_hash_table_contains(b, key)) {
+            common_keys += 1;
+        }
+    }
+    return common_keys;
+}
+
 int signal_sort(const void *a, const void *b) {
     const char *str1 = *((char **)a);
     const char *str2 = *((char **)b);
@@ -65,6 +111,9 @@ uint32_t *decode_signal(char *signal) {
     signal_set_key[4] = 2;
     signal_set_key[8] = 9;
 
+    signal_sets = aoc_ptr_array_new();
+    signal_parts = aoc_str_array_new();
+    parts = aoc_str_split(str_trim(signal), " ", 0);
     size_t j = 0;
 
     uint32_t signal_sets[10] = {0};
@@ -142,11 +191,17 @@ uint32_t *decode_signal(char *signal) {
     return decoded;
 }
 
-uint32_t decode(uint32_t *keys, char *signal) {
-    uint32_t int_message = 0;
-    uint32_t signal_set;
-    uint32_t set;
-    uint32_t signal_sets[10] = {0};
+AocArrayPtr decode(GHashTable **keys, char *signal) {
+    AocArrayPtr message;
+    char      **parts;
+    AocArrayPtr signal_sets;
+    GHashTable *signal_set;
+    GHashTable *set;
+    char        letter_key;
+
+    parts = aoc_str_split(str_trim(signal), " ", 0);
+    signal_sets = aoc_ptr_array_new();
+    message = aoc_int32_array_new();
 
     size_t j = 0;
     char  *pos = NULL;

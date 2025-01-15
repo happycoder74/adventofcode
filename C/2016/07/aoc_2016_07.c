@@ -1,6 +1,5 @@
 #include "aoc_array.h"
 #include "aoc_io.h"
-#include "aoc_regex.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -58,18 +57,39 @@ void *solve_part_1(AocData_t *aoc_data) {
     char abba_pattern[] = "(.)((?!\\1).)\\2\\1";
     char hyper_pattern[] = "(\\[\\w+\\])";
 
-    error = regcomp(&abba, abba_pattern, REG_EXTENDED);
-    regex_error(error, &abba);
-
-    error = regcomp(&hypernet, hyper_pattern, REG_EXTENDED);
-    regex_error(error, &hypernet);
-
-    for (unsigned i = 0; i < data->length; i++) {
-        char *str = aoc_str_array_index(data, i);
-        if (check_hypernet(&abba, &hypernet, str)) {
-            if (check_abba(&abba, str)) {
-                count++;
+    for (i = 0; i < aoc_array_length(data); i++) {
+        str = aoc_str_array_index(data, i);
+        g_regex_match(abba, str, 0, &matchInfo);
+        g_regex_match(hypernet, str, 0, &hypernetInfo);
+        ok = g_match_info_matches(matchInfo);
+        while (g_match_info_matches(matchInfo) && ok) {
+            matchStr = g_match_info_fetch(matchInfo, 0);
+            if (matchStr != NULL) {
+                while (g_match_info_matches(hypernetInfo) && ok) {
+                    hypernetStr = g_match_info_fetch(hypernetInfo, 0);
+                    if (hypernetStr != NULL) {
+                        g_regex_match(abba, hypernetStr, 0, &abba_hn_info);
+                        if (g_match_info_get_match_count(abba_hn_info) != 0) {
+                            ok = FALSE;
+                        }
+                    }
+                    g_match_info_next(hypernetInfo, &regex_error);
+                    if (hypernetStr) {
+                        free(hypernetStr);
+                    }
+                }
             }
+            if (matchStr) {
+                free(matchStr);
+            }
+
+            g_match_info_next(matchInfo, &regex_error);
+            if (!ok) {
+                break;
+            }
+        }
+        if (ok) {
+            count++;
         }
     }
 

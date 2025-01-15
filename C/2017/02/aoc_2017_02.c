@@ -14,7 +14,7 @@ AocArrayPtr clean_input(AocArrayPtr data) {
     AocArrayPtr lines = aoc_ptr_array_new();
 
     for (unsigned i = 0; i < data->length; i++) {
-        char       *dataline = aoc_str_array_index(data, i);
+        char       *dataline = aoc_ptr_array_index(data, i);
         AocArrayPtr line = aoc_int32_array_new();
         char      **data_split = str_split(dataline, "\t", 0);
         for (unsigned j = 0; data_split[j] != NULL; j++) {
@@ -37,8 +37,8 @@ void *solve_part_1(AocData_t *data) {
         AocArrayPtr line = aoc_ptr_array_index(lines, index);
         for (unsigned c = 0; c < line->length; c++) {
             int32_t value = aoc_int32_array_index(line, c);
-            min_value = (unsigned)value < min_value ? (unsigned)value : min_value;
-            max_value = (unsigned)value > max_value ? (unsigned)value : max_value;
+            min_value = value < min_value ? value : min_value;
+            max_value = value > max_value ? value : max_value;
         }
         checksum += max_value - min_value;
     }

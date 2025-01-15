@@ -132,7 +132,7 @@ int str_startswith(char *str, char *start_str) {
 
     sstr = substr(str, 0, (int)strlen(start_str));
     result = !strcmp(start_str, sstr);
-    free(sstr);
+    aoc_free(sstr);
     return result;
 }
 
@@ -142,7 +142,7 @@ int str_endswith(char *str, char *end_str) {
 
     sstr = substr(str, (int)-strlen(end_str), (int)strlen(str));
     result = !strcmp(end_str, sstr);
-    free(sstr);
+    aoc_free(sstr);
     return result;
 }
 
@@ -178,16 +178,19 @@ char *strdup_vprintf(const char *format, va_list args) {
 }
 
 char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
+    char      **return_split;
     char       *s = NULL;
     const char *remainder;
-    AocArrayPtr return_split = NULL;
+    uint32_t    reserved_size;
+    uint32_t    n_tokens = 0;
 
     if (max_tokens < 1) {
         max_tokens = INT_MAX;
-        return_split = aoc_ptr_array_new();
+        reserved_size = 21;
     } else {
-        return_split = aoc_array_new(AOC_PTR, max_tokens + 1);
+        reserved_size = max_tokens + 1;
     }
+    return_split = (char **)aoc_calloc(reserved_size, sizeof(char *));
 
     remainder = str;
 
@@ -196,25 +199,19 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
         size_t delimiter_length = strlen(delimiter);
         while (--max_tokens && s) {
             size_t length = s - remainder;
-            char  *new_string = strndup(remainder, length);
-            aoc_ptr_array_append(return_split, new_string);
+            return_split[n_tokens++] = strndup(remainder, length);
             remainder = s + delimiter_length;
             s = strstr(remainder, delimiter);
         }
     }
 
     if (*remainder) {
-        char *new_string = strdup(remainder);
-        aoc_ptr_array_append(return_split, new_string);
+        return_split[n_tokens++] = strdup(remainder);
     }
 
-    char *end_ptr = NULL;
-    aoc_ptr_array_append(return_split, end_ptr);
+    return_split[n_tokens] = NULL;
 
-    char **return_value = (char **)aoc_array_get_data(return_split);
-
-    free(return_split);
-    return return_value;
+    return return_split;
 }
 
 void aoc_str_freev(char **str_array) {
@@ -252,7 +249,7 @@ char *strndup(const char *str, size_t n) {
     char *new_str;
 
     if (str) {
-        new_str = (char *)calloc(n + 1, sizeof(char));
+        new_str = (char *)aoc_calloc(n + 1, sizeof(char));
         strncpy(new_str, str, n);
         new_str[n] = '\0';
     } else {

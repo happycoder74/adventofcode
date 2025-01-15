@@ -143,12 +143,6 @@ int main(int argc, char **argv) {
     aoc_header(year, day);
     timer_func(0, solve_all, data, 0);
 
-    AocArrayPtr d = data->data;
-    for (unsigned i = 0; i < d->length; i++) {
-        char **packs = (char **)aoc_ptr_array_index(d, i);
-        free(packs[0]);
-        free(packs[1]);
-    }
     aoc_data_free(data);
 
     return aoc_mem_gc();
