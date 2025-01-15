@@ -114,4 +114,20 @@ void timer_func_new_str(int part, void *(func)(void *), void *input, int show_re
     if (result)
         free(result);
 }
+
+void aoc_timer_gen(char *title, struct timespec *start, struct timespec *stop, enum Border border) {
+
+    Duration duration = convert_duration((stop->tv_sec * 1e9 + stop->tv_nsec) - (start->tv_sec * 1e9 + start->tv_nsec));
+    if (border & BORDER_TOP) {
+        fprintf(stdout, "--------------------------------------------------------\n");
+    }
+    fprintf(stdout, "%-20s%20.3lf %s (%lu ns)\n", title,
+            duration.duration, duration.unit, 
+            (stop->tv_nsec - start->tv_nsec + (stop->tv_sec - start->tv_sec) * (int)1e9));
+    if (border & BORDER_BOTTOM) {
+        fprintf(stdout, "--------------------------------------------------------\n");
+    }
+}
 #endif
+
+

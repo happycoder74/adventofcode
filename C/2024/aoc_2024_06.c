@@ -1,12 +1,15 @@
 #define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
+#include "aoc_header.h"
+#include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 struct position {
-    unsigned int row;
-    unsigned int column;
+    int row;
+    int column;
 };
 
 struct direction {
@@ -49,13 +52,14 @@ struct position find_guard(struct map map) {
 }
 
 unsigned short int inside_map(struct position pos, struct map map) {
-    return ((0 <= pos.column) && (pos.column < map.cols)) &&
-           ((0 <= pos.row) && (pos.row < map.rows));
+    return ((0 <= pos.column) && (pos.column < (int)map.cols)) &&
+           ((0 <= pos.row) && (pos.row < (int)map.rows));
 }
 
-int solve_part_1(struct map *map) {
+int solve_part_1(void *input) {
+    unsigned int count = 0;
 
-    unsigned int     count = 0;
+    struct map      *map = (struct map *)input;
     struct direction direction = {0, -1};
     struct position  next_position;
     struct position  guard;
@@ -87,24 +91,25 @@ int solve_part_1(struct map *map) {
     return count;
 }
 
-int solve_part_2(struct map map) {
+int solve_part_2(void *input) {
     unsigned int count = 0;
 
+    struct map      *map = (struct map *)input;
     struct direction initial_direction = {0, -1};
     struct direction direction;
     struct position  next_position;
-    struct map       tracemap;
 
-    for (unsigned int r_obs = 0; r_obs < map.rows; r_obs++) {
-        for (unsigned int c_obs = 0; c_obs < map.rows; c_obs++) {
-            if ((map.data[r_obs][c_obs] != 'X') ||
-                ((map.guard.row == r_obs) && (map.guard.column == c_obs))) {
+    for (unsigned int r_obs = 0; r_obs < map->rows; r_obs++) {
+        for (unsigned int c_obs = 0; c_obs < map->rows; c_obs++) {
+            if ((map->data[r_obs][c_obs] != 'X') ||
+                ((map->guard.row == (int)r_obs) && (map->guard.column == (int)c_obs))) {
                 continue;
             }
+            struct map tracemap = {0};
 
-            memmove(&tracemap, &map, sizeof(map));
-            struct position guard = map.guard;
-            memset(tracemap.direction, 0, sizeof(tracemap.direction));
+            memmove(&tracemap, map, sizeof(struct map));
+            struct position guard = map->guard;
+            /* memset(tracemap.direction, 0, sizeof(tracemap.direction)); */
             direction = initial_direction;
             tracemap.data[guard.row][guard.column] = 'X';
             tracemap.direction[guard.row][guard.column] = direction;
@@ -114,7 +119,8 @@ int solve_part_2(struct map map) {
                 if (!inside_map(next_position, tracemap)) {
                     break;
                 } else if ((tracemap.data[next_position.row][next_position.column] == '#') ||
-                           ((next_position.row == r_obs) && (next_position.column == c_obs))) {
+                           ((next_position.row == (int)r_obs) &&
+                            (next_position.column == (int)c_obs))) {
                     direction = turn(direction);
                 } else if ((tracemap.data[next_position.row][next_position.column] == 'X') &&
                            (tracemap.direction[next_position.row][next_position.column].x ==
@@ -138,15 +144,13 @@ int solve_part_2(struct map map) {
 
 int main(int argc, char **argv) {
 
-    FILE      *fp = NULL;
-    char       filepath[255];
-    char       filename[40] = "input.txt";
-    struct map map = {
-        {0},
-        {{{0, 0}}},
-        {0, 0},
-        0, 0
-    };
+    FILE     *fp = NULL;
+    char      filepath[255];
+    char      filename[40] = "input.txt";
+    const int year = 2024;
+    const int day = 6;
+
+    struct map map = {0};
 
     struct timespec start, stop;
 
@@ -154,13 +158,13 @@ int main(int argc, char **argv) {
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
-            sprintf(filename, "test_input.txt");
+            snprintf(filename, 39, "test_input.txt");
         }
     }
-    sprintf(filepath, "%s/2024/06/%s", getenv("AOC_DATA_LOCATION"), filename);
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
     fp = fopen(filepath, "r");
     if (!fp) {
-        fprintf(stderr, "Could not open input file\n");
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -177,24 +181,11 @@ int main(int argc, char **argv) {
     map.guard = find_guard(map);
     clock_gettime(CLOCK_REALTIME, &stop);
 
-    fprintf(stdout, "====================== SOLUTION ========================\n");
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 1: %10d", solve_part_1(&map));
+    aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    timer_func_new(1, solve_part_1, &map, 1);
+    timer_func_new(2, solve_part_2, &map, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 2: %10d", solve_part_2(map));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_BOTTOM | BORDER_TOP);
+    return EXIT_SUCCESS;
 }

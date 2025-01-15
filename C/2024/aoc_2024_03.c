@@ -1,22 +1,22 @@
 #define _XOPEN_SOURCE 600
-#include <time.h>
+#include "aoc_io.h"
+#include "aoc_timer.h"
 #include <pcre2posix.h>
 #include <stdio.h>
 #include <string.h>
-#include "aoc_io.h"
-#include "aoc_timer.h"
+#include <time.h>
 
 struct Input {
-    char lines[10][4000];
-    unsigned int nlines;
+    char           lines[10][4000];
+    unsigned int   nlines;
     unsigned short part;
 };
 
 int solver(void *instructions) {
     struct Input *input = (struct Input *)instructions;
-    regex_t    re;
-    size_t     nmatches = 4;
-    regmatch_t matches[4];
+    regex_t       re;
+    size_t        nmatches = 4;
+    regmatch_t    matches[4];
 
     char pattern[] = "(mul\\((\\d{1,3}),(\\d{1,3})\\)|don\\'t\\(\\)|do\\(\\))";
 
@@ -55,20 +55,29 @@ int solver(void *instructions) {
     return result;
 }
 
-int main(void) {
+int main(int argc, char **argv) {
 
-    FILE *fp = NULL;
-    char filename[255];
+    FILE     *fp = NULL;
+    char      filepath[255];
+    char      filename[40] = "input.txt";
     const int year = 2024;
     const int day = 3;
 
-    struct Input input = {0};
+    struct Input    input = {0};
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
-    sprintf(filename, "%s/%d/%02d/input.txt", getenv("AOC_DATA_LOCATION"), year, day);
-
-    fp = fopen(filename, "r");
+    if (argc > 1) {
+        if (!strcmp("--test", argv[1])) {
+            snprintf(filename, 39, "test_input.txt");
+        }
+    }
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
+    fp = fopen(filepath, "r");
+    if (!fp) {
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
+        exit(EXIT_FAILURE);
+    }
     unsigned int line_counter = 0;
     while (fgets(input.lines[line_counter], 4000, fp) != NULL) {
         line_counter++;
@@ -78,21 +87,12 @@ int main(void) {
     clock_gettime(CLOCK_REALTIME, &stop);
 
     aoc_header(year, day);
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
     input.part = 1;
     timer_func_new(1, solver, (void *)&input, 1);
     input.part = 2;
     timer_func_new(2, solver, (void *)&input, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "--------------------------------------------------------\n");
-    fprintf(stdout, "Total time:");
-    fprintf(stdout, "%29.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
     return 0;
 }

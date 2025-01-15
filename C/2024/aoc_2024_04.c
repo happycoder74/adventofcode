@@ -1,4 +1,6 @@
 #define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
+#include "aoc_header.h"
+#include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -115,26 +117,33 @@ unsigned int count_xmas(const char **matrix, const unsigned int dimension, const
     return count;
 }
 
-int solve_part_1(char **matrix, size_t dimension) {
+struct Input {
+    char **matrix;
+    size_t dimension;
+};
+
+int solve_part_1(void *input) {
+    struct Input *inp = (struct Input *)input;
 
     unsigned int count = 0;
 
-    count += count_xmas((const char **)matrix, dimension, 0);
-    char **rot_matrix = rotate_matrix((const char **)matrix, dimension, 45);
-    count += count_xmas((const char **)rot_matrix, dimension, 45);
-    free_matrix(rot_matrix, dimension, 45);
-    rot_matrix = rotate_matrix((const char **)matrix, dimension, 90);
-    count += count_xmas((const char **)rot_matrix, dimension, 90);
-    free_matrix(rot_matrix, dimension, 90);
-    rot_matrix = rotate_matrix((const char **)matrix, dimension, -45);
-    count += count_xmas((const char **)rot_matrix, dimension, -45);
-    free_matrix(rot_matrix, dimension, -45);
+    count += count_xmas((const char **)inp->matrix, inp->dimension, 0);
+    char **rot_matrix = rotate_matrix((const char **)inp->matrix, inp->dimension, 45);
+    count += count_xmas((const char **)rot_matrix, inp->dimension, 45);
+    free_matrix(rot_matrix, inp->dimension, 45);
+    rot_matrix = rotate_matrix((const char **)inp->matrix, inp->dimension, 90);
+    count += count_xmas((const char **)rot_matrix, inp->dimension, 90);
+    free_matrix(rot_matrix, inp->dimension, 90);
+    rot_matrix = rotate_matrix((const char **)inp->matrix, inp->dimension, -45);
+    count += count_xmas((const char **)rot_matrix, inp->dimension, -45);
+    free_matrix(rot_matrix, inp->dimension, -45);
 
     return count;
 }
 
-int solve_part_2(char **matrix, size_t dimension) {
-    unsigned int count = 0;
+int solve_part_2(void *input) {
+    unsigned int  count = 0;
+    struct Input *inp = (struct Input *)input;
 
     char pattern[4][5] = {
         {'M', 'M', 'S', 'S'},
@@ -143,16 +152,16 @@ int solve_part_2(char **matrix, size_t dimension) {
         {'M', 'S', 'M', 'S'}
     };
 
-    for (unsigned int i = 1; i < dimension - 1; i++) {
-        for (unsigned int j = 1; j < dimension - 1; j++) {
-            if (matrix[i][j] != 'A') {
+    for (unsigned int i = 1; i < inp->dimension - 1; i++) {
+        for (unsigned int j = 1; j < inp->dimension - 1; j++) {
+            if (inp->matrix[i][j] != 'A') {
                 continue;
             }
             for (unsigned int i_pattern = 0; i_pattern < 4; i_pattern++) {
-                short int match = (matrix[i - 1][j - 1] == pattern[i_pattern][0]);
-                match = match && (matrix[i - 1][j + 1] == pattern[i_pattern][1]);
-                match = match && (matrix[i + 1][j - 1] == pattern[i_pattern][2]);
-                match = match && (matrix[i + 1][j + 1] == pattern[i_pattern][3]);
+                short int match = (inp->matrix[i - 1][j - 1] == pattern[i_pattern][0]);
+                match = match && (inp->matrix[i - 1][j + 1] == pattern[i_pattern][1]);
+                match = match && (inp->matrix[i + 1][j - 1] == pattern[i_pattern][2]);
+                match = match && (inp->matrix[i + 1][j + 1] == pattern[i_pattern][3]);
                 if (match) {
                     count++;
                     break;
@@ -164,22 +173,31 @@ int solve_part_2(char **matrix, size_t dimension) {
     return count;
 }
 
-int main() {
+int main(int argc, char **argv) {
 
-    FILE           *fp = NULL;
-    char            filename[255];
-    char          **matrix = NULL;
-    size_t          dimension = 200;
+    FILE     *fp = NULL;
+    char      filepath[255];
+    char      filename[40] = "input.txt";
+    size_t    dimension = 200;
+    const int year = 2024;
+    const int day = 4;
+
+    struct Input    input = {0};
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
 
-    matrix = (char **)malloc(dimension * sizeof(char *));
+    input.matrix = (char **)malloc(dimension * sizeof(char *));
 
-    sprintf(filename, "%s/2024/04/input.txt", getenv("AOC_DATA_LOCATION"));
-    fp = fopen(filename, "r");
+    if (argc > 1) {
+        if (!strcmp("--test", argv[1])) {
+            snprintf(filename, 39, "test_input.txt");
+        }
+    }
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
+    fp = fopen(filepath, "r");
     if (!fp) {
-        fprintf(stderr, "Could not open input file\n");
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -187,34 +205,28 @@ int main() {
     size_t line_counter = 0;
 
     while (fgets(line, 1000, fp) != NULL) {
-        matrix[line_counter] = (char *)calloc(strlen(line), sizeof(char));
-        memmove(matrix[line_counter], line, strlen(line) * sizeof(char));
+        input.matrix[line_counter] = (char *)calloc(strlen(line), sizeof(char));
+        memmove(input.matrix[line_counter], line, strlen(line) * sizeof(char));
         line_counter++;
     }
+    input.dimension = line_counter;
 
     clock_gettime(CLOCK_REALTIME, &stop);
 
-    fprintf(stdout, "====================== SOLUTION ========================\n");
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
+    aoc_header(year, day);
+    fprintf(stdout, "%-20s%20.3lf ms (%lu ns)\n", "Preparation time:   ",
+            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
+            (stop.tv_nsec - start.tv_nsec));
+    timer_func_new(1, solve_part_1, &input, 1);
+    timer_func_new(2, solve_part_2, &input, 1);
+    clock_gettime(CLOCK_REALTIME, &stop);
+
+    fprintf(stdout, "--------------------------------------------------------\n");
+    fprintf(stdout, "%-20s%20.3lf ms (%lu ns)\n", "Total time:",
             (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
             (stop.tv_nsec - start.tv_nsec));
     fprintf(stdout, "--------------------------------------------------------\n");
 
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 1: %10d", solve_part_1(matrix, line_counter));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 2: %10d", solve_part_2(matrix, line_counter));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
-
-    free(matrix);
+    free(input.matrix);
     return 0;
 }

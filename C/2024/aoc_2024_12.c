@@ -1,4 +1,6 @@
 #define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
+#include "aoc_header.h"
+#include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -119,7 +121,6 @@ void garden_regions(struct Garden *garden) {
 
     while (garden_pos_length != 0) {
         struct Position *visited[140 * 140] = {0};
-        unsigned int     nvisited = 0;
         struct Position *pos = NULL;
         unsigned int     index = 0;
         while (pos == NULL) {
@@ -184,8 +185,9 @@ void garden_regions(struct Garden *garden) {
     }
 }
 
-int solve_part_1(struct Garden *garden) {
-    unsigned int result = 0;
+int solve_part_1(void *input) {
+    struct Garden *garden = (struct Garden *)input;
+    unsigned int   result = 0;
     garden_regions(garden);
     for (unsigned int iregion = 0; iregion < garden->nregions; iregion++) {
         result += region_area(&(garden->regions[iregion])) *
@@ -196,10 +198,12 @@ int solve_part_1(struct Garden *garden) {
 }
 
 int main(int argc, char **argv) {
-    FILE *fp = NULL;
-    char  filepath[255];
-    char  filename[40] = "input.txt";
-    char  map[140 * 140];
+    FILE     *fp = NULL;
+    char      filepath[255];
+    char      filename[40] = "input.txt";
+    char      map[140 * 140];
+    const int year = 2024;
+    const int day = 12;
 
     struct timespec start, stop;
 
@@ -207,13 +211,13 @@ int main(int argc, char **argv) {
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
-            sprintf(filename, "test_input.txt");
+            snprintf(filename, 39, "test_input.txt");
         }
     }
-    sprintf(filepath, "%s/2024/12/%s", getenv("AOC_DATA_LOCATION"), filename);
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
     fp = fopen(filepath, "r");
     if (!fp) {
-        fprintf(stderr, "Could not open input file\n");
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -232,27 +236,11 @@ int main(int argc, char **argv) {
 
     clock_gettime(CLOCK_REALTIME, &stop);
 
-    fprintf(stdout, "====================== SOLUTION ========================\n");
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 1: %10d", solve_part_1(garden));
+    aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    timer_func_new(1, solve_part_1, garden, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    /* clock_gettime(CLOCK_REALTIME, &start); */
-    /* fprintf(stdout, "Solution to part 2: %10d", solve_part_2(map)); */
-    /* clock_gettime(CLOCK_REALTIME, &stop); */
-    /* fprintf(stdout, "%10.3lf ms (%lu ns)\n", */
-    /*         (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 +
-     * start.tv_nsec * 1e-6), */
-    /*         (stop.tv_nsec - start.tv_nsec)); */
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
 
     free(garden);
 }

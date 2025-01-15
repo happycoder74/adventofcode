@@ -1,4 +1,6 @@
 #define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
+#include "aoc_header.h"
+#include "aoc_timer.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,15 +63,21 @@ unsigned int reorder(unsigned int table[100][100], unsigned int *update) {
     return return_update[(update[0] / 2) + 1];
 }
 
-int solve_part_1(unsigned int table[100][100], unsigned int updates[200][100],
-                 unsigned int n_updates) {
+struct Input {
+    unsigned int table[100][100];
+    unsigned int updates[200][100];
+    size_t       n_updates;
+};
+
+int solve_part_1(void *inp) {
+    struct Input *input = (struct Input *)inp;
 
     unsigned int  count = 0;
     unsigned int *update = NULL;
 
-    for (unsigned int i_update = 0; i_update < n_updates; i_update++) {
-        update = updates[i_update];
-        if (is_right_order(table, update)) {
+    for (unsigned int i_update = 0; i_update < input->n_updates; i_update++) {
+        update = input->updates[i_update];
+        if (is_right_order(input->table, update)) {
             count += update[(update[0] / 2) + 1];
         }
     }
@@ -77,16 +85,15 @@ int solve_part_1(unsigned int table[100][100], unsigned int updates[200][100],
     return count;
 }
 
-int solve_part_2(unsigned int table[100][100], unsigned int updates[200][100],
-                 unsigned int n_updates) {
+int solve_part_2(void *inp) {
+    struct Input *input = (struct Input *)inp;
     unsigned int  count = 0;
     unsigned int *update;
-    unsigned int  reordered_update[200] = {0};
 
-    for (unsigned int i_update = 0; i_update < n_updates; i_update++) {
-        update = updates[i_update];
-        if (!is_right_order(table, update)) {
-            count += reorder(table, update);
+    for (unsigned int i_update = 0; i_update < input->n_updates; i_update++) {
+        update = input->updates[i_update];
+        if (!is_right_order(input->table, update)) {
+            count += reorder(input->table, update);
         }
     }
 
@@ -98,8 +105,9 @@ int main(int argc, char **argv) {
     FILE        *fp = NULL;
     char         filepath[255];
     char         filename[40] = "input.txt";
-    unsigned int table[100][100] = {0};
-    unsigned int rules[200][100] = {0};
+    const int    year = 2024;
+    const int    day = 5;
+    struct Input input = {0};
 
     struct timespec start, stop;
 
@@ -107,13 +115,13 @@ int main(int argc, char **argv) {
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
-            sprintf(filename, "test_input.txt");
+            snprintf(filename, 39, "test_input.txt");
         }
     }
-    sprintf(filepath, "%s/2024/05/%s", getenv("AOC_DATA_LOCATION"), filename);
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
     fp = fopen(filepath, "r");
     if (!fp) {
-        fprintf(stderr, "Could not open input file\n");
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -125,10 +133,10 @@ int main(int argc, char **argv) {
         if (isdigit(line[0])) {
             sscanf(line, "%u|%u", &node, &target);
             unsigned int column = 0;
-            while (table[node][column] != 0) {
+            while (input.table[node][column] != 0) {
                 column++;
             }
-            table[node][column] = target;
+            input.table[node][column] = target;
         } else {
             break;
         }
@@ -140,33 +148,22 @@ int main(int argc, char **argv) {
         unsigned int value = 0;
 
         while (pointer != NULL) {
-            sscanf(pointer, "%u", &rules[line_counter][value + 1]);
+            sscanf(pointer, "%u", &input.updates[line_counter][value + 1]);
             pointer = strtok(NULL, ", ");
             value++;
         }
-        rules[line_counter++][0] = value;
+        input.updates[line_counter++][0] = value;
     }
+    input.n_updates = line_counter;
 
     clock_gettime(CLOCK_REALTIME, &stop);
 
-    fprintf(stdout, "====================== SOLUTION ========================\n");
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    timer_func_new(1, solve_part_1, &input, 1);
+    timer_func_new(2, solve_part_2, &input, 1);
+    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
 
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 1: %10d", solve_part_1(table, rules, line_counter));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    clock_gettime(CLOCK_REALTIME, &start);
-    fprintf(stdout, "Solution to part 2: %10d", solve_part_2(table, rules, line_counter));
-    clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "%10.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    return 0;
 }

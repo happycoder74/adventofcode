@@ -3,6 +3,7 @@
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 struct Input {
@@ -81,10 +82,11 @@ int solve_part_2(void *inp) {
     return result;
 }
 
-int main() {
+int main(int argc, char **argv) {
 
     FILE           *fp = NULL;
-    char            filename[255];
+    char            filename[40] = "input.txt";
+    char            filepath[255];
     char            line[1000];
     const int       year = 2024;
     const int       day = 1;
@@ -92,11 +94,16 @@ int main() {
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
-    sprintf(filename, "%s/%d/%02d/input.txt", getenv("AOC_DATA_LOCATION"), year, day);
 
-    fp = fopen(filename, "r");
+    if (argc > 1) {
+        if (!strcmp("--test", argv[1])) {
+            snprintf(filename, 39, "test_input.txt");
+        }
+    }
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
+    fp = fopen(filepath, "r");
     if (!fp) {
-        fprintf(stderr, "Could not open input file\n");
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -108,19 +115,10 @@ int main() {
     clock_gettime(CLOCK_REALTIME, &stop);
 
     aoc_header(year, day);
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, (void *)&input, 1);
     timer_func_new(2, solve_part_2, (void *)&input, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "--------------------------------------------------------\n");
-    fprintf(stdout, "Total time:");
-    fprintf(stdout, "%29.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
     return 0;
 }

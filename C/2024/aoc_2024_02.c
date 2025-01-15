@@ -1,19 +1,19 @@
 #define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
+#include "aoc_io.h"
+#include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "aoc_io.h"
-#include "aoc_timer.h"
 
 struct Input {
-    unsigned int    data[1000][30];
-    size_t dimension;
+    unsigned int data[1000][30];
+    size_t       dimension;
 };
-    
+
 int solve_part_1(void *instructions) {
     struct Input *input = (struct Input *)instructions;
-    unsigned int result = 0;
+    unsigned int  result = 0;
 
     for (unsigned int i = 0; i < input->dimension; i++) {
         unsigned int nvalues = input->data[i][0];
@@ -38,9 +38,9 @@ int solve_part_1(void *instructions) {
 
 int solve_part_2(void *instructions) {
     struct Input *input = (struct Input *)instructions;
-    unsigned int result = 0;
-    unsigned int checkline[30];
-    unsigned int nvalues;
+    unsigned int  result = 0;
+    unsigned int  checkline[30];
+    unsigned int  nvalues;
     for (unsigned int i = 0; i < input->dimension; i++) {
         for (unsigned int remove_level = 0; remove_level <= input->data[i][0]; remove_level++) {
             memset(checkline, 0, sizeof checkline);
@@ -77,22 +77,27 @@ int solve_part_2(void *instructions) {
     return result;
 }
 
-int main(void) {
+int main(int argc, char **argv) {
 
     FILE           *fp = NULL;
-    char            filename[255];
+    char            filepath[255];
+    char            filename[40] = "input.txt";
     char            line[1000];
     struct timespec start, stop;
-    struct Input input = {0};
-    int year = 2024;
-    int day = 2;
+    struct Input    input = {0};
+    int             year = 2024;
+    int             day = 2;
 
     clock_gettime(CLOCK_REALTIME, &start);
-    sprintf(filename, "%s/%d/%02d/input.txt", getenv("AOC_DATA_LOCATION"), year, day);
-
-    fp = fopen(filename, "r");
+    if (argc > 1) {
+        if (!strcmp("--test", argv[1])) {
+            snprintf(filename, 39, "test_input.txt");
+        }
+    }
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
+    fp = fopen(filepath, "r");
     if (!fp) {
-        fprintf(stderr, "Could not open input file\n");
+        fprintf(stderr, "Could not open input file (%s)\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -114,19 +119,10 @@ int main(void) {
     clock_gettime(CLOCK_REALTIME, &stop);
 
     aoc_header(year, day);
-    fprintf(stdout, "Preparation time:   ");
-    fprintf(stdout, "%20.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_new(2, solve_part_2, &input, 1);
     clock_gettime(CLOCK_REALTIME, &stop);
-    fprintf(stdout, "--------------------------------------------------------\n");
-    fprintf(stdout, "Total time:");
-    fprintf(stdout, "%29.3lf ms (%lu ns)\n",
-            (stop.tv_sec * 1e3 + stop.tv_nsec * 1e-6) - (start.tv_sec * 1e3 + start.tv_nsec * 1e-6),
-            (stop.tv_nsec - start.tv_nsec));
-    fprintf(stdout, "--------------------------------------------------------\n");
+    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
     return 0;
 }
