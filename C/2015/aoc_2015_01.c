@@ -10,7 +10,7 @@
 #include <string.h>
 #include <time.h>
 
-void *solve_part_1(void *data) {
+int solve_part_1(void *data) {
     size_t i = 0;
     int level = 0;
     char *line = (char *)data;
@@ -19,10 +19,10 @@ void *solve_part_1(void *data) {
         line[i] == '(' ? ++level : --level;
     }
 
-    return (void *)strdup_printf("%d", level);
+    return level;
 }
 
-void *solve_part_2(void *data) {
+int solve_part_2(void *data) {
     size_t i = 0;
     int level = 0;
     char *line = (char *)data;
@@ -31,16 +31,16 @@ void *solve_part_2(void *data) {
     for (i = 0; (c = line[i]); i++) {
         line[i] == '(' ? ++level : --level;
         if (level == -1) {
-            return strdup_printf("%d", i + 1);
+            return i + 1;
         }
     }
     return 0;
 }
 
-void *solve_all(void *data) {
+int solve_all(void *data) {
     timer_func_new(1, solve_part_1, data, 1);
     timer_func_new(2, solve_part_2, data, 1);
-    return NULL;
+    return 0;
 }
 
 int main(int argc, char **argv) {
