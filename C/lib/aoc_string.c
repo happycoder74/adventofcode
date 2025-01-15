@@ -103,7 +103,7 @@ int str_count(char *str, char needle, int start, int end) {
 }
 
 char *substr(char *str, int start, int end) {
-    char *substr;
+    char *sstr;
     int   i;
     if (end < 0) {
         end = (int)strlen(str) - 1 + end + 1;
@@ -118,12 +118,12 @@ char *substr(char *str, int start, int end) {
     assert(start < (int)strlen(str));
     assert(start <= end);
 
-    substr = (char *)malloc(sizeof(char) * (end - start + 1));
+    sstr = (char *)malloc(sizeof(char) * (end - start + 1));
     for (i = 0; i < (end - start); i++) {
-        substr[i] = str[start + i];
+        sstr[i] = str[start + i];
     }
-    substr[i] = '\0';
-    return substr;
+    sstr[i] = '\0';
+    return sstr;
 }
 
 int str_startswith(char *str, char *start_str) {
@@ -140,7 +140,7 @@ int str_endswith(char *str, char *end_str) {
     char *sstr;
     int   result;
 
-    sstr = substr(str, (int)-strlen(end_str), (int)strlen(str));
+    sstr = substr(str, (int)strlen(end_str), (int)strlen(str));
     result = !strcmp(end_str, sstr);
     aoc_free(sstr);
     return result;
