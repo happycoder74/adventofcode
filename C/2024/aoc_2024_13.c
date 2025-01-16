@@ -1,13 +1,12 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
-long solver(const long *param, const unsigned long np, const unsigned long delta) {
+long solver(const long *param, const unsigned long np, const uint64_t delta) {
     unsigned long result = 0;
     unsigned long a_press;
     unsigned long b_press;
@@ -59,10 +58,10 @@ int main(int argc, char **argv) {
     const int year = 2024;
     const int day = 13;
 
-    struct Input    input;
-    struct timespec start, stop;
+    struct Input input;
+    AocTimer_t  *timer = aoc_timer_new();
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    aoc_timer_start(timer);
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
@@ -92,13 +91,15 @@ int main(int argc, char **argv) {
     fclose(fp);
     input.nparameters /= 6;
 
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new_str(1, solve_part_1, &input, 1);
     timer_func_new_str(2, solve_part_2, &input, 1);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_BOTTOM | BORDER_TOP);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_BOTTOM | BORDER_TOP);
+
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }

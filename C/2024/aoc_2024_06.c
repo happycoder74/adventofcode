@@ -1,10 +1,8 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include "aoc_header.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 struct position {
@@ -152,9 +150,9 @@ int main(int argc, char **argv) {
 
     struct map map = {0};
 
-    struct timespec start, stop;
+    AocTimer_t *timer = aoc_timer_new();
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    aoc_timer_start(timer);
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
@@ -179,13 +177,15 @@ int main(int argc, char **argv) {
     /* } */
 
     map.guard = find_guard(map);
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &map, 1);
     timer_func_new(2, solve_part_2, &map, 1);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_BOTTOM | BORDER_TOP);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_BOTTOM | BORDER_TOP);
+
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }
