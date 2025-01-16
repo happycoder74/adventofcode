@@ -41,14 +41,14 @@ struct Input {
 void *solve_part_1(void *inp) {
     struct Input *input = (struct Input *)inp;
     char         *output = (char *)calloc(100, sizeof(char));
-    snprintf(output, 99, "%" PRId64, solver(input->parameters, input->nparameters, 0));
+    snprintf(output, 99, "%" PRIu64, solver(input->parameters, input->nparameters, 0));
     return output;
 }
 
 void *solve_part_2(void *inp) {
     struct Input *input = (struct Input *)inp;
     char         *output = (char *)calloc(100, sizeof(char));
-    snprintf(output, 99, "%llu", solver(input->parameters, input->nparameters, 10000000000000));
+    snprintf(output, 99, "%" PRIu64, solver(input->parameters, input->nparameters, 10000000000000));
     return output;
 }
 
