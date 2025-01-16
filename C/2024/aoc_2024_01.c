@@ -1,4 +1,3 @@
-#define _XOPEN_SOURCE 600
 #include "aoc_io.h"
 #include "aoc_timer.h"
 #include <stdio.h>
@@ -91,9 +90,9 @@ int main(int argc, char **argv) {
     const int    year = 2024;
     const int    day = 1;
     struct Input input = {0};
-    AocTimer_t   timer = {0};
+    AocTimer_t  *timer = aoc_timer_new();
 
-    aoc_timer_start(&timer);
+    aoc_timer_start(timer);
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
@@ -112,13 +111,15 @@ int main(int argc, char **argv) {
         input.len++;
     }
 
-    aoc_timer_stop(&timer);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &timer, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, (void *)&input, 1);
     timer_func_new(2, solve_part_2, (void *)&input, 1);
-    aoc_timer_stop(&timer);
-    aoc_timer_gen("Total time:", &timer, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }

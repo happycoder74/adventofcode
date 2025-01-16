@@ -1,18 +1,38 @@
 #define _XOPEN_SOURCE 600
 #include "aoc_timer.h"
+#include "aoc_alloc.h"
 #include "aoc_types.h"
 #include <stdio.h>
 #ifndef _WIN32
 #include <time.h>
+struct _AocTimer_t {
+    struct timespec start;
+    struct timespec stop;
+};
 #endif
 #include <unistd.h>
 
+AocTimer_t *aoc_timer_new() {
+    AocTimer_t *timer = (AocTimer_t *)malloc(sizeof(AocTimer_t));
+    return timer;
+}
+
+void aoc_timer_delete(AocTimer_t *timer) {
+    if (timer) {
+        free(timer);
+    }
+}
+
 #ifndef _WIN32
 void aoc_timer_start(AocTimer_t *timer) {
-    clock_gettime(CLOCK_REALTIME, &(timer->start));
+    if (timer) {
+        clock_gettime(CLOCK_REALTIME, &(timer->start));
+    }
 }
 void aoc_timer_stop(AocTimer_t *timer) {
-    clock_gettime(CLOCK_REALTIME, &(timer->stop));
+    if (timer) {
+        clock_gettime(CLOCK_REALTIME, &(timer->stop));
+    }
 }
 #else
 void aoc_timer_start(AocTimer_t *timer) {
