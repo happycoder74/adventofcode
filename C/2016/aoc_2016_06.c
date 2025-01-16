@@ -79,7 +79,7 @@ void *solve_part_1(AocData_t *data) {
         for (i = 0; i < aoc_data_length(data); i++) {
             count[col_array[col][i] - 'a']++;
         }
-        max_index = arr_index(count, max(count, 26), 26);
+        max_index = arr_index(count, int_array_max(count, 26), 26);
         message[col] = (char)(max_index + 'a');
     }
     message[columns] = '\0';
