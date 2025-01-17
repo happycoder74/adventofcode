@@ -4,138 +4,42 @@
 #include <stdlib.h>
 #include <string.h>
 
-void free_matrix(char **matrix, const int dimension, const int rotation) {
-    unsigned int rot_dim = dimension;
-    if ((rotation % 90) != 0) {
-        rot_dim = 2 * dimension - 1;
-    }
-    for (unsigned int i = 0; i < rot_dim; i++) {
-        free(matrix[i]);
-    }
-    free(matrix);
-}
-
-char **rotate_matrix(const char **matrix, const size_t dimension, const int degrees) {
-    size_t rotated_dimension;
-    char **rotated_matrix = NULL;
-
-    unsigned int line;
-
-    switch (degrees) {
-        case 45:
-            rotated_dimension = 2 * dimension - 1;
-            rotated_matrix = (char **)calloc(rotated_dimension, sizeof(char *));
-
-            line = 0;
-            for (unsigned int i = 0; i < dimension; i++) {
-                rotated_matrix[line] = (char *)calloc(dimension, sizeof(char));
-                for (unsigned j = 0; j < i + 1; j++) {
-                    rotated_matrix[line][j] = matrix[i - j][j];
-                }
-                line++;
-            }
-            for (unsigned int j = 1; j < dimension; j++) {
-                rotated_matrix[line] = (char *)calloc(dimension, sizeof(char));
-                unsigned int col = 0;
-                for (unsigned int i = dimension - 1; i >= j; i--) {
-                    rotated_matrix[line][col++] = matrix[i][j + dimension - 1 - i];
-                }
-                line++;
-            }
-
-            return rotated_matrix;
-            break;
-        case -45:
-            rotated_dimension = 2 * dimension - 1;
-            rotated_matrix = (char **)calloc(rotated_dimension, sizeof(char *));
-
-            line = 0;
-            for (unsigned int j = 0; j < dimension; j++) {
-                rotated_matrix[line] = (char *)calloc(dimension, sizeof(char));
-                unsigned int col = 0;
-                for (unsigned i = 0; i < j + 1; i++) {
-                    rotated_matrix[line][col++] = matrix[i][dimension - j - 1 + i];
-                }
-                line++;
-            }
-            for (unsigned int i = 1; i < dimension; i++) {
-                rotated_matrix[line] = (char *)calloc(dimension, sizeof(char));
-                unsigned int col = 0;
-                for (unsigned int j = 0; j < dimension - i; j++) {
-                    rotated_matrix[line][col++] = matrix[i + j][j];
-                }
-                line++;
-            }
-
-            return rotated_matrix;
-            break;
-        case 90:
-            rotated_dimension = dimension;
-            rotated_matrix = (char **)calloc(rotated_dimension, sizeof(char *));
-
-            line = 0;
-            for (unsigned int j = 0; j < dimension; j++) {
-                rotated_matrix[line] = (char *)calloc(dimension, sizeof(char));
-                unsigned int col = 0;
-                for (unsigned int i = 0; i < dimension; i++) {
-                    rotated_matrix[line][col] = matrix[i][dimension - 1 - j];
-                    col++;
-                }
-                line++;
-            }
-
-            return rotated_matrix;
-            break;
-        default:
-            return NULL;
-            break;
-    }
-}
-
-unsigned int count_xmas(const char **matrix, const unsigned int dimension, const int rotation) {
-    unsigned int count = 0;
-    unsigned int rot_dim = dimension;
-    if ((rotation % 90) != 0) {
-        rot_dim = 2 * dimension - 1;
-    }
-
-    for (unsigned int i = 0; i < rot_dim; i++) {
-        char *pointer = (char *)matrix[i];
-        while ((pointer = strstr(pointer, "XMAS")) != NULL) {
-            count++;
-            pointer += 4;
-        }
-        pointer = (char *)matrix[i];
-        while ((pointer = strstr(pointer, "SAMX")) != NULL) {
-            count++;
-            pointer += 4;
-        }
-    }
-
-    return count;
-}
-
 struct Input {
     char **matrix;
     size_t dimension;
 };
+
+static unsigned short int in_grid(int row, int col, struct Input *inp) {
+    if ((row < 0) || (col < 0))
+        return 0;
+    if ((row >= (int)inp->dimension) || (col >= (int)inp->dimension))
+        return 0;
+
+    return 1;
+}
 
 int solve_part_1(void *input) {
     struct Input *inp = (struct Input *)input;
 
     unsigned int count = 0;
 
-    count += count_xmas((const char **)inp->matrix, inp->dimension, 0);
-    char **rot_matrix = rotate_matrix((const char **)inp->matrix, inp->dimension, 45);
-    count += count_xmas((const char **)rot_matrix, inp->dimension, 45);
-    free_matrix(rot_matrix, inp->dimension, 45);
-    rot_matrix = rotate_matrix((const char **)inp->matrix, inp->dimension, 90);
-    count += count_xmas((const char **)rot_matrix, inp->dimension, 90);
-    free_matrix(rot_matrix, inp->dimension, 90);
-    rot_matrix = rotate_matrix((const char **)inp->matrix, inp->dimension, -45);
-    count += count_xmas((const char **)rot_matrix, inp->dimension, -45);
-    free_matrix(rot_matrix, inp->dimension, -45);
-
+    for (int row = 0; row < (int)inp->dimension; row++) {
+        for (int col = 0; col < (int)inp->dimension; col++) {
+            if (inp->matrix[row][col] != 'X')
+                continue;
+            for (int dr = -1; dr <= 1; dr++) {
+                for (int dc = -1; dc <= 1; dc++) {
+                    if (((dr == 0) && (dc == 0)) || !in_grid((row + 3 * dr), (col + 3 * dc), inp))
+                        continue;
+                    if ((inp->matrix[row + dr][col + dc] == 'M') &&
+                        (inp->matrix[row + 2 * dr][col + 2 * dc] == 'A') &&
+                        (inp->matrix[row + 3 * dr][col + 3 * dc] == 'S')) {
+                        count++;
+                    }
+                }
+            }
+        }
+    }
     return count;
 }
 
