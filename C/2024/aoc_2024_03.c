@@ -1,11 +1,8 @@
-#include <cstdlib>
-#define _XOPEN_SOURCE 600
-#include "aoc_io.h"
+#include "aoc_header.h"
 #include "aoc_timer.h"
 #include <pcre2posix.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 
 struct Input {
     char           lines[10][4000];
@@ -64,10 +61,10 @@ int main(int argc, char **argv) {
     const int year = 2024;
     const int day = 3;
 
-    struct Input    input = {0};
-    struct timespec start, stop;
+    struct Input input = {0};
+    AocTimer_t  *timer = aoc_timer_new();
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    aoc_timer_start(timer);
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
             snprintf(filename, 39, "test_input.txt");
@@ -85,15 +82,16 @@ int main(int argc, char **argv) {
     }
     fclose(fp);
     input.nlines = line_counter;
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     input.part = 1;
     timer_func_new(1, solver, (void *)&input, 1);
     input.part = 2;
     timer_func_new(2, solver, (void *)&input, 1);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }
