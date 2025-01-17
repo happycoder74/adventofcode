@@ -32,7 +32,7 @@ function (AOC_GENERATE_LIGHT YEAR DAY)
 	aoc_${YEAR}_${DAY}.c)
     target_include_directories(aoc_${YEAR}_${DAY} PRIVATE ${CMAKE_SOURCE_DIR}/include)
     target_link_libraries(aoc_${YEAR}_${DAY}
-	aocutil
+	aoclight
 	m
     )
     if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
