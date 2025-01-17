@@ -14,6 +14,7 @@ target_sources(
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_bench.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_alloc.c
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_header.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_utils.c
 )
 
@@ -29,15 +30,15 @@ target_link_libraries(aoc
     PRIVATE ${PCRE2POSIX_LIBRARIES}
 )
 
-add_library(aocutil)
+add_library(aoclight)
 
 target_sources(
-    aocutil
+    aoclight
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_timer.c
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_header.c
 )
 
 target_include_directories(
-    aocutil
+    aoclight
     PRIVATE ${CMAKE_SOURCE_DIR}/include
 )
