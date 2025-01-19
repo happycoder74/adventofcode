@@ -1,1 +1,2 @@
-aoc_generate_year_light(2020)
+AOC_GENERATE_YEAR_LIGHT(2020)
+
