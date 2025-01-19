@@ -18,7 +18,9 @@ class Day01(Puzzle, year=2024, day=1):
     @timer(part=1)
     def solve_part_1(self):
         """Solution for part 1"""
-        return sum([abs(a - b) for a, b in zip(sorted(self.data[0]), sorted(self.data[1]))])
+        return sum(
+            [abs(a - b) for a, b in zip(sorted(self.data[0]), sorted(self.data[1]))]
+        )
 
     @timer(part=2)
     def solve_part_2(self):
