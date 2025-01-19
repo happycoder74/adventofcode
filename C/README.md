@@ -75,6 +75,12 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 | 10  | &#11088;&#11088; |               |               |
 | 18  | &#11088;&#11088; |               |               |
 
+## 2020
+
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment        |
+|:---:|:-----------------|--------------:|--------------:|:---------------|
+|  1  | &#11088;&#11088; |               |               |                |
+
 ## 2019
 
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
@@ -92,12 +98,6 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  1  | &#11088;&#11088; |               |               |
 |  2  | &#11088;&#11088; |               |               |
 |  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |
-
-| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment        |
-|:---:|:-----------------|--------------:|--------------:|:---------------|
-|  1  | &#11088;&#11088; |               |               |                |
-|  2  | &#11088;&#11088; |               |               |                |
-|  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |                |
 
 ## 2016
 
