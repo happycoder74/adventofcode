@@ -1,3 +1,1 @@
-
-AOC_GENERATE_YEAR(2022)
-
+aoc_generate_year(2022)
