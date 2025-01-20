@@ -1,10 +1,8 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
-#include "aoc_io.h"
+#include "aoc_header.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 struct Input {
     unsigned int data[1000][30];
@@ -79,16 +77,17 @@ int solve_part_2(void *instructions) {
 
 int main(int argc, char **argv) {
 
-    FILE           *fp = NULL;
-    char            filepath[255];
-    char            filename[40] = "input.txt";
-    char            line[1000];
-    struct timespec start, stop;
-    struct Input    input = {0};
-    int             year = 2024;
-    int             day = 2;
+    FILE *fp = NULL;
+    char  filepath[255];
+    char  filename[40] = "input.txt";
+    char  line[1000];
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    struct Input input = {0};
+    int          year = 2024;
+    int          day = 2;
+    AocTimer_t  *timer = aoc_timer_new();
+
+    aoc_timer_start(timer);
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
             snprintf(filename, 39, "test_input.txt");
@@ -116,13 +115,14 @@ int main(int argc, char **argv) {
     input.dimension = line_counter;
 
     fclose(fp);
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_new(2, solve_part_2, &input, 1);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }
