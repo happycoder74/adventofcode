@@ -31,7 +31,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  3  | &#11088;&#11088; |               |               | Plain C almost. Using regex
 |  4  | &#11088;&#11088; |               |               | Simpler solution but not faster
 |  5  | &#11088;&#11088; |               |               | Messy.
-|  6  | &#11088;&#11088; |               |               | 
+|  6  | &#11088;&#11088; |               |               |
 | 12  | &#11088;         |               |               | Loop mania
 | 13  | &#11088;&#11088; |               |               | Simple, yet nice
 | 14  | &#11088;&#11088; |               |               | Pretty nice
@@ -75,6 +75,13 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 | 10  | &#11088;&#11088; |               |               |
 | 18  | &#11088;&#11088; |               |               |
 
+## 2020
+
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment        |
+|:---:|:-----------------|--------------:|--------------:|:---------------|
+|  1  | &#11088;&#11088; |               |               |                |
+|  2  | &#11088;&#11088; |               |               |                |
+
 ## 2019
 
 | Day | Stars            | Timing Part 1 | Timing Part 2 |
@@ -92,12 +99,6 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  1  | &#11088;&#11088; |               |               |
 |  2  | &#11088;&#11088; |               |               |
 |  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |
-
-| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment        |
-|:---:|:-----------------|--------------:|--------------:|:---------------|
-|  1  | &#11088;&#11088; |               |               |                |
-|  2  | &#11088;&#11088; |               |               |                |
-|  3  | &#11088;&#11088; | 0.266 ms      | 0.035 ms      |                |
 
 ## 2016
 
@@ -120,4 +121,5 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  3  | &#11088;&#11088; |               |               |
 |  4  | &#11088;&#11088; |               |               |
 |  5  | &#11088;&#11088; |               |               |
+|  6  | &#11088;&#11088; |               |               |
 | 11  | &#11088;&#11088; |               |               |
