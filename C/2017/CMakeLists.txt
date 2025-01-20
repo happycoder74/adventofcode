@@ -1,3 +1,1 @@
-
-AOC_GENERATE_YEAR(2017)
-
+aoc_generate_year(2017)
