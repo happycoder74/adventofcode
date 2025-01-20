@@ -33,6 +33,7 @@ void        aoc_timer_gen(char *title, AocTimer_t *timer, enum Border border);
 void        aoc_timer_start(AocTimer_t *timer);
 void        aoc_timer_stop(AocTimer_t *timer);
 void        timer_func_new(int, int(func)(void *), void *, int);
+void        timer_func_new_long(int, long(func)(void *), void *, int);
 void        timer_func_new_str(int, void *(func)(void *), void *, int);
 AocTimer_t *aoc_timer_new();
 void        aoc_timer_delete(AocTimer_t *timer);
