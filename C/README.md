@@ -31,7 +31,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  3  | &#11088;&#11088; |               |               | Plain C almost. Using regex
 |  4  | &#11088;&#11088; |               |               | Simpler solution but not faster
 |  5  | &#11088;&#11088; |               |               | Messy.
-|  6  | &#11088;&#11088; |               |               | 
+|  6  | &#11088;&#11088; |               |               |
 | 12  | &#11088;         |               |               | Loop mania
 | 13  | &#11088;&#11088; |               |               | Simple, yet nice
 | 14  | &#11088;&#11088; |               |               | Pretty nice
@@ -121,4 +121,5 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  3  | &#11088;&#11088; |               |               |
 |  4  | &#11088;&#11088; |               |               |
 |  5  | &#11088;&#11088; |               |               |
+|  6  | &#11088;&#11088; |               |               |
 | 11  | &#11088;&#11088; |               |               |
