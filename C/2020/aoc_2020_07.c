@@ -1,59 +1,57 @@
+#include "aoc_hash.h"
 #include "aoc_header.h"
+#include "aoc_string.h"
 #include "aoc_timer.h"
-#include "glib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-struct Bag {
-    char         color[100];
-    char         line[255];
-    unsigned int number[100];
-    char         bags[100][100];
-    size_t       count;
-};
+#define POINTER_TO_INT(X) (int)(int64_t)(X)
+#define INT_TO_POINTER(X) (void *)(int64_t)(X)
 
-struct Input {
-    struct Bag  bags[600];
-    size_t      bag_count;
-    GHashTable *bag_table;
-};
+char *find_parent(char *bag, AocHashTable *bag_table, AocHashTable *bag_set) {
+    AocHashIterator iter;
 
-int find_bag_func(const void *a, const void *b) {
-    /* printf("'%s' -- '%s'\n", (char *)a, (char *)b); */
-    if (!strcmp((char *)a, (char *)b))
-        return TRUE;
-    return FALSE;
-}
+    void *key;
+    void *content;
 
-char *find_parent(char *bag, GHashTable *bag_table, GHashTable *bag_set) {
-    /* printf("Checking %s\n", bag); */
-    GHashTableIter iter;
-    gpointer       key;
-    gpointer       content;
-
-    g_hash_table_iter_init(&iter, bag_table);
-    while (g_hash_table_iter_next(&iter, &key, &content)) {
-        if (g_ptr_array_find_with_equal_func((GPtrArray *)content, bag, find_bag_func, NULL)) {
-            g_hash_table_add(bag_set, find_parent((char *)key, bag_table, bag_set));
+    aoc_hash_table_iter_init(&iter, bag_table);
+    while (aoc_hash_table_iter_next(&iter, &key, &content)) {
+        if (aoc_hash_table_contains((AocHashTable *)content, bag)) {
+            aoc_hash_table_add(bag_set, find_parent((char *)key, bag_table, bag_set));
         }
     }
     return bag;
 }
 
-int solve_part_1(void *inp) {
-    GHashTable   *table = g_hash_table_new(g_str_hash, g_str_equal);
-    struct Input *input = (struct Input *)inp;
-    find_parent("shiny gold", input->bag_table, table);
+unsigned int count_bags(char *bag, AocHashTable *bag_table) {
+    unsigned int    sum_bags = 0;
+    AocHashTable   *contents = (AocHashTable *)aoc_hash_table_lookup(bag_table, bag);
+    AocHashIterator iter;
+    void           *key;
+    void           *value;
+    if (contents != NULL) {
+        aoc_hash_table_iter_init(&iter, contents);
+        while (aoc_hash_table_iter_next(&iter, &key, &value)) {
+            sum_bags += (POINTER_TO_INT(value)) * count_bags((char *)key, bag_table);
+        }
+    }
+    return sum_bags + 1;
+}
 
-    int result = g_hash_table_size(table);
-    g_hash_table_destroy(table);
+int solve_part_1(void *inp) {
+    AocHashTable *input = (AocHashTable *)inp;
+    AocHashTable *table = aoc_hash_table_create(AOC_STR);
+    find_parent("shiny gold", input, table);
+
+    int result = aoc_hash_table_count(table);
+
+    aoc_hash_table_destroy(&table);
     return result;
 }
 
 int solve_part_2(void *inp) {
-    int count = 0;
-    return count;
+    return count_bags("shiny gold", (AocHashTable *)inp) - 1;
 }
 
 int main(int argc, char **argv) {
@@ -65,8 +63,7 @@ int main(int argc, char **argv) {
     const unsigned int year = 2020;
     const unsigned int day = 7;
 
-    struct Input *input = ((struct Input *)calloc(1, sizeof(struct Input)));
-    input->bag_table = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+    AocHashTable *bag_table = aoc_hash_table_create(AOC_STR);
 
     AocTimer_t *timer = NULL;
 
@@ -90,38 +87,40 @@ int main(int argc, char **argv) {
     }
 
     while (fgets(line, 254, fp) != NULL) {
-        char **line_split = g_strsplit(line, "contain", 0);
-        char  *str = g_strstrip(line_split[0]);
+        char **line_split = aoc_str_split(line, "contain", 0);
+        char  *str = str_trim(line_split[0]);
         /* char  *start = strstr(str, " "); */
         char  *end = strstr(str, " bag");
         *end = '\0';
-        char      *key = g_strdup(str);
-        char     **contents = g_strsplit(line_split[1], ", ", 0);
-        GPtrArray *bag_contents = g_ptr_array_new();
+        char         *key = strdup(str);
+        char        **contents = aoc_str_split(line_split[1], ", ", 0);
+        AocHashTable *bag_contents = aoc_hash_table_create(AOC_STR);
         for (char **bag = contents; *bag != NULL; bag++) {
-            char *str = g_strstrip(*bag);
+            if (str_startswith(*bag, "no"))
+                continue;
+
+            int   no_bags = atoi(*bag);
+            char *str = str_trim(*bag);
             char *start = strstr(str, " ");
             char *end = strstr(str, " bag");
             *end = '\0';
-            char *tmp = g_strdup(start + 1);
-            g_ptr_array_add(bag_contents, tmp);
+            char *tmp = strdup(start + 1);
+            aoc_hash_table_insert(bag_contents, tmp, INT_TO_POINTER(no_bags));
         }
-        /* printf("str = %s, key = %s\n", str, key); */
-        g_hash_table_insert(input->bag_table, g_strdup(key), bag_contents);
-        g_strfreev(contents);
-        g_strfreev(line_split);
+        aoc_hash_table_insert(bag_table, strdup(key), bag_contents);
+        aoc_str_freev(contents);
+        aoc_str_freev(line_split);
     }
     aoc_timer_stop(timer);
 
     aoc_header(year, day);
     aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
-    timer_func_new(1, solve_part_1, input, 1);
-    timer_func_new(2, solve_part_2, input, 1);
+    timer_func_new(1, solve_part_1, bag_table, 1);
+    timer_func_new(2, solve_part_2, bag_table, 1);
     aoc_timer_stop(timer);
     aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
-    g_hash_table_destroy(input->bag_table);
-    free(input);
+    aoc_hash_table_destroy(&bag_table);
     aoc_timer_delete(timer);
     return 0;
 }
