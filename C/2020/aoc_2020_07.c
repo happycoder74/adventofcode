@@ -9,7 +9,7 @@
 #define POINTER_TO_INT(X) (int)(int64_t)(X)
 #define INT_TO_POINTER(X) (void *)(int64_t)(X)
 
-char *find_parent(char *bag, AocHashTable *bag_table, AocHashTable *bag_set) {
+static char *find_parent(char *bag, AocHashTable *bag_table, AocHashTable *bag_set) {
     AocHashIterator iter;
 
     void *key;
@@ -24,7 +24,7 @@ char *find_parent(char *bag, AocHashTable *bag_table, AocHashTable *bag_set) {
     return bag;
 }
 
-unsigned int count_bags(char *bag, AocHashTable *bag_table) {
+static unsigned int count_bags(char *bag, AocHashTable *bag_table) {
     unsigned int    sum_bags = 0;
     AocHashTable   *contents = (AocHashTable *)aoc_hash_table_lookup(bag_table, bag);
     AocHashIterator iter;
@@ -37,6 +37,11 @@ unsigned int count_bags(char *bag, AocHashTable *bag_table) {
         }
     }
     return sum_bags + 1;
+}
+
+static inline void destroy_func(void *object) {
+    AocHashTable *table = (AocHashTable *)object;
+    aoc_hash_table_destroy(&table);
 }
 
 int solve_part_1(void *inp) {
@@ -64,6 +69,8 @@ int main(int argc, char **argv) {
     const unsigned int day = 7;
 
     AocHashTable *bag_table = aoc_hash_table_create(AOC_STR);
+    aoc_hash_table_set_key_free_function(bag_table, free);
+    aoc_hash_table_set_value_free_function(bag_table, destroy_func);
 
     AocTimer_t *timer = NULL;
 
@@ -89,12 +96,12 @@ int main(int argc, char **argv) {
     while (fgets(line, 254, fp) != NULL) {
         char **line_split = aoc_str_split(line, "contain", 0);
         char  *str = str_trim(line_split[0]);
-        /* char  *start = strstr(str, " "); */
         char  *end = strstr(str, " bag");
         *end = '\0';
         char         *key = strdup(str);
         char        **contents = aoc_str_split(line_split[1], ", ", 0);
         AocHashTable *bag_contents = aoc_hash_table_create(AOC_STR);
+        aoc_hash_table_set_key_free_function(bag_contents, free);
         for (char **bag = contents; *bag != NULL; bag++) {
             if (str_startswith(*bag, "no"))
                 continue;
