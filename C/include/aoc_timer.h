@@ -2,6 +2,7 @@
 #define __AOC_TIMER_H__
 
 #include "aoc_types.h"
+#include <stdint.h>
 
 #ifndef _WIN32
 typedef struct _AocTimer_t AocTimer_t;
@@ -34,6 +35,7 @@ void        aoc_timer_start(AocTimer_t *timer);
 void        aoc_timer_stop(AocTimer_t *timer);
 void        timer_func_new(int, int(func)(void *), void *, int);
 void        timer_func_new_long(int, long(func)(void *), void *, int);
+void        timer_func_uint64(int, uint64_t(func)(void *), void *, int, uint64_t *);
 void        timer_func_new_str(int, void *(func)(void *), void *, int);
 AocTimer_t *aoc_timer_new();
 void        aoc_timer_delete(AocTimer_t *timer);
