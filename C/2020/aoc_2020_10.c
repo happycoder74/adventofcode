@@ -6,20 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void print_array_uint64(uint64_t *array, size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        printf("%s%" PRIu64 "%s", i == 0 ? "[" : ", ", array[i], i == size - 1 ? "]\n" : "");
-    }
-    return;
-}
-
-static void print_array_uint32(uint32_t *array, size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        printf("%s%d%s", i == 0 ? "[" : ", ", array[i], i == size - 1 ? "]\n" : "");
-    }
-    return;
-}
-
 struct Input {
     unsigned int values[100];
     size_t       count;
@@ -33,7 +19,7 @@ int solve_part_1(void *inp) {
     struct Input *input = (struct Input *)inp;
     unsigned int  count1 = 0, count3 = 0;
 
-    for (size_t i = 0; i < input->count - 1; i++) {
+    for (size_t i = 1; i < input->count - 1; i++) {
         unsigned int diff = input->values[i + 1] - input->values[i];
         if (diff == 1)
             count1++;
@@ -41,60 +27,41 @@ int solve_part_1(void *inp) {
             count3++;
     }
 
-    return (count1 + 1) * (count3 + 1);
+    return (count1 + 1) * count3;
+}
+
+static unsigned int multiplier(unsigned int delta) {
+    switch (delta) {
+        case 4:
+            return 7;
+            break;
+        case 3:
+            return 4;
+            break;
+        case 2:
+            return 2;
+            break;
+        default:
+            return 1;
+            break;
+    }
 }
 
 uint64_t solve_part_2(void *inp) {
-
     struct Input *input = (struct Input *)inp;
     uint64_t      result = 1;
-    unsigned int  diffs[100];
-    size_t        diff_count = input->count + 2;
 
-    unsigned int values[100] = {0};
-    values[0] = 0;
-    memmove(values + 1, input->values, input->count * sizeof(unsigned int));
-    values[input->count + 1] = input->values[input->count - 1] + 3;
-    for (size_t i = 0; i < input->count + 1; i++) {
-        diffs[i + 1] = values[i + 1] - values[i];
-    }
-    diffs[0] = 3;
-    unsigned int indices[100];
-    unsigned int ind_index = 0;
-    for (unsigned int i = 0; i < diff_count; i++) {
-        if (diffs[i] == 3) {
-            indices[ind_index++] = i;
+    unsigned int indices[100] = {0};
+    unsigned int ind_index = 1;
+    indices[0] = 0;
+    for (size_t i = 0; i < input->count - 1; i++) {
+        if ((input->values[i + 1] - input->values[i]) == 3) {
+            indices[ind_index++] = i + 1;
         }
     }
-    unsigned int deltas[100];
-    unsigned int delta_count = 0;
     for (unsigned i = 0; i < ind_index - 1; i++) {
-        deltas[delta_count++] = (indices[i + 1] - indices[i] - 1);
+        result *= multiplier(indices[i + 1] - indices[i] - 1);
     }
-
-    for (unsigned i = 0; i < delta_count; i++) {
-        switch (deltas[i]) {
-            case 4:
-                result *= 7;
-                break;
-            case 3:
-                result *= 4;
-                break;
-            case 2:
-                result *= 2;
-                break;
-            default:
-                break;
-        }
-    }
-    /* printf("values : "); */
-    /* print_array_uint32(values, input->count + 2); */
-    /* printf("diffs  : "); */
-    /* print_array_uint32(diffs, diff_count); */
-    /* printf("indices: "); */
-    /* print_array_uint32(indices, ind_index); */
-    /* printf("n      : "); */
-    /* print_array_uint32(deltas, delta_count); */
 
     return result;
 }
@@ -132,12 +99,13 @@ int main(int argc, char **argv) {
     }
 
     size_t index = 0;
+    input.values[index++] = 0;
     while (fgets(line, 254, fp) != NULL) {
-        input.values[index] = atoi(line);
-        index++;
+        input.values[index++] = atoi(line);
     }
-    input.count = index;
-    qsort(input.values, input.count, sizeof(unsigned int), uint_compare);
+    qsort(input.values, index, sizeof(unsigned int), uint_compare);
+    input.values[index] = input.values[index - 1] + 3;
+    input.count = index + 1;
 
     aoc_timer_stop(timer);
 
