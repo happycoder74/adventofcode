@@ -191,7 +191,7 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
         free(result);
 }
 
-void timer_func_uint64(int part, uint64_t(func)(void *), void *input, int show_res, void *result_output) {
+void timer_func_uint64(int part, uint64_t(func)(void *), void *input, int show_res, uint64_t *result_output) {
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
