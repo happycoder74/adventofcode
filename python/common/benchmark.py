@@ -6,7 +6,8 @@ import statistics
 import sys
 
 import numpy as np
-from common import AocRunner, progress_bar
+from common.aocrunner import AocRunner
+from common.progress_bar import progress_bar
 
 
 class Benchmark(object):

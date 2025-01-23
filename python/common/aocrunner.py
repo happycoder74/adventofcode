@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-import argparse
 import importlib
 import os
 import sys
 from typing import Any
 
-from common import timer
+from common.timer import timer
 
 
 class AocRunner(object):
