@@ -1,3 +1,4 @@
+#include "aoc_header.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,15 +37,33 @@ int solve_part_2(void *inp) {
 }
 
 int main(int argc, char **argv) {
-    FILE *fp = NULL;
-    char  filepath[255];
-    char  line[255];
-
-    snprintf(filepath, 254, "%s/2020/01/%sinput.txt", getenv("AOC_DATA_LOCATION"),
-             (argc > 1) ? (!strcmp(argv[1], "--test") ? "test_" : "") : "");
-
-    fp = fopen(filepath, "r");
+    FILE        *fp = NULL;
+    char         filepath[255];
+    char         filename[40];
+    char         line[255];
+    const int    year = 2020;
+    const int    day = 1;
     struct Input input = {0};
+
+    AocTimer_t *timer = aoc_timer_new();
+
+    if ((argc > 1)) {
+        if (!strcmp(argv[1], "--test")) {
+            sprintf(filename, "test_input.txt");
+        } else {
+            sprintf(filename, "%s", argv[1]);
+        }
+    } else {
+        sprintf(filename, "input.txt");
+    }
+
+    snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
+
+    aoc_timer_start(timer);
+    if (!(fp = fopen(filepath, "r"))) {
+        fprintf(stderr, "Unable to open file:\n%s\n", filepath);
+        exit(EXIT_FAILURE);
+    }
 
     size_t index = 0;
     while ((fgets(line, 254, fp)) != NULL) {
@@ -53,9 +72,16 @@ int main(int argc, char **argv) {
         index++;
     }
     input.count = index;
+    aoc_timer_stop(timer);
 
+    aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_new(2, solve_part_2, &input, 1);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+
+    aoc_timer_delete(timer);
 
     return 0;
 }

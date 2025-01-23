@@ -28,6 +28,7 @@ uint64_t solve_part_1(void *inp) {
             }
         }
         if (!found) {
+            input->to_part_2 = value;
             return value;
         }
     }
@@ -108,7 +109,7 @@ int main(int argc, char **argv) {
 
     aoc_header(year, day);
     aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
-    timer_func_uint64(1, solve_part_1, &input, 1, &(input.to_part_2));
+    timer_func_uint64(1, solve_part_1, &input, 1, NULL);
     timer_func_uint64(2, solve_part_2, &input, 1, NULL);
     aoc_timer_stop(timer);
     aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
