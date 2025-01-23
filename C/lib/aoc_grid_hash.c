@@ -1,14 +1,14 @@
-#include <glib.h>
+#include "aoc_hash.h"
 #include <stdlib.h>
 
 typedef struct {
-    GHashTable *table;
-    int dimensions; 
+    AocHashTable *table;
+    int           dimensions;
 } GridH;
 
 typedef struct {
     int *values;
-    int dimension;
+    int  dimension;
 } Tuple;
 
 GridH *grid_hash_new() {
@@ -18,12 +18,10 @@ GridH *grid_hash_new() {
 }
 
 int grid_hash_get(GridH *grid, Tuple *position) {
-    GHashTable *table = grid->table;
-    int *return_value;
+    AocHashTable *table = grid->table;
+    int          *return_value;
 
-    return_value = (int *)g_hash_table_lookup(table, position);
+    return_value = (int *)aoc_hash_table_lookup(table, position);
 
     return *return_value;
 }
-
-
