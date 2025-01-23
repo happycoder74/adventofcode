@@ -1,3 +1,4 @@
+from .aocrunner import AocRunner
 from .Grid import Grid
 from .io import Parser, get_input
 from .progress_bar import progress_bar
