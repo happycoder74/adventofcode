@@ -1,6 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
-#include "aoc_io.h"
+#include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -183,11 +183,19 @@ int main(int argc, char **argv) {
     const unsigned year = 2016;
     const unsigned day = 2;
 
+    AocTimer_t *timer = aoc_timer_new();
+
+    aoc_timer_start(timer);
     AocData_t *data = get_data(argc, argv, year, day, NULL);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func(0, solve_all, data, 0);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
+    aoc_timer_delete(timer);
     aoc_data_free(data);
 
     return aoc_mem_gc();
