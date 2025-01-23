@@ -699,3 +699,19 @@ AocHashTablePtr aoc_hash_table_new_similar(AocHashTablePtr hash_table) {
                                      hash_table->value_free_func, hash_table->type);
     return table;
 }
+
+void aoc_hash_table_set_key_free_function(AocHashTablePtr ht, free_func key_free_function) {
+    if (!ht) {
+        return;
+    }
+
+    ht->key_free_func = key_free_function;
+}
+
+void aoc_hash_table_set_value_free_function(AocHashTablePtr ht, free_func value_free_function) {
+    if (!ht) {
+        return;
+    }
+
+    ht->value_free_func = value_free_function;
+}
