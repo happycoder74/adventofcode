@@ -84,11 +84,11 @@ class Puzzle(object):
         return part1, part2
 
     @timer(part=1)
-    def solve_part_1(self):
+    def solve_part_1(self) -> int:
         """Solution for part 1"""
-        return None
+        return 0
 
     @timer(part=2)
-    def solve_part_2(self):
+    def solve_part_2(self) -> int:
         """Solution for part 2"""
-        return None
+        return 0
