@@ -99,7 +99,8 @@ int main(int argc, char **argv) {
         char *ptr = strchr(line, ':');
         sscanf(line, "%d-%d %c: ", &input.records[index].start, &input.records[index].end,
                &input.records[index].letter);
-        strcpy(input.records[index].password, str_trim_trailing(ptr + 2));
+        char *trimmed = str_trim_trailing(ptr + 2);
+	memmove(input.records[index].password, trimmed, (strlen(trimmed) + 1) * sizeof(char));
         index++;
     }
     input.count = index;

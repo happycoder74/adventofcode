@@ -244,7 +244,7 @@ void aoc_timer_gen(char *title, AocTimer_t *timer, enum Border border) {
     }
     fprintf(stdout, "%-20s%20.3lf %s (%lu ns)\n", title,
             duration.duration, duration.unit,
-            (timer->stop.tv_nsec - timer->start.tv_nsec + (timer->stop.tv_sec - timer->start.tv_sec) * (int)1e9));
+            (unsigned long)(timer->stop.tv_nsec - timer->start.tv_nsec + (timer->stop.tv_sec - timer->start.tv_sec) * (int)1e9));
     if (border & BORDER_BOTTOM) {
         fprintf(stdout, "--------------------------------------------------------\n");
     }
