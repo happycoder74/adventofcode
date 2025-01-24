@@ -22,9 +22,6 @@ struct _AocTimer_t {
     LARGE_INTEGER freq;
     LARGE_INTEGER startTime;
     LARGE_INTEGER endTime;
-    LARGE_INTEGER freq;
-    LARGE_INTEGER startTime;
-    LARGE_INTEGER endTime;
 #endif
 };
 #include <unistd.h>
@@ -107,43 +104,6 @@ void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int sho
 
     if (result) {
         free(result);
-    }
-}
-
-void timer_func_new(int part, int (func)(void *), void *aocdata, int show_res) {
-    LARGE_INTEGER freq;
-    QueryPerformanceFrequency(&freq);
-    LARGE_INTEGER startTime;
-    QueryPerformanceCounter(&startTime);
-    LARGE_INTEGER endTime;
-    int result = func(aocdata);
-    QueryPerformanceCounter(&endTime);
-    double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
-    Duration duration = convert_duration(timeDifference);
-    if (show_res) {
-        printf("Part %d answer: %20d%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
-    }
-}
-
-void timer_func_uint64(int part, uint64_t(func)(void *), void *aocdata, int show_res, uint64_t *result_output) {
-    LARGE_INTEGER freq;
-    QueryPerformanceFrequency(&freq);
-    LARGE_INTEGER startTime;
-    QueryPerformanceCounter(&startTime);
-    LARGE_INTEGER endTime;
-    uint64_t result = func(aocdata);
-    QueryPerformanceCounter(&endTime);
-    double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
-    Duration duration = convert_duration(timeDifference);
-    if (show_res) {
-        printf("Part %d answer: %20" PRIu64 "%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-        if(result_output) {
-            *result_output = result;
-        }
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
     }
 }
 
@@ -242,7 +202,7 @@ void aoc_timer_gen(char *title, AocTimer_t *timer, enum Border border) {
     }
     fprintf(stdout, "%-20s%20.3lf %s (%lu ns)\n", title,
             duration.duration, duration.unit,
-            (unsigned long)(timer->stop.tv_nsec - timer->start.tv_nsec + (timer->stop.tv_sec - timer->start.tv_sec) * (int)1e9));
+            (unsigned long)(timeDifference));
     if (border & BORDER_BOTTOM) {
         fprintf(stdout, "--------------------------------------------------------\n");
     }
