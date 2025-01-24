@@ -23,12 +23,12 @@ static char *str_trim_trailing(char *str) {
     return str;
 }
 
-int solve_part_1(void *inp) {
+int solve_part_1(void) {
     qsort(seats, seat_index, sizeof(int), int_compare);
     return seats[seat_index - 1];
 }
 
-int solve_part_2(void *inp) {
+int solve_part_2(void) {
     for (unsigned int i = 0; i < seat_index - 1; i++) {
         if ((seats[i + 1] - seats[i]) > 1)
             return seats[i] + 1;
@@ -86,8 +86,8 @@ int main(int argc, char **argv) {
 
     aoc_header(year, day);
     aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
-    timer_func_new(1, solve_part_1, NULL, 1);
-    timer_func_new(2, solve_part_2, NULL, 1);
+    timer_func_int_void(1, solve_part_1, 1);
+    timer_func_int_void(2, solve_part_2,  1);
     aoc_timer_stop(timer);
     aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 

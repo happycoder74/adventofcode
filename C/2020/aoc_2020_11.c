@@ -179,12 +179,12 @@ int main(int argc, char **argv) {
 
     if ((argc > 1)) {
         if (!strcmp(argv[1], "--test")) {
-            sprintf(filename, "test_input.txt");
+            snprintf(filename, 40, "test_input.txt");
         } else {
-            sprintf(filename, "%s", argv[1]);
+            snprintf(filename, 40, "%s", argv[1]);
         }
     } else {
-        sprintf(filename, "input.txt");
+        snprintf(filename, 40, "input.txt");
     }
 
     snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
