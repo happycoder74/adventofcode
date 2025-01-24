@@ -127,7 +127,6 @@ void solve(Trail *trail) {
 
     signal(SIGINT, interupt_handler);
 
-    int counter = 0;
     while (keep_running) {
         if (queue->length == 0) {
             trail->solution = NULL;
@@ -173,7 +172,7 @@ void solve(Trail *trail) {
     }
 
     // After interrupt
-    printf("Queue length: %d\n", queue->length);
+    printf("Queue length: %zu\n", queue->length);
     Node *current = (Node *)aoc_array_last(queue);
     printf("Current point: (%d, %d)\n", current->state->x, current->state->y);
     return;

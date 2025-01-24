@@ -4,19 +4,7 @@
 #include "aoc_types.h"
 #include <stdint.h>
 
-#ifndef _WIN32
 typedef struct _AocTimer_t AocTimer_t;
-#else
-// clang-format off
-#include <windows.h>
-#include <winbase.h>
-// clang-format on
-typedef struct AocTimer_t {
-    LARGE_INTEGER freq;
-    LARGE_INTEGER startTime;
-    LARGE_INTEGER endTime;
-} AocTimer_t;
-#endif
 
 enum Border {
     BORDER_TOP = 1,
@@ -37,6 +25,8 @@ void        timer_func_new(int, int(func)(void *), void *, int);
 void        timer_func_new_long(int, long(func)(void *), void *, int);
 void        timer_func_uint64(int, uint64_t(func)(void *), void *, int, uint64_t *);
 void        timer_func_new_str(int, void *(func)(void *), void *, int);
+void        timer_func_str_void(int part, void *(func)(void), int show_res);
+void        timer_func_int_void(int part, int (func)(void), int show_res);
 AocTimer_t *aoc_timer_new();
 void        aoc_timer_delete(AocTimer_t *timer);
 

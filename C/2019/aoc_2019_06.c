@@ -50,7 +50,6 @@ void *solve_part_1(AocData_t *data) {
     uint32_t direct_count = count_direct(table, "COM");
     uint32_t indirect_count = 0;
 
-    uint32_t        length;
     AocHashIterator iter;
     void           *key, *value;
     aoc_hash_table_iter_init(&iter, table);

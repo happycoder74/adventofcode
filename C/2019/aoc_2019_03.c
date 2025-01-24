@@ -100,7 +100,6 @@ AocArrayPtr set_intersection(AocHashTable *table1, AocHashTable *table2) {
     AocArrayPtr     result = aoc_ptr_array_new();
     AocHashIterator iter;
     void           *key, *value;
-    unsigned int    length;
 
     aoc_hash_table_iter_init(&iter, table1);
     while (aoc_hash_table_iter_next(&iter, &key, &value)) {
