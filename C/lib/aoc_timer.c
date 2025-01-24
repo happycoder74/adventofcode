@@ -193,10 +193,10 @@ void aoc_timer_gen(char *title, AocTimer_t *timer, enum Border border) {
 
 #ifdef _WIN32
     double   timeDifference = ((timer->endTime.QuadPart - timer->startTime.QuadPart) * 1e9 / timer->freq.QuadPart);
-    Duration duration = convert_duration(timeDifference);
 #else
-    Duration duration = convert_duration((timer->stop.tv_sec * 1e9 + timer->stop.tv_nsec) - (timer->start.tv_sec * 1e9 + timer->start.tv_nsec));
+    double timeDifference = (timer->stop.tv_sec * 1e9 + timer->stop.tv_nsec) - (timer->start.tv_sec * 1e9 + timer->start.tv_nsec);
 #endif
+    Duration duration = convert_duration(timeDifference);
     if (border & BORDER_TOP) {
         fprintf(stdout, "--------------------------------------------------------\n");
     }
