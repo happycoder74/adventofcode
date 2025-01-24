@@ -7,12 +7,26 @@
 #include <stdio.h>
 #ifndef _WIN32
 #include <time.h>
+#else
+// clang-format off
+#include <windows.h>
+#include <winbase.h>
+// clang-format on
+#endif
 
 struct _AocTimer_t {
+#ifndef _WIN32
     struct timespec start;
     struct timespec stop;
-};
+#else
+    LARGE_INTEGER freq;
+    LARGE_INTEGER startTime;
+    LARGE_INTEGER endTime;
+    LARGE_INTEGER freq;
+    LARGE_INTEGER startTime;
+    LARGE_INTEGER endTime;
 #endif
+};
 #include <unistd.h>
 
 AocTimer_t *aoc_timer_new(void) {
@@ -194,22 +208,6 @@ void timer_func_new_long(int part, long(func)(void *), void *input, int show_res
     }
 }
 
-void timer_func_new(int part, int(func)(void *), void *input, int show_res) {
-    struct timespec start, stop;
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    int result = func(input);
-    clock_gettime(CLOCK_REALTIME, &stop);
-
-    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
-
-    if (show_res) {
-        printf("Part %d answer: %-20d%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
-    }
-}
-
 void timer_func_new_str(int part, void *(func)(void *), void *input, int show_res) {
     struct timespec start, stop;
 
@@ -281,4 +279,94 @@ void timer_func_uint64(int part, uint64_t(func)(void *), void *input, int show_r
     }
 }
 
+void timer_func_str_void(int part, void *(func)(void), int show_res) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
+
+    char *result = func();
+
+#ifdef _WIN32
+    QueryPerformanceCounter(&endTime);
+    double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
+
+    Duration duration = convert_duration(time_difference);
+    if (show_res) {
+        printf("Part %d answer: %20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+    } else {
+        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+    }
+}
+
+void timer_func_int_void(int part, int(func)(void), int show_res) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
+
+    int result = func();
+
+#ifdef _WIN32
+    QueryPerformanceCounter(&endTime);
+    double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
+    Duration duration = convert_duration(time_difference);
+
+    if (show_res) {
+        printf("Part %d answer: %-20d%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+    } else {
+        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+    }
+}
+
+void timer_func_new(int part, int(func)(void *), void *input, int show_res) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
+
+    int result = func(input);
+
+#ifdef _WIN32
+    QueryPerformanceCounter(&endTime);
+    double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
+    Duration duration = convert_duration(time_difference);
+
+    if (show_res) {
+        printf("Part %d answer: %-20d%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+    } else {
+        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+    }
+
+}
 
