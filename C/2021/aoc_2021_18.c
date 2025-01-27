@@ -48,7 +48,7 @@ SFNumber *sf_number_new(int len) {
     SFNumber *result;
 
     result = (SFNumber *)malloc(sizeof(SFNumber));
-    result->number = (SFVal *)calloc(sizeof(SFVal), len);
+    result->number = (SFVal *)calloc(len, sizeof(SFVal));
     result->size = len;
 
     return result;
