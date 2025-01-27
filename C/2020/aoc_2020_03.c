@@ -2,6 +2,7 @@
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include <ctype.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,9 +32,9 @@ int solve_part_1(void *inp) {
     return count;
 }
 
-long solve_part_2(void *inp) {
+uint64_t solve_part_2(void *inp) {
     struct Input *input = (struct Input *)inp;
-    long          count = 1;
+    uint64_t      count = 1;
     unsigned int  slope_x[5] = {1, 3, 5, 7, 1};
     unsigned int  slope_y[5] = {1, 1, 1, 1, 2};
 
@@ -106,7 +107,7 @@ int main(int argc, char **argv) {
     aoc_header(year, day);
     aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
-    timer_func_new_long(2, solve_part_2, &input, 1);
+    timer_func_uint64(2, solve_part_2, &input, 1, NULL);
     aoc_timer_stop(timer);
     aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
