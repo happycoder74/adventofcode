@@ -95,6 +95,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 | 12  | &#11088;&#11088; |               |               |                |
 | 13  | &#11088;&#11088; |               |               |                |
 | 14  | &#11088;&#11088; |               |               |                |
+| 15  | &#11088;&#11088; |               |               |                |
 
 ## 2019
 
