@@ -8,7 +8,7 @@ target_sources(
   PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_io.c
   PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_list.c
   PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_hash.c)
-target_include_directories(aoc_2020_07 PRIVATE ${GLIB_INCLUDE_DIRS})
 target_include_directories(aoc_2020_07 PRIVATE ${CURL_INCLUDE_DIRS})
-target_link_libraries(aoc_2020_07 ${GLIB_LDFLAGS})
 target_link_libraries(aoc_2020_07 ${CURL_LDFLAGS})
+
+target_sources(aoc_2020_14 PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_hash_light.c)
