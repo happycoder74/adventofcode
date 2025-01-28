@@ -1,7 +1,7 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_grid.h"
-#include "aoc_io.h"
+#include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -101,7 +101,6 @@ void grid_print(AocGrid *grid, int final) {
 void *solve_part_1(AocData_t *data) {
     AocGrid     *grid;
     unsigned int i;
-    int          row, col;
     Instruction *instruction;
 
     GridDimensions dimensions = {.rows = 6, .columns = 50};
@@ -128,20 +127,20 @@ void *solve_part_1(AocData_t *data) {
         /* grid_print(grid, 0); */
     }
 
-    int count = 0;
-    for (row = 0; row < (int)grid->rows; row++) {
-        for (col = 0; col < (int)grid->columns; col++) {
-            int32_t *val = (int *)aoc_grid_get(grid, row, col);
-            count += (val == NULL ? 0 : *val);
-        }
-    }
+    /* int count = 0; */
+    /* for (row = 0; row < (int)grid->rows; row++) { */
+    /*     for (col = 0; col < (int)grid->columns; col++) { */
+    /*         int32_t *val = (int *)aoc_grid_get(grid, row, col); */
+    /*         count += (val == NULL ? 0 : *val); */
+    /*     } */
+    /* } */
 
     grid_print(grid, 1);
 
     return strdup_printf("%d", aoc_grid_elements(grid));
 }
 
-void *solve_part_2(AocData_t *data) {
+void *solve_part_2(void) {
     return strdup("See above");
 }
 
@@ -149,7 +148,7 @@ void *solve_all(AocData_t *data) {
 
     if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
-        timer_func(2, solve_part_2, data, 1);
+        timer_func_str_void(2, solve_part_2, 1);
     }
 
     return NULL;
@@ -160,11 +159,19 @@ int main(int argc, char **argv) {
     const unsigned year = 2016;
     const unsigned day = 8;
 
+    AocTimer_t *timer = aoc_timer_new();
+
+    aoc_timer_start(timer);
     AocData_t *data = get_data(argc, argv, year, day, clean_input);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func(0, solve_all, data, 0);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
+    aoc_timer_delete(timer);
     aoc_data_free(data);
 
     return aoc_mem_gc();

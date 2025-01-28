@@ -1,7 +1,7 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_hash.h"
-#include "aoc_io.h"
+#include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -71,9 +71,7 @@ bool if_larger_than_1(const void *value) {
 void *solve_problem(AocArrayPtr data, int diagonal) {
     AocHashTable   *hashtable;
     Line            line;
-    AocHashIterator iter;
     int             count;
-    void           *key, *value;
 
     hashtable = aoc_hash_table_create_custom(100, NULL, NULL, NULL, AOC_POINT);
     /* hashtable = aoc_hash_table_create(AOC_POINT); */

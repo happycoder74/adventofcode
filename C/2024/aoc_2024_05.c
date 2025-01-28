@@ -1,11 +1,9 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include "aoc_header.h"
 #include "aoc_timer.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 unsigned short int is_right_order(unsigned int table[100][100], unsigned int *update) {
     unsigned short int right_order = 1;
@@ -109,9 +107,9 @@ int main(int argc, char **argv) {
     const int    day = 5;
     struct Input input = {0};
 
-    struct timespec start, stop;
+    AocTimer_t *timer = aoc_timer_new();
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    aoc_timer_start(timer);
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
@@ -156,14 +154,15 @@ int main(int argc, char **argv) {
     }
     input.n_updates = line_counter;
 
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_new(2, solve_part_2, &input, 1);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }

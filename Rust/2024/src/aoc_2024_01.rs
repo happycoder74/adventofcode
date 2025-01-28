@@ -1,5 +1,4 @@
 use aoc_runner_derive::{aoc, aoc_generator};
-use counter::Counter;
 
 #[aoc_generator(day1)]
 pub fn parse_input(input: &str) -> (Vec<i32>, Vec<i32>) {
@@ -27,8 +26,17 @@ pub fn solve_part_1(parsed: &(Vec<i32>, Vec<i32>)) -> i32 {
         sum += (v1 - v2).abs();
     }
 
-    let counts = parsed.0.iter().collect::<Counter<_>>();
-    println!("{:?}", counts);
+    sum
+}
+
+#[aoc(day1, part2)]
+pub fn solve_part_2(parsed: &(Vec<i32>, Vec<i32>)) -> i32 {
+    let mut sum: i32 = 0;
+
+    for v1 in &parsed.0 {
+        sum += v1 * (parsed.1.iter().filter(|n| *n == v1).count()) as i32;
+    }
+
     sum
 }
 
@@ -49,5 +57,12 @@ mod tests {
         let parsed = parse_input(INPUT);
 
         assert_eq!(solve_part_1(&parsed), 11);
+    }
+
+    #[test]
+    fn part_2_test() {
+        let parsed = parse_input(INPUT);
+
+        assert_eq!(solve_part_2(&parsed), 31);
     }
 }

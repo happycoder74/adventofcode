@@ -1,10 +1,8 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include "aoc_header.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 struct Position {
     unsigned int x;
@@ -141,9 +139,9 @@ int main(int argc, char **argv) {
     const int       day = 14;
     struct Bathroom room = {0};
 
-    struct timespec start, stop;
+    AocTimer_t *timer = aoc_timer_new();
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    aoc_timer_start(timer);
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
@@ -180,14 +178,16 @@ int main(int argc, char **argv) {
     room.max_y = room.robots[0].max_y;
     struct Bathroom room2 = room;
 
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, (void *)&room, 1);
     timer_func_new(2, solve_part_2, (void *)&room2, 1);
 
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }

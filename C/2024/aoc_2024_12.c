@@ -1,10 +1,10 @@
-#define _XOPEN_SOURCE 600 // To get hold of clock_gettime etc.
 #include "aoc_header.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+
+#define MAXREGIONS 1000
 
 struct Position {
     unsigned int x;
@@ -24,13 +24,17 @@ struct Garden {
     char            map[140 * 140];
     struct Position map_positions[140 * 140];
     struct Position positions[140 * 140];
-    struct Region   regions[140 * 140];
+    struct Region   regions[MAXREGIONS];
 };
 
 void initialize_garden(struct Garden **garden, const char map[140 * 140], unsigned int rows,
                        unsigned int columns) {
     if (*garden == NULL) {
         *garden = (struct Garden *)malloc(sizeof(struct Garden));
+        if (! *garden) {
+            fprintf(stderr, "Failed to allocate memory at %s (line: %d)\n", __FILE__, __LINE__);
+            exit(EXIT_FAILURE);
+        }
     }
 
     struct Garden *g = *garden;
@@ -179,6 +183,10 @@ void garden_regions(struct Garden *garden) {
                 }
             }
         }
+        if (garden->nregions >= MAXREGIONS) {
+            fprintf(stderr, "garden->regions out of bounds\n");
+            exit(EXIT_FAILURE);
+        }
         garden->nregions++;
 
         remove_visited(garden, garden_pos, &garden_pos_length, visited);
@@ -205,9 +213,9 @@ int main(int argc, char **argv) {
     const int year = 2024;
     const int day = 12;
 
-    struct timespec start, stop;
+    AocTimer_t *timer = aoc_timer_new();
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    aoc_timer_start(timer);
 
     if (argc > 1) {
         if (!strcmp("--test", argv[1])) {
@@ -234,14 +242,15 @@ int main(int argc, char **argv) {
 
     initialize_garden(&garden, map, row, column);
 
-    clock_gettime(CLOCK_REALTIME, &stop);
+    aoc_timer_stop(timer);
 
     aoc_header(year, day);
-    aoc_timer_gen("Preparation time:", &start, &stop, BORDER_BOTTOM);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, garden, 1);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    aoc_timer_gen("Total time:", &start, &stop, BORDER_TOP | BORDER_BOTTOM);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
     free(garden);
+    aoc_timer_delete(timer);
     return EXIT_SUCCESS;
 }
