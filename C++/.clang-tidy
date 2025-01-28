@@ -1,7 +1,6 @@
 ---
-Checks:          'clang-analyzer-*,readability-redundant-*,performance-*'
+Checks:          'clang-analyzer-*,readability-redundant-*,performance-*,cppcoreguidelines-*'
 WarningsAsErrors: 'clang-analyzer-*,readability-redundant-*,performance-*'
 HeaderFilterRegex: '.*'
-AnalyzeTemporaryDtors: false
 FormatStyle:     none
 User:            user
