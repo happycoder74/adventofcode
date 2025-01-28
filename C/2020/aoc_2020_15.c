@@ -12,12 +12,6 @@ struct Input {
     size_t   count;
 };
 
-static void max_function(void *key, void *value, void *data) {
-    uint32_t  v = (uint32_t)(uint64_t)value;
-    uint32_t *d = (uint32_t *)data;
-    *d = v > *d ? v : *d;
-}
-
 int solver(struct Input *input, uint64_t rounds) {
     uint32_t *numbers = (uint32_t *)calloc(rounds, sizeof(uint32_t));
     uint32_t  last_turn = 0;
