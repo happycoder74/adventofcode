@@ -26,7 +26,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 + 2 &#11088; in PHP (day 1)
 
 ## Year 2020
-+ 14 &#11088; in [Python](python/README.md)
++ 18 &#11088; in [Python](python/README.md)
 + 31 &#11088; in [C](C/README.md)
 + 2 &#11088; in [C++](C++/README.md)
 
