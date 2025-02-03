@@ -66,22 +66,21 @@ class Day16(Puzzle, year=2020, day=16):
     def check_range(self, tickets: list[list[int]], row: list[tuple[int, int]]) -> list[list[int]]:
         check_rows = list()
         for ticket in tickets:
-            check_row = [0] * len(ticket)
+            val = 0
             for i, v in enumerate(ticket):
                 if any([r[0] <= v <= r[1] for r in row]):
-                    check_row[i] = 1
-            check_rows.append(check_row)
+                    pos = len(ticket) - 1 - i
+                    val = val | (1 << pos)
+            check_rows.append(val)
         return check_rows
 
     def compute_masks(self) -> dict[str, list[int]]:
         d = self.classes
         valid_tickets = self.tickets
 
-        checks = dict()
         masks = dict()
         for name, ranges in d.items():
-            checks[name] = self.check_range(valid_tickets, ranges)
-            masks[name] = [int("".join([str(v) for v in l]), 2) for l in checks[name]]
+            masks[name] = self.check_range(valid_tickets, ranges)
         return masks
 
     @timer(part=1)
@@ -108,10 +107,9 @@ class Day16(Puzzle, year=2020, day=16):
             for i, (name, m) in enumerate(masks.items())
         }
         sorted_result: list[tuple[str, tuple[int, int]]] = sorted(
-            result.items(), key=lambda x: x[1][1], reverse=True
+            result.items(), key=lambda x: x[1][1]
         )
-        while sorted_result:
-            item = sorted_result.pop()
+        for item in sorted_result:
             if count_bits(item[1][1]) == 1:
                 bit_index = find_bit(item[1][1])
                 positions[item[0]] = 19 - bit_index
