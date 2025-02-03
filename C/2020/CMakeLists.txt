@@ -15,3 +15,9 @@ target_sources(aoc_2020_14 PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_hash_light.c)
 
 target_sources(aoc_2020_16 PRIVATE ${CMAKE_SOURCE_DIR}/2020/main_2020_16.c)
 target_include_directories(aoc_2020_16 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_sources(
+  aoc_2020_17
+  PRIVATE ${CMAKE_SOURCE_DIR}/2020/main_2020_17.c
+  PRIVATE ${CMAKE_SOURCE_DIR}/lib/aoc_hash_light.c)
+target_include_directories(aoc_2020_17 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
