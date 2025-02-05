@@ -33,6 +33,7 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:-------------
 | 15  | &#11088;&#11088; |               |               |
+| 17  | &#11088;&#11088; |               |               |
 
 ## 2019:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
