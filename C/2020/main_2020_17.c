@@ -1,21 +1,9 @@
 #include "aoc_2020_17.h"
-#include "aoc_hash.h"
-#include "aoc_hash_light.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void print_key_value(void *key, void *value, void *data) {
-    printf("Key: %s\n", (char *)key);
-    return;
-}
-
-void copy_func(void *key, void *value, void *data) {
-    AocHashTable *clone = (AocHashTable *)data;
-    aoc_hash_table_add(clone, key);
-    return;
-}
 int main(int argc, char *argv[]) {
     char *data_directory = getenv("AOC_DATA_LOCATION");
 
@@ -23,8 +11,7 @@ int main(int argc, char *argv[]) {
     const int year = 2020;
     const int day = 17;
 
-    struct Input  input = {0};
-    AocHashTable *clone = NULL;
+    struct Input input = {0};
 
     char filename[40] = "input.txt";
     if (argc > 1) {
@@ -54,7 +41,6 @@ int main(int argc, char *argv[]) {
     input.y_min = 0;
     input.x_max = 0;
     input.y_max = 0;
-    input.grid = aoc_hash_table_create(AOC_PTR);
     while (fgets(line, sizeof(line), file)) {
         str = trim_end(line);
         if (input.x_max == 0) {
@@ -64,7 +50,7 @@ int main(int argc, char *argv[]) {
         for (int c = 0; c < (int)strlen(str); c++) {
             if (str[c] == '#') {
                 unsigned int key = get_key(c, r, 0, 0, &input);
-                aoc_hash_table_add(input.grid, (void *)(uint64_t)key);
+                input.grid[key] = 1;
             }
         }
         r++;
@@ -72,15 +58,10 @@ int main(int argc, char *argv[]) {
 
     fclose(file);
 
-    clone = aoc_hash_table_new_similar(input.grid);
-    aoc_hash_table_foreach(input.grid, copy_func, clone);
+    struct Input clone = input;
+    memmove(clone.grid, input.grid, sizeof(input.grid) / sizeof(input.grid[0]));
     timer_func_new(1, solve_part_1, &input, 1);
-    aoc_hash_table_destroy(&input.grid);
-    input.grid = aoc_hash_table_new_similar(clone);
-    aoc_hash_table_foreach(clone, copy_func, input.grid);
-    timer_func_new(2, solve_part_2, &input, 1);
+    timer_func_new(2, solve_part_2, &clone, 1);
 
-    aoc_hash_table_destroy(&clone);
-    aoc_hash_table_destroy(&input.grid);
     return 0;
 }
