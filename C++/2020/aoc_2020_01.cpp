@@ -43,7 +43,12 @@ auto main(int argc, char **argv) -> int {
     const int   year = 2020;
     const int   day  = 1;
 
-    auto args = std::span(argv, size_t(argc));
+    std::string filename;
+    const int   year = 2020;
+    const int   day  = 1;
+
+    auto                                                 args = std::span(argv, size_t(argc));
+    std::pair<std::vector<int>, std::unordered_set<int>> data;
 
     if (argc > 1) {
         if (std::string(args[1]) == "--test") {
