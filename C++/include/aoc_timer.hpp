@@ -35,9 +35,33 @@ template <class C, class R> inline const std::string convert_duration(std::chron
     return ss.str();
 }
 
+template <typename T, typename U> void timer(int part, T (*func)(U &), U data, bool show_res = true) {
+    auto              t1              = Clock::now();
+    T                 result          = func(data);
+    auto              t2              = Clock::now();
+    const std::string duration_string = convert_duration(t2 - t1);
+    if (show_res) {
+        std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
+    } else {
+        std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
+    }
+}
+
 template <typename T, typename U> void timer(int part, T (*func)(const U &), U data, bool show_res = true) {
     auto              t1              = Clock::now();
     T                 result          = func(data);
+    auto              t2              = Clock::now();
+    const std::string duration_string = convert_duration(t2 - t1);
+    if (show_res) {
+        std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
+    } else {
+        std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
+    }
+}
+
+template <typename T, typename U, typename W> void timer(int part, T (*func)(U &, W), U data, W data2, bool show_res = true) {
+    auto              t1              = Clock::now();
+    T                 result          = func(data, data2);
     auto              t2              = Clock::now();
     const std::string duration_string = convert_duration(t2 - t1);
     if (show_res) {
