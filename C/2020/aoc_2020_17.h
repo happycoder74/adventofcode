@@ -1,10 +1,10 @@
 #ifndef AOC_2020_17_H_1PBRDOHW
 #define AOC_2020_17_H_1PBRDOHW
 
-#include "aoc_hash_light.h"
+#include <stdint.h>
 
 struct Input {
-    AocHashTable *grid;
+    uint8_t grid[200000];
 
     int x_min;
     int x_max;
