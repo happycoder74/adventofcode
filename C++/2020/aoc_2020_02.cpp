@@ -1,39 +1,40 @@
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <numeric>
+#include <ranges>
 #include <span>
 #include <sstream>
 #include <string>
 #include <vector>
 
 int solve_part_1(const std::vector<std::tuple<int, int, char, std::string>> &data) {
-    int count = 0;
-    for (auto &item : data) {
-        int         count_start = std::get<0>(item);
-        int         count_end   = std::get<1>(item);
-        char        letter      = std::get<2>(item);
-        std::string passwd      = std::get<3>(item);
-
-        auto num_chars = std::transform_reduce(passwd.begin(), passwd.end(), 0, std::plus{}, [&](auto c) { return c == letter ? 1 : 0; });
-        if ((count_start <= num_chars) && (num_chars <= count_end))
-            count++;
-    }
-    return count;
+    auto count = data | std::views::transform([](auto &item) {
+                     int         count_start = std::get<0>(item);
+                     int         count_end   = std::get<1>(item);
+                     char        letter      = std::get<2>(item);
+                     std::string passwd      = std::get<3>(item);
+                     auto        num_chars   = std::count(passwd.begin(), passwd.end(), letter);
+                     return ((count_start <= num_chars) && (num_chars <= count_end)) ? 1 : 0;
+                 });
+    return std::reduce(count.begin(), count.end());
 }
 
 int solve_part_2(const std::vector<std::tuple<int, int, char, std::string>> &data) {
-    int count = 0;
-    for (auto &item : data) {
-        int         first_pos  = std::get<0>(item) - 1;
-        int         second_pos = std::get<1>(item) - 1;
-        char        letter     = std::get<2>(item);
-        std::string passwd     = std::get<3>(item);
-        if ((passwd[first_pos] == letter) != (passwd[second_pos] == letter))
-            count++;
-    }
-    return count;
+    auto count = data | std::views::transform([](auto &item) {
+                     int         first_pos  = std::get<0>(item) - 1;
+                     int         second_pos = std::get<1>(item) - 1;
+                     char        letter     = std::get<2>(item);
+                     std::string passwd     = std::get<3>(item);
+                     if ((passwd[first_pos] == letter) != (passwd[second_pos] == letter)) {
+                         return 1;
+                     } else {
+                         return 0;
+                     }
+                 });
+    return std::reduce(count.begin(), count.end());
 }
 
 int main(int argc, char **argv) {
