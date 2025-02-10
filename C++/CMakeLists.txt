@@ -5,9 +5,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wall -Wextra -O0")
 set(AOC_YEARS
-  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024
-)
+    2015
+    2016
+    2017
+    2018
+    2019
+    2020
+    2021
+    2022
+    2023
+    2024)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)
@@ -21,5 +30,3 @@ foreach(year ${AOC_YEARS})
     add_subdirectory(${year})
   endif()
 endforeach()
-
-

@@ -70,18 +70,32 @@ function(aoc_generate_year AOC_YEAR)
       24
       25)
   set(custom_target_args)
+  set(custom_test_target_args)
+  set(custom_build_target_args)
   foreach(DIR ${DAY_DIRECTORIES})
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/aoc_${AOC_YEAR}_${DIR}.c)
       aoc_generate(${AOC_YEAR} ${DIR})
       list(APPEND custom_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR})
       list(APPEND custom_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
+      list(APPEND custom_test_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR} --test)
+      list(APPEND custom_test_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
+      list(APPEND custom_build_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
     else()
       message("Skipping ${DIR}")
     endif()
   endforeach()
 
   add_custom_target(
+    aoc_${AOC_YEAR}
+    ${custom_build_target_args})
+
+  add_custom_target(
     run_${AOC_YEAR}
+    ${custom_target_args}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+  add_custom_target(
+    test_${AOC_YEAR}
     ${custom_target_args}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endfunction()
@@ -114,18 +128,33 @@ function(aoc_generate_year_light AOC_YEAR)
       24
       25)
   set(custom_target_args)
+  set(custom_test_target_args)
+  set(custom_build_target_args)
   foreach(DIR ${DAY_DIRECTORIES})
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/aoc_${AOC_YEAR}_${DIR}.c)
       aoc_generate_light(${AOC_YEAR} ${DIR})
       list(APPEND custom_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR})
       list(APPEND custom_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
+      list(APPEND custom_test_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR} --test)
+      list(APPEND custom_test_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
+      list(APPEND custom_build_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
     else()
       message("Skipping ${DIR}")
     endif()
   endforeach()
 
+
+  add_custom_target(
+    aoc_${AOC_YEAR}
+    ${custom_build_target_args})
+
   add_custom_target(
     run_${AOC_YEAR}
     ${custom_target_args}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+  add_custom_target(
+    test_${AOC_YEAR}
+    ${custom_test_target_args}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endfunction()

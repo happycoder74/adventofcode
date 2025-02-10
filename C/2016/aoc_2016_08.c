@@ -101,7 +101,6 @@ void grid_print(AocGrid *grid, int final) {
 void *solve_part_1(AocData_t *data) {
     AocGrid     *grid;
     unsigned int i;
-    int          row, col;
     Instruction *instruction;
 
     GridDimensions dimensions = {.rows = 6, .columns = 50};
@@ -128,20 +127,20 @@ void *solve_part_1(AocData_t *data) {
         /* grid_print(grid, 0); */
     }
 
-    int count = 0;
-    for (row = 0; row < (int)grid->rows; row++) {
-        for (col = 0; col < (int)grid->columns; col++) {
-            int32_t *val = (int *)aoc_grid_get(grid, row, col);
-            count += (val == NULL ? 0 : *val);
-        }
-    }
+    /* int count = 0; */
+    /* for (row = 0; row < (int)grid->rows; row++) { */
+    /*     for (col = 0; col < (int)grid->columns; col++) { */
+    /*         int32_t *val = (int *)aoc_grid_get(grid, row, col); */
+    /*         count += (val == NULL ? 0 : *val); */
+    /*     } */
+    /* } */
 
     grid_print(grid, 1);
 
     return strdup_printf("%d", aoc_grid_elements(grid));
 }
 
-void *solve_part_2(AocData_t *data) {
+void *solve_part_2(void) {
     return strdup("See above");
 }
 
@@ -149,7 +148,7 @@ void *solve_all(AocData_t *data) {
 
     if (aoc_data_get(data)) {
         timer_func(1, solve_part_1, data, 1);
-        timer_func(2, solve_part_2, data, 1);
+        timer_func_str_void(2, solve_part_2, 1);
     }
 
     return NULL;

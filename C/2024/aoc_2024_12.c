@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAXREGIONS 1000
+
 struct Position {
     unsigned int x;
     unsigned int y;
@@ -22,13 +24,17 @@ struct Garden {
     char            map[140 * 140];
     struct Position map_positions[140 * 140];
     struct Position positions[140 * 140];
-    struct Region   regions[140 * 140];
+    struct Region   regions[MAXREGIONS];
 };
 
 void initialize_garden(struct Garden **garden, const char map[140 * 140], unsigned int rows,
                        unsigned int columns) {
     if (*garden == NULL) {
         *garden = (struct Garden *)malloc(sizeof(struct Garden));
+        if (! *garden) {
+            fprintf(stderr, "Failed to allocate memory at %s (line: %d)\n", __FILE__, __LINE__);
+            exit(EXIT_FAILURE);
+        }
     }
 
     struct Garden *g = *garden;
@@ -176,6 +182,10 @@ void garden_regions(struct Garden *garden) {
                     index++;
                 }
             }
+        }
+        if (garden->nregions >= MAXREGIONS) {
+            fprintf(stderr, "garden->regions out of bounds\n");
+            exit(EXIT_FAILURE);
         }
         garden->nregions++;
 

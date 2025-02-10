@@ -2,6 +2,8 @@
 
 [![CMake](https://github.com/happycoder74/adventofcode/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/happycoder74/adventofcode/actions/workflows/cmake.yml)
 
+Testing all solutions on Linux, FreeBSD, OpenBSD and Windows/MinGW64. Target is to make the code platform independent which has turned out to be pretty difficult sometimes.
+
 Possible to build using CMake. Builds with pre-defined custom targets for each day.
 To build run
 ```cmake -B build .```
@@ -32,7 +34,7 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  4  | &#11088;&#11088; |               |               | Simpler solution but not faster
 |  5  | &#11088;&#11088; |               |               | Messy.
 |  6  | &#11088;&#11088; |               |               |
-| 12  | &#11088;         |               |               | Loop mania
+| 12  | &#11088;         |               |               | Loop mania.
 | 13  | &#11088;&#11088; |               |               | Simple, yet nice
 | 14  | &#11088;&#11088; |               |               | Pretty nice
 
@@ -90,6 +92,12 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  9  | &#11088;&#11088; |               |               |                |
 | 10  | &#11088;&#11088; |               |               |                |
 | 11  | &#11088;&#11088; |               |               |                |
+| 12  | &#11088;&#11088; |               |               |                |
+| 13  | &#11088;&#11088; |               |               |                |
+| 14  | &#11088;&#11088; |               |               |                |
+| 15  | &#11088;&#11088; |               |               |                |
+| 16  | &#11088;&#11088; |               |               |                |
+| 17  | &#11088;&#11088; |               |               |                |
 
 ## 2019
 

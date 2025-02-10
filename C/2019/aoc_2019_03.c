@@ -1,7 +1,7 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_hash.h"
-#include "aoc_io.h"
+#include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_types.h"
@@ -100,7 +100,6 @@ AocArrayPtr set_intersection(AocHashTable *table1, AocHashTable *table2) {
     AocArrayPtr     result = aoc_ptr_array_new();
     AocHashIterator iter;
     void           *key, *value;
-    unsigned int    length;
 
     aoc_hash_table_iter_init(&iter, table1);
     while (aoc_hash_table_iter_next(&iter, &key, &value)) {

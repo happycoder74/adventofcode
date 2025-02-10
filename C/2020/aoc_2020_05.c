@@ -7,7 +7,7 @@
 #include <string.h>
 
 static int    seats[1000] = {0};
-static size_t index = 0;
+static size_t seat_index = 0;
 
 static int int_compare(const void *a, const void *b) {
     return *(int *)a - *(int *)b;
@@ -23,13 +23,13 @@ static char *str_trim_trailing(char *str) {
     return str;
 }
 
-int solve_part_1(void *inp) {
-    qsort(seats, index, sizeof(int), int_compare);
-    return seats[index - 1];
+int solve_part_1(void) {
+    qsort(seats, seat_index, sizeof(int), int_compare);
+    return seats[seat_index - 1];
 }
 
-int solve_part_2(void *inp) {
-    for (unsigned int i = 0; i < index - 1; i++) {
+int solve_part_2(void) {
+    for (unsigned int i = 0; i < seat_index - 1; i++) {
         if ((seats[i + 1] - seats[i]) > 1)
             return seats[i] + 1;
     }
@@ -45,16 +45,17 @@ int main(int argc, char **argv) {
     const unsigned int year = 2020;
     const unsigned int day = 5;
 
+
     AocTimer_t *timer = NULL;
 
     if ((argc > 1)) {
         if (!strcmp(argv[1], "--test")) {
-            sprintf(filename, "test_input.txt");
+            snprintf(filename, 40, "test_input.txt");
         } else {
-            sprintf(filename, "%s", argv[1]);
+            snprintf(filename, 40, "%s", argv[1]);
         }
     } else {
-        sprintf(filename, "input.txt");
+        snprintf(filename, 40, "input.txt");
     }
 
     snprintf(filepath, 254, "%s/%d/%02d/%s", getenv("AOC_DATA_LOCATION"), year, day, filename);
@@ -79,14 +80,14 @@ int main(int argc, char **argv) {
                     break;
             }
         }
-        seats[index++] = seat_id;
+        seats[seat_index++] = seat_id;
     }
     aoc_timer_stop(timer);
 
     aoc_header(year, day);
     aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
-    timer_func_new(1, solve_part_1, NULL, 1);
-    timer_func_new(2, solve_part_2, NULL, 1);
+    timer_func_int_void(1, solve_part_1, 1);
+    timer_func_int_void(2, solve_part_2,  1);
     aoc_timer_stop(timer);
     aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
 
