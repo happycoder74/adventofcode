@@ -4,6 +4,11 @@ Sometimes when frustration hits hard during AoC trying to solve the puzzles usin
 
 While I try to learn the benefits and caveats of C++ I also decided to take on the challenge to learn CMake, why this part of the repo is built using CMake. Will be interesting.
 
+## 2024:
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:------------
+|  1  | &#11088;&#11088; |               |               |
+
 ## 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:------------
