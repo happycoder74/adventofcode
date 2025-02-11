@@ -5,7 +5,12 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wall -Wextra -O0")
+if(WIN32)
+  string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " -lstdc++exp")
+endif(WIN32)
+
+string(APPEND CMAKE_CXX_FLAGS " -Wall")
+string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wextra -O0")
 set(AOC_YEARS
     2015
     2016
@@ -30,3 +35,5 @@ foreach(year ${AOC_YEARS})
     add_subdirectory(${year})
   endif()
 endforeach()
+
+message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
