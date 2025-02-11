@@ -42,7 +42,7 @@ auto solve_all(const std::tuple<std::vector<int>, std::vector<int>> &instruction
     aoc::timer(1, solve_part_1, instructions, true);
     aoc::timer(2, solve_part_2, instructions, true);
 
-    return NULL;
+    return 0;
 }
 
 auto parse_data(const std::vector<std::string> &instructions) {
@@ -60,6 +60,8 @@ auto parse_data(const std::vector<std::string> &instructions) {
 int main(int argc, char **argv) {
     std::string              filename;
     std::vector<std::string> instructions;
+    constexpr int            year = 2024;
+    constexpr int            day  = 1;
 
     if (argc > 1) {
         if (!std::strcmp(argv[1], "--test")) {
@@ -71,11 +73,11 @@ int main(int argc, char **argv) {
         filename = argc > 1 ? argv[1] : "input.txt";
     }
 
-    instructions = aoc::io::get_input_list<std::string>(filename, 2024, 1);
+    instructions = aoc::io::get_input_list<std::string>(filename, year, day);
 
     auto parsed = parse_data(instructions);
 
-    aoc::timer(0, solve_all, parsed, 0);
+    aoc::timer(0, solve_all, parsed, false);
 
     return 0;
 }
