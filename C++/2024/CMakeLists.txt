@@ -1,3 +1,1 @@
-set(CMAKE_CXX_STANDARD 23)
-AOC_GENERATE_YEAR(2024)
-
+aoc_generate_year(2024)
