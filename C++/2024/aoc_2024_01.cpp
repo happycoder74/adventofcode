@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 
     auto parsed = parse_data(instructions);
 
-    auto result = aoc::timer(0, solve_all, parsed, false);
+    aoc::timer(0, solve_all, parsed, false);
 
     return 0;
 }
