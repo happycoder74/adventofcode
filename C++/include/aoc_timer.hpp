@@ -13,23 +13,28 @@ enum {
     NS_TO_US = 1000
 };
 
-typedef std::chrono::high_resolution_clock Clock;
+using Clock    = std::chrono::high_resolution_clock;
 using duration = std::chrono::duration<double>;
 
 namespace aoc {
 
-template <class C, class R> inline const std::string convert_duration(std::chrono::duration<C, R> duration) {
+template <class C, class R> inline auto convert_duration(std::chrono::duration<C, R> duration) -> const std::string {
     std::stringstream ss;
 
     auto unit = duration.count();
-    if (unit > NS_TO_S) {
-        ss << std::chrono::duration<double, std::ratio<1>>(duration);
-    } else if (unit > NS_TO_MS) {
-        ss << std::chrono::duration<double, std::milli>(duration);
-    } else if (unit > NS_TO_US) {
-        ss << std::chrono::duration<double, std::micro>(duration);
-    } else {
-        ss << duration;
+    switch (unit) {
+        case NS_TO_S:
+            ss << std::chrono::duration<double, std::ratio<1>>(duration);
+            break;
+        case NS_TO_MS:
+            ss << std::chrono::duration<double, std::milli>(duration);
+            break;
+        case NS_TO_US:
+            ss << std::chrono::duration<double, std::micro>(duration);
+            break;
+        default:
+            ss << duration;
+            break;
     }
 
     return ss.str();
@@ -71,7 +76,8 @@ template <typename T, typename U, typename W> void timer(int part, T (*func)(U &
     }
 }
 
-template <typename ClockType, typename Resolution> std::string elapsed_time(const std::chrono::time_point<ClockType, Resolution> t1, const std::chrono::time_point<ClockType, Resolution> t2);
+// template <typename ClockType, typename Resolution> auto elapsed_time(const std::chrono::time_point<ClockType, Resolution> t1, const std::chrono::time_point<ClockType, Resolution> t2) ->
+// std::string;
 
 } // namespace aoc
 

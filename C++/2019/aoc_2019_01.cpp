@@ -41,18 +41,16 @@ int solve_part_2(const std::vector<int> &instructions) {
     return result;
 }
 
-std::string solve_all(const std::vector<std::string> &instructions) {
+void solve_all(const std::vector<std::string> &instructions) {
     std::vector<int> parsed = clean_input(instructions);
     aoc::timer(1, solve_part_1, parsed);
     aoc::timer(2, solve_part_2, parsed);
-
-    return std::string("");
 }
 
 int main(int argc, char **argv) {
-    std::string filename;
-    const int   year = 2019;
-    const int   day = 1;
+    std::string   filename;
+    constexpr int year = 2019;
+    constexpr int day  = 1;
 
     std::vector<std::string> instructions;
 
