@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-int solve_part_1(const std::vector<std::tuple<int, int, char, std::string>> &data) {
+auto solve_part_1(const std::vector<std::tuple<int, int, char, std::string>> &data) -> int {
     auto count = data | std::views::transform([](auto &item) {
                      int         count_start = std::get<0>(item);
                      int         count_end   = std::get<1>(item);
@@ -22,7 +22,7 @@ int solve_part_1(const std::vector<std::tuple<int, int, char, std::string>> &dat
     return std::reduce(count.begin(), count.end());
 }
 
-int solve_part_2(const std::vector<std::tuple<int, int, char, std::string>> &data) {
+auto solve_part_2(const std::vector<std::tuple<int, int, char, std::string>> &data) -> int {
     auto count = data | std::views::transform([](auto &item) {
                      int         first_pos  = std::get<0>(item) - 1;
                      int         second_pos = std::get<1>(item) - 1;
@@ -37,7 +37,7 @@ int solve_part_2(const std::vector<std::tuple<int, int, char, std::string>> &dat
     return std::reduce(count.begin(), count.end());
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     std::filesystem::path filepath(std::getenv("AOC_DATA_LOCATION"));
 
     std::string filename;
@@ -58,7 +58,8 @@ int main(int argc, char **argv) {
         filename = "input.txt";
     }
 
-    filepath = filepath / std::format("{}/{:02d}", year, day) / filename;
+    filepath /= filepath / std::format("{}", year) / std::format("{:02d}", day) / filename;
+
     std::ifstream ifs(filepath);
     std::string   line;
     while (std::getline(ifs, line)) {
@@ -67,10 +68,14 @@ int main(int argc, char **argv) {
         char              letter = 0, tmp = 0;
         std::string       passwd;
         ss >> a >> tmp >> b >> letter >> tmp >> passwd;
-        data.push_back(std::tuple(a, b, letter, passwd));
+        data.emplace_back(a, b, letter, passwd);
     }
 
+    std::cout << std::format("{:=<55}\n", "");
+    std::cout << std::format("Solution for {:d}, day {:02d}\n", year, day);
+    std::cout << std::format("{:-<55}\n", "");
     aoc::timer(1, solve_part_1, data);
     aoc::timer(2, solve_part_2, data);
+    std::cout << std::format("{:-<55}\n", "");
     return 0;
 }

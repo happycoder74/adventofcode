@@ -3,7 +3,6 @@
 #include <cctype>
 #include <filesystem>
 #include <fstream>
-#include <functional>
 #include <numeric>
 #include <ranges>
 #include <string>
@@ -11,14 +10,25 @@
 #include <unordered_set>
 #include <vector>
 
-static inline bool is_valid(const std::string &passport) {
+static inline auto is_valid(const std::string &passport) -> bool {
     constexpr int n_keys = 7;
 
     static constexpr std::array<std::string, n_keys> required_keys = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
     return std::all_of(required_keys.begin(), required_keys.end(), [&passport](auto &r) { return passport.contains(r); });
 }
 
-static inline bool is_valid_part_2(const std::string &passport) {
+static auto is_valid_part_2(const std::string &passport) -> bool {
+    enum struct PP_CLASS {
+        CID,
+        BYR,
+        EYR,
+        IYR,
+        HCL,
+        PID,
+        HGT,
+        ECL
+    };
+
     constexpr int byr_min    = 1920;
     constexpr int byr_max    = 2002;
     constexpr int iyr_min    = 2010;
@@ -32,46 +42,67 @@ static inline bool is_valid_part_2(const std::string &passport) {
     constexpr int hgt_min_in = 59;
     constexpr int hgt_max_in = 76;
 
-    // clang-format off
-    const std::unordered_map<std::string, std::function<bool(const std::string &)>> validators = {
-        {"cid", [](const auto &value) { return true; }},
-        {"byr", [](const auto &value) { return (byr_min <= std::stoi(value)) && (std::stoi(value) <= byr_max); }},
-        {"iyr", [](const auto &value) { return (iyr_min <= std::stoi(value)) && (std::stoi(value) <= iyr_max); }},
-        {"eyr", [](const auto &value) { return (eyr_min <= std::stoi(value)) && (std::stoi(value) <= eyr_max); }},
-        {"hcl", [](const auto &value) {
-                        if ((value.size() != hcl_len) || (value[0] != '#')) {
-                            return false;
-                        }
-                        return std::all_of(value.begin() + 1, value.end(), [](auto &c) {
-                                return (std::isdigit(c) || (('a' <= c) && (c <= 'f')));
-                                });
-                    }},
-        {"pid", [](const auto &value) {
-                        return (value.size() == pid_len) && (std::find_if(value.begin(), value.end(), [] (auto &c) { return std::isdigit(c); }) != value.end());
-                    }},
-        {"ecl", [](const auto &value) {
-                        const std::unordered_set<std::string> valid_ecl = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
-                        return valid_ecl.find(value) != valid_ecl.end();
-                    }},
-        {"hgt", [](const auto &value) {
-                        int num = std::stoi(value);
-
-                        if (value.ends_with("cm") && (hgt_min_cm <= num) && (num <= hgt_max_cm)) {
-                                return true;
-                        } else if (value.ends_with("in") && (hgt_min_in <= num) && (num <= hgt_max_in)) {
-                                return true;
-                        }
-                        return false;
-                    }}
+    auto validate_byr = [](const auto &value) { return (byr_min <= std::stoi(value)) && (std::stoi(value) <= byr_max); };
+    auto validate_iyr = [](const auto &value) { return (iyr_min <= std::stoi(value)) && (std::stoi(value) <= iyr_max); };
+    auto validate_eyr = [](const auto &value) { return (eyr_min <= std::stoi(value)) && (std::stoi(value) <= eyr_max); };
+    auto validate_hcl = [](const auto &value) {
+        if ((value.size() != hcl_len) || (value[0] != '#')) {
+            return false;
+        }
+        return std::all_of(value.begin() + 1, value.end(), [](auto &c) { return (std::isdigit(c) || (('a' <= c) && (c <= 'f'))); });
     };
+    auto validate_pid = [](const auto &value) { return (value.size() == pid_len) && (std::find_if(value.begin(), value.end(), [](auto &c) { return std::isdigit(c); }) != value.end()); };
+    auto validate_ecl = [](const auto &value) {
+        const std::unordered_set<std::string> valid_ecl = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
+        return valid_ecl.find(value) != valid_ecl.end();
+    };
+    auto validate_hgt = [](const auto &value) {
+        int num = std::stoi(value);
+
+        if (value.ends_with("cm") && (hgt_min_cm <= num) && (num <= hgt_max_cm)) {
+            return true;
+        } else if (value.ends_with("in") && (hgt_min_in <= num) && (num <= hgt_max_in)) {
+            return true;
+        }
+        return false;
+    };
+    // clang-format off
+    std::unordered_map<std::string, PP_CLASS> validators = {
+        {"cid", PP_CLASS::CID},
+        {"byr", PP_CLASS::BYR},
+        {"iyr", PP_CLASS::IYR},
+        {"eyr", PP_CLASS::EYR},
+        {"hcl", PP_CLASS::HCL},
+        {"pid", PP_CLASS::PID},
+        {"ecl", PP_CLASS::ECL},
+        {"hgt", PP_CLASS::HGT}};
 
     auto result = passport
         | std::views::split(std::string_view(" "))
-        | std::views::transform([&validators](auto r) {
+        | std::views::transform([&](auto r) {
                 auto part    = r | std::views::split(std::string_view(":"));
                 auto keypair = std::ranges::to<std::vector<std::string>>(part);
-                auto func    = validators.at(keypair[0]);
-                return func(keypair[1]);
+                switch (validators[keypair[0]]) {
+                    case PP_CLASS::CID:
+                        return true;
+                    case PP_CLASS::BYR:
+                        return validate_byr(keypair[1]);
+                    case PP_CLASS::IYR:
+                        return validate_iyr(keypair[1]);
+                    case PP_CLASS::EYR:
+                        return validate_eyr(keypair[1]);
+                    case PP_CLASS::HCL:
+                        return validate_hcl(keypair[1]);
+                    case PP_CLASS::PID:
+                        return validate_pid(keypair[1]);
+                    case PP_CLASS::ECL:
+                        return validate_ecl(keypair[1]);
+                    case PP_CLASS::HGT:
+                        return validate_hgt(keypair[1]);
+                    default:
+                        return false;
+                        break;
+                }
             });
 
     // clang-format on
@@ -79,12 +110,12 @@ static inline bool is_valid_part_2(const std::string &passport) {
     return std::ranges::all_of(result, [](const auto &v) { return v; });
 }
 
-int solve_part_1(const std::vector<std::string> &data) {
+auto solve_part_1(const std::vector<std::string> &data) -> int {
     auto result = data | std::views::transform([](auto &&pp) { return is_valid(pp) ? 1 : 0; });
     return std::reduce(result.begin(), result.end());
 }
 
-int solve_part_2(const std::vector<std::string> &data) {
+auto solve_part_2(const std::vector<std::string> &data) -> int {
     auto result = 0;
     for (auto &pp : data) {
         if (is_valid(pp) && is_valid_part_2(pp)) {
@@ -94,7 +125,7 @@ int solve_part_2(const std::vector<std::string> &data) {
     return result;
 }
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
     std::filesystem::path filepath(std::getenv("AOC_DATA_LOCATION"));
 
     std::string filename;
@@ -113,7 +144,7 @@ int main(int argc, char *argv[]) {
         filename = "input.txt";
     }
 
-    filepath = filepath / std::format("{}/{:02d}", year, day) / filename;
+    filepath = filepath / std::format("{}", year) / std::format("{:02d}", day) / filename;
     std::ifstream ifs(filepath);
 
     std::vector<std::string> data;
@@ -134,7 +165,11 @@ int main(int argc, char *argv[]) {
     }
     data.push_back(join_string(passport));
 
+    std::cout << std::format("{:=<55}\n", "");
+    std::cout << std::format("Solution for {:d}, day {:02d}\n", year, day);
+    std::cout << std::format("{:-<55}\n", "");
     aoc::timer(1, solve_part_1, data);
     aoc::timer(2, solve_part_2, data);
+    std::cout << std::format("{:-<55}\n", "");
     return 0;
 }

@@ -6,19 +6,18 @@
 #include <string>
 #include <vector>
 
-int solve_part_1(std::vector<std::uint16_t> &data) {
+auto solve_part_1(std::vector<std::uint16_t> &data) -> int {
     std::sort(data.begin(), data.end());
     return data.back();
 }
 
-int solve_part_2(std::vector<std::uint16_t> &data) {
-
-    auto result = std::ranges::zip_view(std::ranges::subrange(data.begin(), data.end() - 1), std::ranges::subrange(data.begin() + 1, data.end())) |
-                  std::views::filter([](const auto &a) { return (std::get<1>(a) - std::get<0>(a)) > 1; });
-    return std::get<0>(result.front()) + 1;
+auto solve_part_2(std::vector<std::uint16_t> &data) -> int {
+    std::sort(data.begin(), data.end());
+    auto result = std::ranges::slide_view(data, 2) | std::views::filter([](const auto &a) { return (a[1] - a[0]) > 1; });
+    return result.front()[0] + 1;
 }
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
     std::filesystem::path filepath(std::getenv("AOC_DATA_LOCATION"));
 
     std::string filename;
@@ -58,7 +57,11 @@ int main(int argc, char *argv[]) {
         data.push_back(seat_id);
     }
 
+    std::cout << std::format("{:=<55}\n", "");
+    std::cout << std::format("Solution for {:d}, day {:02d}\n", year, day);
+    std::cout << std::format("{:-<55}\n", "");
     aoc::timer(1, solve_part_1, data);
     aoc::timer(2, solve_part_2, data);
+    std::cout << std::format("{:-<55}\n", "");
     return 0;
 }
