@@ -5,7 +5,6 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,10 +100,10 @@ void *solve_part_1(AocData_t *data) {
     gamma_rate = 0;
     for (i = 0; i < aoc_array_length(digits); i++) {
         int j = aoc_array_length(digits) - 1 - i;
-        gamma_rate += aoc_int_array_index(digits, i) * pow(2, j);
+        gamma_rate += (aoc_int_array_index(digits, i) << j);
     }
 
-    epsilon_rate = gamma_rate ^ ((int)pow(2, aoc_array_length(bitfield)) - 1);
+    epsilon_rate = ~gamma_rate & ~(UINT32_MAX << (aoc_array_length(bitfield)));
     aoc_int32_array_free(digits);
     return strdup_printf("%d", gamma_rate * epsilon_rate);
 }
@@ -116,7 +115,7 @@ int bitfield_sum(AocArrayPtr bitfield) {
     for (i = 0; i < aoc_array_length(bitfield); i++) {
         int j = aoc_array_length(bitfield) - 1 - i;
         int val = aoc_int_array_index(bitfield, i);
-        value += val * (int)pow(2, j);
+        value += val << j;
     }
 
     return value;
