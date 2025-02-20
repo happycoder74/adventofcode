@@ -18,7 +18,8 @@ using duration = std::chrono::duration<double>;
 
 namespace aoc {
 
-template <class C, class R> inline auto convert_duration(std::chrono::duration<C, R> duration) -> const std::string {
+template <class C, class R>
+inline auto convert_duration(std::chrono::duration<C, R> duration) -> const std::string {
     std::stringstream ss;
 
     auto unit = duration.count();
@@ -34,7 +35,8 @@ template <class C, class R> inline auto convert_duration(std::chrono::duration<C
     return ss.str();
 }
 
-template <typename T, typename U> void timer(int part, T (*func)(U &), U data, bool show_res = true) {
+template <typename T, typename U>
+void timer(int part, T (*func)(U &), U data, bool show_res = true) {
     auto              t1              = Clock::now();
     T                 result          = func(data);
     auto              t2              = Clock::now();
@@ -46,7 +48,8 @@ template <typename T, typename U> void timer(int part, T (*func)(U &), U data, b
     }
 }
 
-template <typename T, typename U> void timer(int part, T (*func)(const U &), U data, bool show_res = true) {
+template <typename T, typename U>
+void timer(int part, T (*func)(const U &), U data, bool show_res = true) {
     auto t1     = Clock::now();
     T    result = func(data);
     auto t2     = Clock::now();
@@ -59,7 +62,8 @@ template <typename T, typename U> void timer(int part, T (*func)(const U &), U d
     }
 }
 
-template <typename T, typename U, typename W> void timer(int part, T (*func)(U &, W), U data, W data2, bool show_res = true) {
+template <typename T, typename U, typename W>
+void timer(int part, T (*func)(U &, W), U data, W data2, bool show_res = true) {
     auto              t1              = Clock::now();
     T                 result          = func(data, data2);
     auto              t2              = Clock::now();
@@ -71,7 +75,8 @@ template <typename T, typename U, typename W> void timer(int part, T (*func)(U &
     }
 }
 
-template <typename U> void timer(void (*func)(const U &), U data) {
+template <typename U>
+void timer(void (*func)(const U &), U data) {
     auto t1 = Clock::now();
     func(data);
     auto t2 = Clock::now();
@@ -79,7 +84,6 @@ template <typename U> void timer(void (*func)(const U &), U data) {
     const std::string duration_string = convert_duration(t2 - t1);
     std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
 }
-
 
 } // namespace aoc
 
