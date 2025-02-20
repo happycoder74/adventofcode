@@ -15,7 +15,7 @@
 char  *str_trim(char *str);
 char  *str_join(const char *, char **, size_t);
 int    str_count(char *, char, int, int);
-char  *substr(char *, int, int);
+char  *substr(char *, unsigned int, unsigned int);
 int    str_startswith(char *str, char *start_str);
 int    str_endswith(char *, char *);
 char  *strdup_printf(const char *format, ...);
