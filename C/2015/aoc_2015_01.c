@@ -51,9 +51,9 @@ int solve_all(void *data) {
 
 int main(int argc, char **argv) {
 
-    const unsigned year = 2015;
-    const unsigned day = 1;
-    struct Input   input;
+    const int    year = 2015;
+    const int    day = 1;
+    struct Input input;
 
     AocTimer_t *timer = aoc_timer_new();
 
