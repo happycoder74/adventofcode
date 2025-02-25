@@ -1,10 +1,8 @@
 function(aoc_generate YEAR DAY)
   add_executable(aoc_${YEAR}_${DAY} aoc_${YEAR}_${DAY}.c)
-  target_include_directories(aoc_${YEAR}_${DAY} PRIVATE ${GLIB_INCLUDE_DIRS})
   target_include_directories(aoc_${YEAR}_${DAY}
                              PRIVATE ${CMAKE_SOURCE_DIR}/include)
-  target_link_libraries(aoc_${YEAR}_${DAY} ${GLIB_LDFLAGS})
-  target_link_libraries(aoc_${YEAR}_${DAY} aoc glib-2.0 m)
+  target_link_libraries(aoc_${YEAR}_${DAY} aoc m)
   if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
     target_link_libraries(aoc_${YEAR}_${DAY} $<$<CONFIG:MEMDEBUG>:dl>
                           $<$<CONFIG:DEBUGVERBOSE>:dl>)
@@ -77,7 +75,8 @@ function(aoc_generate_year AOC_YEAR)
       aoc_generate(${AOC_YEAR} ${DIR})
       list(APPEND custom_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR})
       list(APPEND custom_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
-      list(APPEND custom_test_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR} --test)
+      list(APPEND custom_test_target_args COMMAND
+           ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR} --test)
       list(APPEND custom_test_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
       list(APPEND custom_build_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
     else()
@@ -85,9 +84,7 @@ function(aoc_generate_year AOC_YEAR)
     endif()
   endforeach()
 
-  add_custom_target(
-    aoc_${AOC_YEAR}
-    ${custom_build_target_args})
+  add_custom_target(aoc_${AOC_YEAR} ${custom_build_target_args})
 
   add_custom_target(
     run_${AOC_YEAR}
@@ -135,7 +132,8 @@ function(aoc_generate_year_light AOC_YEAR)
       aoc_generate_light(${AOC_YEAR} ${DIR})
       list(APPEND custom_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR})
       list(APPEND custom_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
-      list(APPEND custom_test_target_args COMMAND ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR} --test)
+      list(APPEND custom_test_target_args COMMAND
+           ${AOC_YEAR}/aoc_${AOC_YEAR}_${DIR} --test)
       list(APPEND custom_test_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
       list(APPEND custom_build_target_args DEPENDS aoc_${AOC_YEAR}_${DIR})
     else()
@@ -143,10 +141,7 @@ function(aoc_generate_year_light AOC_YEAR)
     endif()
   endforeach()
 
-
-  add_custom_target(
-    aoc_${AOC_YEAR}
-    ${custom_build_target_args})
+  add_custom_target(aoc_${AOC_YEAR} ${custom_build_target_args})
 
   add_custom_target(
     run_${AOC_YEAR}
