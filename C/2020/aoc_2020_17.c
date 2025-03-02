@@ -87,8 +87,6 @@ int solve_part_1(void *inp) {
                 for (int x = x_min - cycle; x <= x_max + cycle; x++) {
                     unsigned int key = get_key(x, y, z, 0, input);
                     int          active = count_active_neighbors(input, x, y, z, w, 0);
-                    printf("(x, y, z): (%2d,%2d,%2d), nb: %d, is_active: %d\n", x, y, z, active,
-                           grid[key]);
                     if ((grid[key] == 1) && ((active < 2) || (active > 3))) {
                         deactivate[deactivate_count++] = key;
                     } else if (active == 3) {

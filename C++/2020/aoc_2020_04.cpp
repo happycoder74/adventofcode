@@ -1,109 +1,82 @@
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <cctype>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <numeric>
 #include <ranges>
-#include <sstream>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 static inline bool is_valid(const std::string &passport) {
     constexpr int n_keys = 7;
 
-    std::array<std::string, n_keys> required_keys = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
-    for (auto &key : required_keys) {
-        if (!passport.contains(key))
-            return false;
-    }
-
-    return true;
+    static constexpr std::array<std::string, n_keys> required_keys = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
+    return std::all_of(required_keys.begin(), required_keys.end(), [&passport](auto &r) { return passport.contains(r); });
 }
 
 static inline bool is_valid_part_2(const std::string &passport) {
-    std::stringstream ss(passport);
-    std::string       part;
-    while (ss >> part) {
-        std::string key   = part.substr(0, part.find(':'));
-        std::string value = part.substr(part.find(':') + 1);
-        if (key == "byr") {
-            auto          birth_year = std::stoi(value);
-            constexpr int byr_min    = 1920;
-            constexpr int byr_max    = 2002;
-            if (!((byr_min <= birth_year) && (birth_year <= byr_max))) {
-                return false;
-            }
-        } else if (key == "iyr") {
-            auto          issue_year = std::stoi(value);
-            constexpr int iyr_min    = 2010;
-            constexpr int iyr_max    = 2020;
-            if (!((iyr_min <= issue_year) && (issue_year <= iyr_max))) {
-                return false;
-            }
-        } else if (key == "eyr") {
-            auto          exp_year = std::stoi(value);
-            constexpr int eyr_min  = 2020;
-            constexpr int eyr_max  = 2030;
-            if (!((eyr_min <= exp_year) && (exp_year <= eyr_max))) {
-                return false;
-            }
-        } else if (key == "hcl") {
-            constexpr int val_size = 7;
-            if (value.size() != val_size) {
-                return false;
-            }
-            if (value[0] != '#') {
-                return false;
-            }
-            for (auto &c : value.substr(1)) {
-                if (!std::isdigit(c) && ((c < 'a') || (c > 'f'))) {
-                    return false;
-                }
-            }
-        } else if (key == "pid") {
-            constexpr int n_pid = 9;
-            if (value.size() != n_pid) {
-                return false;
-            }
-            for (auto &c : value) {
-                if (!std::isdigit(c)) {
-                    return false;
-                }
-            }
-        } else if (key == "hgt") {
-            int num = std::stoi(value);
-            if (value.ends_with("cm")) {
-                constexpr int hgt_min = 150;
-                constexpr int hgt_max = 193;
-                if (!((hgt_min <= num) && (num <= hgt_max))) {
-                    return false;
-                }
-            } else if (value.ends_with("in")) {
-                constexpr int hgt_min = 59;
-                constexpr int hgt_max = 76;
-                if (!((hgt_min <= num) && (num <= hgt_max))) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else if (key == "ecl") {
-            constexpr int n_ecl       = 7;
-            bool          valid_color = false;
+    constexpr int byr_min    = 1920;
+    constexpr int byr_max    = 2002;
+    constexpr int iyr_min    = 2010;
+    constexpr int iyr_max    = 2020;
+    constexpr int eyr_min    = 2020;
+    constexpr int eyr_max    = 2030;
+    constexpr int hcl_len    = 7;
+    constexpr int pid_len    = 9;
+    constexpr int hgt_min_cm = 150;
+    constexpr int hgt_max_cm = 193;
+    constexpr int hgt_min_in = 59;
+    constexpr int hgt_max_in = 76;
 
-            const std::array<std::string, n_ecl> valid_ecl = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
-            for (auto &e : valid_ecl) {
-                if (e == value) {
-                    valid_color = true;
-                    break;
-                }
-            }
-            if (!valid_color) {
-                return false;
-            }
-        }
-    }
-    return true;
+    // clang-format off
+    const std::unordered_map<std::string, std::function<bool(const std::string &)>> validators = {
+        {"cid", [](const auto &value) { return true; }},
+        {"byr", [](const auto &value) { return (byr_min <= std::stoi(value)) && (std::stoi(value) <= byr_max); }},
+        {"iyr", [](const auto &value) { return (iyr_min <= std::stoi(value)) && (std::stoi(value) <= iyr_max); }},
+        {"eyr", [](const auto &value) { return (eyr_min <= std::stoi(value)) && (std::stoi(value) <= eyr_max); }},
+        {"hcl", [](const auto &value) {
+                        if ((value.size() != hcl_len) || (value[0] != '#')) {
+                            return false;
+                        }
+                        return std::all_of(value.begin() + 1, value.end(), [](auto &c) {
+                                return (std::isdigit(c) || (('a' <= c) && (c <= 'f')));
+                                });
+                    }},
+        {"pid", [](const auto &value) {
+                        return (value.size() == pid_len) && (std::find_if(value.begin(), value.end(), [] (auto &c) { return std::isdigit(c); }) != value.end());
+                    }},
+        {"ecl", [](const auto &value) {
+                        const std::unordered_set<std::string> valid_ecl = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
+                        return valid_ecl.find(value) != valid_ecl.end();
+                    }},
+        {"hgt", [](const auto &value) {
+                        int num = std::stoi(value);
+
+                        if (value.ends_with("cm") && (hgt_min_cm <= num) && (num <= hgt_max_cm)) {
+                                return true;
+                        } else if (value.ends_with("in") && (hgt_min_in <= num) && (num <= hgt_max_in)) {
+                                return true;
+                        }
+                        return false;
+                    }}
+    };
+
+    auto result = passport
+        | std::views::split(std::string_view(" "))
+        | std::views::transform([&validators](auto r) {
+                auto part    = r | std::views::split(std::string_view(":"));
+                auto keypair = std::ranges::to<std::vector<std::string>>(part);
+                auto func    = validators.at(keypair[0]);
+                return func(keypair[1]);
+            });
+
+    // clang-format on
+
+    return std::ranges::all_of(result, [](const auto &v) { return v; });
 }
 
 int solve_part_1(const std::vector<std::string> &data) {
@@ -114,10 +87,8 @@ int solve_part_1(const std::vector<std::string> &data) {
 int solve_part_2(const std::vector<std::string> &data) {
     auto result = 0;
     for (auto &pp : data) {
-        if (is_valid(pp)) {
-            if (is_valid_part_2(pp)) {
-                result++;
-            }
+        if (is_valid(pp) && is_valid_part_2(pp)) {
+            result++;
         }
     }
     return result;
@@ -146,18 +117,22 @@ int main(int argc, char *argv[]) {
     std::ifstream ifs(filepath);
 
     std::vector<std::string> data;
+    std::vector<std::string> passport{};
 
-    std::string passport{};
+    auto join_string = [](auto str) {
+        auto joined = str | std::views::join_with(' ');
+        return std::string(joined.begin(), joined.end());
+    };
+
     for (std::string line; std::getline(ifs, line);) {
         if (line.size() == 0) {
-            data.push_back(passport);
+            data.push_back(join_string(passport));
             passport.clear();
         } else {
-            passport.append(" ");
-            passport.append(line);
+            passport.push_back(line);
         }
     }
-    data.push_back(passport);
+    data.push_back(join_string(passport));
 
     aoc::timer(1, solve_part_1, data);
     aoc::timer(2, solve_part_2, data);

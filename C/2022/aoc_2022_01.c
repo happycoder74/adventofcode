@@ -49,7 +49,7 @@ void *solve_part_2(AocData_t *data) {
     // we can just return the sum of the three first
     // items.
     for (i = 0; i < 3; i++) {
-        return_sum += aoc_int32_array_index(aoc_data_get(data), 0);
+        return_sum += aoc_int32_array_index(aoc_data_get(data), i);
     }
     return strdup_printf("%d", return_sum);
 }

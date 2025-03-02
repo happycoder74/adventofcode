@@ -33,14 +33,10 @@ int solve_part_2(auto &instructions) {
 }
 
 int main(int argc, char **argv) {
-    std::int16_t  level   = 0;
-    std::uint16_t counter = 0;
-    std::string   filename;
+    std::string filename;
 
-    bool basement_found = false;
-
-    const int year = 2015;
-    const int day  = 1;
+    constexpr int year = 2015;
+    constexpr int day  = 1;
 
     auto start_0 = Clock::now();
     if (argc > 1) {
