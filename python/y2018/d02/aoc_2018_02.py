@@ -1,5 +1,6 @@
 from collections import Counter
-from common import timer, Puzzle
+
+from common import Puzzle, timer
 
 
 class Day02(Puzzle, year=2018, day=2):
@@ -20,5 +21,5 @@ class Day02(Puzzle, year=2018, day=2):
                 check = [a for a, b in zip(row, row2) if a == b]
                 if len(check) == len(row) - 1:
                     return_value = "".join(check)
-        print(f"{return_value=}")
-        return return_value
+                    return return_value
+        return "(none)"
