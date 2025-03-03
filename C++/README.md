@@ -12,7 +12,7 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 ## 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:------------
-|  1  | &#11088;&#11088; | 0.223 ms      | 3.368 ms      |C++ translation of my C solution. Quite straight forward, without any fancy features.
+|  1  | &#11088;&#11088; | 0.223 ms      | 3.368 ms      |Ranges, ranges, ranges...
 |     |                  |               |               |Second version of this solution takes on a bit more modern approach using ranges.
 |  2  | &#11088;&#11088; | 0.303 ms      | 0.280 ms      |Trying to understand ranges...
 |  3  | &#11088;&#11088; |               |               |Not a very modern approach. Straight translation of C solution. Will look into this again later.

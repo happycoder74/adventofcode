@@ -1,98 +1,87 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
+#include <array>
 #include <cstdint>
-#include <format>
+#include <numeric>
 #include <ranges>
 #include <string>
 #include <vector>
 
-static int find_digit(std::string string, int order) {
-    if (order >= 0) { // Look from the front
-        for (std::uint32_t i = 0; i < string.length(); i++) {
-            if (isdigit(string[i])) {
-                return string[i] - '0';
-            }
-        }
-    } else {
-        for (int32_t i = static_cast<int>(string.length()) - 1; i >= 0; i--) {
-            if (isdigit(string[i])) {
-                return string[i] - '0';
-            }
-        }
-    }
-    return -1;
+const int multiplier = 10;
+
+const std::array<std::pair<int, std::string>, 18> needles{
+    {{1, "one"},
+     {2, "two"},
+     {3, "three"},
+     {4, "four"},
+     {5, "five"},
+     {6, "six"},
+     {7, "seven"},
+     {8, "eight"},
+     {9, "nine"},
+     {1, "1"},
+     {2, "2"},
+     {3, "3"},
+     {4, "4"},
+     {5, "5"},
+     {6, "6"},
+     {7, "7"},
+     {8, "8"},
+     {9, "9"}}
+};
+
+uint32_t solve_part_1(const std::vector<std::string> &data) {
+    uint32_t sum = std::accumulate(data.begin(), data.end(), 0, [](int a, const auto &string) {
+        uint32_t first  = *std::ranges::find_if(string, [](auto c) { return isdigit(c); }) - '0';
+        uint32_t second = *std::ranges::find_if(string | std::views::reverse, [](auto c) { return isdigit(c); }) - '0';
+        return a + first * multiplier + second;
+    });
+
+    return sum;
 }
 
-std::string solve_part_1(const std::vector<std::string> &data) {
-    uint32_t sum = 0;
-    for (auto &string : data) {
-        uint32_t first = find_digit(string, 1);
-        uint32_t second = find_digit(string, -1);
-        sum += first * 10 + second;
-    }
-
-    return std::string(std::format("{}", sum));
+uint32_t solve_part_2(const std::vector<std::string> &data) {
+    // clang-format off
+    auto rng = data
+            | std::views::transform([](const auto &string) -> int {
+                auto first_matches = needles
+                        | std::views::filter([&string](const auto &needle) -> bool {
+                                return string.find(needle.second) != std::string::npos;
+                                })
+                        | std::views::transform([&string](const auto &needle) -> std::pair<std::string::size_type, int> {
+                                return std::make_pair(string.find(needle.second), needle.first);
+                                });
+                auto last_matches = needles
+                        | std::views::filter([&string](const auto &needle) -> bool {
+                                return string.rfind(needle.second) != std::string::npos;
+                                })
+                        | std::views::transform([&string](const auto &needle) -> std::pair<std::string::size_type, int> {
+                                return std::make_pair(string.rfind(needle.second), needle.first);
+                                });
+        auto first = std::ranges::min_element(first_matches);
+        auto last = std::ranges::max_element(last_matches);
+        return (*first).second * multiplier + (*last).second;
+    });
+    //  clang-format on
+    auto sum = std::reduce(rng.begin(), rng.end());
+    return sum;
 }
 
-std::vector<std::string> needles = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
-std::vector<std::int32_t> values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-std::string solve_part_2(const std::vector<std::string> &data) {
-    uint32_t sum = 0;
-    for (auto &string : data) {
-        int32_t first_index = 100;
-        int32_t second_index = -100;
-
-        auto first = needles | std::ranges::views::transform([&string](const auto &needle) -> std::pair<std::string::size_type, std::int32_t> {
-                         auto found = string.find(needle);
-                         if (found != std::string::npos) {
-                             for (std::vector<std::string>::iterator it = needles.begin(); it < needles.end(); it++) {
-                                 if (*it == needle) {
-                                     return std::make_pair(found, values[static_cast<int>(it - needles.begin())]);
-                                 }
-                             }
-                         }
-                         return std::make_pair(1000, 0);
-                     });
-
-        auto second = needles | std::ranges::views::transform([&string](const auto &needle) -> std::pair<std::string::size_type, std::int32_t> {
-                          auto found = string.rfind(needle);
-                          if (found != std::string::npos) {
-                              for (std::vector<std::string>::iterator it = needles.begin(); it < needles.end(); it++) {
-                                  if (*it == needle) {
-                                      return std::make_pair(found, values[static_cast<int>(it - needles.begin())]);
-                                  }
-                              }
-                          }
-                          return std::make_pair(0, 0);
-                      });
-
-        auto f_it = std::ranges::min_element(first);
-        auto s_it = std::ranges::max_element(second);
-        sum += (*f_it).second * 10 + (*s_it).second;
-    }
-
-    return std::string(std::format("{}", sum));
-}
-
-void *solve_all(const std::vector<std::string> &data) {
+void solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
-        aoc::timer(1, solve_part_1, data, 1);
-        aoc::timer(2, solve_part_2, data, 1);
+        aoc::timer(1, solve_part_1, data);
+        aoc::timer(2, solve_part_2, data);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv) {
     std::vector<std::string> data;
 
-    char sourcefile[20];
-    int  year = 2023;
-    int  day = 1;
+    constexpr int year = 2023;
+    constexpr int day  = 1;
 
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {
@@ -105,7 +94,7 @@ int main(int argc, char **argv) {
     }
 
     aoc::io::header(year, day);
-    aoc::timer(0, solve_all, data, 0);
+    aoc::timer(solve_all, data);
 
     return 0;
 }
