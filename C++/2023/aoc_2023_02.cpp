@@ -1,8 +1,10 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <array>
 #include <numeric>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -23,38 +25,37 @@ constexpr int color_index(const std::string &color) {
 }
 
 Game find_games(const std::vector<std::string> &data) {
-    Game games;
-    for (auto &line : data) {
-        std::array<int, 3>     cubes{0, 0, 0};
-        std::string::size_type pos = line.find(':');
+    // clang-format off
+    auto rng = data
+                | std::views::transform([](const auto &line) -> std::pair<int, Cube> {
+                        std::array<int, 3> cubes{0, 0, 0};
 
-        int         game_no  = std::stoi(line.substr(4, pos));
-        std::string game_str = line.substr(pos + 1);
+                        std::string::size_type pos = line.find(':');
 
-        while ((pos = game_str.find(';')) != std::string::npos) {
-            game_str.replace(pos, 1, ",");
-        }
+                        int         game_no  = std::stoi(line.substr(4, pos));
+                        std::string game_str = line.substr(pos + 2);
 
-        for (const auto &s : game_str | std::views::split(std::string_view{","})) {
-            std::string sv(s.begin() + 1, s.end());
+                        std::ranges::replace(game_str, ';', ',');
 
-            int cube_count = std::stoi(sv.substr(0, sv.find(' ')));
-
-            int color       = color_index(sv.substr(sv.find(' ') + 1));
-            cubes.at(color) = std::max(cube_count, cubes.at(color));
-        }
-        games.emplace_back(game_no, cubes);
-    }
-    return games;
-};
+                        for (const auto &s : game_str | std::views::split(std::string_view{", "})) {
+                            std::string sv(std::string(s.begin(), s.end()));
+                            std::string color_string = std::string(std::ranges::find(s, ' ') + 1, s.end());
+                            int cube_count  = std::stoi(sv);
+                            int color       = color_index(color_string);
+                            cubes.at(color) = std::max(cube_count, cubes.at(color));
+                        }
+                        return {game_no, cubes};
+                    })
+                | std::ranges::to<std::vector>();
+    // clang-format on
+    return rng;
+}
 
 constexpr int red_limit   = 12;
 constexpr int green_limit = 13;
 constexpr int blue_limit  = 14;
 
-int solve_part_1(const std::vector<std::string> &data) {
-    Game games = find_games(data);
-
+int solve_part_1(const Game &games) {
     // clang-format off
     auto winners = games
                     | std::views::transform([](const auto &item) -> int {
@@ -71,9 +72,7 @@ int solve_part_1(const std::vector<std::string> &data) {
     return std::reduce(winners.begin(), winners.end());
 }
 
-int solve_part_2(const std::vector<std::string> &data) {
-    Game games = find_games(data);
-
+int solve_part_2(const Game &games) {
     // clang-format off
     auto winners = games
                     | std::views::transform([](const auto &item) -> int {
@@ -88,8 +87,9 @@ int solve_part_2(const std::vector<std::string> &data) {
 
 void solve_all(const std::vector<std::string> &data) {
     if (data.size() > 0) {
-        aoc::timer(1, solve_part_1, data);
-        aoc::timer(2, solve_part_2, data);
+        Game games = aoc::timer(find_games, data, "Preparation time:");
+        aoc::timer(1, solve_part_1, games);
+        aoc::timer(2, solve_part_2, games);
     }
 }
 

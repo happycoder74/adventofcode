@@ -85,6 +85,17 @@ void timer(void (*func)(const U &), U data) {
     std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
 }
 
+template <typename T, typename U>
+T timer(T (*func)(const U &), U data, std::string &&message = "Time elapsed :") {
+    auto t1     = Clock::now();
+    T    result = func(data);
+    auto t2     = Clock::now();
+
+    const std::string duration_string = convert_duration(t2 - t1);
+    std::cout << std::format("{:20}{:>35}\n", message, duration_string);
+    return result;
+}
+
 } // namespace aoc
 
 #endif
