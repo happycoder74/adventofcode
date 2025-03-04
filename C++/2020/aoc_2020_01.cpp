@@ -1,3 +1,4 @@
+#include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 #include <filesystem>
 #include <format>
@@ -36,19 +37,19 @@ auto solve_part_2(const std::pair<std::vector<int>, std::unordered_set<int>> &da
     return 0;
 }
 
+void solve_all(const std::pair<std::vector<int>, std::unordered_set<int>> &data) {
+    aoc::timer(1, solve_part_1, data);
+    aoc::timer(2, solve_part_2, data);
+}
+
 auto main(int argc, char **argv) -> int {
     std::filesystem::path filepath(std::getenv("AOC_DATA_LOCATION"));
 
-    std::string filename;
-    const int   year = 2020;
-    const int   day  = 1;
+    std::string   filename;
+    constexpr int year = 2020;
+    constexpr int day  = 1;
 
-    std::string filename;
-    const int   year = 2020;
-    const int   day  = 1;
-
-    auto                                                 args = std::span(argv, size_t(argc));
-    std::pair<std::vector<int>, std::unordered_set<int>> data;
+    auto args = std::span(argv, size_t(argc));
 
     if (argc > 1) {
         if (std::string(args[1]) == "--test") {
@@ -69,11 +70,7 @@ auto main(int argc, char **argv) -> int {
 
     auto data = std::make_pair(input, set);
 
-    std::cout << std::format("{:=<55}\n", "");
-    std::cout << std::format("Solution for {:d}, day {:02d}\n", year, day);
-    std::cout << std::format("{:-<55}\n", "");
-    aoc::timer(1, solve_part_1, data);
-    aoc::timer(2, solve_part_2, data);
-    std::cout << std::format("{:-<55}\n", "");
+    aoc::io::header(year, day);
+    aoc::timer(solve_all, data);
     return 0;
 }
