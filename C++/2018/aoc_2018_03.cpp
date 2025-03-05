@@ -1,13 +1,13 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-#include <algorithm>
+#include <filesystem>
 #include <iostream>
-#include <iterator>
 #include <numeric>
 #include <ranges>
 #include <vector>
 
 struct InputData {
+    int                 id{};
     std::pair<int, int> coords;
     std::pair<int, int> size;
 };
@@ -32,9 +32,7 @@ inline auto populate_map(const std::vector<InputData> &data) -> std::vector<int>
 auto solve_part_1(const std::vector<InputData> &data) -> int {
     std::vector<int> m = populate_map(data);
 
-    std::vector<int> vec;
-    vec.reserve(data.size());
-    std::ranges::transform(m, back_inserter(vec), [](const int p) { return p >= 2 ? 1 : 0; });
+    auto vec = m | std::views::transform([](const int p) { return p >= 2 ? 1 : 0; }) | std::ranges::to<std::vector>();
     return std::accumulate(vec.begin(), vec.end(), 0);
 }
 
@@ -54,9 +52,9 @@ inline auto check_claim(const std::vector<int> &m, const InputData &claim) -> bo
 auto solve_part_2(const std::vector<InputData> &data) -> int {
     std::vector<int> m = populate_map(data);
 
-    auto it = std::ranges::find_if(data, [&m](const auto claim) { return check_claim(m, claim); });
+    auto claim = data | std::views::filter([&m](const auto claim) { return check_claim(m, claim); });
 
-    return int(it - data.begin()) + 1;
+    return claim.front().id;
 }
 
 inline auto convert(const std::string &str) -> InputData {
@@ -67,7 +65,8 @@ inline auto convert(const std::string &str) -> InputData {
     std::string       size;
     char              tmp_c = ' ';
 
-    ss >> tmp >> tmp >> coords >> size;
+    ss.seekg(1);
+    ss >> ret.id >> tmp >> coords >> size;
     std::stringstream ss_coords(coords);
     ss_coords >> ret.coords.first >> tmp_c >> ret.coords.second;
     std::stringstream ss_size(size);
@@ -77,9 +76,9 @@ inline auto convert(const std::string &str) -> InputData {
 }
 
 auto parse_data(const std::vector<std::string> &data) -> std::vector<InputData> {
-    std::vector<InputData> vec;
-    std::transform(data.begin(), data.end(), std::back_inserter(vec), convert);
-
+    auto vec = data                             //
+               | std::views::transform(convert) //
+               | std::ranges::to<std::vector>();
     return vec;
 }
 
@@ -91,26 +90,26 @@ void solve_all(const T &data) {
     aoc::timer(2, solve_part_2, parsed_data);
 }
 
-int main(int argc, char **argv) {
-    std::string       filepath(std::getenv("AOC_DATA_LOCATION"));
-    std::string       filename;
-    std::stringstream ss;
-    const int         year = 2018;
-    const int         day  = 3;
+auto main(int argc, char **argv) -> int {
+    std::filesystem::path filepath(std::getenv("AOC_DATA_LOCATION"));
 
+    std::string filename;
+    const int   year = 2018;
+    const int   day  = 3;
+
+    auto args = std::span(argv, std::size_t(argv));
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
+        if (std::string(args[1]) == "--test") {
             filename = "test_input.txt";
         } else {
-            filename = argv[1];
+            filename = args[1];
         }
     } else {
         filename = "input.txt";
     }
 
-    ss << filepath << "/" << year << "/" << std::setfill('0') << std::setw(2) << day << "/" << filename;
-    filepath = ss.str();
-    std::ifstream ifs(filepath.c_str());
+    filepath = filepath / std::to_string(year) / std::format("{:02}", day) / filename;
+    std::ifstream ifs(filepath);
     std::string   line;
 
     std::vector<std::string> data;
