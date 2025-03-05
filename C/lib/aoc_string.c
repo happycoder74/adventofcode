@@ -11,7 +11,7 @@
 
 char *strdup(const char *s) {
     size_t size = (strlen(s) + 1) * sizeof(char);
-    char  *p = malloc(size);
+    char  *p = (char *)malloc(size);
     if (p) {
         memcpy(p, s, size);
     }
@@ -195,7 +195,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
 
     remainder = str;
 
-    s = strstr(remainder, delimiter);
+    s = (char *)strstr(remainder, delimiter);
     if (s) {
         size_t delimiter_length = strlen(delimiter);
         while (--max_tokens && s) {
@@ -203,7 +203,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
             char  *new_string = strndup(remainder, length);
             aoc_ptr_array_append(return_split, new_string);
             remainder = s + delimiter_length;
-            s = strstr(remainder, delimiter);
+            s = (char *)strstr(remainder, delimiter);
         }
     }
 

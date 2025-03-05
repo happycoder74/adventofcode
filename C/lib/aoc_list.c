@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 AocSList *aoc_slist_append(AocSList *list, void *data) {
-    AocSList *new_list = malloc(sizeof(AocSList));
+    AocSList *new_list = (AocSList *)malloc(sizeof(AocSList));
     new_list->next = NULL;
     new_list->data = data;
 
@@ -19,7 +19,7 @@ AocSList *aoc_slist_append(AocSList *list, void *data) {
 }
 
 AocSList *aoc_slist_prepend(AocSList *list, void *data) {
-    AocSList *new_list = malloc(sizeof(AocSList));
+    AocSList *new_list = (AocSList *)malloc(sizeof(AocSList));
 
     new_list->next = list;
     new_list->data = data;

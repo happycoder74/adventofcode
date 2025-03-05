@@ -21,7 +21,8 @@ AocData_t *aoc_data_set_data(AocData_t *aoc, AocArrayPtr data) {
     return NULL;
 }
 
-AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*parse_function)(AocArray *)) {
+AocData_t *aoc_data_new_clean(char *filename, int year, int day,
+                              AocArrayPtr (*parse_function)(AocArray *)) {
     AocData_t *data = (AocData_t *)malloc(sizeof(AocData_t));
 
     data->filename = strdup(filename);
@@ -45,7 +46,8 @@ AocData_t *aoc_data_new_clean(char *filename, int year, int day, AocArrayPtr (*p
     return data;
 }
 
-AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day, AocArrayPtr (*parse_func)(AocArrayPtr)) {
+AocData_t *get_data(int argc, char **argv, unsigned year, unsigned day,
+                    AocArrayPtr (*parse_func)(AocArrayPtr)) {
     AocData_t *data;
     if (argc > 1) {
         if (!strncmp(argv[1], "--test", 6)) {
@@ -219,17 +221,17 @@ int point_equal(const void *pp1, const void *pp2) {
 }
 
 // Legacy function to be removed later
-char *basename(const char *path) {
-#if (defined(__WIN32__) && !(defined __MINGW32__))
-    char pathsep = '\\';
-#else
-    char pathsep = '/';
-#endif
-    char *ptr = strrchr(path, pathsep);
-    if (!ptr)
-        return strdup(path);
-    return strdup(ptr + 1);
-}
+/* char *basename(const char *path) { */
+/* #if (defined(__WIN32__) && !(defined __MINGW32__)) */
+/*     char pathsep = '\\'; */
+/* #else */
+/*     char pathsep = '/'; */
+/* #endif */
+/*     char *ptr = (char *)strrchr(path, pathsep); */
+/*     if (!ptr) */
+/*         return strdup(path); */
+/*     return strdup(ptr + 1); */
+/* } */
 
 char *basename_new(const char *path) {
 #if (defined(__WIN32__) && !(defined __MINGW32__))
@@ -237,14 +239,14 @@ char *basename_new(const char *path) {
 #else
     char pathsep = '/';
 #endif
-    char *ptr = strrchr(path, pathsep);
+    char *ptr = (char *)strrchr(path, pathsep);
     if (!ptr)
         return (char *)path;
     return (ptr + 1);
 }
 
 char *_aoc_basename(const char *path, const char pathsep) {
-    char *s = strrchr(path, pathsep);
+    char *s = (char *)strrchr(path, pathsep);
     if (!s) {
         return strdup(path);
     } else {

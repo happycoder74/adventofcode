@@ -20,7 +20,7 @@ AocGrid *aoc_grid_new(GridDimensions *dimensions) {
     grid->max_row = MAX(0, (int)grid->rows - 1);
     grid->min_column = 0;
     grid->max_column = MAX(0, (int)grid->columns - 1);
-    grid->grid = calloc(grid->rows * grid->columns, sizeof(void *));
+    grid->grid = (void **)calloc(grid->rows * grid->columns, sizeof(void *));
     return grid;
 }
 
@@ -101,7 +101,7 @@ void aoc_grid_delete(AocGrid *grid, int32_t row, int32_t col) {
 }
 
 void aoc_grid_rotate_row(AocGrid *grid, int32_t row, int32_t rotate_cols) {
-    void   **new_row = calloc(grid->columns, sizeof(void *));
+    void   **new_row = (void **)calloc(grid->columns, sizeof(void *));
     unsigned index = row * grid->columns;
     memmove(new_row + rotate_cols, grid->grid + index,
             (grid->columns - rotate_cols) * sizeof(void *));
@@ -113,8 +113,8 @@ void aoc_grid_rotate_row(AocGrid *grid, int32_t row, int32_t rotate_cols) {
 }
 
 void aoc_grid_rotate_column(AocGrid *grid, int32_t col, int32_t rotate_rows) {
-    void **column = calloc(grid->rows, sizeof(void *));
-    void **new_column = calloc(grid->rows, sizeof(void *));
+    void **column = (void **)calloc(grid->rows, sizeof(void *));
+    void **new_column = (void **)calloc(grid->rows, sizeof(void *));
     for (int row = grid->min_row; row <= grid->max_row; row++) {
         int32_t index = row * grid->columns + col;
         column[row] = grid->grid[index];

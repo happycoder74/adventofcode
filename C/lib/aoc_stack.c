@@ -18,12 +18,12 @@ AocStackPtr aoc_stack_new(void) {
 
 void aoc_stack_push(AocStackPtr stack, void *item) {
     if (stack->data == NULL) {
-        stack->data = calloc(16, sizeof(void *));
+        stack->data = (void **)calloc(16, sizeof(void *));
     } else if (stack->stack_pointer == (ssize_t)(stack->size - 1)) {
         size_t new_size = stack->size << 1;
         void  *new_data = (AocStackPtr)realloc(stack->data, new_size * sizeof(void *));
         if (new_data) {
-            stack->data = new_data;
+            stack->data = (void **)new_data;
             stack->size = new_size;
         } else {
             return;

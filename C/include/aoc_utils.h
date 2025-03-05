@@ -90,7 +90,7 @@ int int_array_min(int *, int);
 int min_non_zero(int *, int);
 
 // Other utility functions and macros
-char *basename(const char *);
+// char *basename(const char *);
 char *basename_new(const char *);
 #define aoc_basename(X) (basename_new(X))
 
