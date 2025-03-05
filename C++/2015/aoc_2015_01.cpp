@@ -30,9 +30,10 @@ auto solve_part_2(const std::vector<int> &instructions) -> int {
                    auto &[k, v] = kv;
                    return v < 0;
                })
-        | std::views::take(1);
+        | std::views::take(1)
+        | std::views::keys;
     // clang-format on
-    auto index = rng.front().first;
+    auto index = rng.front();
     return index + 1;
 }
 
