@@ -34,7 +34,7 @@ auto solve_part_2(const std::vector<int> &instructions) -> int {
         | std::views::keys;
     // clang-format on
     auto index = rng.front();
-    return index + 1;
+    return int(index + 1);
 }
 
 void solve_all(auto &instructions) {
