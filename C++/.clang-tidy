@@ -1,5 +1,5 @@
 ---
-Checks:          'clang-analyzer-*,readability-redundant-*,performance-*,cppcoreguidelines-*'
+Checks:          'clang-analyzer-*,readability-redundant-*,performance-*,cppcoreguidelines-*,modernize-*'
 WarningsAsErrors: 'clang-analyzer-*,readability-redundant-*,performance-*'
 HeaderFilterRegex: '.*'
 FormatStyle:     none

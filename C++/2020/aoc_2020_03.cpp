@@ -1,18 +1,20 @@
 #include "aoc_timer.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <ranges>
 #include <span>
 #include <string>
 #include <vector>
 
-int solve_part_1(const std::pair<std::vector<std::string>, std::vector<std::pair<int, int>>> &data) {
+auto solve_part_1(const std::pair<std::vector<std::string>, std::vector<std::pair<int, int>>> &data) -> int {
     auto result   = 0;
     auto [dx, dy] = data.second[0];
     auto trees    = data.first;
     int  x        = 0;
-    for (int y = 0; y < trees.size(); y += dy) {
+    for (std::size_t y = 0; y < trees.size(); y += dy) {
         if (trees[y][x] == '#') {
             result += 1;
         }
@@ -21,14 +23,13 @@ int solve_part_1(const std::pair<std::vector<std::string>, std::vector<std::pair
     return result;
 }
 
-std::uint64_t solve_part_2(const std::pair<std::vector<std::string>, std::vector<std::pair<int, int>>> &data) {
+auto solve_part_2(const std::pair<std::vector<std::string>, std::vector<std::pair<int, int>>> &data) -> std::uint64_t {
     std::uint64_t result = 1;
     auto          trees  = data.first;
-    for (int slope = 0; slope < data.second.size(); slope++) {
+    for (auto [dx, dy] : data.second) {
         auto part_result = 0;
-        auto [dx, dy]    = data.second[slope];
-        int x            = 0;
-        for (int y = 0; y < trees.size(); y += dy) {
+        int  x           = 0;
+        for (size_t y = 0; y < trees.size(); y += dy) {
             if (trees[y][x] == '#') {
                 part_result += 1;
             }
@@ -39,7 +40,7 @@ std::uint64_t solve_part_2(const std::pair<std::vector<std::string>, std::vector
     return result;
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     std::filesystem::path filepath(std::getenv("AOC_DATA_LOCATION"));
 
     std::string filename;
@@ -47,8 +48,6 @@ int main(int argc, char **argv) {
     const int   day  = 3;
 
     auto args = std::span(argv, size_t(argc));
-
-    std::pair<std::vector<std::string>, std::vector<std::pair<int, int>>> data;
 
     if (argc > 1) {
         if (std::string(args[1]) == "--test") {
@@ -62,17 +61,23 @@ int main(int argc, char **argv) {
 
     filepath = filepath / std::format("{}/{:02d}", year, day) / filename;
     std::ifstream ifs(filepath);
-    std::string   line;
-    while (std::getline(ifs, line)) {
-        data.first.push_back(line);
-    }
 
-    data.second.push_back({3, 1});
-    data.second.push_back({1, 1});
-    data.second.push_back({5, 1});
-    data.second.push_back({7, 1});
-    data.second.push_back({1, 2});
+    auto first  = std::views::istream<std::string>(ifs) | std::ranges::to<std::vector>();
+    auto second = std::vector<std::pair<int, int>>{
+        {3, 1},
+        {1, 1},
+        {5, 1},
+        {7, 1},
+        {1, 2}
+    };
+    auto data = std::make_pair(first, second);
+
+    std::cout << std::format("{:=<55}\n", "");
+    std::cout << std::format("Solution for {:d}, day {:02d}\n", year, day);
+    std::cout << std::format("{:-<55}\n", "");
     aoc::timer(1, solve_part_1, data);
     aoc::timer(2, solve_part_2, data);
+    std::cout << std::format("{:-<55}\n", "");
+
     return 0;
 }
