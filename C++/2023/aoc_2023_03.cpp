@@ -1,54 +1,70 @@
+// #include "aoc_hashmap.hpp"
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <climits>
-#include <cstdint>
 #include <cstdlib>
 #include <cstring>
-#include <map>
+#include <ranges>
 #include <string>
-#include <tuple>
+#include <unordered_map>
 #include <vector>
 
-class Schematic {
-  private:
-    std::pair<std::int32_t, std::int32_t>        limits;
-    std::int32_t                                 next_col;
-    std::map<std::tuple<int32_t, int32_t>, char> grid_map;
+struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator()(const std::pair<T1, T2> &key) const {
+        std::size_t hash1 = std::hash<T1>{}(key.first);
+        std::size_t hash2 = std::hash<T2>{}(key.second);
 
+        return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash2 >> 2));
+    }
+};
+
+class Schematic {
   public:
+    std::pair<int, int>                                      limits;
+    int                                                      next_col{};
+    std::unordered_map<std::pair<int, int>, char, pair_hash> grid_map;
+
     explicit Schematic(std::vector<std::string>);
-    std::vector<char> neighbours(std::int32_t y, std::int32_t x);
-    bool              near_symbol(std::int32_t y, std::int32_t x);
-    std::int32_t      find_parts();
-    std::int32_t      find_number(std::int32_t row, std::int32_t col);
-    std::int32_t      find_gears();
+    auto neighbours(int y, int x) -> std::vector<char>;
+    auto near_symbol(int y, int x) -> bool;
+    auto find_parts() -> int;
+    auto find_number(int row, int col) -> int;
+    auto find_gears() -> int;
 };
 
 Schematic::Schematic(std::vector<std::string> data) {
-    this->limits.second = static_cast<int32_t>(data.size());
-    this->limits.first  = static_cast<int32_t>(data[0].size());
-    this->next_col      = INT_MAX;
+    limits.second = int(data.size());
+    limits.first  = int(data[0].size());
 
-    int32_t j = 0;
-    for (auto &row : data) {
-        int32_t i = 0;
-        for (auto &col : row) {
-            grid_map[{j, i++}] = col;
-        }
-        j++;
-    }
+    auto rng = data | std::views::enumerate;
+
+    std::ranges::for_each(rng, [&](const auto &enum_row) {
+        auto &[j, row] = enum_row;
+        std::ranges::for_each(row | std::views::enumerate, [&](const auto &enum_col) {
+            auto &[i, col]   = enum_col;
+            grid_map[{j, i}] = col;
+        });
+    });
+
+    // int j = 0;
+    // for (auto &row : data) {
+    //     int i = 0;
+    //     for (auto &col : row) {
+    //         grid_map[{j, i++}] = col;
+    //     }
+    //     j++;
+    // }
 }
-std::vector<char> Schematic::neighbours(std::int32_t y, std::int32_t x) {
+auto Schematic::neighbours(int y, int x) -> std::vector<char> {
     std::vector<char>  nbs;
     std::array<int, 3> delta = {-1, 0, 1};
     for (auto &j : delta) {
         for (auto &i : delta) {
-            /* For some reason grid_map.contains gives wrong final answer
-             * if (grid_map.contains({y + j, x + i}))
-             * should really be the same thing... */
-            if ((0 <= (y + j)) && ((y + j) < this->limits.second) && (0 <= (x + i)) && ((x + i) < this->limits.first)) {
+            if ((0 <= (y + j)) && ((y + j) < limits.second) && (0 <= (x + i)) && ((x + i) < limits.first)) {
                 if (!((i == 0) && (j == 0))) {
-                    nbs.push_back(this->grid_map[{y + j, x + i}]);
+                    nbs.emplace_back(grid_map[{y + j, x + i}]);
                 }
             }
         }
@@ -57,22 +73,18 @@ std::vector<char> Schematic::neighbours(std::int32_t y, std::int32_t x) {
     return nbs;
 }
 
-bool Schematic::near_symbol(std::int32_t y, std::int32_t x) {
-    std::vector<char> nbs = this->neighbours(y, x);
-    for (auto &nb : nbs) {
-        if (!isdigit(nb) && (nb != '.')) {
-            return true;
-        }
-    }
-    return false;
+auto Schematic::near_symbol(int y, int x) -> bool {
+    std::vector<char> nbs  = neighbours(y, x);
+    auto              item = nbs | std::views::filter([](const auto &nb) { return ((!isdigit(nb)) && (nb != '.')); });
+    return (!item.empty());
 }
 
-std::int32_t Schematic::find_parts() {
-    std::int32_t num_parts = 0;
-    for (std::int32_t j = 0; j < this->limits.second; j++) {
+auto Schematic::find_parts() -> int {
+    int num_parts = 0;
+    for (int j = 0; j < this->limits.second; j++) {
         int  num_start = -1;
         bool keep      = false;
-        for (std::int32_t i = 0; i <= this->limits.first; i++) {
+        for (int i = 0; i <= this->limits.first; i++) {
             char point = this->grid_map[{j, i}];
             if (isdigit(point)) {
                 if (num_start == -1) {
@@ -83,13 +95,11 @@ std::int32_t Schematic::find_parts() {
                 }
             } else {
                 if ((num_start != -1) && keep) {
-                    char         buf[100];
-                    std::int32_t k;
-                    for (k = 0; k <= (i - num_start); k++) {
-                        buf[k] = this->grid_map[{j, k + num_start}];
+                    std::string buf{};
+                    for (int k = 0; k <= (i - num_start); k++) {
+                        buf.push_back(this->grid_map[{j, k + num_start}]);
                     }
-                    buf[k] = '\0';
-                    num_parts += std::atoi(buf);
+                    num_parts += std::stoi(buf);
                 }
                 num_start = -1;
                 keep      = false;
@@ -99,7 +109,7 @@ std::int32_t Schematic::find_parts() {
     return num_parts;
 }
 
-std::int32_t Schematic::find_number(std::int32_t row, std::int32_t col) {
+auto Schematic::find_number(int row, int col) -> int {
     int start = col;
     int end   = col;
     if (!isdigit(this->grid_map[{row, col}])) {
@@ -119,41 +129,35 @@ std::int32_t Schematic::find_number(std::int32_t row, std::int32_t col) {
         end++;
     }
 
-    char buf[10] = {0};
-    int  k;
-    for (k = start + 1; k <= end - 1; k++) {
-        buf[k - (start + 1)] = this->grid_map[{row, k}];
+    std::string buf;
+    for (int k = start + 1; k <= end - 1; k++) {
+        buf.push_back(this->grid_map[{row, k}]);
     }
-    buf[k - (start + 1)] = '\0';
-
     this->next_col = end;
-    return atoi(buf);
+    return std::stoi(buf);
 }
 
-std::int32_t Schematic::find_gears() {
-    std::int32_t gear_ratio = 0;
+auto Schematic::find_gears() -> int {
+    int                              gear_ratio = 0;
+    std::vector<std::pair<int, int>> gears;
 
-    std::vector<std::pair<int32_t, int32_t>> gears;
-
-    std::array<int, 3> delta = {-1, 0, 1};
-
-    for (std::int32_t j = 0; j < this->limits.second; j++) {
-        for (std::int32_t i = 0; i < this->limits.first; i++) {
+    for (int j = 0; j < this->limits.second; j++) {
+        for (int i = 0; i < this->limits.first; i++) {
             if (this->grid_map[{j, i}] == '*') {
-                gears.push_back(std::pair<int32_t, int32_t>(i, j));
+                gears.emplace_back(i, j);
             }
         }
     }
 
     for (auto &p : gears) {
 
-        std::int32_t i = p.first;
-        std::int32_t j = p.second;
+        int i = p.first;
+        int j = p.second;
 
-        std::vector<int32_t> numbers;
+        std::vector<int> numbers;
 
-        for (std::int32_t row = j - 1; row <= j + 1; row++) {
-            for (std::int32_t col = i - 1; col <= i + 1; col++) {
+        for (int row = j - 1; row <= j + 1; row++) {
+            for (int col = i - 1; col <= i + 1; col++) {
                 if ((grid_map.contains({row, col})) && (isdigit(this->grid_map[{row, col}]))) {
                     numbers.push_back(find_number(row, col));
                     if (this->next_col != INT_MAX) {
@@ -171,46 +175,43 @@ std::int32_t Schematic::find_gears() {
     return gear_ratio;
 }
 
-std::string solve_part_1(const std::vector<std::string> &data) {
+auto solve_part_1(const std::vector<std::string> &data) -> std::string {
     Schematic schema(data);
-
     return std::format("{}", schema.find_parts());
 }
 
-std::string solve_part_2(const std::vector<std::string> &data) {
+auto solve_part_2(const std::vector<std::string> &data) -> std::string {
     Schematic schema(data);
     return std::format("{}", schema.find_gears());
 }
 
-void *solve_all(const std::vector<std::string> &data) {
+void solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
-        aoc::timer(1, solve_part_1, data, 1);
-        aoc::timer(2, solve_part_2, data, 1);
+        aoc::timer(1, solve_part_1, data);
+        aoc::timer(2, solve_part_2, data);
     }
-
-    return NULL;
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     std::vector<std::string> data;
 
-    char sourcefile[20];
-    int  year = 2023;
-    int  day  = 3;
+    constexpr int year = 2023;
+    constexpr int day  = 3;
 
+    auto args = std::span(argv, std::size_t(argc));
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
+        if (std::string(args[1]) == "--test") {
             data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
         } else {
-            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+            data = aoc::io::get_input_list<std::string>(args[1], year, day);
         }
     } else {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
     aoc::io::header(year, day);
-    aoc::timer(0, solve_all, data, 0);
+    aoc::timer(solve_all, data);
 
     return 0;
 }

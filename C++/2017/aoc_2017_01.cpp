@@ -1,22 +1,29 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
+#include <numeric>
+#include <ranges>
 #include <string>
 
 namespace aoc_2017_01 {
 
 int solution(std::string line, int step) {
-    int sum = 0;
-
     std::string line2 = line;
     std::rotate(line2.begin(), line2.begin() + step, line2.end());
-    for (std::string::iterator it1 = line.begin(), it2 = line2.begin(); it1 != line.end(); it1++, it2++) {
-        if (*it1 == *it2) {
-            sum += *it1 - '0';
-        }
-    }
 
-    return sum;
+    // clang-format off
+    auto result = std::views::zip(line, line2)
+       | std::views::transform([](const auto a) -> int {
+                      auto [v1, v2] = a;
+                      if (v1 == v2) {
+                          return v1 - '0';
+                      }
+                      return 0;
+                  })
+       | std::views::common;
+    // clang-format on
+
+    return std::reduce(result.begin(), result.end());
 }
 
 int solve_part_1(const std::string &line) {
@@ -24,7 +31,7 @@ int solve_part_1(const std::string &line) {
 }
 
 int solve_part_2(const std::string &line) {
-    return solution(line, static_cast<int>(line.length()) / 2);
+    return solution(line, static_cast<int>(line.size()) / 2);
 }
 
 int solve_all(const std::string &line) {

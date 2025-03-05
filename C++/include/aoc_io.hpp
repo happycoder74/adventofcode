@@ -18,7 +18,8 @@ inline void header(int year, int day) {
 
 std::string get_input_bare(const std::string &fn);
 
-template <typename T> std::vector<T> get_input_list(const std::string &fn, int year, int day) {
+template <typename T>
+std::vector<T> get_input_list(const std::string &fn, int year, int day) {
     std::ifstream  ifs;
     std::vector<T> return_data;
     std::string    line;
@@ -27,7 +28,7 @@ template <typename T> std::vector<T> get_input_list(const std::string &fn, int y
     std::filesystem::path datapath;
     std::filesystem::path path(std::filesystem::current_path());
 
-    char *env = std::getenv("AOC_DATA_LOCATION");
+    char *env    = std::getenv("AOC_DATA_LOCATION");
     datapath_str = std::string(env ? env : "");
     if (datapath_str.length()) {
         datapath = std::filesystem::path(datapath_str) / std::format("{:4d}", year) / std::format("{:02d}", day) / fn;
@@ -47,7 +48,8 @@ template <typename T> std::vector<T> get_input_list(const std::string &fn, int y
     return return_data;
 }
 
-template <> inline std::vector<int> get_input_list(const std::string &fn, int year, int day) {
+template <>
+inline std::vector<int> get_input_list(const std::string &fn, int year, int day) {
     std::ifstream    ifs;
     std::string      line;
     std::vector<int> result;

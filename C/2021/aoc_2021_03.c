@@ -5,143 +5,107 @@
 #include "aoc_timer.h"
 #include "aoc_types.h"
 #include "aoc_utils.h"
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-AocArrayPtr clean_input(AocArrayPtr data) {
+static uint8_t highest_bit_set = 0;
+AocArrayPtr    clean_input(AocArrayPtr data) {
     char       *line;
     AocArrayPtr bitfields;
     size_t      i, j, len;
 
-    bitfields = aoc_array_new(AOC_PTR, aoc_array_length(data));
+    bitfields = aoc_array_new(AOC_UINT32, aoc_array_length(data));
 
     for (i = 0; i < aoc_array_length(data); i++) {
         line = aoc_str_array_index(data, i);
         len = strlen(line);
-        AocArrayPtr bitfield = aoc_int32_array_new();
+        uint32_t val = 0;
         for (j = 0; j < len; j++) {
-            int32_t line_digit = line[j] - '0';
-            aoc_int32_array_append(bitfield, line_digit);
+            int p = len - 1 - j;
+            val = val | (line[j] - '0') << p;
         }
-        aoc_ptr_array_append(bitfields, bitfield);
+        aoc_uint32_array_append(bitfields, val);
     }
+    highest_bit_set = strlen(line) - 1;
     aoc_str_array_free(data);
     return bitfields;
 }
 
-int common_value(AocArrayPtr data, int position, int method) {
-    int         sum = 0;
-    AocArrayPtr bitfield;
-    double      check;
-    size_t      i;
+uint8_t common_value(AocArrayPtr data, int position, int method) {
+    int      sum = 0;
+    uint32_t bitfield;
+    uint8_t  check;
+    size_t   i;
 
     for (i = 0; i < aoc_array_length(data); i++) {
-        bitfield = aoc_ptr_array_index(data, i);
-        sum += aoc_int_array_index(bitfield, position);
+        bitfield = aoc_uint32_array_index(data, i);
+        sum += ((bitfield & (1 << position)) > 0);
     }
-    check = (double)sum / aoc_array_length(data);
+    check = 2 * sum / aoc_array_length(data);
     if (method == 1) { // 1 = most, 0 = least
-        return check < 0.5;
+        return check < 1;
     } else {
-        return check >= 0.5;
+        return check >= 1;
     }
 }
 
 AocArrayPtr reduce(AocArrayPtr data, int value, int position) {
     AocArrayPtr reduced;
-    AocArrayPtr item;
+    uint32_t    bitfield;
     size_t      i;
 
-    reduced = aoc_ptr_array_new();
+    reduced = aoc_uint32_array_new();
     for (i = 0; i < aoc_array_length(data); i++) {
-        item = aoc_ptr_array_index(data, i);
-        if (aoc_int_array_index(item, position) != value) {
-            aoc_ptr_array_append(reduced, item);
-        }
+        bitfield = aoc_uint32_array_index(data, i);
+        if (((bitfield >> position) & 1) != value)
+            aoc_uint32_array_append(reduced, bitfield);
     }
     return reduced;
 }
 
-void print_bitfield(AocArrayPtr bitfield) {
-    size_t i;
-    for (i = 0; i < aoc_array_length(bitfield); i++) {
-        int val = aoc_int_array_index(bitfield, i);
-        printf("%d ", val);
-    }
-    printf("\n");
-}
-
-void print_bitfields_all(AocArrayPtr bitfields) {
-    size_t i;
-    for (i = 0; i < aoc_array_length(bitfields); i++) {
-        print_bitfield(aoc_ptr_array_index(bitfields, i));
-    }
-}
-
 void *solve_part_1(AocData_t *data) {
-    AocArrayPtr digits;
-    uint32_t    gamma_rate, epsilon_rate;
-    AocArrayPtr bitfield = aoc_ptr_array_index(aoc_data_get(data), 0);
-    digits = aoc_int32_array_new();
-    size_t count, i, j;
-
-    for (j = 0; j < aoc_array_length(bitfield); j++) {
+    uint32_t    gamma_rate = 0;
+    uint32_t    epsilon_rate = 0;
+    uint32_t    bitfield = 0;
+    size_t      length = aoc_data_length(data);
+    AocArrayPtr uint_array = aoc_data_get(data);
+    size_t      count = 0;
+    for (size_t j = 0; j <= highest_bit_set; j++) {
         count = 0;
-        for (i = 0; i < aoc_data_length(data); i++) {
-            bitfield = aoc_ptr_array_index(aoc_data_get(data), i);
-            count += aoc_int32_array_index(bitfield, j);
+        for (size_t i = 0; i < length; i++) {
+            bitfield = aoc_uint32_array_index(uint_array, i);
+            count += (bitfield & (1u << j)) > 0;
+            if ((2 * count / length) >= 1) {
+                gamma_rate = gamma_rate | (1u << j);
+                break;
+            }
         }
-        int value = (2 * count / aoc_data_length(data) >= 1);
-        aoc_int32_array_append(digits, value);
     }
+    epsilon_rate = gamma_rate ^ ((1u << (highest_bit_set + 1)) - 1);
 
-    gamma_rate = 0;
-    for (i = 0; i < aoc_array_length(digits); i++) {
-        int j = aoc_array_length(digits) - 1 - i;
-        gamma_rate += aoc_int_array_index(digits, i) * pow(2, j);
-    }
-
-    epsilon_rate = gamma_rate ^ ((int)pow(2, aoc_array_length(bitfield)) - 1);
-    aoc_int32_array_free(digits);
-    return strdup_printf("%d", gamma_rate * epsilon_rate);
-}
-
-int bitfield_sum(AocArrayPtr bitfield) {
-    int    value = 0;
-    size_t i;
-
-    for (i = 0; i < aoc_array_length(bitfield); i++) {
-        int j = aoc_array_length(bitfield) - 1 - i;
-        int val = aoc_int_array_index(bitfield, i);
-        value += val * (int)pow(2, j);
-    }
-
-    return value;
+    return strdup_printf("%u", gamma_rate * epsilon_rate);
 }
 
 void *solve_part_2(AocData_t *data) {
-    AocArrayPtr bitfield;
     AocArrayPtr oxygen_generator = NULL;
     AocArrayPtr co2_scrubber = NULL;
     AocArrayPtr og_tmp = NULL;
     AocArrayPtr co2s_tmp = NULL;
 
-    bitfield = aoc_ptr_array_index(aoc_data_get(data), 0);
+    uint32_t oxygen_generator_value;
+    uint32_t co2_scrubber_value;
+    uint8_t  value;
+    uint8_t  init = 1;
 
-    int    oxygen_generator_value;
-    int    co2_scrubber_value;
-    int    value;
-    size_t j;
-
-    size_t digits = aoc_array_length(bitfield);
-    for (j = 0; j < digits; j++) {
-        if (j == 0) {
+    size_t digits = highest_bit_set;
+    for (int j = digits; j >= 0; j--) {
+        if (init) {
             value = common_value(aoc_data_get(data), j, 1);
             oxygen_generator = reduce(aoc_data_get(data), value, j);
             co2_scrubber = reduce(aoc_data_get(data), !value, j);
+            init = 0;
         } else {
             if (aoc_array_length(oxygen_generator) > 1) {
                 value = common_value(oxygen_generator, j, 1);
@@ -157,10 +121,10 @@ void *solve_part_2(AocData_t *data) {
             }
         }
     }
-    oxygen_generator_value = bitfield_sum(aoc_ptr_array_index(oxygen_generator, 0));
-    co2_scrubber_value = bitfield_sum(aoc_ptr_array_index(co2_scrubber, 0));
-    aoc_array_free(co2_scrubber, 0);
-    aoc_array_free(oxygen_generator, 0);
+    oxygen_generator_value = aoc_uint32_array_index(oxygen_generator, 0);
+    co2_scrubber_value = aoc_uint32_array_index(co2_scrubber, 0);
+    aoc_uint32_array_free(co2_scrubber);
+    aoc_uint32_array_free(oxygen_generator);
 
     return strdup_printf("%d", oxygen_generator_value * co2_scrubber_value);
 }
@@ -186,9 +150,7 @@ int main(int argc, char **argv) {
 
     for (unsigned i = 0; i < data->data->length; i++) {
         AocArrayPtr arr = aoc_array_index(data->data, i);
-        aoc_array_free(arr, arr->free_segments);
     }
-    data->data->free_segments = 0;
     aoc_data_free(data);
 
     return aoc_mem_gc();

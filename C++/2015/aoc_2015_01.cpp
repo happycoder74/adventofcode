@@ -1,53 +1,60 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
-#include <chrono>
-#include <cstdint>
-#include <iostream>
-#include <numeric>
 #include <ranges>
 #include <string>
 
-using Clock    = std::chrono::high_resolution_clock;
-using duration = std::chrono::duration<double>;
-
-auto parse_input(std::string &instructions) {
-    auto rng = instructions | std::views::transform([](auto &c) { return c == ')' ? -1 : 1; }) | std::views::common;
+auto parse_input(const std::string &instructions) {
+    // clang-format off
+    auto rng = instructions
+        | std::views::transform([i = 0](auto &c) mutable {
+                i += c == ')' ? -1 : 1;
+                return i;
+            })
+        | std::views::common;
+    // clang-format on
     return std::vector<int>(rng.begin(), rng.end());
 }
 
-int solve_part_1(auto &instructions) {
-    return std::reduce(instructions.begin(), instructions.end());
+auto solve_part_1(const std::vector<int> &instructions) -> int {
+    return instructions.back();
 }
 
-int solve_part_2(auto &instructions) {
-    int level   = 0;
-    int counter = 0;
-    for (auto ch : instructions) {
-        level += ch;
-        counter++;
-        if (level == -1) {
-            return counter;
-        }
-    }
-    return 0;
+auto solve_part_2(const std::vector<int> &instructions) -> int {
+    // clang-format off
+#ifdef __cpp_lib_ranges_enumerate
+    auto rng = instructions | std::views::enumerate
+#else
+    auto rng = std::views::zip(std::views::iota(0), instructions)
+#endif
+        | std::views::filter([](const auto &kv) {
+                   auto &[k, v] = kv;
+                   return v < 0;
+               })
+        | std::views::take(1)
+        | std::views::keys;
+    // clang-format on
+    auto index = rng.front();
+    return int(index + 1);
 }
 
-int main(int argc, char **argv) {
-    std::int16_t  level   = 0;
-    std::uint16_t counter = 0;
-    std::string   filename;
+void solve_all(auto &instructions) {
+    auto parsed_instructions = aoc::timer(parse_input, instructions, "Preparation time:");
+    aoc::timer(1, solve_part_1, parsed_instructions);
+    aoc::timer(2, solve_part_2, parsed_instructions);
+}
 
-    bool basement_found = false;
+auto main(int argc, char **argv) -> int {
+    std::string filename;
 
-    const int year = 2015;
-    const int day  = 1;
+    constexpr int year = 2015;
+    constexpr int day  = 1;
 
-    auto start_0 = Clock::now();
+    auto args = std::span(argv, size_t(argc));
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
+        if (std::string(args[1]) == "--test") {
             filename = "test_input.txt";
         } else {
-            filename = argv[1];
+            filename = args[1];
         }
     } else {
         filename = "input.txt";
@@ -55,24 +62,8 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> line = aoc::io::get_input_list<std::string>(filename, year, day);
 
-    auto instructions = parse_input(line[0]);
-    auto end_0        = Clock::now();
-    auto start_1      = Clock::now();
-    auto result_1     = solve_part_1(instructions);
-    auto end_1        = Clock::now();
-
-    auto start_2  = Clock::now();
-    auto result_2 = solve_part_2(instructions);
-    auto end_2    = Clock::now();
-
-    auto elapsed_part_0 = aoc::convert_duration(end_0 - start_0);
-    auto elapsed_part_1 = aoc::convert_duration(end_1 - start_1);
-    auto elapsed_part_2 = aoc::convert_duration(end_2 - start_2);
-
     aoc::io::header(year, day);
-    std::cout << "Preparation time:" << std::format("{:>20}", elapsed_part_0) << '\n';
-    std::cout << "Part 1 answer: " << std::format("{:<20}", result_1) << std::format("{:>20}", elapsed_part_1) << '\n';
-    std::cout << "Part 2 answer: " << std::format("{:<20}", result_2) << std::format("{:>20}", elapsed_part_2) << '\n';
+    aoc::timer(solve_all, line.front());
 
     return 0;
 }

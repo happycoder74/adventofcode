@@ -1,11 +1,16 @@
 cmake_minimum_required(VERSION 3.20)
 project(advent-of-code LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wall -Wextra -O0")
+if(WIN32)
+  string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " -lstdc++exp")
+endif()
+
+string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra")
+string(APPEND CMAKE_CXX_FLAGS_DEBUG " -O0")
 set(AOC_YEARS
     2015
     2016
@@ -30,3 +35,8 @@ foreach(year ${AOC_YEARS})
     add_subdirectory(${year})
   endif()
 endforeach()
+
+message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
+message(CMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}")
+message(CMAKE_CXX_FLAGS_RELWITHDEBINFO="${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+message(CMAKE_CXX_FLAGS_DEBUG="${CMAKE_CXX_FLAGS_DEBUG}")
