@@ -2,14 +2,24 @@
 #include "aoc_timer.hpp"
 
 #include <algorithm>
-#include <filesystem>
-#include <format>
-#include <fstream>
-#include <map>
 #include <numeric>
 #include <ranges>
 #include <string>
+#include <unordered_map>
 #include <vector>
+
+auto parse_data(const std::vector<std::string> &instructions) {
+    std::vector<int> left, right;
+
+    for (auto &line : instructions) {
+        std::stringstream ss{line};
+        int               l = 0, r = 0;
+        ss >> l >> r;
+        left.push_back(l);
+        right.push_back(r);
+    }
+    return std::pair{left, right};
+}
 
 auto solve_part_1(const std::pair<std::vector<int>, std::vector<int>> &instructions) -> int {
     auto [left, right] = instructions;
@@ -28,10 +38,11 @@ auto solve_part_1(const std::pair<std::vector<int>, std::vector<int>> &instructi
 }
 
 auto solve_part_2(const std::pair<std::vector<int>, std::vector<int>> &instructions) -> int {
-    std::map<int, int> left, right;
-    for (auto p : std::views::zip(std::get<0>(instructions), std::get<1>(instructions))) {
-        left[std::get<0>(p)] += 1;
-        right[std::get<1>(p)] += 1;
+    std::unordered_map<int, int> left, right;
+    auto &[li, ri] = instructions;
+    for (auto [p1, p2] : std::views::zip(li, ri)) {
+        left[p1] += 1;
+        right[p2] += 1;
     }
 
     auto rng = left | std::views::transform([&right](auto c) { return c.first * c.second * right[c.first]; });
@@ -39,22 +50,10 @@ auto solve_part_2(const std::pair<std::vector<int>, std::vector<int>> &instructi
     return std::reduce(rng.begin(), rng.end());
 }
 
-auto solve_all(const std::pair<std::vector<int>, std::vector<int>> &instructions) {
-    aoc::timer(1, solve_part_1, instructions);
-    aoc::timer(2, solve_part_2, instructions);
-}
-
-auto parse_data(const std::vector<std::string> &instructions) {
-    std::vector<int> left, right;
-
-    for (auto &line : instructions) {
-        std::stringstream ss{line};
-        int               l = 0, r = 0;
-        ss >> l >> r;
-        left.push_back(l);
-        right.push_back(r);
-    }
-    return std::pair{left, right};
+auto solve_all(const std::vector<std::string> &instructions) {
+    auto parsed = parse_data(instructions);
+    aoc::timer(1, solve_part_1, parsed);
+    aoc::timer(2, solve_part_2, parsed);
 }
 
 auto main(int argc, char **argv) -> int {
@@ -73,18 +72,10 @@ auto main(int argc, char **argv) -> int {
         filename = "input.txt";
     }
 
-    std::filesystem::path filepath{std::getenv("AOC_DATA_LOCATION")};
-    filepath = filepath / std::format("{}", year) / std::format("{:02d}", day) / filename;
-    std::ifstream ifs{filepath};
-
-    std::vector<std::string> instructions;
-    for (std::string line; std::getline(ifs, line);) {
-        instructions.push_back(line);
-    }
-    auto parsed = parse_data(instructions);
+    auto instructions = aoc::io::get_input_list<std::string>(filename, year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(solve_all, parsed);
+    aoc::timer(solve_all, instructions);
 
     return 0;
 }
