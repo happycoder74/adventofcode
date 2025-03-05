@@ -21,7 +21,11 @@ auto solve_part_1(const std::vector<int> &instructions) -> int {
 
 auto solve_part_2(const std::vector<int> &instructions) -> int {
     // clang-format off
+#ifdef __cpp_lib_ranges_enumerate
+    auto rng = instructions | std::views::enumerate
+#else
     auto rng = std::views::zip(std::views::iota(0), instructions)
+#endif
         | std::views::filter([](const auto &kv) {
                    auto &[k, v] = kv;
                    return v < 0;
