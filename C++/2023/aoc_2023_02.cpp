@@ -4,9 +4,7 @@
 #include <array>
 #include <numeric>
 #include <ranges>
-#include <sstream>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 using Cube = std::array<int, 3>;
@@ -16,7 +14,7 @@ constexpr int green = 0;
 constexpr int red   = 1;
 constexpr int blue  = 2;
 
-constexpr int color_index(const std::string &color) {
+constexpr auto color_index(const std::string &color) -> int {
     if (color == "green")
         return green;
     if (color == "red")
@@ -24,7 +22,7 @@ constexpr int color_index(const std::string &color) {
     return blue;
 }
 
-Game find_games(const std::vector<std::string> &data) {
+auto find_games(const std::vector<std::string> &data) -> Game {
     // clang-format off
     auto rng = data
                 | std::views::transform([](const auto &line) -> std::pair<int, Cube> {
@@ -55,7 +53,7 @@ constexpr int red_limit   = 12;
 constexpr int green_limit = 13;
 constexpr int blue_limit  = 14;
 
-int solve_part_1(const Game &games) {
+auto solve_part_1(const Game &games) -> int {
     // clang-format off
     auto winners = games
                     | std::views::transform([](const auto &item) -> int {
@@ -72,7 +70,7 @@ int solve_part_1(const Game &games) {
     return std::reduce(winners.begin(), winners.end());
 }
 
-int solve_part_2(const Game &games) {
+auto solve_part_2(const Game &games) -> int {
     // clang-format off
     auto winners = games
                     | std::views::transform([](const auto &item) -> int {
@@ -93,17 +91,19 @@ void solve_all(const std::vector<std::string> &data) {
     }
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     std::vector<std::string> data;
 
     constexpr int year = 2023;
     constexpr int day  = 2;
 
+    auto args = std::span(argv, std::size_t(argc));
+
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
+        if (std::string(args[1]) == "--test") {
             data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
         } else {
-            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+            data = aoc::io::get_input_list<std::string>(args[1], year, day);
         }
     } else {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
