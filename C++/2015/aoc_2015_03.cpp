@@ -2,16 +2,24 @@
 #include "aoc_timer.hpp"
 #include <cstdlib>
 #include <iostream>
-#include <map>
+#include <span>
 #include <string>
+#include <unordered_map>
 #include <vector>
+
+template <>
+struct std::hash<std::pair<int, int>> {
+    inline auto operator()(const pair<int, int> &v) const -> size_t {
+        return std::size_t(v.first) << 32 | v.second;
+    }
+};
 
 namespace aoc_2015_03 {
 
 class SantaAgent {
   private:
-    std::map<std::pair<int, int>, int> coords;
-    std::pair<int, int>                loc = {0, 0};
+    std::unordered_map<std::pair<int, int>, int> coords;
+    std::pair<int, int>                          loc = {0, 0};
 
   public:
     SantaAgent() {
@@ -39,16 +47,16 @@ class SantaAgent {
         coords.insert({loc, 1});
     };
 
-    int get_locations() {
+    auto get_locations() -> int {
         return int(coords.size());
     };
 
-    std::map<std::pair<int, int>, int> export_coords() {
+    auto export_coords() -> std::unordered_map<std::pair<int, int>, int> {
         return coords;
     }
 };
 
-int solve_part_1(const std::vector<std::string> &instructions) {
+auto solve_part_1(const std::vector<std::string> &instructions) -> int {
     SantaAgent santa;
 
     for (auto &inst : instructions.front()) {
@@ -57,7 +65,7 @@ int solve_part_1(const std::vector<std::string> &instructions) {
     return santa.get_locations();
 }
 
-int solve_part_2(const std::vector<std::string> &instructions) {
+auto solve_part_2(const std::vector<std::string> &instructions) -> int {
     SantaAgent santa;
     SantaAgent robosanta;
 
@@ -70,21 +78,20 @@ int solve_part_2(const std::vector<std::string> &instructions) {
         }
     }
 
-    std::map<std::pair<int, int>, int> santa_visited     = santa.export_coords();
-    std::map<std::pair<int, int>, int> robosanta_visited = robosanta.export_coords();
+    std::unordered_map<std::pair<int, int>, int> santa_visited     = santa.export_coords();
+    std::unordered_map<std::pair<int, int>, int> robosanta_visited = robosanta.export_coords();
 
     santa_visited.insert(robosanta_visited.begin(), robosanta_visited.end());
     return int(santa_visited.size());
 }
 
-int solve_all(const std::vector<std::string> &instructions) {
-    aoc::timer(1, solve_part_1, instructions, true);
-    aoc::timer(2, solve_part_2, instructions, true);
-    return 0;
+void solve_all(const std::vector<std::string> &instructions) {
+    aoc::timer(1, solve_part_1, instructions);
+    aoc::timer(2, solve_part_2, instructions);
 }
 } // namespace aoc_2015_03
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     std::vector<std::string> data;
 
     constexpr int year = 2015;
@@ -105,7 +112,7 @@ int main(int argc, char **argv) {
     data = aoc::io::get_input_list<std::string>(filename, year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2015_03::solve_all, data, 0);
+    aoc::timer(aoc_2015_03::solve_all, data);
 
     return 0;
 }
