@@ -37,7 +37,7 @@ auto solve_part_2(const std::vector<int> &instructions) -> int {
     return int(index + 1);
 }
 
-void solve_all(auto &instructions) {
+void solve_all(const std::string &instructions) {
     auto parsed_instructions = aoc::timer(parse_input, instructions, "Preparation time:");
     aoc::timer(1, solve_part_1, parsed_instructions);
     aoc::timer(2, solve_part_2, parsed_instructions);

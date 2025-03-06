@@ -59,7 +59,7 @@ int solve_all(const std::vector<std::string> &data) {
 int main(int argc, char **argv) {
     std::string filename;
     const int   year = 2017;
-    const int   day = 2;
+    const int   day  = 2;
 
     std::vector<std::string> data;
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     }
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2017_02::solve_all, data, false);
+    aoc::timer(aoc_2017_02::solve_all, data);
 
     return 0;
 }

@@ -2,14 +2,22 @@
 #define AOC_TYPES_HPP
 
 #include <array>
-#include <map>
+#include <unordered_map>
+
+template <class A, class B>
+struct std::hash<std::pair<A, B>> {
+    std::size_t operator()(const std::pair<A, B> &p) const {
+        return std::size_t(p.first) << 32 | p.second;
+    }
+};
 
 namespace aoc {
 class Grid {
   private:
-    int                                     x;
-    int                                     y;
-    std::map<std::pair<int, int>, unsigned> grid;
+    int x{0};
+    int y{0};
+
+    std::unordered_map<std::pair<int, int>, unsigned> grid;
 
   public:
     std::array<std::pair<int, int>, 9> deltas = {
@@ -17,16 +25,14 @@ class Grid {
     };
 
     Grid() {
-        x = 0;
-        y = 0;
         grid[{x, y}] = 0;
     }
 
-    void insert(std::pair<int, int> pos, unsigned val) {
+    void insert(const std::pair<int, int> &pos, unsigned val) {
         grid[pos] = val;
     }
 
-    unsigned get_value(std::pair<int, int> position) {
+    unsigned get_value(const std::pair<int, int> &position) {
         return grid[position];
     }
 };

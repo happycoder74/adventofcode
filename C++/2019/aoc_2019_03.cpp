@@ -8,22 +8,24 @@
 #include <string>
 #include <vector>
 
-typedef std::pair<int, int> Point;
+using Point = std::pair<int, int>;
 
-typedef std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> Container;
+using Container = std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>>;
 
-static std::vector<std::pair<Point, Point>> find_intersections(const std::map<Point, Point> &m1, const std::map<Point, Point> &m2) {
+auto find_intersections(const std::map<Point, Point> &m1, const std::map<Point, Point> &m2) {
     std::vector<Point> return_vector;
 
-    auto values = m1 | std::views::filter([=](std::pair<Point, Point> p) { return m2.contains(p.first); });
+    auto values = m1 | std::views::filter([=](const std::pair<Point, Point> &p) {
+                      return m2.contains(p.first);
+                  });
     return std::vector<std::pair<Point, Point>>(values.begin(), values.end());
 }
 
-static int manhattan_distance(const Point p0, const Point p1) {
+static auto manhattan_distance(const Point &p0, const Point &p1) {
     return std::abs((p0.first - p1.first)) + abs((p0.second - p1.second));
 }
 
-static Container transform_input(const std::vector<std::string> &instructions) {
+static auto transform_input(const std::vector<std::string> &instructions) {
     std::vector<std::map<Point, int>>   wire_stepmap;
     std::vector<std::map<Point, Point>> wire_coords;
     for (const std::string &l : instructions) {
@@ -75,13 +77,15 @@ static Container transform_input(const std::vector<std::string> &instructions) {
     return data;
 }
 
-int solve_part_1(const Container &data) {
-    int dist = std::ranges::min(data.first | std::views::transform([](const auto &p) -> int { return manhattan_distance(p.first, {0, 0}); }));
+auto solve_part_1(const Container &data) {
+    int dist = std::ranges::min(data.first | std::views::transform([](const auto &p) -> int {
+                                    return manhattan_distance(p.first, {0, 0});
+                                }));
 
     return dist;
 }
 
-int solve_part_2(const Container &data) {
+auto solve_part_2(const Container &data) {
     int signal = INT_MAX;
     for (const auto &p : data.first) {
         auto second = data.second;
@@ -91,7 +95,7 @@ int solve_part_2(const Container &data) {
     return signal;
 }
 
-int solve_all(const std::vector<std::string> &instructions) {
+auto solve_all(const std::vector<std::string> &instructions) {
     Container data = transform_input(instructions);
 
     aoc::timer(1, solve_part_1, data);
@@ -108,20 +112,19 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> data;
 
-    auto t1 = Clock::now();
-
+    auto args = std::span(argv, argc);
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
+        if (std::string(args[1]) == "--test") {
             data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
         } else {
-            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+            data = aoc::io::get_input_list<std::string>(args[1], year, day);
         }
     } else {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
     }
 
     aoc::io::header(year, day);
-    aoc::timer(0, solve_all, data, false);
+    aoc::timer(solve_all, data);
 
     return 0;
 }

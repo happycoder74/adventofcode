@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
     data = aoc::io::get_input_list<std::string>(filename, year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2017_01::solve_all, data[0], false);
+    aoc::timer(aoc_2017_01::solve_all, data[0]);
 
     return 0;
 }

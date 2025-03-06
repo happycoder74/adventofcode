@@ -6,18 +6,22 @@
 #include <map>
 #include <ranges>
 
-using card = std::pair<std::vector<int>, std::vector<int>>;
+using card         = std::pair<std::vector<int>, std::vector<int>>;
 using parsed_input = std::vector<card>;
 
 namespace aoc_2023_04 {
-card split_deck(const std::string &row) {
+auto split_deck(const std::string &row) {
     std::vector<std::string> res = aoc::string::split(row.substr(row.find(':') + 1), '|');
 
     std::vector<std::string> r1 = aoc::string::split(res.front(), ' ');
     std::vector<std::string> r2 = aoc::string::split(res.back(), ' ');
 
-    auto av1 = r1 | std::views::transform([](const auto &s) -> int { return std::stoi(s); });
-    auto av2 = r2 | std::views::transform([](const auto &s) -> int { return std::stoi(s, NULL); });
+    auto av1 = r1 | std::views::transform([](const auto &s) -> int {
+                   return std::stoi(s);
+               });
+    auto av2 = r2 | std::views::transform([](const auto &s) -> int {
+                   return std::stoi(s, nullptr);
+               });
 
     std::vector<int> v1(std::ranges::begin(av1), std::ranges::end(av1));
     std::vector<int> v2(std::ranges::begin(av2), std::ranges::end(av2));
@@ -28,10 +32,12 @@ card split_deck(const std::string &row) {
     return std::make_pair(v1, v2);
 }
 
-std::vector<card> parse_input(const std::vector<std::string> &data) {
+auto parse_input(const std::vector<std::string> &data) {
     std::vector<card> return_data;
 
-    auto deck = data | std::views::transform([](const auto &s) -> card { return split_deck(s); });
+    auto deck = data | std::views::transform([](const auto &s) -> card {
+                    return split_deck(s);
+                });
 
     for (auto item : deck) {
         return_data.push_back(item);
@@ -40,29 +46,29 @@ std::vector<card> parse_input(const std::vector<std::string> &data) {
     return return_data;
 }
 
-std::string solve_part_1(const parsed_input &data) {
+auto solve_part_1(const parsed_input &data) {
     int sum = 0;
     for (auto c : data) {
         std::vector<int> hand;
-        std::set_intersection(c.second.begin(), c.second.end(), c.first.begin(), c.first.end(), std::back_inserter(hand));
+        std::ranges::set_intersection(c.second, c.first, std::back_inserter(hand));
         if (hand.size() >= 1) {
             sum += 1 << (hand.size() - 1);
         }
     }
-    return std::format("{}", sum);
+    return sum;
 }
 
-std::string solve_part_2(const parsed_input &data) {
+auto solve_part_2(const parsed_input &data) {
     std::map<int, int> deck;
 
-    for (int i = 0; i < data.size(); i++) {
+    for (int i = 0; i < int(data.size()); i++) {
         deck[i] += 1;
         card c = data[i];
 
         std::vector<int> hand;
-        std::set_intersection(c.second.begin(), c.second.end(), c.first.begin(), c.first.end(), std::back_inserter(hand));
+        std::ranges::set_intersection(c.second, c.first, std::back_inserter(hand));
 
-        for (int j = 0; j < hand.size(); j++) {
+        for (int j = 0; j < int(hand.size()); j++) {
             deck[i + j + 1] += deck[i];
         }
     }
@@ -74,28 +80,25 @@ std::string solve_part_2(const parsed_input &data) {
 }
 } // namespace aoc_2023_04
 
-void *solve_all(const parsed_input &data) {
-
+auto solve_all(const parsed_input &data) {
     if (data.size() > 0) {
-        aoc::timer(1, aoc_2023_04::solve_part_1, data, 1);
-        aoc::timer(2, aoc_2023_04::solve_part_2, data, 1);
+        aoc::timer(1, aoc_2023_04::solve_part_1, data);
+        aoc::timer(2, aoc_2023_04::solve_part_2, data);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv) {
     std::vector<std::string> data;
 
-    char sourcefile[20];
-    int  year = 2023;
-    int  day = 4;
+    constexpr int year = 2023;
+    constexpr int day  = 4;
 
+    auto args = std::span(argv, argc);
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
+        if (std::string(args[1]) == "--test") {
             data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
         } else {
-            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+            data = aoc::io::get_input_list<std::string>(args[1], year, day);
         }
     } else {
         data = aoc::io::get_input_list<std::string>("input.txt", year, day);
@@ -103,7 +106,7 @@ int main(int argc, char **argv) {
 
     aoc::io::header(year, day);
     parsed_input input = aoc_2023_04::parse_input(data);
-    aoc::timer(0, solve_all, input, 0);
+    aoc::timer(solve_all, input);
 
     return 0;
 }

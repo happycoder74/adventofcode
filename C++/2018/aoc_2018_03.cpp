@@ -32,7 +32,10 @@ inline auto populate_map(const std::vector<InputData> &data) -> std::vector<int>
 auto solve_part_1(const std::vector<InputData> &data) -> int {
     std::vector<int> m = populate_map(data);
 
-    auto vec = m | std::views::transform([](const int p) { return p >= 2 ? 1 : 0; }) | std::ranges::to<std::vector>();
+    auto vec = m | std::views::transform([](const int p) {
+                   return p >= 2 ? 1 : 0;
+               }) |
+               std::ranges::to<std::vector>();
     return std::accumulate(vec.begin(), vec.end(), 0);
 }
 
@@ -52,7 +55,9 @@ inline auto check_claim(const std::vector<int> &m, const InputData &claim) -> bo
 auto solve_part_2(const std::vector<InputData> &data) -> int {
     std::vector<int> m = populate_map(data);
 
-    auto claim = data | std::views::filter([&m](const auto claim) { return check_claim(m, claim); });
+    auto claim = data | std::views::filter([&m](const auto &claim) {
+                     return check_claim(m, claim);
+                 });
 
     return claim.front().id;
 }
@@ -82,8 +87,7 @@ auto parse_data(const std::vector<std::string> &data) -> std::vector<InputData> 
     return vec;
 }
 
-template <typename T>
-void solve_all(const T &data) {
+void solve_all(const std::vector<std::string> &data) {
     std::vector<InputData> parsed_data = parse_data(data);
 
     aoc::timer(1, solve_part_1, parsed_data);
