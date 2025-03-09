@@ -1,30 +1,25 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day1)]
-pub fn parse_input(input: &str) -> (Vec<i32>, Vec<i32>) {
+pub fn parse_input(input: &str) -> (Vec<usize>, Vec<usize>) {
     let mut left = vec![];
     let mut right = vec![];
 
     for line in input.lines() {
-        let (l, r) = line.split_once(" ").unwrap();
-        left.push(l.trim().parse().unwrap());
-        right.push(r.trim().parse().unwrap());
+        let l: Vec<&str> = line.split(" ").collect();
+        left.push(l.first().unwrap().parse().unwrap());
+        right.push(l.last().unwrap().parse().unwrap());
     }
 
     return (left, right)
 }
 
 #[aoc(day1, part1)]
-pub fn solve_part_1(parsed: &(Vec<i32>, Vec<i32>)) -> i32 {
-    let mut sum: i32 = 0;
-
+pub fn solve_part_1(parsed: &(Vec<usize>, Vec<usize>)) -> usize {
     let mut vec0 = parsed.0.clone();
     let mut vec1 = parsed.1.clone();
     vec0.sort();
     vec1.sort();
-    for (v1, v2) in std::iter::zip(vec0, vec1) {
-        sum += (v1 - v2).abs();
-    }
 
     sum
 }
@@ -45,7 +40,7 @@ pub fn solve_part_2(parsed: &(Vec<i32>, Vec<i32>)) -> i32 {
 mod tests {
     use super::*;
 
-    const INPUT: &str = " 3   4
+    const INPUT: &str = "3   4
 4   3
 2   5
 1   3
