@@ -12,49 +12,40 @@ pub struct Day2015_01 {
     day: u32
 }
 
-impl Puzzle<String, (i32, Duration)> for Day2015_01 {
+impl Puzzle<Vec<i32>, (i32, Duration)> for Day2015_01 {
     fn get_input(year: u32, day: u32) -> String {
         return aoc_utils::get_input(year, day, false)
     }
-    fn parse_input(input: &str) -> String {
-        String::from(input)
+    fn parse_input(input: &str) -> Vec<i32> {
+        fn helper(b: u8) -> i32 {
+            match b {
+                b'(' => 1,
+                b')' => -1,
+                _ => 0,
+            }
+        }
+        input.bytes().map(helper).collect()
     }
 
-    fn solve_part_1(input: &String) -> (i32, Duration) {
+    fn solve_part_1(input: &Vec<i32>) -> (i32, Duration) {
         let start_time = Instant::now();
-        let final_floor = input
-            .chars()
-            .map(|x|
-                match x {
-                    '(' => 1,
-                    ')' => -1,
-                    _ => 0
-                })
-        .sum();
+        let final_floor = input.iter().sum();
         let duration = Instant::now() - start_time;
         (final_floor, duration)
     }
-    fn solve_part_2(input: &String) -> (i32, Duration) {
+    fn solve_part_2(input: &Vec<i32>) -> (i32, Duration) {
         let start_time = Instant::now();
-        let basement_found = false;
-        let mut counter = 0;
         let mut level = 0;
 
-        for ch in input.chars() {
-            match ch {
-                '(' => level += 1,
-                ')' => level -= 1,
-                _ => ()
-            }
-            if !basement_found {
-                counter += 1;
-                if level == -1 {
-                    return (counter, Instant::now() - start_time);
-                }
+        for (i, x) in input.iter().enumerate() {
+            level += x;
+            if level < 0 {
+                let duration = Instant::now() - start_time;
+                return ((i + 1) as i32, duration);
             }
         }
 
-        return (counter, Duration::new(0, 0));
+        unreachable!()
     }
 }
 
