@@ -19,7 +19,7 @@ inline void header(int year, int day) {
 std::string get_input_bare(const std::string &fn);
 
 template <typename T>
-std::vector<T> get_input_list(const std::string &fn, int year, int day) {
+[[nodiscard]] std::vector<T> get_input_list(const std::string &fn, int year, int day) {
     std::ifstream  ifs;
     std::vector<T> return_data;
     std::string    line;
@@ -49,7 +49,7 @@ std::vector<T> get_input_list(const std::string &fn, int year, int day) {
 }
 
 template <>
-inline std::vector<int> get_input_list(const std::string &fn, int year, int day) {
+[[nodiscard]] inline std::vector<int> get_input_list(const std::string &fn, int year, int day) {
     std::ifstream    ifs;
     std::string      line;
     std::vector<int> result;
