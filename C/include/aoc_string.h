@@ -15,7 +15,7 @@
 char  *str_trim(char *str);
 char  *str_join(const char *, char **, size_t);
 int    str_count(char *, char, int, int);
-char  *substr(char *, int, int);
+char  *substr(char *, unsigned int, unsigned int);
 int    str_startswith(char *str, char *start_str);
 int    str_endswith(char *, char *);
 char  *strdup_printf(const char *format, ...);
@@ -25,8 +25,8 @@ char **str_split(const char *string, const char *delimiter, uint32_t max_tokens)
 ssize_t getline(char **, size_t *, FILE *);
 ssize_t getdelim(char **, size_t *, int, FILE *);
 char   *aoc_stpcpy(char *__restrict__, const char *__restrict__);
-char   *strdup(const char *str);
-char   *strndup(const char *str, size_t n);
+// char   *strdup(const char *str);
+// char   *strndup(const char *str, size_t n);
 char   *strconcat(const char *str1, const char *str2);
 
 void aoc_str_freev(char **);

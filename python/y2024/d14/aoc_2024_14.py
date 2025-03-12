@@ -1,6 +1,5 @@
 import functools
 import operator
-from collections import Counter, defaultdict
 from dataclasses import dataclass
 
 from common import Puzzle, timer

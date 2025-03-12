@@ -189,7 +189,7 @@ void timer_func_new_str(int part, void *(func)(void *), void *input, int show_re
 
 #endif
 
-void aoc_timer_gen(char *title, AocTimer_t *timer, enum Border border) {
+void aoc_timer_gen(char *title, AocTimer_t *timer, int border) {
 
 #ifdef _WIN32
     double   timeDifference = ((timer->endTime.QuadPart - timer->startTime.QuadPart) * 1e9 / timer->freq.QuadPart);
@@ -251,7 +251,7 @@ void timer_func_str_void(int part, void *(func)(void), int show_res) {
     clock_gettime(CLOCK_REALTIME, &start);
 #endif
 
-    char *result = func();
+    char *result = (char *)func();
 
 #ifdef _WIN32
     QueryPerformanceCounter(&endTime);

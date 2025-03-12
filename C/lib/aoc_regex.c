@@ -7,7 +7,7 @@
 
 // Need to free result in calling function
 char *get_match_string(regmatch_t *match_info, const char *string) {
-    char      *substring = calloc(strlen(string) + 1, sizeof(char));
+    char      *substring = (char *)calloc(strlen(string) + 1, sizeof(char));
     regmatch_t mo = match_info[1];
     unsigned   length = mo.rm_eo - mo.rm_so;
     strncpy(substring, string + mo.rm_so, length);
@@ -49,7 +49,7 @@ char **regex_split(const char *pattern, const char *string, unsigned n_splits) {
     regmatch_t match;
     unsigned   split_len = 11;
 
-    char **split_string = calloc(n_splits > 0 ? n_splits + 1 : split_len, sizeof(char *));
+    char **split_string = (char **)calloc(n_splits > 0 ? n_splits + 1 : split_len, sizeof(char *));
     if (string == NULL) {
         return split_string;
     }
@@ -68,7 +68,7 @@ char **regex_split(const char *pattern, const char *string, unsigned n_splits) {
         if (n_splits == 0) {
             if (i_split == split_len - 1) {
                 split_len *= 2;
-                char **new_split_string = realloc(split_string, split_len);
+                char **new_split_string = (char **)realloc(split_string, split_len);
                 if (new_split_string == NULL) {
                     fprintf(stderr, "Could not re-allocate array\n");
                     split_string[i_split] = NULL;

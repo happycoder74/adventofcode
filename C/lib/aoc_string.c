@@ -11,7 +11,7 @@
 
 char *strdup(const char *s) {
     size_t size = (strlen(s) + 1) * sizeof(char);
-    char  *p = malloc(size);
+    char  *p = (char *)malloc(size);
     if (p) {
         memcpy(p, s, size);
     }
@@ -102,21 +102,22 @@ int str_count(char *str, char needle, int start, int end) {
     return count;
 }
 
-char *substr(char *str, int start, int end) {
-    char *sstr;
-    int   i;
-    if (end < 0) {
-        end = (int)strlen(str) - 1 + end + 1;
-    }
-    if (start < 0) {
-        start = (int)strlen(str) - 1 + start + 1;
-    }
+char *substr(char *str, unsigned int start, unsigned int end) {
+    char        *sstr;
+    unsigned int i;
+    /* if (end < 0) { */
+    /*     end = (int)strlen(str) - 1 + end + 1; */
+    /* } */
+    /* if (start < 0) { */
+    /*     start = (int)strlen(str) - 1 + start + 1; */
+    /* } */
 
-    assert(end <= (int)strlen(str));
-    assert(start >= 0);
-    assert(end >= 0);
-    assert(start < (int)strlen(str));
-    assert(start <= end);
+    const unsigned int str_length = (int)strlen(str);
+
+    if (!((start <= end) && (end <= str_length)))
+        return NULL;
+    if (!((start < str_length) && (start <= end)))
+        return NULL;
 
     sstr = (char *)malloc(sizeof(char) * (end - start + 1));
     for (i = 0; i < (end - start); i++) {
@@ -140,7 +141,10 @@ int str_endswith(char *str, char *end_str) {
     char *sstr;
     int   result;
 
-    sstr = substr(str, (int)strlen(end_str), (int)strlen(str));
+    if ((strlen(str) == 0) || (strlen(end_str) == 0) || (strlen(end_str) > strlen(str)))
+        return false;
+
+    sstr = substr(str, (int)(strlen(str) - strlen(end_str)), (int)strlen(str));
     result = !strcmp(end_str, sstr);
     free(sstr);
     return result;
@@ -191,7 +195,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
 
     remainder = str;
 
-    s = strstr(remainder, delimiter);
+    s = (char *)strstr(remainder, delimiter);
     if (s) {
         size_t delimiter_length = strlen(delimiter);
         while (--max_tokens && s) {
@@ -199,7 +203,7 @@ char **str_split(const char *str, const char *delimiter, uint32_t max_tokens) {
             char  *new_string = strndup(remainder, length);
             aoc_ptr_array_append(return_split, new_string);
             remainder = s + delimiter_length;
-            s = strstr(remainder, delimiter);
+            s = (char *)strstr(remainder, delimiter);
         }
     }
 

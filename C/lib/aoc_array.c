@@ -284,9 +284,9 @@ static void *aoc_array_expand(AocArray *array) {
     }
 
     if (array->type == AOC_PTR) {
-        void *new_ptr_data = realloc(arr->ptr_data, new_capacity * sizeof(void *));
+        void *new_ptr_data = (void *)realloc(arr->ptr_data, new_capacity * sizeof(void *));
         if (new_ptr_data) {
-            arr->ptr_data = new_ptr_data;
+            arr->ptr_data = (void **)new_ptr_data;
             arr->capacity = new_capacity;
         }
     } else {
@@ -309,7 +309,7 @@ static void *aoc_array_shrink(AocArray *array) {
         if (array->type == AOC_PTR) {
             void *new_ptr_data = realloc(arr->ptr_data, sizeof(void *) * MAX(shrunk_capacity, 1));
             if (new_ptr_data) {
-                arr->ptr_data = new_ptr_data;
+                arr->ptr_data = (void **)new_ptr_data;
                 arr->capacity = shrunk_capacity;
             }
         } else {
@@ -497,7 +497,7 @@ void *aoc_array_pop_index(AocArrayPtr array, size_t index) {
 
     arr->length -= 1;
 
-    array = aoc_array_shrink(array);
+    array = (AocArrayPtr)aoc_array_shrink(array);
 
     return result;
 }
@@ -535,7 +535,7 @@ AocArrayPtr aoc_array_remove_index(AocArrayPtr array, size_t index) {
 
     arr->length -= 1;
 
-    array = aoc_array_shrink(array);
+    array = (AocArrayPtr)aoc_array_shrink(array);
 
     return array;
 }
