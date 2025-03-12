@@ -11,12 +11,11 @@ namespace aoc_2017_03 {
 
 class Spiral {
   private:
-    aoc::Grid           grid;
-    std::pair<int, int> position;
+    aoc::Grid<unsigned> grid;
+    std::pair<int, int> position{0, 0};
 
   public:
     explicit Spiral() {
-        position = {0, 0};
         grid.insert(position, 1);
     }
     void step() {
@@ -36,12 +35,12 @@ class Spiral {
         position = {x, y};
     }
 
-    auto grid_value() {
+    [[nodiscard]] auto grid_value() {
         return grid.get_value(position);
     }
 
     void update_value() {
-        auto res = grid.deltas
+        auto res = grid.deltas()
                    // clang-format off
                    | std::views::transform([this](const auto &p) {
                            auto result = grid.get_value({position.first + p.first, position.second + p.second});
@@ -54,13 +53,13 @@ class Spiral {
         grid.insert(position, result);
     }
 
-    unsigned distance() {
+    [[nodiscard]] unsigned distance() const {
         return abs(position.first) + abs(position.second);
     }
 };
 
 auto solve_part_1(const std::vector<std::string> &input) {
-    unsigned target = std::stoul(input[0]);
+    unsigned target = std::stoul(input.front());
     Spiral   s;
 
     for (unsigned i = 1; i < target; i++) {
@@ -89,15 +88,19 @@ auto solve_all(const std::vector<std::string> &input) {
 } // namespace aoc_2017_03
 
 int main(int argc, char **argv) {
-    std::string filename;
-    const int   year = 2017;
-    const int   day  = 3;
+    std::string   filename;
+    constexpr int year = 2017;
+    constexpr int day  = 3;
 
     std::vector<std::string> data;
 
     auto args = std::span(argv, argc);
     if (argc > 1) {
-        filename = args[1];
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = args[1];
+        }
     } else {
         filename = "input.txt";
     }
