@@ -19,9 +19,9 @@ auto solve_part_1(const std::vector<std::string> &input) -> int {
             counter,
             [](auto vec, auto string) {
                 auto count_vec = string | std::views::transform([](auto &c) { return c == '1'; });
-                for (std::size_t i = 0; i < vec.size(); i++) {
-                    vec[i] += count_vec[i];
-                }
+                std::ranges::transform(vec, count_vec, vec.begin(), [](const auto &v1, const auto &v2) {
+                        return v1 + v2;
+                        });
                 return vec;
             })
         | std::views::reverse
