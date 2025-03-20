@@ -81,113 +81,139 @@ static Duration convert_duration(double elapsed) {
     return duration;
 }
 
+inline void print_result_str(const int part, const char *result, const Duration duration) {
+    printf("Part %d answer: %-28s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+}
+
+inline void print_result_int(const int part, const int result, const Duration duration) {
+    printf("Part %d answer: %-28d%10.2f %-2s\n", part, result, duration.duration, duration.unit);
+}
+
+inline void print_result_long(const int part, const long result, const Duration duration) {
+    printf("Part %d answer: %-28ld%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+}
+inline void print_result_uint64(const int part, const uint64_t result, const Duration duration) {
+    printf("Part %d answer: %-28" PRIu64 "%10.2lf %-2s\n", part, result, duration.duration,
+           duration.unit);
+}
+
 #ifdef _WIN32
 // clang-format off
 #include <windows.h>
 #include <winbase.h>
+#else
+#include <time.h>
+#endif
 // clang-format off
 void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
+#ifdef _WIN32
     LARGE_INTEGER freq;
     QueryPerformanceFrequency(&freq);
     LARGE_INTEGER startTime;
     QueryPerformanceCounter(&startTime);
-    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
     char         *result = (char *)func(aocdata);
+#ifdef _WIN32
+    LARGE_INTEGER endTime;
     QueryPerformanceCounter(&endTime);
     double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
     Duration duration = convert_duration(timeDifference);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
+#endif
     if (show_res) {
-        printf("Part %d answer: %-20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+        print_result_str(part, result, duration);
     }
-
     if (result) {
         free(result);
+    }
+}
+
+void timer_func_int(int part, int (func)(AocData_t *), AocData_t *aocdata, int show_res) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
+    int result = func(aocdata);
+#ifdef _WIN32
+    LARGE_INTEGER endTime;
+    QueryPerformanceCounter(&endTime);
+    double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+    Duration duration = convert_duration(timeDifference);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
+#endif
+    if (show_res) {
+        print_result_int(part, result, duration);
     }
 }
 
 void timer_func_new_str(int part, void *(func)(void *), void *aocdata, int show_res) {
+#ifdef _WIN32
     LARGE_INTEGER freq;
     QueryPerformanceFrequency(&freq);
     LARGE_INTEGER startTime;
     QueryPerformanceCounter(&startTime);
     LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
     char         *result = (char *)func(aocdata);
+#ifdef _WIN32
     QueryPerformanceCounter(&endTime);
     double   timeDifference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
     Duration duration = convert_duration(timeDifference);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
+#endif
     if (show_res) {
-        printf("Part %d answer: %-20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+        print_result_str(part, result, duration);
     }
-
     if (result) {
         free(result);
     }
 }
 
-#endif
-
-
-#ifndef _WIN32
-#include <time.h>
-void timer_func(int part, void *(func)(AocData_t *), AocData_t *aocdata, int show_res) {
-    struct timespec start, stop;
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    char *result = (char *)func(aocdata);
-    clock_gettime(CLOCK_REALTIME, &stop);
-
-    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
-
-    if (show_res) {
-        printf("Part %d answer: %-20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
-    }
-
-    if (result)
-        free(result);
-}
 
 void timer_func_new_long(int part, long(func)(void *), void *input, int show_res) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+#else
     struct timespec start, stop;
 
     clock_gettime(CLOCK_REALTIME, &start);
-    long result = func(input);
-    clock_gettime(CLOCK_REALTIME, &stop);
-
-    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
-
-    if (show_res) {
-        printf("Part %d answer: %-20ld%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
-    }
-}
-
-void timer_func_new_str(int part, void *(func)(void *), void *input, int show_res) {
-    struct timespec start, stop;
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    char *result = (char *)func(input);
-    clock_gettime(CLOCK_REALTIME, &stop);
-
-    Duration duration = convert_duration((stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec));
-
-    if (show_res) {
-        printf("Part %d answer: %-20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
-    }
-
-    if (result)
-        free(result);
-}
-
 #endif
+    long result = func(input);
+#ifdef _WIN32
+    LARGE_INTEGER endTime;
+    QueryPerformanceCounter(&endTime);
+    double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
+    Duration duration = convert_duration(time_difference);
+
+    if (show_res) {
+        print_result_long(part, result, duration);
+    }
+}
+
 
 void aoc_timer_gen(char *title, AocTimer_t *timer, int border) {
 
@@ -200,7 +226,7 @@ void aoc_timer_gen(char *title, AocTimer_t *timer, int border) {
     if (border & BORDER_TOP) {
         fprintf(stdout, "--------------------------------------------------------\n");
     }
-    fprintf(stdout, "%-20s%20.3lf %s (%lu ns)\n", title,
+    fprintf(stdout, "%-30s%11.3lf %s (%lu ns)\n", title,
             duration.duration, duration.unit,
             (unsigned long)(timeDifference));
     if (border & BORDER_BOTTOM) {
@@ -214,28 +240,25 @@ void timer_func_uint64(int part, uint64_t(func)(void *), void *input, int show_r
     QueryPerformanceFrequency(&freq);
     LARGE_INTEGER startTime;
     QueryPerformanceCounter(&startTime);
-    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
     uint64_t result = func(input);
+#ifdef _WIN32
+    LARGE_INTEGER endTime;
     QueryPerformanceCounter(&endTime);
     double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
 #else
-    struct timespec start, stop;
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    uint64_t result = func(input);
     clock_gettime(CLOCK_REALTIME, &stop);
-
     double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
 #endif
-
     Duration duration = convert_duration(time_difference);
     if (show_res) {
-        printf("Part %d answer: %-20" PRIu64 "%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
+        print_result_uint64(part, result, duration);
         if (result_output) {
             *result_output = (uint64_t)result;
         }
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
     }
 }
 
@@ -245,7 +268,6 @@ void timer_func_str_void(int part, void *(func)(void), int show_res) {
     QueryPerformanceFrequency(&freq);
     LARGE_INTEGER startTime;
     QueryPerformanceCounter(&startTime);
-    LARGE_INTEGER endTime;
 #else
     struct timespec start, stop;
     clock_gettime(CLOCK_REALTIME, &start);
@@ -254,6 +276,7 @@ void timer_func_str_void(int part, void *(func)(void), int show_res) {
     char *result = (char *)func();
 
 #ifdef _WIN32
+    LARGE_INTEGER endTime;
     QueryPerformanceCounter(&endTime);
     double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
 #else
@@ -263,9 +286,7 @@ void timer_func_str_void(int part, void *(func)(void), int show_res) {
 
     Duration duration = convert_duration(time_difference);
     if (show_res) {
-        printf("Part %d answer: %20s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+        print_result_str(part, result, duration);
     }
 }
 
@@ -293,9 +314,7 @@ void timer_func_int_void(int part, int(func)(void), int show_res) {
     Duration duration = convert_duration(time_difference);
 
     if (show_res) {
-        printf("Part %d answer: %-20d%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+        print_result_int(part, result, duration);
     }
 }
 
@@ -323,10 +342,59 @@ void timer_func_new(int part, int(func)(void *), void *input, int show_res) {
     Duration duration = convert_duration(time_difference);
 
     if (show_res) {
-        printf("Part %d answer: %-20d%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
-    } else {
-        printf("Time elapsed : %30.2lf %-2s\n", duration.duration, duration.unit);
+        print_result_int(part, result, duration);
     }
-
 }
 
+void timer_void(void (func)(void *), void *data, const char *message) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
+
+    func(data);
+
+#ifdef _WIN32
+    QueryPerformanceCounter(&endTime);
+    double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
+    Duration duration = convert_duration(time_difference);
+
+    printf("%-30s%23.2lf %-2s\n", message, duration.duration, duration.unit);
+}
+
+void *timer_return(void *(func)(void *), void *data, const char *message) {
+#ifdef _WIN32
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    LARGE_INTEGER startTime;
+    QueryPerformanceCounter(&startTime);
+    LARGE_INTEGER endTime;
+#else
+    struct timespec start, stop;
+    clock_gettime(CLOCK_REALTIME, &start);
+#endif
+
+    void *result = func(data);
+
+#ifdef _WIN32
+    QueryPerformanceCounter(&endTime);
+    double   time_difference = ((endTime.QuadPart - startTime.QuadPart) * 1e9 / freq.QuadPart);
+#else
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double time_difference = (stop.tv_sec * 1e9 + stop.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec);
+#endif
+    Duration duration = convert_duration(time_difference);
+
+    printf("%-30s%23.2lf %-2s\n", message, duration.duration, duration.unit);
+    return result;
+}
