@@ -34,4 +34,9 @@ char *strconcat(const char *str1, const char *str2);
 
 void aoc_str_freev(char **);
 
+#if _XOPEN_SOURCE < 700
+char *strdup(const char *s);
+char *strndup(const char *s, size_t n);
+#endif
+
 #endif /* __AOC_STRING_H__ */
