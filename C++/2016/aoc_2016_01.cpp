@@ -4,6 +4,7 @@
 #include <exception>
 #include <iostream>
 #include <ranges>
+#include <string>
 #include <unordered_set>
 
 enum class Part {
@@ -40,26 +41,17 @@ inline auto manhattan_distance(const Point &p) -> int {
 }
 
 auto parse_instructions(const std::string &instructions) {
-    std::vector<Step> parsed{};
-    std::stringstream ss{instructions};
+    auto parsed = instructions                                //
+                  | std::views::lazy_split(std::string{", "}) //
+                  | std::views::transform([](const auto &str) -> Step {
+                        auto c       = str | std::views::take(1);
+                        auto str_num = str | std::views::drop(1) | std::ranges::to<std::string>();
+                        auto turn    = c.front() == 'L' ? Turn::LEFT : Turn::RIGHT;
+                        int  steps   = std::stoi(str_num);
+                        return {turn, steps};
+                    }) //
+                  | std::ranges::to<std::vector>();
 
-    char turn_char = '\0';
-    int  steps     = 0;
-    Turn turn      = Turn::UNDEFINED;
-
-    while (!ss.fail()) {
-        ss >> turn_char >> steps;
-        switch (turn_char) {
-            case 'L':
-                turn = Turn::LEFT;
-                break;
-            case 'R':
-                turn = Turn::RIGHT;
-                break;
-        }
-        parsed.emplace_back(turn, steps);
-        ss.seekg(ss.tellg() + static_cast<std::stringstream::pos_type>(1));
-    }
     return parsed;
 }
 
