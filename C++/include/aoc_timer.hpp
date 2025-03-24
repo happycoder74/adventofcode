@@ -44,33 +44,6 @@ void timer(int part, F func, Args &&...args) {
     std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
 }
 
-// template <typename T, typename U>
-// void timer(int part, T (*func)(const U &), U data, bool show_res = true) {
-//     auto t1     = Clock::now();
-//     T    result = func(data);
-//     auto t2     = Clock::now();
-
-//     const std::string duration_string = convert_duration(t2 - t1);
-//     if (show_res) {
-//         std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
-//     } else {
-//         std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
-//     }
-// }
-
-// template <typename T, typename U, typename W>
-// void timer(int part, T (*func)(U &, W), U data, W data2, bool show_res = true) {
-//     auto              t1              = Clock::now();
-//     T                 result          = func(data, data2);
-//     auto              t2              = Clock::now();
-//     const std::string duration_string = convert_duration(t2 - t1);
-//     if (show_res) {
-//         std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
-//     } else {
-//         std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
-//     }
-// }
-
 template <typename F, typename U>
 void timer(F func, U data) {
     auto t1 = Clock::now();
@@ -82,7 +55,7 @@ void timer(F func, U data) {
 }
 
 template <typename F, typename U>
-decltype(auto) timer(F func, U data, std::string &&message) {
+decltype(auto) timer(F func, U data, const std::string &&message) {
     auto t1     = Clock::now();
     auto result = func(data);
     auto t2     = Clock::now();
