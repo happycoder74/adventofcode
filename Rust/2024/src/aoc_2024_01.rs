@@ -16,23 +16,27 @@ pub fn parse_input(input: &str) -> (Vec<usize>, Vec<usize>) {
 
 #[aoc(day1, part1)]
 pub fn solve_part_1(parsed: &(Vec<usize>, Vec<usize>)) -> usize {
+    let mut sum: usize = 0;
     let mut vec0 = parsed.0.clone();
     let mut vec1 = parsed.1.clone();
     vec0.sort();
     vec1.sort();
+    for (v1, v2) in std::iter::zip(vec0, vec1) {
+        sum += ((v1 as i32) - (v2 as i32)).abs() as usize;
+    }
 
     sum
 }
 
 #[aoc(day1, part2)]
-pub fn solve_part_2(parsed: &(Vec<i32>, Vec<i32>)) -> i32 {
+pub fn solve_part_2(parsed: &(Vec<usize>, Vec<usize>)) -> usize {
     let mut sum: i32 = 0;
 
     for v1 in &parsed.0 {
-        sum += v1 * (parsed.1.iter().filter(|n| *n == v1).count()) as i32;
+        sum += (*v1 as i32) * (parsed.1.iter().filter(|n| *n == v1).count()) as i32;
     }
 
-    sum
+    sum as usize
 }
 
 
