@@ -10,7 +10,7 @@
 
 namespace aoc::io {
 
-inline void header(int year, int day) {
+inline void header(const int year, const int day) {
     std::cout << std::format("{:=<55}", "") << '\n';
     std::cout << std::format("Solution for {:d}, day {:02d}", year, day) << '\n';
     std::cout << std::format("{:-<55}", "") << '\n';
