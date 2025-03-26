@@ -16,10 +16,46 @@ inline void header(const int year, const int day) {
     std::cout << std::format("{:-<55}", "") << '\n';
 }
 
-std::string get_input_bare(const std::string &fn);
+auto get_input_bare(const std::string &fn) -> std::string;
 
 template <typename T>
-[[nodiscard]] std::vector<T> get_input_list(const std::string &fn, int year, int day) {
+[[nodiscard]] auto get_input_groups(const std::string &fn, int year, int day) -> std::vector<std::vector<T>> {
+    std::ifstream               ifs;
+    std::vector<std::vector<T>> return_data;
+    std::string                 line;
+    std::string                 datapath_str;
+
+    std::filesystem::path datapath;
+    std::filesystem::path path(std::filesystem::current_path());
+
+    char *env    = std::getenv("AOC_DATA_LOCATION");
+    datapath_str = std::string(env ? env : "");
+    if (datapath_str.length()) {
+        datapath = std::filesystem::path(datapath_str) / std::format("{:4d}", year) / std::format("{:02d}", day) / fn;
+        ifs.open(datapath);
+    } else {
+        ifs.open(fn);
+    }
+    if (ifs.fail()) {
+        std::cerr << "Something went wrong" << '\n';
+        std::cerr << "Can not open '" << datapath << "'\n";
+        return return_data;
+    }
+    std::vector<T> vec{};
+    while (std::getline(ifs, line)) {
+        if (line.length() == 0) {
+            return_data.push_back(vec);
+            vec.clear();
+            continue;
+        }
+        vec.push_back(line);
+    }
+    return_data.push_back(vec);
+    return return_data;
+}
+
+template <typename T>
+[[nodiscard]] auto get_input_list(const std::string &fn, int year, int day) -> std::vector<T> {
     std::ifstream  ifs;
     std::vector<T> return_data;
     std::string    line;
@@ -49,7 +85,7 @@ template <typename T>
 }
 
 template <>
-[[nodiscard]] inline std::vector<int> get_input_list(const std::string &fn, int year, int day) {
+[[nodiscard]] inline auto get_input_list(const std::string &fn, int year, int day) -> std::vector<int> {
     std::ifstream    ifs;
     std::string      line;
     std::vector<int> result;
