@@ -6,35 +6,23 @@
 #include <string.h>
 
 unsigned short int is_right_order(unsigned int table[100][100], unsigned int *update) {
-    unsigned short int right_order = 1;
-
-    unsigned int  node;
-    unsigned int *targets = NULL;
-
-    for (unsigned index = 1; (index <= update[0]) && (right_order); index++) {
-        node = update[index];
-        targets = table[node];
+    for (unsigned index = 1; index <= update[0]; index++) {
+        unsigned int  node = update[index];
+        unsigned int *targets = table[node];
 
         if (targets[0] == 0)
             continue;
 
-        unsigned int target = 0;
-        unsigned     ii;
-
-        unsigned short int found;
-        for (ii = 1; (ii < index) && (!found); ii++) {
-            target = update[ii];
-            found = 0;
+        for (unsigned ii = 1; ii < index; ii++) {
+            unsigned target = update[ii];
             for (unsigned int target_index = 0; targets[target_index] != 0; target_index++) {
                 if (targets[target_index] == target) {
-                    found = 1;
-                    right_order = 0;
-                    break;
+                    return 0;
                 }
             }
         }
     }
-    return right_order;
+    return 1;
 }
 
 unsigned int reorder(unsigned int table[100][100], unsigned int *update) {
