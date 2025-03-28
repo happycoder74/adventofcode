@@ -8,23 +8,47 @@
 #include <unordered_set>
 #include <vector>
 
-using Position  = std::pair<int, int>;
-using Direction = std::pair<int, int>;
+// using Position  = std::pair<int, int>;
+// using Direction = std::pair<int, int>;
 
-template <>
-struct std::hash<Position> {
-    auto operator()(const Position &v) const -> size_t {
+template <class T>
+struct Position : std::pair<T, T> {
+    Position() {
+        this->first  = 0;
+        this->second = 0;
+    }
+    Position(T x, T y) {
+        this->first  = x;
+        this->second = y;
+    }
+    Position operator+(const Position &p2) {
+        return {this->first + p2.first, this->second + p2.second};
+    }
+    Position &operator+=(const Position &rhs) {
+        this->first += rhs.first;
+        this->second += rhs.second;
+        return *this;
+    }
+};
+
+template <class T>
+using Direction = Position<T>;
+
+template <class T>
+struct std::hash<Position<T>> {
+    auto operator()(const Position<T> &v) const -> size_t {
         return size_t(v.first) << 32 | v.second;
     }
 };
 
-template <>
-struct std::hash<std::pair<Position, Direction>> {
-    auto operator()(const std::pair<Position, Direction> &v) const -> size_t {
-        return std::hash<Position>()(v.first) ^ std::hash<Direction>()(v.second);
+template <class T>
+struct std::hash<std::pair<Position<T>, Position<T>>> {
+    auto operator()(const std::pair<Position<T>, Direction<T>> &v) const -> size_t {
+        return std::hash<Position<T>>()(v.first) ^ std::hash<Direction<T>>()(v.second);
     }
 };
 
+template <class T>
 struct Map {
     Map() = delete;
 
@@ -33,19 +57,19 @@ struct Map {
         visited.insert(guard_position);
     }
 
-    [[nodiscard]] Position guard() const {
+    [[nodiscard]] auto guard() const -> Position<T> {
         return guard_position;
     }
 
-    [[nodiscard]] auto &get_visited() {
+    [[nodiscard]] auto get_visited() -> auto & {
         return visited;
     }
 
-    int get_visited_size() const {
+    [[nodiscard]] auto get_visited_size() const -> int {
         return int(visited.size());
     }
 
-    char get_location(const Position &position) const {
+    [[nodiscard]] auto get_location(const Position<T> &position) const -> char {
         const auto &[col, row] = position;
         if (is_inside(position))
             return contents[row][col];
@@ -53,14 +77,14 @@ struct Map {
             return '\0';
     }
 
-    bool is_inside(const Position &position) const {
+    [[nodiscard]] auto is_inside(const Position<T> &position) const -> bool {
         return ((position.first >= 0) && (position.first < int(contents.front().size()))) && ((position.second >= 0) && (position.second < int(contents.size())));
     }
 
   private:
-    std::vector<std::string>     contents;
-    Position                     guard_position;
-    std::unordered_set<Position> visited;
+    std::vector<std::string>        contents;
+    Position<T>                     guard_position;
+    std::unordered_set<Position<T>> visited;
 
     void find_guard() {
         int x{}, y{};
@@ -75,32 +99,30 @@ struct Map {
     }
 };
 
-Position operator+(const Position &p1, const Direction &p2) {
-    return {p1.first + p2.first, p1.second + p2.second};
-}
-
-void turn(std::array<std::pair<int, int>, 4> &directions) {
+template <class T>
+void turn(std::array<Direction<T>, 4> &directions) {
     std::ranges::rotate(directions, directions.end() - 1);
 }
 
-void print_position(const Position &p) {
+void print_position(const auto &p) {
     std::cout << "[" << p.first << ", " << p.second << "]\n";
 }
 
-std::array<Direction, 4> init_directions() {
-    std::array<Direction, 4> directions{
+template <class T>
+auto init_directions() -> std::array<Direction<T>, 4> {
+    std::array<Direction<T>, 4> directions{
         {{0, -1}, {-1, 0}, {0, 1}, {1, 0}}
     };
     return directions;
 }
 
-auto parse_instructions(const std::vector<std::string> &instructions) -> Map {
-    auto map = Map{instructions};
+auto parse_instructions(const std::vector<std::string> &instructions) -> Map<int> {
+    auto map = Map<int>{instructions};
     return map;
 }
 
-auto solve_part_1(Map &map) -> int {
-    auto  directions     = init_directions();
+auto solve_part_1(Map<int> &map) -> int {
+    auto  directions     = init_directions<int>();
     auto  guard_position = map.guard();
     auto &visited        = map.get_visited();
 
@@ -118,26 +140,29 @@ auto solve_part_1(Map &map) -> int {
     return map.get_visited_size();
 }
 
-auto solve_part_2(Map &map) -> int {
+auto solve_part_2(Map<int> &map) -> int {
     auto  guard_position = map.guard();
     auto &visited        = map.get_visited();
 
     auto count = 0;
 
+    visited.erase(guard_position);
+
     for (const auto &obstacle : visited) {
-        auto directions = init_directions();
+        auto directions = init_directions<int>();
         guard_position  = map.guard();
-        std::unordered_set<std::pair<Position, Direction>> tracemap{
+        std::unordered_set<std::pair<Position<int>, Direction<int>>> tracemap{
             {guard_position, directions.front()}
         };
 
-        if (obstacle == guard_position)
-            continue;
+        // if (obstacle == guard_position)
+        //     continue;
 
+        Position<int> next_position{};
         tracemap.insert({guard_position, directions.front()});
         while (true) {
-            Position next_position = guard_position + directions.front();
-            auto     c             = map.get_location(next_position);
+            next_position = guard_position + directions.front();
+            auto c        = map.get_location(next_position);
             if (c == '\0') {
                 break;
             } else if ((c == '#') || (next_position == obstacle)) {
