@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <functional>
+#include <numeric>
 #include <ranges>
 #include <string>
 #include <utility>
@@ -32,22 +33,20 @@ auto parse_instructions(const std::vector<std::string> &instructions) -> std::ve
 }
 
 auto solver(const std::vector<Equation> &instructions, auto &operators) {
-    size_t result = 0;
-    for (auto &eq : instructions) {
+    size_t result = std::ranges::fold_left(instructions, size_t{}, [&operators](const auto a, const auto &eq) {
         auto [expected_result, operands] = eq;
         const auto op_variations         = static_cast<size_t>(std::pow(operators.size(), operands.size() - 1));
         for (auto index : std::ranges::iota_view(0, int(op_variations))) {
-            auto       i                 = index;
-            const auto calculated_result = std::ranges::fold_left(operands.begin() + 1, operands.end(), operands.front(), [&](const auto &a, const auto &b) -> size_t {
-                auto v = (std::exchange(i, i / operators.size()) % operators.size());
+            const auto calculated_result = std::ranges::fold_left(operands.begin() + 1, operands.end(), operands.front(), [&index, &operators](const auto &a, const auto &b) -> size_t {
+                const auto v = (std::exchange(index, index / operators.size()) % operators.size());
                 return operators[v](a, b);
             });
             if (expected_result == calculated_result) {
-                result += expected_result;
-                break;
+                return a + expected_result;
             }
         }
-    }
+        return a;
+    });
     return result;
 }
 
