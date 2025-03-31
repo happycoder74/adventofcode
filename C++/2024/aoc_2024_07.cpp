@@ -5,6 +5,7 @@
 #include <array>
 #include <cmath>
 #include <cstdlib>
+#include <execution>
 #include <functional>
 #include <numeric>
 #include <ranges>
@@ -33,7 +34,7 @@ auto parse_instructions(const std::vector<std::string> &instructions) -> std::ve
 }
 
 auto solver(const std::vector<Equation> &instructions, auto &operators) {
-    size_t result = std::ranges::fold_left(instructions, size_t{}, [&operators](const auto a, const auto &eq) {
+    size_t result = std::transform_reduce(instructions.begin(), instructions.end(), size_t{}, std::plus{}, [&operators](const auto &eq) {
         auto [expected_result, operands] = eq;
         const auto op_variations         = static_cast<size_t>(std::pow(operators.size(), operands.size() - 1));
         for (auto index : std::ranges::iota_view(0, int(op_variations))) {
@@ -42,10 +43,10 @@ auto solver(const std::vector<Equation> &instructions, auto &operators) {
                 return operators[v](a, b);
             });
             if (expected_result == calculated_result) {
-                return a + expected_result;
+                return expected_result;
             }
         }
-        return a;
+        return size_t{};
     });
     return result;
 }
