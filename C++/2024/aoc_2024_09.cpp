@@ -1,14 +1,14 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
+#include <cstddef>
 #include <cstdint>
-#include <cstdlib>
 #include <deque>
 #include <ranges>
 #include <vector>
 
 using Item = std::pair<int64_t, std::pair<int64_t, int64_t>>;
 
-auto parse_instructions(const std::vector<std::string> &instructions) -> std::deque<Item> {
+[[nodiscard]] auto parse_instructions(const std::vector<std::string> &instructions) -> std::deque<Item> {
     std::vector<int64_t> z1 = instructions.front()    //
                               | std::views::stride(2) //
                               | std::views::transform([](const auto &v) -> int64_t {
@@ -40,7 +40,7 @@ auto parse_instructions(const std::vector<std::string> &instructions) -> std::de
     return {rng.begin(), rng.end()};
 }
 
-auto solve_part_1(const std::deque<Item> &instructions) -> size_t {
+[[nodiscard]] auto solve_part_1(const std::deque<Item> &instructions) -> size_t {
     size_t           result     = 0;
     auto             new_layout = std::vector<std::pair<int64_t, int64_t>>{};
     std::deque<Item> disk       = instructions;
@@ -82,7 +82,7 @@ auto solve_part_1(const std::deque<Item> &instructions) -> size_t {
     size_t counter{};
 
     for (auto blocks : new_layout) {
-        for (auto c : std::views::iota(0, blocks.second)) {
+        for ([[maybe_unused]] auto c : std::views::iota(0, blocks.second)) {
             result += counter * blocks.first;
             counter += 1;
         }
@@ -91,8 +91,45 @@ auto solve_part_1(const std::deque<Item> &instructions) -> size_t {
     return result;
 }
 
-auto solve_part_2(const std::deque<Item> &instructions) -> size_t {
-    auto result = 0;
+[[nodiscard]] auto solve_part_2(const std::deque<Item> &instructions) -> size_t {
+
+    auto new_layout = std::vector<Item>{instructions.begin(), instructions.end()};
+    auto index{new_layout.size() - 1};
+    while (index > 0) {
+        auto last_item = new_layout[index];
+        for (auto ii : std::ranges::iota_view(size_t{}, index)) {
+            auto item = new_layout[ii];
+            if (item.second.second >= last_item.second.first) {
+                auto move_item = new_layout[index];
+                new_layout.erase(new_layout.begin() + index);
+                new_layout.insert(                    //
+                    new_layout.begin() + int(ii) + 1, //
+                    {
+                        move_item.first, {move_item.second.first, item.second.second - move_item.second.first}
+                });
+                new_layout[ii] = {
+                    item.first, {item.second.first, 0}
+                };
+                auto corr_item    = new_layout[index];
+                new_layout[index] = {
+                    corr_item.first, {corr_item.second.first, corr_item.second.second + last_item.second.first + last_item.second.second}
+                };
+                index += 1;
+                break;
+            }
+        }
+        index -= 1;
+    }
+    auto counter = size_t{};
+    auto result  = size_t{};
+
+    for (auto blocks : new_layout) {
+        for ([[maybe_unused]] auto i : std::ranges::iota_view(int64_t{}, blocks.second.first)) {
+            result += counter * blocks.first;
+            counter += 1;
+        }
+        counter += blocks.second.second;
+    }
     return result;
 }
 
