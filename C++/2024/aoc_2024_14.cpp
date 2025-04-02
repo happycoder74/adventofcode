@@ -4,35 +4,46 @@
 #include <cstdint>
 #include <iterator>
 #include <ranges>
-#include <set>
+#include <unordered_set>
 #include <vector>
 
-using Robot = std::pair<std::pair<int, int>, std::pair<int, int>>;
+using Point = std::pair<int, int>;
+using Robot = std::pair<Point, Point>;
+
+template <>
+struct std::hash<std::pair<int, int>> {
+    auto operator()(const pair<int, int> &v) const -> size_t {
+        return std::hash<int>()(v.first) ^ std::hash<int>()(v.second);
+    }
+};
 
 [[nodiscard]] auto parse_instructions(const std::vector<std::string> &instructions) -> std::vector<Robot> {
     auto robots = std::vector<Robot>{};
     std::ranges::transform(instructions, std::back_inserter(robots), [](const auto &s) -> Robot {
-        auto s1 = s.substr(s.find('=') + 1, s.find(' '));
-        auto s2 = s.substr(s.find('v') + 2, s.npos);
-        auto p1 = std::stoi(s1);
-        auto p2 = std::stoi(s1.substr(s1.find(',') + 1, s1.npos));
-        auto p3 = std::stoi(s2);
-        auto p4 = std::stoi(s2.substr(s2.find(',') + 1, s2.npos));
+        const auto s1 = s.substr(s.find('=') + 1, s.find(' '));
+        const auto s2 = s.substr(s.find('v') + 2, s.npos);
+        const auto p1 = std::stoi(s1);
+        const auto p2 = std::stoi(s1.substr(s1.find(',') + 1, s1.npos));
+        const auto p3 = std::stoi(s2);
+        const auto p4 = std::stoi(s2.substr(s2.find(',') + 1, s2.npos));
 
-        auto pp1 = std::pair{p1, p2};
-        auto pp2 = std::pair{p3, p4};
-        return {pp1, pp2};
+        return {
+            std::pair{p1, p2},
+            std::pair{p3, p4}
+        };
     });
     return robots;
 }
 
-void move_robot(Robot &r, const auto &steps) {
+void move_robot(Robot &r, const auto steps, const auto &limits) {
     auto &[position, velocity] = r;
     auto &[x, y]               = position;
     auto &[vx, vy]             = velocity;
 
-    x += steps * vx;
-    y += steps * vy;
+    auto &[max_x, max_y] = limits;
+
+    x = (max_x + (x + steps * vx) % max_x) % max_x;
+    y = (max_y + (y + steps * vy) % max_y) % max_y;
 }
 
 auto get_limits(const std::vector<Robot> &robots) {
@@ -49,23 +60,14 @@ auto get_limits(const std::vector<Robot> &robots) {
     const auto         iterations = 100;
     std::vector<Robot> robots     = instructions;
 
-    const auto [max_x, max_y] = get_limits(instructions);
-    for (auto &robot : robots) {
-        move_robot(robot, iterations);
-        auto &[position, velocity] = robot;
-        position.first             = position.first % max_x;
-        position.second            = position.second % max_y;
-        if (position.first < 0)
-            position.first += max_x;
-        if (position.second < 0)
-            position.second += max_y;
-    }
+    const auto limits         = get_limits(instructions);
+    const auto [max_x, max_y] = limits;
+    std::ranges::for_each(robots, [&](auto &robot) {
+        move_robot(robot, iterations, limits);
+    });
 
-    const auto quadrants = std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>>{
-        {{0, 0},                         {max_x / 2, max_y / 2}},
-        {{max_x / 2 + 1, 0},             {max_x, max_y / 2}    },
-        {{0, max_y / 2 + 1},             {max_x / 2, max_y}    },
-        {{max_x / 2 + 1, max_y / 2 + 1}, {max_x, max_y}        }
+    const auto quadrants = std::array<std::pair<Point, Point>, 4>{
+        {{{0, 0}, {max_x / 2, max_y / 2}}, {{max_x / 2 + 1, 0}, {max_x, max_y / 2}}, {{0, max_y / 2 + 1}, {max_x / 2, max_y}}, {{max_x / 2 + 1, max_y / 2 + 1}, {max_x, max_y}}}
     };
 
     auto result = uint32_t{1};
@@ -73,9 +75,7 @@ auto get_limits(const std::vector<Robot> &robots) {
         result *= std::ranges::count_if(robots, [&quadrant](const auto &r) {
             auto [position, velocity] = r;
             auto [l1, l2]             = quadrant;
-            if (!((l1.first <= position.first) && (position.first < l2.first)))
-                return false;
-            if (!((l1.second <= position.second) && (position.second < l2.second)))
+            if (!((l1.first <= position.first) && (position.first < l2.first) && (l1.second <= position.second) && (position.second < l2.second)))
                 return false;
             return true;
         });
@@ -84,30 +84,24 @@ auto get_limits(const std::vector<Robot> &robots) {
 }
 
 auto all_unique_positions(const std::vector<Robot> &robots) -> bool {
-    auto field = std::set<std::pair<int, int>>{};
-    std::ranges::for_each(robots, [&field](const auto &r) {
-        field.insert({r.first.first, r.first.second});
-    });
-    return (robots.size() == field.size());
+    auto field = std::unordered_set<Point>{};
+    for (auto &robot : robots) {
+        auto [it, success] = field.insert(robot.first);
+        if (!success)
+            return false;
+    }
+    return true;
 }
 
 [[nodiscard]] auto solve_part_2(const std::vector<Robot> &instructions) -> int {
 
     std::vector<Robot> robots = instructions;
-    auto [max_x, max_y]       = get_limits(instructions);
-    auto result               = int{};
-    while (!all_unique_positions(robots)) {
-        for (auto &robot : robots) {
-            move_robot(robot, 1);
-            auto &[position, velocity] = robot;
-            position.first             = position.first % max_x;
-            position.second            = position.second % max_y;
-            if (position.first < 0)
-                position.first += max_x;
-            if (position.second < 0)
-                position.second += max_y;
-        }
-        ++result;
+    const auto         limits = get_limits(instructions);
+    auto               result = int{};
+    for (; !all_unique_positions(robots); ++result) {
+        std::ranges::for_each(robots, [&](auto &robot) {
+            move_robot(robot, 1, limits);
+        });
     }
     return result;
 }
