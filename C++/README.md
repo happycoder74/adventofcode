@@ -17,6 +17,7 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 |  9  | &#11088;&#11088; |               |               |
 | 10  | &#11088;&#11088; |               |               |
 | 11  | &#11088;&#11088; |               |               |
+| 13  | &#11088;&#11088; |               |               |
 | 14  | &#11088;&#11088; |               |               |
 
 ## 2023:
