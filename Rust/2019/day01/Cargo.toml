@@ -1,0 +1,8 @@
+[package]
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+name = "day01"
+
+[dependencies]
