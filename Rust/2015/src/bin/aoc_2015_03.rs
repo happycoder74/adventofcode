@@ -1,11 +1,11 @@
+use aoc_utils::types::Puzzle;
 use std::collections::HashSet;
 use std::time::{Duration, Instant};
-use aoc_utils::types::Puzzle;
 
 struct Agent {
     x: i32,
     y: i32,
-    coords: HashSet<(i32, i32)>
+    coords: HashSet<(i32, i32)>,
 }
 
 impl Agent {
@@ -13,7 +13,7 @@ impl Agent {
         Self {
             x: 0,
             y: 0,
-            coords: HashSet::from([(0, 0)])
+            coords: HashSet::from([(0, 0)]),
         }
     }
 
@@ -21,9 +21,9 @@ impl Agent {
         match direction {
             "^" => self.y += 1,
             ">" => self.x += 1,
-            "v" => self.y -=  1,
-            "<" => self.x -=  1,
-            _ => ()
+            "v" => self.y -= 1,
+            "<" => self.x -= 1,
+            _ => (),
         }
         self.coords.insert(self.location());
     }
@@ -39,13 +39,10 @@ impl Agent {
 
 pub struct Day2015_03 {
     year: u32,
-    day: u32
+    day: u32,
 }
 
 impl Puzzle<String, (u32, Duration)> for Day2015_03 {
-    fn get_input(year: u32, day: u32, testcase: bool) -> String {
-        return aoc_utils::input::get_input(year, day, testcase)
-    }
     fn parse_input(input: &str) -> String {
         String::from(input)
     }
@@ -66,21 +63,16 @@ impl Puzzle<String, (u32, Duration)> for Day2015_03 {
         let mut santa: Agent = Agent::new();
         let mut robosanta: Agent = Agent::new();
 
-        let inst: Vec<&str> = instructions
-            .split("")
-            .filter(|s| !s.is_empty())
-            .collect();
+        let inst: Vec<&str> = instructions.split("").filter(|s| !s.is_empty()).collect();
 
         let _: Vec<_> = inst
             .chunks(2)
-            .map(|c| {
-                match c {
-                    [santa_step, robosanta_step] => {
-                        santa.make_step(santa_step);
-                        robosanta.make_step(robosanta_step);
-                    },
-                    _ => panic!("Invalid input")
+            .map(|c| match c {
+                [santa_step, robosanta_step] => {
+                    santa.make_step(santa_step);
+                    robosanta.make_step(robosanta_step);
                 }
+                _ => panic!("Invalid input"),
             })
             .collect();
 
@@ -100,14 +92,13 @@ impl Puzzle<String, (u32, Duration)> for Day2015_03 {
 }
 
 fn main() {
-    let day = Day2015_03 {year : 2015, day : 3};
+    let day = Day2015_03 { year: 2015, day: 3 };
 
     let results = day.solve_all();
 
     aoc_utils::report("Part 1", results.0);
     aoc_utils::report("Part 2", results.1);
 }
-
 
 #[cfg(test)]
 mod tests {

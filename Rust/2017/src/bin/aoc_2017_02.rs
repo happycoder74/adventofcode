@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 fn main() {
-    let input = aoc_utils::get_input(2017, 2, false);
+    let input = aoc_utils::read_input(2017, 2, false);
     let parsed = parse_input(&input);
 
     aoc_utils::report("Part 1", solve_part_1(&parsed));

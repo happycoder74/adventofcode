@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if _XOPEN_SOURCE < 700
 char *strdup(const char *s) {
     size_t size = (strlen(s) + 1) * sizeof(char);
     char  *p = (char *)malloc(size);
@@ -17,6 +18,20 @@ char *strdup(const char *s) {
     }
     return p;
 }
+
+char *strndup(const char *s, size_t n) {
+    size_t alloc_size = strlen(s) + 1;
+    if (n < alloc_size - 1) {
+        alloc_size = n + 1;
+    }
+    size_t size = alloc_size * sizeof(char);
+    char  *p = (char *)malloc(size);
+    if (p) {
+        memcpy(p, s, size);
+    }
+    return p;
+}
+#endif
 
 char *strconcat(const char *s1, const char *s2) {
     char *return_string = (char *)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
@@ -252,16 +267,16 @@ char *aoc_stpcpy(char *__restrict__ dest, const char *__restrict__ src) {
     return --dest;
 }
 
-char *strndup(const char *str, size_t n) {
-    char *new_str;
+/* char *strndup(const char *str, size_t n) { */
+/*   char *new_str; */
 
-    if (str) {
-        new_str = (char *)calloc(n + 1, sizeof(char));
-        strncpy(new_str, str, n);
-        new_str[n] = '\0';
-    } else {
-        new_str = NULL;
-    }
+/*   if (str) { */
+/*     new_str = (char *)calloc(n + 1, sizeof(char)); */
+/*     strncpy(new_str, str, n); */
+/*     new_str[n] = '\0'; */
+/*   } else { */
+/*     new_str = NULL; */
+/*   } */
 
-    return new_str;
-}
+/*   return new_str; */
+/* } */

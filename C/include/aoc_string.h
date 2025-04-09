@@ -25,10 +25,18 @@ char **str_split(const char *string, const char *delimiter, uint32_t max_tokens)
 ssize_t getline(char **, size_t *, FILE *);
 ssize_t getdelim(char **, size_t *, int, FILE *);
 char   *aoc_stpcpy(char *__restrict__, const char *__restrict__);
-// char   *strdup(const char *str);
-// char   *strndup(const char *str, size_t n);
-char   *strconcat(const char *str1, const char *str2);
+
+#ifndef _XOPEN_SOURCE
+char *strdup(const char *str);
+char *strndup(const char *str, size_t n);
+#endif
+char *strconcat(const char *str1, const char *str2);
 
 void aoc_str_freev(char **);
+
+#if _XOPEN_SOURCE < 700
+char *strdup(const char *s);
+char *strndup(const char *s, size_t n);
+#endif
 
 #endif /* __AOC_STRING_H__ */

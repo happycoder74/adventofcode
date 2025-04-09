@@ -1,7 +1,6 @@
-use std::time::Instant;
-use std::collections::HashSet;
-use aoc_utils::input::get_input;
 use aoc_utils::output::report;
+use std::collections::HashSet;
+use std::time::Instant;
 
 type Cards = HashSet<i32>;
 
@@ -45,7 +44,7 @@ fn solve_part_2(input: &[(Cards, Cards)]) -> (i32, std::time::Duration) {
 }
 
 pub fn main() {
-    let input = get_input(2023, 4, false);
+    let input = aoc_utils::read_input(2023, 4, false);
     let data = parse_input(&input);
     report("Part 1", solve_part_1(&data));
     report("Part 2", solve_part_2(&data));
@@ -57,7 +56,7 @@ mod tests {
 
     #[test]
     fn test_part_1() {
-        let input = aoc_utils::get_input(2023, 4, true);
+        let input = aoc_utils::read_input(2023, 4, true);
         let cards = parse_input(&input);
         assert_eq!(13, solve_part_1(&cards).0)
     }

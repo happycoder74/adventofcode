@@ -20,12 +20,10 @@ target_sources(
 target_include_directories(
   aoc
   PRIVATE ${CMAKE_SOURCE_DIR}/include
-  PRIVATE ${GLIB_INCLUDE_DIRS}
   PRIVATE ${CURL_INCLUDE_DIR}
   PRIVATE ${PCRE2POSIX_INCLUDE_DIR})
 target_link_libraries(
   aoc
-  PRIVATE ${GLIB_LIBRARIES}
   PRIVATE ${CURL_LIBRARIES}
   PRIVATE ${PCRE2POSIX_LIBRARIES})
 
