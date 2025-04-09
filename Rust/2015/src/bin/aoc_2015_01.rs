@@ -1,4 +1,4 @@
-use std::time::{Instant, Duration};
+use std::time::{Duration, Instant};
 
 trait Puzzle<T, U> {
     fn get_input(year: u32, day: u32) -> String;
@@ -9,12 +9,12 @@ trait Puzzle<T, U> {
 
 pub struct Day2015_01 {
     year: u32,
-    day: u32
+    day: u32,
 }
 
 impl Puzzle<Vec<i32>, (i32, Duration)> for Day2015_01 {
     fn get_input(year: u32, day: u32) -> String {
-        return aoc_utils::get_input(year, day, false)
+        return aoc_utils::read_input(year, day, false);
     }
     fn parse_input(input: &str) -> Vec<i32> {
         fn helper(b: u8) -> i32 {
@@ -60,7 +60,7 @@ impl Day2015_01 {
 }
 
 fn main() {
-    let day = Day2015_01 {year : 2015, day : 1};
+    let day = Day2015_01 { year: 2015, day: 1 };
 
     let results = day.solve_all();
 
@@ -91,7 +91,6 @@ mod tests {
         let input = String::from("(((");
         let result = Day2015_01::solve_part_1(&String::from(input));
         assert_eq!(3, result.0);
-
     }
 
     #[test]
@@ -101,14 +100,12 @@ mod tests {
         assert_eq!(3, result.0);
     }
 
-
     #[test]
     fn test_part_1e() {
         let input = String::from("))(((((");
         let result = Day2015_01::solve_part_1(&String::from(input));
         assert_eq!(3, result.0);
     }
-
 
     #[test]
     fn test_part_1f() {
@@ -117,7 +114,6 @@ mod tests {
         assert_eq!(-1, result.0);
     }
 
-
     #[test]
     fn test_part_1g() {
         let input = String::from("))(");
@@ -125,14 +121,12 @@ mod tests {
         assert_eq!(-1, result.0);
     }
 
-
     #[test]
     fn test_part_1h() {
         let input = String::from(")))");
         let result = Day2015_01::solve_part_1(&String::from(input));
         assert_eq!(-3, result.0);
     }
-
 
     #[test]
     fn test_part_1i() {
@@ -154,5 +148,4 @@ mod tests {
         let result = Day2015_01::solve_part_2(&String::from(input));
         assert_eq!(5, result.0);
     }
-
 }

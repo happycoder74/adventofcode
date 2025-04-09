@@ -1,6 +1,6 @@
 use aoc_utils::*;
 
-pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)>{
+pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)> {
     input
         .lines()
         .map(|l| l.trim())
@@ -20,9 +20,7 @@ pub fn solve_part_1(input: &Vec<(u32, u32, u32)>) -> (u32, std::time::Duration) 
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
-        .fold(0, |s, (l, w, h)| {
-            2 * (l * w + w * h + h * l) + l*w + s
-        });
+        .fold(0, |s, (l, w, h)| 2 * (l * w + w * h + h * l) + l * w + s);
     let duration = std::time::Instant::now() - start_time;
 
     (result, duration)
@@ -32,16 +30,15 @@ pub fn solve_part_2(input: &Vec<(u32, u32, u32)>) -> (u32, std::time::Duration) 
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
-        .map(|(l, w, h)| {
-            2 * (l + w ) + (l * w * h)
-        }).sum();
+        .map(|(l, w, h)| 2 * (l + w) + (l * w * h))
+        .sum();
     let duration = std::time::Instant::now() - start_time;
 
     (result, duration)
 }
 
 fn solve_all() -> ((u32, std::time::Duration), (u32, std::time::Duration)) {
-    let input = get_input(2015, 2, false);
+    let input = read_input(2015, 2, false);
     let parsed = parse_input(&input);
 
     (solve_part_1(&parsed), solve_part_2(&parsed))
@@ -49,8 +46,8 @@ fn solve_all() -> ((u32, std::time::Duration), (u32, std::time::Duration)) {
 
 fn main() {
     let result = solve_all();
-    report ("Part1", result.0);
-    report ("Part2", result.1);
+    report("Part1", result.0);
+    report("Part2", result.1);
 }
 
 #[cfg(test)]

@@ -1,5 +1,5 @@
 fn main() {
-    let input = aoc_utils::get_input(2017, 1, false);
+    let input = aoc_utils::read_input(2017, 1, false);
     let parsed = parse_input(&input);
 
     println!("Part 1: {}", solve_part_1(&parsed));

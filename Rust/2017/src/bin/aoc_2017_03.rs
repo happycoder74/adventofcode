@@ -67,7 +67,7 @@ fn solve_part_2(input: &str) -> (u32, std::time::Duration) {
 }
 
 fn main() {
-    let input = aoc_utils::get_input(2017, 3, false);
+    let input = aoc_utils::read_input(2017, 3, false);
 
     aoc_utils::report("Part 1", solve_part_1(&input));
     aoc_utils::report("Part 2", solve_part_2(&input));

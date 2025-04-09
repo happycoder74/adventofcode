@@ -1,6 +1,5 @@
 use std::time::Instant;
 use aoc_utils::output::report;
-use aoc_utils::input::get_input;
 
 struct Commands {
     forward: i32,
@@ -49,7 +48,7 @@ fn solve_part_2(input: &str) -> (i32, std::time::Duration) {
 }
 
 fn main() {
-    let contents = get_input(2021, 2, false);
+    let contents = aoc_utils::read_input(2021, 2, false);
     report("Part 1", solve_part_1(&contents));
     report("Part 2", solve_part_2(&contents));
 }
