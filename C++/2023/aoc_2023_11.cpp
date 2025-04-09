@@ -2,17 +2,17 @@
 #include "aoc_timer.hpp"
 #include <algorithm>
 #include <cstdint>
+#include <span>
 #include <string>
 #include <vector>
 
-namespace aoc {
-namespace aoc_2023_11 {
+namespace aoc::aoc_2023_11 {
 
-static unsigned distance(std::pair<int, int> g1, std::pair<int, int> g2) {
+auto distance(const std::pair<int, int> &g1, const std::pair<int, int> &g2) {
     return std::abs(g2.first - g1.first) + std::abs(g2.second - g1.second);
 }
 
-uint64_t solver(const std::vector<std::string> &data, int multiplier = 2) {
+auto solver(const std::vector<std::string> &data, int multiplier = 2) {
     /* Solution concept
      *
      * - Find the initial positions of the galaxies.
@@ -35,8 +35,8 @@ uint64_t solver(const std::vector<std::string> &data, int multiplier = 2) {
     // Find blank columns
     for (unsigned col = 0; col < data[0].size(); col++) {
         bool blank_col = true;
-        for (unsigned row = 0; row < data.size(); row++) {
-            if (data[row][col] == '#') {
+        for (const auto &row : data) {
+            if (row[col] == '#') {
                 blank_col = false;
             }
         }
@@ -46,8 +46,8 @@ uint64_t solver(const std::vector<std::string> &data, int multiplier = 2) {
     }
 
     // Find blank rows
-    for (std::vector<std::string>::const_iterator it = data.begin(); it != data.end(); it++) {
-        std::string::size_type pos;
+    for (auto it = data.begin(); it != data.end(); it++) {
+        std::string::size_type pos = 0;
 
         pos = (*it).find("#");
         if (pos == std::string::npos) {
@@ -59,28 +59,28 @@ uint64_t solver(const std::vector<std::string> &data, int multiplier = 2) {
     for (unsigned row = 0; row < data.size(); row++) {
         for (unsigned col = 0; col < data[0].size(); col++) {
             if (data[row][col] == '#') {
-                galaxies.push_back(std::make_pair(row, col));
+                galaxies.emplace_back(row, col);
             }
         }
     }
 
-    for (std::vector<std::pair<int, int>>::iterator it1 = galaxies.begin(); it1 != galaxies.end(); it1++) {
-        for (std::vector<std::pair<int, int>>::iterator it2 = it1 + 1; it2 != galaxies.end(); it2++) {
+    for (auto it1 = galaxies.begin(); it1 != galaxies.end(); it1++) {
+        for (auto it2 = it1 + 1; it2 != galaxies.end(); it2++) {
             std::pair<int, int> g1 = *it1, g2 = *it2;
 
-            uint64_t                      d = distance(g1, g2);
+            uint64_t                      d      = distance(g1, g2);
             uint64_t                      extras = 0;
             std::pair<uint64_t, uint64_t> minmax_r, minmax_c;
 
             minmax_r = std::minmax(g1.first, g2.first);
             minmax_c = std::minmax(g1.second, g2.second);
-            for (std::vector<uint64_t>::iterator it = row_inserts.begin(); it != row_inserts.end(); it++) {
-                if ((minmax_r.first <= *it) && (*it <= minmax_r.second)) {
+            for (unsigned long &row_insert : row_inserts) {
+                if ((minmax_r.first <= row_insert) && (row_insert <= minmax_r.second)) {
                     extras += 1;
                 }
             }
-            for (std::vector<uint64_t>::iterator it = col_inserts.begin(); it != col_inserts.end(); it++) {
-                if ((minmax_c.first <= *it) && (*it <= minmax_c.second)) {
+            for (unsigned long &col_insert : col_inserts) {
+                if ((minmax_c.first <= col_insert) && (col_insert <= minmax_c.second)) {
                     extras += 1;
                 }
             }
@@ -90,47 +90,45 @@ uint64_t solver(const std::vector<std::string> &data, int multiplier = 2) {
     return distances;
 }
 
-std::string solve_part_1(const std::vector<std::string> &data) {
-    return std::format("{}", aoc::aoc_2023_11::solver(data));
+auto solve_part_1(const std::vector<std::string> &data) {
+    return aoc::aoc_2023_11::solver(data);
 }
 
-std::string solve_part_2(const std::vector<std::string> &data) {
-    return std::format("{}", aoc::aoc_2023_11::solver(data, 1000000));
+auto solve_part_2(const std::vector<std::string> &data) {
+    return aoc::aoc_2023_11::solver(data, 1000000);
 }
 
-void *solve_all(const std::vector<std::string> &data) {
+void solve_all(const std::vector<std::string> &data) {
 
     if (data.size() > 0) {
-        aoc::timer(1, solve_part_1, data, 1);
-        aoc::timer(2, solve_part_2, data, 1);
+        aoc::timer(1, solve_part_1, data);
+        aoc::timer(2, solve_part_2, data);
     }
-
-    return NULL;
 }
 
-} // namespace aoc_2023_11
-} // namespace aoc
+} // namespace aoc::aoc_2023_11
 
 int main(int argc, char **argv) {
-    std::vector<std::string> data;
+    std::string filename{};
 
-    char sourcefile[20];
+    constexpr int year = 2023;
+    constexpr int day  = 11;
 
-    int year = 2023;
-    int day = 11;
-
+    auto args = std::span(argv, size_t(argc));
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
-            data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
         } else {
-            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+            filename = args[1];
         }
     } else {
-        data = aoc::io::get_input_list<std::string>("input.txt", year, day);
+        filename = "input.txt";
     }
 
+    auto data = aoc::io::get_input_list<std::string>(filename, year, day);
+
     aoc::io::header(year, day);
-    aoc::timer(0, aoc::aoc_2023_11::solve_all, data, 0);
+    aoc::timer(aoc::aoc_2023_11::solve_all, data);
 
     return 0;
 }

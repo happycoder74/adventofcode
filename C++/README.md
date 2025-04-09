@@ -8,6 +8,18 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:------------
 |  1  | &#11088;&#11088; |               |               |
+|  2  | &#11088;&#11088; |               |               |
+|  4  | &#11088;&#11088; |               |               |
+|  5  | &#11088;&#11088; |               |               |
+|  6  | &#11088;&#11088; |               |               |
+|  7  | &#11088;&#11088; |               |               |
+|  8  | &#11088;&#11088; |               |               |
+|  9  | &#11088;&#11088; |               |               |
+| 10  | &#11088;&#11088; |               |               |
+| 11  | &#11088;&#11088; |               |               |
+| 13  | &#11088;&#11088; |               |               |
+| 14  | &#11088;&#11088; |               |               |
+| 15  | &#11088;         |               |               |
 
 ## 2023:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
@@ -24,7 +36,7 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 |:---:|:-----------------|--------------:|--------------:|:-------------
 |  1  | &#11088;&#11088; |               |               |
 |  2  | &#11088;&#11088; |               |               |
-|  3  | &#11088          |               |               |
+|  3  | &#11088;         |               |               |
 
 ## 2021:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
@@ -57,6 +69,11 @@ While I try to learn the benefits and caveats of C++ I also decided to take on t
 |  1  | &#11088;&#11088; |               |               |
 |  2  | &#11088;&#11088; |               |               |
 |  3  | &#11088;&#11088; |               |               |
+
+## 2016:
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:-------------
+|  1  | &#11088;&#11088; |               |               |
 
 ## 2015:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment

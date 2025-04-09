@@ -2,31 +2,43 @@
 #define AOC_TYPES_HPP
 
 #include <array>
-#include <map>
+#include <unordered_map>
+
+template <class A, class B>
+struct std::hash<std::pair<A, B>> {
+    std::size_t operator()(const std::pair<A, B> &p) const {
+        return std::size_t(p.first) << 32 | p.second;
+    }
+};
+
+constexpr int n_deltas = 9;
 
 namespace aoc {
+template <typename T>
 class Grid {
   private:
-    int                                     x;
-    int                                     y;
-    std::map<std::pair<int, int>, unsigned> grid;
+    int x{0};
+    int y{0};
 
-  public:
-    std::array<std::pair<int, int>, 9> deltas = {
+    std::unordered_map<std::pair<int, int>, T> grid;
+    std::array<std::pair<int, int>, n_deltas>  delta_array = {
         {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}
     };
 
+  public:
+    [[nodiscard]] const auto &deltas() const {
+        return delta_array;
+    }
+
     Grid() {
-        x = 0;
-        y = 0;
         grid[{x, y}] = 0;
     }
 
-    void insert(std::pair<int, int> pos, unsigned val) {
+    void insert(const std::pair<int, int> &pos, T val) {
         grid[pos] = val;
     }
 
-    unsigned get_value(std::pair<int, int> position) {
+    [[nodiscard]] T get_value(const std::pair<int, int> &position) {
         return grid[position];
     }
 };

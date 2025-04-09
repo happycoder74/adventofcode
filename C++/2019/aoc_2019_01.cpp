@@ -27,7 +27,9 @@ std::vector<int> clean_input(const std::vector<std::string> &instructions) {
 
 int solve_part_1(const std::vector<int> &instructions) {
 
-    auto fuel = instructions | std::views::transform([](const int &mass) -> int { return mass / 3 - 2; });
+    auto fuel = instructions | std::views::transform([](const int &mass) -> int {
+                    return mass / 3 - 2;
+                });
 
     auto result = std::reduce(fuel.begin(), fuel.end());
     return result;
@@ -35,7 +37,9 @@ int solve_part_1(const std::vector<int> &instructions) {
 
 int solve_part_2(const std::vector<int> &instructions) {
 
-    auto fuel = instructions | std::views::transform([](const int &mass) -> int { return fuel_cost(mass); });
+    auto fuel = instructions | std::views::transform([](const int &mass) -> int {
+                    return fuel_cost(mass);
+                });
 
     auto result = std::reduce(fuel.begin(), fuel.end());
     return result;
@@ -67,7 +71,7 @@ int main(int argc, char **argv) {
     instructions = aoc::io::get_input_list<std::string>(filename, year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(0, solve_all, instructions, false);
+    aoc::timer(solve_all, instructions);
 
     return 0;
 }

@@ -2,79 +2,88 @@
 #include "aoc_string.hpp"
 #include "aoc_timer.hpp"
 #include <algorithm>
+#include <numeric>
+#include <ranges>
 #include <string>
 #include <vector>
 
 namespace aoc_2017_02 {
 
-std::vector<std::vector<int>> transform_input(const std::vector<std::string> &data) {
+auto transform_input(const auto &data) {
 
-    std::vector<std::vector<int>> lines;
-    for (std::string dataline : data) {
-        std::vector<int> line;
-        std::replace(dataline.begin(), dataline.end(), '\t', ' ');
-        for (std::string &num : aoc::string::split(dataline, ' ')) {
-            line.push_back(std::stoi(num));
-        }
-        lines.push_back(line);
-    }
+    auto lines = data //
+                 | std::views::transform([](const auto &dataline) {
+                       auto line = aoc::string::split(dataline, '\t') //
+                                   | std::views::transform([](const auto &num) {
+                                         return std::stoi(num);
+                                     }) //
+                                   | std::ranges::to<std::vector>();
+                       return line;
+                   }) //
+                 | std::ranges::to<std::vector>();
 
     return lines;
 }
 
-int solve_part_1(const std::vector<std::vector<int>> &lines) {
-    int checksum = 0;
+auto solve_part_1(const auto &lines) -> int {
 
-    for (auto &line : lines) {
-        checksum += (*std::max_element(line.begin(), line.end()) - *std::min_element(line.begin(), line.end()));
-    }
+    auto rng = lines //
+               | std::views::transform([](const auto &line) {
+                     auto [min, max] = std::ranges::minmax_element(line);
+                     return *max - *min;
+                 });
+
+    auto checksum = std::reduce(rng.begin(), rng.end());
     return checksum;
 }
 
-int solve_part_2(const std::vector<std::vector<int>> &lines) {
-    int checksum = 0;
+auto solve_part_2(const auto &lines) -> int {
 
-    for (auto &line : lines) {
-        for (auto &num : line) {
-            for (auto &nn : line) {
-                if ((nn != num) && ((num % nn) == 0)) {
-                    checksum += num / nn;
-                }
-            }
-        }
-    }
-    return checksum;
+    auto rng = lines //
+               | std::views::transform([](const auto &line) {
+                     auto rng2 = std::views::cartesian_product(line, line) //
+                                 | std::views::filter([](const auto &v) {
+                                       auto &[num1, num2] = v;
+                                       return ((num2 != num1) && ((num1 % num2) == 0));
+                                   }) //
+                                 | std::views::transform([](const auto &v) {
+                                       auto &[num1, num2] = v;
+                                       return num1 / num2;
+                                   });
+                     return std::reduce(rng2.begin(), rng2.end());
+                 });
+    auto result = std::reduce(rng.begin(), rng.end());
+    return result;
 }
 
-int solve_all(const std::vector<std::string> &data) {
-    auto lines = aoc_2017_02::transform_input(data);
+void solve_all(const auto &data) {
+    auto lines = aoc::timer(aoc_2017_02::transform_input<decltype(data)>, data, "Preparation time:");
 
-    aoc::timer(1, aoc_2017_02::solve_part_1, lines);
-    aoc::timer(2, aoc_2017_02::solve_part_2, lines);
-
-    return 0;
+    aoc::timer(1, aoc_2017_02::solve_part_1<decltype(lines)>, lines);
+    aoc::timer(2, aoc_2017_02::solve_part_2<decltype(lines)>, lines);
 }
 } // namespace aoc_2017_02
 
 int main(int argc, char **argv) {
-    std::string filename;
-    const int   year = 2017;
-    const int   day = 2;
+    std::string   filename;
+    constexpr int year = 2017;
+    constexpr int day  = 2;
 
-    std::vector<std::string> data;
-
+    auto args = std::span(argv, argc);
     if (argc > 1) {
-        if (std::string(argv[1]) == "--test") {
-            data = aoc::io::get_input_list<std::string>("test_input.txt", year, day);
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
         } else {
-            data = aoc::io::get_input_list<std::string>(argv[1], year, day);
+            filename = args[1];
         }
     } else {
-        data = aoc::io::get_input_list<std::string>("input.txt", year, day);
+        filename = "input.txt";
     }
 
+    auto data = aoc::io::get_input_list<std::string>(filename, year, day);
+
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2017_02::solve_all, data, false);
+    aoc::timer(aoc_2017_02::solve_all<decltype(data)>, data);
 
     return 0;
 }

@@ -1,49 +1,87 @@
-#include <chrono>
-#include <fstream>
-#include <print>
+#include "aoc_io.hpp"
+#include "aoc_timer.hpp"
+#include <algorithm>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <vector>
 
-typedef std::chrono::high_resolution_clock Clock;
+auto parse_instructions(const std::vector<std::string> &instructions) {
+    auto return_vector = instructions //
+                         | std::views::transform([](const auto &line) -> std::vector<int> {
+                               std::vector<int>  vec{};
+                               std::stringstream ss{line};
+                               std::string       str{};
+                               while (std::getline(ss, str, ' ')) {
+                                   vec.push_back(std::stoi(str));
+                               }
+                               return vec;
+                           }) //
+                         | std::ranges::to<std::vector>();
+    return return_vector;
+}
 
-auto solve_part_1(auto instructions) {
-    auto result = 0;
+auto validate(const std::vector<int> &vec) -> bool {
+
+    auto diffs = [](const auto &p) -> int {
+        auto &[a, b] = p;
+        return (b - a);
+    };
+    auto v2 = std::views::zip(vec, vec | std::views::drop(1)) | std::views::transform(diffs);
+
+    auto is_ok = std::ranges::all_of(v2, [](const int a) -> bool {
+        auto c = std::abs(a);
+        return ((1 <= c) && (c <= 3));
+    });
+
+    auto is_increasing = std::ranges::is_sorted(vec);
+    auto is_decreasing = std::ranges::is_sorted(vec | std::views::reverse);
+
+    return (is_ok && (is_increasing || is_decreasing));
+}
+
+auto solve_part_1(const std::vector<std::vector<int>> &instructions) -> int {
+    auto result = static_cast<int>(std::ranges::count_if(instructions, validate));
     return result;
 }
 
-auto solve_part_2(auto instructions) {
-    auto result = 0;
-    return result;
+auto solve_part_2(const std::vector<std::vector<int>> &instructions) -> int {
+    auto result = std::ranges::count_if(instructions, [](const std::vector<int> &vec) -> int {
+        return (validate(vec) || std::ranges::any_of(std::views::iota(0, static_cast<int>(vec.size())), [&vec](const auto i) {
+                    std::vector tmp_vec{vec};
+                    tmp_vec.erase(tmp_vec.begin() + i);
+                    return validate(tmp_vec);
+                }));
+    });
+    return static_cast<int>(result);
 }
 
-auto solve_all(auto instructions) {
-    auto start_1  = Clock::now();
-    auto result_1 = solve_part_1(instructions);
-    auto stop_1   = Clock::now();
-    std::println("Part 1: {:10d} {:10.3f} ms ({})", result_1, std::chrono::round<std::chrono::microseconds>(stop_1 - start_1).count() / 1000., stop_1 - start_1);
-    auto start_2  = Clock::now();
-    auto result_2 = solve_part_2(instructions);
-    auto stop_2   = Clock::now();
-    std::println("Part 2: {:10d} {:10.3f} ms ({})", result_2, std::chrono::round<std::chrono::microseconds>(stop_2 - start_2).count() / 1000., stop_2 - start_2);
+void solve_all(const std::vector<std::string> &instructions) {
+    auto parsed_instructions = aoc::timer(parse_instructions, instructions, "Preparation time:");
+    aoc::timer(1, solve_part_1, parsed_instructions);
+    aoc::timer(2, solve_part_2, parsed_instructions);
 }
 
-int main(int argc, char **argv) {
-    std::vector<std::vector<int>> instructions;
-    std::string                   line;
+auto main(int argc, char **argv) -> int {
+    std::string   filename;
+    constexpr int year = 2024;
+    constexpr int day  = 2;
 
-    auto          filename = argc > 1 ? argv[1] : "/home/christian/projects/adventofcode/data/2024/02/input.txt";
-    std::ifstream ifs{filename = filename};
-
-    while (std::getline(ifs, line)) {
-        auto vec = line | std::views::split(' ') | std::views::transform([](auto &&c) { return std::stoi(std::string(c.begin(), c.end())); }) | std::ranges::to<std::vector<int>>();
-        instructions.push_back(vec);
+    auto args = std::span(argv, argc);
+    if (argc > 1) {
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = args[1];
+        }
+    } else {
+        filename = "input.txt";
     }
 
-    auto start_1 = Clock::now();
-    solve_all(instructions);
-    auto stop_1 = Clock::now();
-    std::println("Total: {:22.3f} ms ({})", std::chrono::round<std::chrono::microseconds>(stop_1 - start_1).count() / 1000., stop_1 - start_1);
+    auto instructions = aoc::io::get_input_list<std::string>(filename, year, day);
+
+    aoc::io::header(year, day);
+    aoc::timer(solve_all, instructions);
 
     return 0;
 }

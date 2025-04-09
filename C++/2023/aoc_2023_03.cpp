@@ -38,6 +38,7 @@ Schematic::Schematic(std::vector<std::string> data) {
     limits.second = int(data.size());
     limits.first  = int(data[0].size());
 
+#ifdef __cpp_lib_ranges_enumerate
     auto rng = data | std::views::enumerate;
 
     std::ranges::for_each(rng, [&](const auto &enum_row) {
@@ -47,6 +48,16 @@ Schematic::Schematic(std::vector<std::string> data) {
             grid_map[{j, i}] = col;
         });
     });
+#else
+    auto rng = std::views::zip(std::views::iota(0), data);
+    std::ranges::for_each(rng, [&](const auto &enum_row) {
+        auto &[j, row] = enum_row;
+        std::ranges::for_each(std::views::zip(std::views::iota(0), row), [&](const auto &enum_col) {
+            auto &[i, col]   = enum_col;
+            grid_map[{j, i}] = col;
+        });
+    });
+#endif
 
     // int j = 0;
     // for (auto &row : data) {
@@ -75,7 +86,9 @@ auto Schematic::neighbours(int y, int x) -> std::vector<char> {
 
 auto Schematic::near_symbol(int y, int x) -> bool {
     std::vector<char> nbs  = neighbours(y, x);
-    auto              item = nbs | std::views::filter([](const auto &nb) { return ((!isdigit(nb)) && (nb != '.')); });
+    auto              item = nbs | std::views::filter([](const auto &nb) {
+                    return ((!isdigit(nb)) && (nb != '.'));
+                });
     return (!item.empty());
 }
 
