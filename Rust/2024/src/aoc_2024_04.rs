@@ -7,10 +7,10 @@ pub fn parse(input: &str) -> Vec<String> {
 }
 
 #[aoc(day4, part1)]
-pub fn part1(input: &Vec<String>) -> u64 {
-    let mut result: u64 = 0;
-    let rows = input.len() as i32;
-    let cols = input[0].len() as i32;
+pub fn part1(input: &Vec<String>) -> usize {
+    let mut result: usize = 0;
+    let rows = input.len() as usize;
+    let cols = input[0].len() as usize;
     for (row_index, row) in input.iter().enumerate() {
         for (col_index, col) in row.char_indices() {
             if col != 'X' {
@@ -21,23 +21,23 @@ pub fn part1(input: &Vec<String>) -> u64 {
                     if dr == 0 && dc == 0 {
                         continue;
                     }
-                    if (row_index as i32 + 3 * dr) < 0 || rows <= (row_index as i32 + 3 * dr) {
+                    if (row_index as i64 + 3 * dr) < 0 || rows <= (row_index as i64 + 3 * dr) as usize {
                         continue;
                     }
-                    if (col_index as i32 + 3 * dc) < 0 || cols <= (col_index as i32 + 3 * dc) {
+                    if (col_index as i64 + 3 * dc) < 0 || cols <= (col_index as i64 + 3 * dc) as usize {
                         continue;
                     }
-                    let ir1: usize = (row_index as i32 + dr) as usize;
-                    let ic1: usize = (col_index as i32 + dc) as usize;
-                    if input[ir1].chars().nth(ic1).unwrap() == 'M'
-                        && input[ir1 + dr as usize]
+                    let ir1: i64 = row_index as i64 + dr;
+                    let ic1: i64 = col_index as i64 + dc;
+                    if input[ir1 as usize].chars().nth(ic1 as usize).unwrap() == 'M'
+                        && input[(ir1 + dr) as usize]
                             .chars()
-                            .nth(ic1 + dc as usize)
+                            .nth((ic1 + dc) as usize)
                             .unwrap()
                             == 'A'
-                        && input[ir1 + 2 * dr as usize]
+                        && input[(ir1 + 2 * dr) as usize]
                             .chars()
-                            .nth(ic1 + 2 * dc as usize)
+                            .nth((ic1 + 2 * dc) as usize)
                             .unwrap()
                             == 'S'
                     {
