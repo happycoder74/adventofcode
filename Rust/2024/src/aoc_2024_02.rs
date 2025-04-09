@@ -32,10 +32,10 @@ fn validate(item: &Vec<u32>) -> bool {
 }
 
 #[aoc_runner_derive::aoc(day2, part1)]
-pub fn solve_part_1(parsed: &Vec<Vec<u32>>) -> usize {
+pub fn solve_part_1(parsed: &Vec<Vec<u32>>) -> u32 {
     let sum: Vec<_> = parsed.into_iter().filter(|item| validate(item)).collect();
 
-    sum.into_iter().count()
+    sum.into_iter().count() as u32
 }
 
 #[aoc_runner_derive::aoc(day2, part2)]
@@ -62,7 +62,7 @@ mod tests {
 9 7 6 2 1
 1 3 2 4 5
 8 6 4 4 1
-1 3 6 7 9 ";
+1 3 6 7 9";
 
     #[test]
     pub fn part1_example() {
