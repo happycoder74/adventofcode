@@ -1,4 +1,5 @@
 #include "aoc_2020_16.h"
+#include "aoc_header.h"
 #include "aoc_timer.h"
 #include <ctype.h>
 #include <stdio.h>
@@ -9,10 +10,11 @@ int main(int argc, char *argv[]) {
     char *data_directory = getenv("AOC_DATA_LOCATION");
 
     char      filepath[255] = {0};
-    const int year = 2020;
-    const int day = 16;
+    const int year          = 2020;
+    const int day           = 16;
 
     struct Input input = {0};
+    AocTimer_t  *timer = NULL;
 
     char filename[40] = "input.txt";
     if (argc > 1) {
@@ -24,6 +26,8 @@ int main(int argc, char *argv[]) {
     }
     snprintf(filepath, sizeof(filepath), "%s/%d/%02d/%s", data_directory, year, day, filename);
 
+    timer = aoc_timer_new();
+    aoc_timer_start(timer);
     FILE *file = fopen(filepath, "r");
 
     if (file == NULL) {
@@ -42,7 +46,7 @@ int main(int argc, char *argv[]) {
             struct Ticket *myticket = &input.myticket;
             read_ticket(myticket, line);
         } else if ((strchr(str, ':') != NULL) && (strncmp(str, "near", 4))) {
-            struct Class *class = &input.classes[input.class_count++];
+            struct Class *class  = &input.classes[input.class_count++];
             struct Range *range1 = &class->range1;
             struct Range *range2 = &class->range2;
 
@@ -59,8 +63,16 @@ int main(int argc, char *argv[]) {
 
     fclose(file);
 
+    aoc_timer_stop(timer);
+
+    aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_uint64(2, solve_part_2, &input, 1, NULL);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+
+    aoc_timer_delete(timer);
 
     return 0;
 }
