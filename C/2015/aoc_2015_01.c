@@ -31,9 +31,11 @@ int solve_part_1(void *data) {
 }
 
 int solve_part_2(void *data) {
-    size_t        i = 0;
-    int           level = 0;
+    size_t i     = 0;
+    int    level = 0;
+
     struct Input *inp = (struct Input *)data;
+
     for (i = 0; i < inp->dimension; i++) {
         level += inp->data[i];
         if (level < 0) {
@@ -52,7 +54,7 @@ int solve_all(void *data) {
 int main(int argc, char **argv) {
 
     const int    year = 2015;
-    const int    day = 1;
+    const int    day  = 1;
     struct Input input;
 
     AocTimer_t *timer = aoc_timer_new();
@@ -67,7 +69,6 @@ int main(int argc, char **argv) {
     aoc_header(year, day);
     aoc_timer_gen("Preparation time:", timer, BORDER_TOP | BORDER_BOTTOM);
     timer_func_new(0, solve_all, &input, 0);
-
     aoc_timer_stop(timer);
     aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
     aoc_data_free(data);
