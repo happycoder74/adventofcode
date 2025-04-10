@@ -75,77 +75,77 @@ mod tests {
     #[test]
     fn test_part_1a() {
         let input = String::from("(())");
-        let result = Day2015_01::solve_part_1(&input);
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(0, result.0);
     }
 
     #[test]
     fn test_part_1b() {
         let input = String::from("()()");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(0, result.0);
     }
 
     #[test]
     fn test_part_1c() {
         let input = String::from("(((");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(3, result.0);
     }
 
     #[test]
     fn test_part_1d() {
         let input = String::from("(()(()(");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(3, result.0);
     }
 
     #[test]
     fn test_part_1e() {
         let input = String::from("))(((((");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(3, result.0);
     }
 
     #[test]
     fn test_part_1f() {
         let input = String::from("())");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(-1, result.0);
     }
 
     #[test]
     fn test_part_1g() {
         let input = String::from("))(");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(-1, result.0);
     }
 
     #[test]
     fn test_part_1h() {
         let input = String::from(")))");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(-3, result.0);
     }
 
     #[test]
     fn test_part_1i() {
         let input = String::from(")())())");
-        let result = Day2015_01::solve_part_1(&String::from(input));
+        let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
         assert_eq!(-3, result.0);
     }
 
     #[test]
     fn test_part_2a() {
         let input = String::from(")");
-        let result = Day2015_01::solve_part_2(&String::from(input));
+        let result = Day2015_01::solve_part_2(&Day2015_01::parse_input(&input));
         assert_eq!(1, result.0);
     }
 
     #[test]
     fn test_part_2b() {
         let input = String::from("()())");
-        let result = Day2015_01::solve_part_2(&String::from(input));
+        let result = Day2015_01::solve_part_2(&Day2015_01::parse_input(&input));
         assert_eq!(5, result.0);
     }
 }
