@@ -1,5 +1,4 @@
 #include "aoc_header.h"
-#include "aoc_string.h"
 #include "aoc_timer.h"
 #include <ctype.h>
 #include <stdint.h>
@@ -14,8 +13,8 @@ struct Input {
 };
 
 int solve_part_1(void *inp) {
-    struct Input *input = (struct Input *)inp;
-    int           count = 0;
+    struct Input *input   = (struct Input *)inp;
+    int           count   = 0;
     unsigned int  slope_x = 3;
     unsigned int  slope_y = 1;
 
@@ -33,14 +32,14 @@ int solve_part_1(void *inp) {
 }
 
 uint64_t solve_part_2(void *inp) {
-    struct Input *input = (struct Input *)inp;
-    uint64_t      count = 1;
+    struct Input *input      = (struct Input *)inp;
+    uint64_t      count      = 1;
     unsigned int  slope_x[5] = {1, 3, 5, 7, 1};
     unsigned int  slope_y[5] = {1, 1, 1, 1, 2};
 
     for (unsigned int slope = 0; slope < 5; slope++) {
-        unsigned int pos_x = 0;
-        unsigned int pos_y = 0;
+        unsigned int pos_x       = 0;
+        unsigned int pos_y       = 0;
         unsigned     slope_count = 0;
         while (pos_y <= input->rows) {
             if (input->treemap[pos_y][pos_x] == '#')
@@ -71,7 +70,7 @@ int main(int argc, char **argv) {
     unsigned short int test = 0;
 
     const unsigned int year = 2020;
-    const unsigned int day = 3;
+    const unsigned int day  = 3;
 
     struct Input input = {0};
     AocTimer_t  *timer = NULL;
@@ -90,7 +89,7 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    size_t index = 0;
+    size_t index   = 0;
     size_t columns = 0;
     while (fgets(line, 254, fp) != NULL) {
         char *str = str_trim_trailing(line);
@@ -101,7 +100,7 @@ int main(int argc, char **argv) {
         index++;
     }
     input.columns = columns;
-    input.rows = index;
+    input.rows    = index;
     aoc_timer_stop(timer);
 
     aoc_header(year, day);
