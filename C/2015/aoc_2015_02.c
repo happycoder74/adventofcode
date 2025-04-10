@@ -37,25 +37,23 @@ void *solve_part_2(AocData_t *data) {
     return strdup_printf("%d", ribbon);
 }
 
-void *solve_all(AocData_t *data) {
-
+void solve_all(void *input) {
+    AocData_t *data = (AocData_t *)input;
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv) {
 
     const unsigned year = 2015;
-    const unsigned day = 2;
+    const unsigned day  = 2;
 
     AocData_t *data = get_data(argc, argv, year, day, NULL);
 
     aoc_header(year, day);
-    timer_func(0, solve_all, data, 0);
+    timer_void(solve_all, data, "Time elapsed:");
 
     aoc_data_free(data);
 
