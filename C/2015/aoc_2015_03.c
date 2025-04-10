@@ -4,6 +4,7 @@
 #include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_types.h"
 #include "aoc_utils.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -19,9 +20,9 @@ int solver(AocArrayPtr data, uint32_t agents) {
     Point        *key;
 
     position = (Point *)calloc(agents, sizeof(Point));
-    visited = aoc_hash_table_create_custom(0, NULL, free, free, AOC_POINT);
+    visited  = aoc_hash_table_create_custom(0, NULL, free, free, AOC_POINT);
 
-    key = (Point *)calloc(1, sizeof(Point));
+    key    = (Point *)calloc(1, sizeof(Point));
     key->x = position[position_index].x;
     key->y = position[position_index].y;
     aoc_hash_table_add(visited, key);
@@ -45,7 +46,7 @@ int solver(AocArrayPtr data, uint32_t agents) {
             default:
                 break;
         }
-        key = (Point *)calloc(1, sizeof(Point));
+        key    = (Point *)calloc(1, sizeof(Point));
         key->x = position[position_index].x;
         key->y = position[position_index].y;
         aoc_hash_table_add(visited, key);
@@ -64,25 +65,23 @@ void *solve_part_2(AocData_t *data) {
     return strdup_printf("%d", solver(data->data, 2));
 }
 
-void *solve_all(AocData_t *data) {
-
+void solve_all(void *input) {
+    AocData_t *data = (AocData_t *)input;
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv) {
 
     const unsigned year = 2015;
-    const unsigned day = 3;
+    const unsigned day  = 3;
 
     AocData_t *data = get_data(argc, argv, year, day, NULL);
 
     aoc_header(year, day);
-    timer_func(0, solve_all, data, 0);
+    timer_void(solve_all, data, "Time elapsed:");
 
     aoc_data_free(data);
 
