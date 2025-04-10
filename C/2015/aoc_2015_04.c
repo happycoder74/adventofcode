@@ -3,6 +3,7 @@
 #include "aoc_header.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
+#include "aoc_types.h"
 #include "aoc_utils.h"
 #include <glib.h>
 #include <stdbool.h>
@@ -13,7 +14,7 @@
 
 int solution_bin(AocData_t *data, const char *cmp_string) {
     char       string[100];
-    int        number = 0;
+    int        number   = 0;
     GChecksum *checksum = g_checksum_new(G_CHECKSUM_MD5);
     uint8_t    hashcode[100];
     size_t     length;
@@ -49,25 +50,24 @@ void *solve_part_2_bin(AocData_t *data) {
     return strdup_printf("%d", solution_bin(data, "000000"));
 }
 
-void *solve_all(AocData_t *data) {
+void solve_all(void *input) {
+    AocData_t *data = (AocData_t *)input;
 
     if (data->data) {
         timer_func(1, solve_part_1_bin, data, 1);
         timer_func(2, solve_part_2_bin, data, 1);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv) {
 
     const unsigned year = 2015;
-    const unsigned day = 4;
+    const unsigned day  = 4;
 
     AocData_t *data = get_data(argc, argv, year, day, NULL);
 
     aoc_header(year, day);
-    timer_func(0, solve_all, data, 0);
+    timer_void(solve_all, data, "Time elapsed:");
 
     aoc_data_free(data);
 
