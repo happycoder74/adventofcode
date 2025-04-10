@@ -81,18 +81,19 @@ static Duration convert_duration(double elapsed) {
     return duration;
 }
 
-inline void print_result_str(const int part, const char *result, const Duration duration) {
+static inline void print_result_str(const int part, const char *result, const Duration duration) {
     printf("Part %d answer: %-28s%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
 }
 
-inline void print_result_int(const int part, const int result, const Duration duration) {
+static inline void print_result_int(const int part, const int result, const Duration duration) {
     printf("Part %d answer: %-28d%10.2f %-2s\n", part, result, duration.duration, duration.unit);
 }
 
-inline void print_result_long(const int part, const long result, const Duration duration) {
+static inline void print_result_long(const int part, const long result, const Duration duration) {
     printf("Part %d answer: %-28ld%10.2lf %-2s\n", part, result, duration.duration, duration.unit);
 }
-inline void print_result_uint64(const int part, const uint64_t result, const Duration duration) {
+static inline void print_result_uint64(const int part, const uint64_t result,
+                                       const Duration duration) {
     printf("Part %d answer: %-28" PRIu64 "%10.2lf %-2s\n", part, result, duration.duration,
            duration.unit);
 }
