@@ -1,7 +1,6 @@
 #include "aoc_alloc.h"
 #include "aoc_array.h"
 #include "aoc_header.h"
-#include "aoc_regex.h"
 #include "aoc_string.h"
 #include "aoc_timer.h"
 #include "aoc_utils.h"
@@ -10,43 +9,84 @@
 #include <stdlib.h>
 #include <string.h>
 
-void *solve_part_1(AocData_t *data) {
-    regex_t regex_wovel, regex_double_letter, regex_invalid;
-    int     count = 0;
-    size_t  i;
-    char   *line;
-    int     error;
+static short int check_wovel(const char *line) {
+    int        result    = 0;
+    const char wovels[6] = "aeiou";
 
-    error = regcomp(&regex_wovel, "[aeiou].*[aeiou].*[aeiou]", 0);
-    regex_error(error, &regex_wovel);
-    error = regcomp(&regex_double_letter, "(.)\\1", 0);
-    regex_error(error, &regex_double_letter);
-    error = regcomp(&regex_invalid, "(ab|cd|pq|xy)", 0);
-    regex_error(error, &regex_invalid);
+    for (size_t i_wovel = 0; i_wovel < 5; ++i_wovel) {
+        for (size_t i_line = 0; i_line < strlen(line); ++i_line) {
+            if (line[i_line] == wovels[i_wovel])
+                ++result;
+        }
+    }
+
+    return result >= 3;
+}
+
+static short int check_double_letter(const char *line) {
+    const size_t line_length = strlen(line);
+
+    for (size_t i_line = 0; i_line < line_length - 1; ++i_line) {
+        const char a = line[i_line];
+        const char b = line[i_line + 1];
+        if (a == b) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+static short int check_no_invalid(const char *line) {
+    char invalid[4][3] = {"ab", "cd", "pq", "xy"};
+
+    for (size_t i_invalid = 0; i_invalid != 4; ++i_invalid) {
+        char *invalid_substring = invalid[i_invalid];
+        if (strstr(line, invalid_substring) != NULL) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static short int check_pairs(const char *line) {
+    const size_t line_length = strlen(line);
+    for (size_t i_line = 0; i_line < line_length - 3; ++i_line) {
+        char pair[3]             = {0};
+        pair[0]                  = line[i_line];
+        pair[1]                  = line[i_line + 1];
+        const char *rest_of_line = line + i_line + 2;
+        char       *pos          = strstr(rest_of_line, pair);
+        if (pos != NULL) {
+            if ((size_t)(pos - line + 2) > i_line + 1) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+static short int check_repeat(const char *line) {
+    const size_t line_length = strlen(line);
+    for (size_t i_line = 0; i_line < line_length - 2; ++i_line) {
+        const char a = line[i_line];
+        const char b = line[i_line + 2];
+        if (a == b) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void *solve_part_1(AocData_t *data) {
+    int    count = 0;
+    size_t i;
+    char  *line;
 
     for (i = 0; i < aoc_data_length(data); i++) {
-        int count_wovels = 0;
-        int count_doubles = 0;
-        int count_invalid = 0;
-
         line = aoc_str_array_index(data->data, i);
 
-        error = regexec(&regex_wovel, line, 0, NULL, 0);
-        if (!error) {
-            count_wovels = 1;
-        }
-
-        error = regexec(&regex_double_letter, line, 0, NULL, 0);
-        if (!error) {
-            count_doubles = 1;
-        }
-
-        error = regexec(&regex_invalid, line, 0, NULL, 0);
-        if (error == REG_NOMATCH) {
-            count_invalid = 1;
-        }
-
-        if (count_wovels && count_doubles && count_invalid) {
+        if (check_wovel(line) && check_double_letter(line) && check_no_invalid(line)) {
             count++;
         }
     }
@@ -55,33 +95,14 @@ void *solve_part_1(AocData_t *data) {
 }
 
 void *solve_part_2(AocData_t *data) {
-    regex_t  regex_pairs, regex_repeat;
     uint32_t count = 0;
     size_t   i;
     char    *line;
-    int      error;
-
-    error = regcomp(&regex_pairs, "(..).*\\1", 0);
-    regex_error(error, &regex_pairs);
-    error = regcomp(&regex_repeat, "(.).\\1", 0);
-    regex_error(error, &regex_repeat);
 
     for (i = 0; i < aoc_data_length(data); i++) {
         line = aoc_str_array_index(data->data, i);
-        int count_pairs = 0;
-        int count_repeat = 0;
 
-        error = regexec(&regex_pairs, line, 0, NULL, 0);
-        if (!error) {
-            count_pairs = 1;
-        }
-
-        error = regexec(&regex_repeat, line, 0, NULL, 0);
-        if (!error) {
-            count_repeat = 1;
-        }
-
-        if (count_pairs && count_repeat) {
+        if (check_pairs(line) && check_repeat(line)) {
             count++;
         }
     }
@@ -89,25 +110,24 @@ void *solve_part_2(AocData_t *data) {
     return strdup_printf("%d", count);
 }
 
-void *solve_all(AocData_t *data) {
+void solve_all(void *input) {
+    AocData_t *data = (AocData_t *)input;
 
     if (data->data) {
         timer_func(1, solve_part_1, data, 1);
         timer_func(2, solve_part_2, data, 1);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv) {
 
     const unsigned year = 2015;
-    const unsigned day = 5;
+    const unsigned day  = 5;
 
     AocData_t *data = get_data(argc, argv, year, day, NULL);
 
     aoc_header(year, day);
-    timer_func(0, solve_all, data, 0);
+    timer_void(solve_all, data, "Time elapsed:");
 
     aoc_data_free(data);
 
