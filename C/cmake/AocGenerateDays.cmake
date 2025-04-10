@@ -3,9 +3,11 @@ function(aoc_generate YEAR DAY)
   target_include_directories(aoc_${YEAR}_${DAY}
                              PRIVATE ${CMAKE_SOURCE_DIR}/include)
   target_link_libraries(aoc_${YEAR}_${DAY} aoc m)
+  target_link_libraries(aoc_${YEAR}_${DAY} ${CURL_LIBRARIES})
   if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
     target_link_libraries(aoc_${YEAR}_${DAY} $<$<CONFIG:MEMDEBUG>:dl>
                           $<$<CONFIG:DEBUGVERBOSE>:dl>)
+
   endif()
   add_custom_target(
     run_${YEAR}_${DAY}

@@ -27,6 +27,9 @@ set(AOC_YEARS
     2023
     2024)
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(CURL REQUIRED libcurl)
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)
 
