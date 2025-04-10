@@ -1,4 +1,5 @@
 #include "aoc_2020_17.h"
+#include "aoc_header.h"
 #include "aoc_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,10 +9,11 @@ int main(int argc, char *argv[]) {
     char *data_directory = getenv("AOC_DATA_LOCATION");
 
     char      filepath[255] = {0};
-    const int year = 2020;
-    const int day = 17;
+    const int year          = 2020;
+    const int day           = 17;
 
     struct Input input = {0};
+    AocTimer_t  *timer = NULL;
 
     char filename[40] = "input.txt";
     if (argc > 1) {
@@ -23,6 +25,8 @@ int main(int argc, char *argv[]) {
     }
     snprintf(filepath, sizeof(filepath), "%s/%d/%02d/%s", data_directory, year, day, filename);
 
+    timer = aoc_timer_new();
+    aoc_timer_start(timer);
     FILE *file = fopen(filepath, "r");
 
     if (file == NULL) {
@@ -31,16 +35,16 @@ int main(int argc, char *argv[]) {
     }
 
     char  line[255] = {0};
-    char *str = NULL;
-    int   r = 0;
-    input.w_min = 0;
-    input.w_max = 0;
-    input.z_min = 0;
-    input.z_max = 0;
-    input.x_min = 0;
-    input.y_min = 0;
-    input.x_max = 0;
-    input.y_max = 0;
+    char *str       = NULL;
+    int   r         = 0;
+    input.w_min     = 0;
+    input.w_max     = 0;
+    input.z_min     = 0;
+    input.z_max     = 0;
+    input.x_min     = 0;
+    input.y_min     = 0;
+    input.x_max     = 0;
+    input.y_max     = 0;
     while (fgets(line, sizeof(line), file)) {
         str = trim_end(line);
         if (input.x_max == 0) {
@@ -50,7 +54,7 @@ int main(int argc, char *argv[]) {
         for (int c = 0; c < (int)strlen(str); c++) {
             if (str[c] == '#') {
                 unsigned int key = get_key(c, r, 0, 0, &input);
-                input.grid[key] = 1;
+                input.grid[key]  = 1;
             }
         }
         r++;
@@ -60,8 +64,16 @@ int main(int argc, char *argv[]) {
 
     struct Input clone = input;
     memmove(clone.grid, input.grid, sizeof(input.grid) / sizeof(input.grid[0]));
+    aoc_timer_stop(timer);
+
+    aoc_header(year, day);
+    aoc_timer_gen("Preparation time:", timer, BORDER_BOTTOM);
     timer_func_new(1, solve_part_1, &input, 1);
     timer_func_new(2, solve_part_2, &clone, 1);
+    aoc_timer_stop(timer);
+    aoc_timer_gen("Total time:", timer, BORDER_TOP | BORDER_BOTTOM);
+
+    aoc_timer_delete(timer);
 
     return 0;
 }
