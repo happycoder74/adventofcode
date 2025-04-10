@@ -7,5 +7,3 @@ authors.workspace = true
 
 [dependencies]
 aoc_utils.workspace = true
-regex = "1.11.1"
-fancy-regex = "0.14.0"

@@ -117,30 +117,26 @@ mod tests {
 
     #[test]
     fn test_check_wovel() {
-        let re_wovel = Regex::new(r"[aeiou].*[aeiou].*[aeiou]").unwrap();
         let input = "aeiouaeiouaeiou";
-        assert!(check_regex(input, &re_wovel));
+        assert!(check_wovels(input));
     }
 
     #[test]
     fn test_check_wovel_false() {
-        let re_wovel = Regex::new(r"[aeiou].*[aeiou].*[aeiou]").unwrap();
         let input = "dvszwmarrgswjxmb";
-        assert_eq!(check_regex(input, &re_wovel), false);
+        assert_eq!(check_wovels(input), false);
     }
 
     #[test]
     fn test_check_double_letter() {
-        let re_double_letter = Regex::new("(.)\\1").unwrap();
         let input = "aabbccdd";
-        assert!(check_regex(input, &re_double_letter));
+        assert!(check_double_letter(input));
     }
 
     #[test]
     fn test_check_double_letter_false() {
-        let re_double_letter = Regex::new("(.)\\1").unwrap();
         let input = "abcabcabc";
-        assert!(!check_regex(input, &re_double_letter));
+        assert_eq!(check_double_letter(input), false);
     }
 
     #[test]
@@ -158,8 +154,7 @@ mod tests {
     #[test]
     fn test_check_pairs_xyxy() {
         let input = "xyxy";
-        let re_pairs = Regex::new(r"(..).*\1").unwrap();
-        assert!(check_regex(input, &re_pairs));
+        assert!(check_pairs(input));
     }
 
     #[test]
