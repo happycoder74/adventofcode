@@ -6,7 +6,8 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 + 22 &#11088; in [Python](python/README.md)
 + 17 &#11088; in [C](C/README.md)
 + 2 &#11088; in [C++](C++/README.md)
-+ 1 &#11088; in [Rust](Rust/README.md)
++ 25 &#11088; in [C++](C++/README.md)
++ 8 &#11088; in [Rust](Rust/README.md)
 
 ## Year 2023
 + 23 &#11088; in [Python](python/README.md)
@@ -48,12 +49,13 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 ## Year 2016
 + 16 &#11088; in [Python](python/README.md)
 + 10 &#11088; in [C](C/README.md)
++ 2 &#11088; in [C++](C++/README.md)
 
 ## Year 2015
 + 47 &#11088; in [Python](python/README.md)
 + 14 &#11088; in [C](C/README.md)
 + 6 &#11088; in [C++](C++/README.md)
-+ 6 &#11088; in [Rust](Rust/README.md)
++ 8 &#11088; in [Rust](Rust/README.md)
 
 
 ### Why taking on the Advent of Code
@@ -61,7 +63,6 @@ An excellent way to learn new programming languages and to train and practice on
 
 
 ### Upcoming languages to try out which I have not started yet:
-+ [Rust](https://www.rust-lang.org/)
 + Elixir
 + Haskell
 + Clojure

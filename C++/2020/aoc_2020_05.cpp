@@ -1,20 +1,35 @@
 #include "aoc_timer.hpp"
+#include <algorithm>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
-#include <ranges>
+#include <span>
 #include <string>
 #include <vector>
 
 auto solve_part_1(std::vector<std::uint16_t> &data) -> int {
-    std::sort(data.begin(), data.end());
+    std::ranges::sort(data);
     return data.back();
 }
 
 auto solve_part_2(std::vector<std::uint16_t> &data) -> int {
-    std::sort(data.begin(), data.end());
-    auto result = std::ranges::slide_view(data, 2) | std::views::filter([](const auto &a) { return (a[1] - a[0]) > 1; });
+    std::ranges::sort(data);
+#ifdef __cpp_lib_ranges_slide
+    auto result = std::ranges::slide_view(data, 2) //
+                  | std::views::filter([](const auto &a) {
+                        return (a[1] - a[0]) > 1;
+                    }) //
+                  | std::views::take(1);
     return result.front()[0] + 1;
+#else
+    // To be implemented
+    return 0;
+#endif
+}
+
+auto solve_all(std::vector<std::uint16_t> &data) {
+    aoc::timer(1, solve_part_1, data);
+    aoc::timer(2, solve_part_2, data);
 }
 
 auto main(int argc, char *argv[]) -> int {
@@ -56,12 +71,6 @@ auto main(int argc, char *argv[]) -> int {
         }
         data.push_back(seat_id);
     }
-
-    std::cout << std::format("{:=<55}\n", "");
-    std::cout << std::format("Solution for {:d}, day {:02d}\n", year, day);
-    std::cout << std::format("{:-<55}\n", "");
-    aoc::timer(1, solve_part_1, data);
-    aoc::timer(2, solve_part_2, data);
-    std::cout << std::format("{:-<55}\n", "");
+    aoc::timer(solve_all, data);
     return 0;
 }

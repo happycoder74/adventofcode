@@ -1,23 +1,24 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 #include <map>
+#include <span>
 #include <utility>
 #include <vector>
 
 namespace aoc_2022_02 {
-std::vector<std::pair<char, char>> transform_input(const std::vector<std::string> &input) {
+auto transform_input(const std::vector<std::string> &input) {
     std::ifstream file;
 
     std::vector<std::pair<char, char>> return_vector;
 
     return_vector.reserve(input.size());
     for (auto &item : input) {
-        return_vector.push_back(std::make_pair(item[0], item[2]));
+        return_vector.emplace_back(item[0], item[2]);
     }
     return return_vector;
 }
 
-int solve_part_1(const std::vector<std::pair<char, char>> &input) {
+auto solve_part_1(const std::vector<std::pair<char, char>> &input) {
     std::map<char, int> shape_points = {
         {'X', 1},
         {'Y', 2},
@@ -37,7 +38,7 @@ int solve_part_1(const std::vector<std::pair<char, char>> &input) {
     return sum;
 }
 
-int solve_part_2(const std::vector<std::pair<char, char>> &input) {
+auto solve_part_2(const std::vector<std::pair<char, char>> &input) {
     std::map<char, int> shape_points = {
         {'X', 1},
         {'Y', 2},
@@ -71,23 +72,34 @@ int solve_part_2(const std::vector<std::pair<char, char>> &input) {
     return points;
 }
 
-int solve_all(const std::vector<std::pair<char, char>> &input) {
-    aoc::timer(1, aoc_2022_02::solve_part_1, input, true);
-    aoc::timer(2, aoc_2022_02::solve_part_2, input, true);
-
-    return 0;
+void solve_all(const std::vector<std::string> &data) {
+    std::vector<std::pair<char, char>> input = aoc_2022_02::transform_input(data);
+    aoc::timer(1, aoc_2022_02::solve_part_1, input);
+    aoc::timer(2, aoc_2022_02::solve_part_2, input);
 }
 
 } // namespace aoc_2022_02
 
 int main(int argc, char *argv[]) {
-    const int year = 2022;
-    const int day = 2;
+    const int   year = 2022;
+    const int   day  = 2;
+    std::string filename{};
 
-    std::vector<std::pair<char, char>> input = aoc_2022_02::transform_input(aoc::io::get_input_list<std::string>("input.txt", year, day));
+    auto args = std::span(argv, size_t(argc));
+    if (argc > 1) {
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = args[1];
+        }
+    } else {
+        filename = "input.txt";
+    }
+
+    auto data = aoc::io::get_input_list<std::string>("input.txt", year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2022_02::solve_all, input, false);
+    aoc::timer(aoc_2022_02::solve_all, data);
 
     return 0;
 }

@@ -11,12 +11,11 @@ namespace aoc_2017_03 {
 
 class Spiral {
   private:
-    aoc::Grid           grid;
-    std::pair<int, int> position;
+    aoc::Grid<unsigned> grid;
+    std::pair<int, int> position{0, 0};
 
   public:
     explicit Spiral() {
-        position = {0, 0};
         grid.insert(position, 1);
     }
     void step() {
@@ -36,67 +35,72 @@ class Spiral {
         position = {x, y};
     }
 
-    unsigned grid_value() {
+    [[nodiscard]] auto grid_value() {
         return grid.get_value(position);
     }
 
     void update_value() {
-        // clang-format off
-        auto res = grid.deltas
-            | std::views::transform([this](const auto &p) { return grid.get_value({position.first + p.first, position.second + p.second}); })
-            | std::views::common;
+        auto res = grid.deltas()
+                   // clang-format off
+                   | std::views::transform([this](const auto &p) {
+                           auto result = grid.get_value({position.first + p.first, position.second + p.second});
+                           return result;
+                     })
+                   | std::views::common;
         // clang-format on
 
         unsigned result = std::reduce(res.begin(), res.end());
         grid.insert(position, result);
     }
 
-    unsigned distance() {
+    [[nodiscard]] unsigned distance() const {
         return abs(position.first) + abs(position.second);
     }
 };
 
-int solve_part_1(const std::vector<std::string> &input) {
-    unsigned target = std::stoul(input[0]);
+auto solve_part_1(const std::vector<std::string> &input) {
+    unsigned target = std::stoul(input.front());
     Spiral   s;
 
     for (unsigned i = 1; i < target; i++) {
         s.step();
     }
 
-    return s.distance();
+    return int(s.distance());
 }
 
-int solve_part_2(const std::vector<std::string> &input) {
+auto solve_part_2(const std::vector<std::string> &input) {
     unsigned target = std::stoul(input.front());
     Spiral   s;
-    unsigned result;
 
     while (s.grid_value() <= target) {
         s.step();
         s.update_value();
     }
 
-    return s.grid_value();
+    return int(s.grid_value());
 }
 
-int solve_all(const std::vector<std::string> &input) {
+auto solve_all(const std::vector<std::string> &input) {
     aoc::timer(1, solve_part_1, input);
     aoc::timer(2, solve_part_2, input);
-
-    return 0;
 }
 } // namespace aoc_2017_03
 
 int main(int argc, char **argv) {
-    std::string filename;
-    const int   year = 2017;
-    const int   day = 3;
+    std::string   filename;
+    constexpr int year = 2017;
+    constexpr int day  = 3;
 
     std::vector<std::string> data;
 
+    auto args = std::span(argv, argc);
     if (argc > 1) {
-        filename = argv[1];
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = args[1];
+        }
     } else {
         filename = "input.txt";
     }
@@ -104,7 +108,7 @@ int main(int argc, char **argv) {
     data = aoc::io::get_input_list<std::string>(filename, year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2017_03::solve_all, data, false);
+    aoc::timer(aoc_2017_03::solve_all, data);
 
     return 0;
 }

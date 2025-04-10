@@ -35,48 +35,17 @@ inline auto convert_duration(std::chrono::duration<C, R> duration) -> const std:
     return ss.str();
 }
 
-template <typename T, typename U>
-void timer(int part, T (*func)(U &), U data, bool show_res = true) {
+template <typename F, typename... Args>
+void timer(int part, F func, Args &&...args) {
     auto              t1              = Clock::now();
-    T                 result          = func(data);
+    auto              result          = func(std::forward<Args>(args)...);
     auto              t2              = Clock::now();
     const std::string duration_string = convert_duration(t2 - t1);
-    if (show_res) {
-        std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
-    } else {
-        std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
-    }
+    std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
 }
 
-template <typename T, typename U>
-void timer(int part, T (*func)(const U &), U data, bool show_res = true) {
-    auto t1     = Clock::now();
-    T    result = func(data);
-    auto t2     = Clock::now();
-
-    const std::string duration_string = convert_duration(t2 - t1);
-    if (show_res) {
-        std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
-    } else {
-        std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
-    }
-}
-
-template <typename T, typename U, typename W>
-void timer(int part, T (*func)(U &, W), U data, W data2, bool show_res = true) {
-    auto              t1              = Clock::now();
-    T                 result          = func(data, data2);
-    auto              t2              = Clock::now();
-    const std::string duration_string = convert_duration(t2 - t1);
-    if (show_res) {
-        std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
-    } else {
-        std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
-    }
-}
-
-template <typename U>
-void timer(void (*func)(const U &), U data) {
+template <typename F, typename U>
+void timer(F func, U data) {
     auto t1 = Clock::now();
     func(data);
     auto t2 = Clock::now();
@@ -85,10 +54,10 @@ void timer(void (*func)(const U &), U data) {
     std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
 }
 
-template <typename T, typename U>
-T timer(T (*func)(const U &), U data, std::string &&message = "Time elapsed :") {
+template <typename F, typename U>
+decltype(auto) timer(F func, U data, const std::string &&message) {
     auto t1     = Clock::now();
-    T    result = func(data);
+    auto result = func(data);
     auto t2     = Clock::now();
 
     const std::string duration_string = convert_duration(t2 - t1);

@@ -1,38 +1,46 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 
-#include <chrono>
+#include <span>
 #include <string>
 #include <vector>
 
-typedef std::chrono::high_resolution_clock Clock;
-
-std::string solve_part_1(const std::vector<std::string> &instructions) {
-    std::string return_string;
-    return return_string;
+auto solve_part_1(const std::vector<std::string> &instructions) {
+    auto result = 0;
+    return result;
 }
 
-std::string solve_part_2(const std::vector<std::string> &instructions) {
-    std::string return_string;
-    return return_string;
+auto solve_part_2(const std::vector<std::string> &instructions) {
+    auto result = 0;
+    return result;
 }
 
-std::string solve_all(const std::vector<std::string> &instructions) {
-    aoc::timer<std::string>(1, solve_part_1, instructions, true);
-    aoc::timer<std::string>(2, solve_part_2, instructions, true);
-
-    return std::string("");
+auto solve_all(const std::vector<std::string> &instructions) {
+    aoc::timer(1, solve_part_1, instructions);
+    aoc::timer(2, solve_part_2, instructions);
 }
 
 int main(int argc, char **argv) {
-    std::string              filename;
-    std::vector<std::string> instructions;
+    std::string filename;
 
-    filename = argc > 1 ? argv[1] : "input.txt";
+    constexpr int year = 2024;
+    constexpr int day  = 3;
 
-    instructions = aoc::io::get_input_list<std::string>(filename, 2024, 3);
+    auto args = std::span(argv, size_t(argc));
+    if (argc > 1) {
+        if (std::string(args[1]) == "--test") {
+            filename = "test_input.txt";
+        } else {
+            filename = args[1];
+        }
+    } else {
+        filename = "input.txt";
+    }
 
-    aoc::timer<std::string>(0, solve_all, instructions, false);
+    auto instructions = aoc::io::get_input_list<std::string>(filename, year, day);
+
+    aoc::io::header(year, day);
+    aoc::timer(solve_all, instructions);
 
     return 0;
 }

@@ -23,8 +23,7 @@ int solve_part_2(const std::vector<int> &data) {
     return 0;
 }
 
-template <typename T>
-void solve_all(const T &data) {
+void solve_all(const std::vector<int> &data) {
     aoc::timer(1, solve_part_1, data);
     aoc::timer(2, solve_part_2, data);
 }

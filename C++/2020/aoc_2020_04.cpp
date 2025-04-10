@@ -14,7 +14,9 @@ static inline auto is_valid(const std::string &passport) -> bool {
     constexpr int n_keys = 7;
 
     static constexpr std::array<std::string, n_keys> required_keys = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
-    return std::all_of(required_keys.begin(), required_keys.end(), [&passport](auto &r) { return passport.contains(r); });
+    return std::all_of(required_keys.begin(), required_keys.end(), [&passport](auto &r) {
+        return passport.contains(r);
+    });
 }
 
 static auto is_valid_part_2(const std::string &passport) -> bool {
@@ -42,16 +44,28 @@ static auto is_valid_part_2(const std::string &passport) -> bool {
     constexpr int hgt_min_in = 59;
     constexpr int hgt_max_in = 76;
 
-    auto validate_byr = [](const auto &value) { return (byr_min <= std::stoi(value)) && (std::stoi(value) <= byr_max); };
-    auto validate_iyr = [](const auto &value) { return (iyr_min <= std::stoi(value)) && (std::stoi(value) <= iyr_max); };
-    auto validate_eyr = [](const auto &value) { return (eyr_min <= std::stoi(value)) && (std::stoi(value) <= eyr_max); };
+    auto validate_byr = [](const auto &value) {
+        return (byr_min <= std::stoi(value)) && (std::stoi(value) <= byr_max);
+    };
+    auto validate_iyr = [](const auto &value) {
+        return (iyr_min <= std::stoi(value)) && (std::stoi(value) <= iyr_max);
+    };
+    auto validate_eyr = [](const auto &value) {
+        return (eyr_min <= std::stoi(value)) && (std::stoi(value) <= eyr_max);
+    };
     auto validate_hcl = [](const auto &value) {
         if ((value.size() != hcl_len) || (value[0] != '#')) {
             return false;
         }
-        return std::all_of(value.begin() + 1, value.end(), [](auto &c) { return (std::isdigit(c) || (('a' <= c) && (c <= 'f'))); });
+        return std::all_of(value.begin() + 1, value.end(), [](auto &c) {
+            return (std::isdigit(c) || (('a' <= c) && (c <= 'f')));
+        });
     };
-    auto validate_pid = [](const auto &value) { return (value.size() == pid_len) && (std::find_if(value.begin(), value.end(), [](auto &c) { return std::isdigit(c); }) != value.end()); };
+    auto validate_pid = [](const auto &value) {
+        return (value.size() == pid_len) && (std::find_if(value.begin(), value.end(), [](auto &c) {
+                                                 return std::isdigit(c);
+                                             }) != value.end());
+    };
     auto validate_ecl = [](const auto &value) {
         const std::unordered_set<std::string> valid_ecl = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
         return valid_ecl.find(value) != valid_ecl.end();
@@ -107,11 +121,15 @@ static auto is_valid_part_2(const std::string &passport) -> bool {
 
     // clang-format on
 
-    return std::ranges::all_of(result, [](const auto &v) { return v; });
+    return std::ranges::all_of(result, [](const auto &v) {
+        return v;
+    });
 }
 
 auto solve_part_1(const std::vector<std::string> &data) -> int {
-    auto result = data | std::views::transform([](auto &&pp) { return is_valid(pp) ? 1 : 0; });
+    auto result = data | std::views::transform([](auto &&pp) {
+                      return is_valid(pp) ? 1 : 0;
+                  });
     return std::reduce(result.begin(), result.end());
 }
 
@@ -151,8 +169,18 @@ auto main(int argc, char *argv[]) -> int {
     std::vector<std::string> passport{};
 
     auto join_string = [](auto str) {
+#ifdef __cpp_lib_ranges_join_with
         auto joined = str | std::views::join_with(' ');
-        return std::string(joined.begin(), joined.end());
+#else
+        auto joined = str | std::views::transform([](const auto &s) {
+                          auto ret_s = std::string(s);
+                          ret_s.append(" ");
+                          return ret_s;
+                      });
+#endif
+        auto return_string = std::accumulate(joined.begin(), joined.end(), std::string{});
+        return_string.pop_back();
+        return return_string;
     };
 
     for (std::string line; std::getline(ifs, line);) {

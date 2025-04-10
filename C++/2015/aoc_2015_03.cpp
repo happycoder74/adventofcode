@@ -9,7 +9,7 @@
 
 template <>
 struct std::hash<std::pair<int, int>> {
-    inline auto operator()(const pair<int, int> &v) const -> size_t {
+    auto operator()(const pair<int, int> &v) const -> size_t {
         return std::size_t(v.first) << 32 | v.second;
     }
 };

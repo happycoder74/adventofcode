@@ -1,15 +1,16 @@
 use aoc_utils::*;
 
-pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)>{
+pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)> {
     input
         .lines()
         .map(|l| l.trim())
         .filter(|l| !l.is_empty())
         .map(|l| {
-            let numbers = l
+            let mut numbers = l
                 .split("x")
                 .map(|v| v.parse::<u32>().unwrap())
                 .collect::<Vec<_>>();
+            numbers.sort_unstable();
             (numbers[0], numbers[1], numbers[2])
         })
         .collect()
@@ -19,30 +20,25 @@ pub fn solve_part_1(input: &Vec<(u32, u32, u32)>) -> (u32, std::time::Duration) 
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
-        .fold(0, |s, dims| {
-            let side1 = dims.0 * dims.1;
-            let side2 = dims.1 * dims.2;
-            let side3 = dims.2 * dims.0;
-            2 * side1 + 2 * side2 + 2 * side3 + std::cmp::min(std::cmp::min(side1, side2), side3) + s
-        });
-    let end_time = std::time::Instant::now();
+        .fold(0, |s, (l, w, h)| 2 * (l * w + w * h + h * l) + l * w + s);
+    let duration = std::time::Instant::now() - start_time;
 
-    (result, end_time - start_time)
+    (result, duration)
 }
 
 pub fn solve_part_2(input: &Vec<(u32, u32, u32)>) -> (u32, std::time::Duration) {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
-        .fold(0, |s, dims| {
-            2 * std::cmp::min(dims.0, dims.1) + 2 * std::cmp::min(dims.1, dims.2) + dims.0 * dims.1 * dims.2 + s
-        });
+        .map(|(l, w, h)| 2 * (l + w) + (l * w * h))
+        .sum();
+    let duration = std::time::Instant::now() - start_time;
 
-    (result, std::time::Instant::now() - start_time)
+    (result, duration)
 }
 
 fn solve_all() -> ((u32, std::time::Duration), (u32, std::time::Duration)) {
-    let input = get_input(2015, 2, false);
+    let input = read_input(2015, 2, false);
     let parsed = parse_input(&input);
 
     (solve_part_1(&parsed), solve_part_2(&parsed))
@@ -50,8 +46,8 @@ fn solve_all() -> ((u32, std::time::Duration), (u32, std::time::Duration)) {
 
 fn main() {
     let result = solve_all();
-    report ("Part1", result.0);
-    report ("Part2", result.1);
+    report("Part1", result.0);
+    report("Part2", result.1);
 }
 
 #[cfg(test)]

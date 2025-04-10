@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> data;
 
     int year = 2015;
-    int day = 2;
+    int day  = 2;
 
     if (argc > 1) {
         if (std::string(argv[1]) == "--test") {
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
     }
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2015_02::solve_all, data, 0);
+    aoc::timer(aoc_2015_02::solve_all, data);
 
     return 0;
 }

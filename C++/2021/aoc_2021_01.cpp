@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
     data = aoc::io::get_input_list<int>(filename, year, day);
 
     aoc::io::header(year, day);
-    aoc::timer(0, aoc_2021_01::solve_all, data, false);
+    aoc::timer(aoc_2021_01::solve_all, data);
 
     return 0;
 }
