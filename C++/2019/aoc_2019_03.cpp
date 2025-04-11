@@ -15,9 +15,10 @@ using Container = std::pair<std::vector<std::pair<Point, Point>>, std::vector<st
 auto find_intersections(const std::map<Point, Point> &m1, const std::map<Point, Point> &m2) {
     std::vector<Point> return_vector;
 
-    auto values = m1 | std::views::filter([=](const std::pair<Point, Point> &p) {
-                      return m2.contains(p.first);
-                  });
+    auto values = m1 //
+                  | std::views::filter([&m2](const std::pair<Point, Point> &p) {
+                        return m2.contains(p.first);
+                    });
     return std::vector<std::pair<Point, Point>>(values.begin(), values.end());
 }
 
@@ -37,7 +38,7 @@ static auto transform_input(const std::vector<std::string> &instructions) {
         std::map<Point, Point>   wc_map;
         std::map<Point, int>     ws_map;
 
-        for (auto ch : tokens) {
+        for (const auto &ch : tokens) {
             char direction = ch[0];
             int  magnitude = std::stoi(ch.substr(1));
             switch (direction) {
@@ -70,9 +71,7 @@ static auto transform_input(const std::vector<std::string> &instructions) {
         wire_stepmap.push_back(ws_map);
     }
 
-    std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> data;
-    data.first  = find_intersections(wire_coords.front(), wire_coords.back());
-    data.second = wire_stepmap;
+    std::pair<std::vector<std::pair<Point, Point>>, std::vector<std::map<Point, int>>> data{find_intersections(wire_coords.front(), wire_coords.back()), wire_stepmap};
 
     return data;
 }
@@ -88,8 +87,8 @@ auto solve_part_1(const Container &data) {
 auto solve_part_2(const Container &data) {
     int signal = INT_MAX;
     for (const auto &p : data.first) {
-        auto second = data.second;
-        signal      = std::min(signal, second.front()[p.first] + second.back()[p.first]);
+        const auto &second = data.second;
+        signal             = std::min(signal, second.front().at(p.first) + second.back().at(p.first));
     }
 
     return signal;
