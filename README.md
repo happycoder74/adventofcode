@@ -55,7 +55,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 + 47 &#11088; in [Python](python/README.md)
 + 14 &#11088; in [C](C/README.md)
 + 6 &#11088; in [C++](C++/README.md)
-+ 8 &#11088; in [Rust](Rust/README.md)
++ 9 &#11088; in [Rust](Rust/README.md)
 
 
 ### Why taking on the Advent of Code
