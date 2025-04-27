@@ -92,8 +92,10 @@ impl Puzzle<Vec<Action>, (u32, Duration)> for Day2015_06 {
                 }
             }
         }
-        let result: usize = grid.iter()
-            .map(|row| row.iter().filter(|&&col| col).count()).sum();
+        let result: usize = grid
+            .iter()
+            .map(|row| row.iter().filter(|&&col| col).count())
+            .sum();
         (result as u32, Instant::now() - start_time)
     }
 
@@ -107,7 +109,7 @@ impl Puzzle<Vec<Action>, (u32, Duration)> for Day2015_06 {
         let input = Day2015_06::parse_input(&input);
         let return1 = Day2015_06::solve_part_1(&input);
         let return2 = Day2015_06::solve_part_2(&input);
-        return (return1, return2);
+        (return1, return2)
     }
 }
 
