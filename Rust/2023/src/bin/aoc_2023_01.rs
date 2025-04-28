@@ -1,4 +1,4 @@
-use aoc_utils::output::report;
+use aoc_utils::report;
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
@@ -6,7 +6,14 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     let res_first: Vec<_> = digit_map
         .iter()
         .filter(|(k, _)| (input.find(*k).is_some()))
-        .map(|(k, v)| (input.find(k).unwrap(), v))
+        .map(|(k, v)| {
+            let value = input.find(k);
+            match value {
+                Some(x) => x as i32,
+                None => -1,
+            };
+            (value, v)
+        })
         .collect();
 
     let res_last: Vec<_> = digit_map
@@ -23,22 +30,27 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
 
 fn solve_part_1(input: &str) -> (i32, Duration) {
     let start_time = Instant::now();
-    let map = HashMap::from_iter([
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4),
-        ("5", 5),
-        ("6", 6),
-        ("7", 7),
-        ("8", 8),
-        ("9", 9),
-    ]);
+
     let result = input
         .lines()
-        .map(|line| get_numbers(line, &map))
-        .map(|(f, l)| f * 10 + l)
-        .sum();
+        .map(|line| {
+            let first = line
+                .chars()
+                .find(|c| c.is_numeric())
+                .unwrap()
+                .to_digit(10)
+                .unwrap();
+
+            let last = line
+                .chars()
+                .rfind(|c| c.is_numeric())
+                .unwrap()
+                .to_digit(10)
+                .unwrap();
+
+            (first * 10) + last
+        })
+        .sum::<u32>() as i32;
     (result, Instant::now() - start_time)
 }
 
@@ -66,6 +78,7 @@ fn solve_part_2(input: &str) -> (i32, Duration) {
     let start_time = Instant::now();
     let result = input
         .lines()
+        // .map(|line| get_numbers(line, &map_p2))
         .map(|line| get_numbers(line, &map_p2))
         .map(|(f, l)| f * 10 + l)
         .sum();
