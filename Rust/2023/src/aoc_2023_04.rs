@@ -1,4 +1,4 @@
-use aoc_utils::output::report;
+use aoc_utils::report;
 use std::collections::HashSet;
 use std::time::Instant;
 
@@ -43,8 +43,8 @@ fn solve_part_2(input: &[(Cards, Cards)]) -> (i32, std::time::Duration) {
     (result, Instant::now() - start_time)
 }
 
-pub fn main() {
-    let input = aoc_utils::read_input(2023, 4, false);
+pub fn run(test_case: bool) {
+    let input = aoc_utils::read_input(2023, 4, test_case);
     let data = parse_input(&input);
     report("Part 1", solve_part_1(&data));
     report("Part 2", solve_part_2(&data));
