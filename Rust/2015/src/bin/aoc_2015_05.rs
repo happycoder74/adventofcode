@@ -1,5 +1,5 @@
-use aoc_utils::types::Puzzle;
-use std::time::{Duration, Instant};
+use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use std::time::Instant;
 
 pub struct Day2015_05 {
     year: u32,
@@ -8,20 +8,12 @@ pub struct Day2015_05 {
 
 fn check_double_letter(line: &str) -> bool {
     let mut zipped = line.chars().zip(line.chars().skip(1));
-    let result = zipped.any(|(a, b)| {
-        return a == b;
-    });
-
-    result
+    zipped.any(|(a, b)| a == b)
 }
+
 fn check_no_invalid(line: &str) -> bool {
     let invalid = ["ab", "cd", "pq", "xy"];
-    let result = invalid.iter().any(|s| match line.find(s) {
-        Some(_) => true,
-        _ => false,
-    });
-
-    return !result;
+    !invalid.iter().any(|s| line.contains(s))
 }
 
 fn check_wovels(line: &str) -> bool {
@@ -32,7 +24,7 @@ fn check_wovels(line: &str) -> bool {
                     return true;
                 }
             }
-            return false;
+            false
         })
         .count()
         >= 3
@@ -64,41 +56,45 @@ fn check_repeat(input: &str) -> bool {
     false
 }
 
-impl Puzzle<String, (u32, Duration)> for Day2015_05 {
+impl Puzzle<String> for Day2015_05 {
     fn parse_input(input: &str) -> String {
         String::from(input)
     }
 
-    fn solve_part_1(instructions: &String) -> (u32, Duration) {
+    fn solve_part_1(instructions: &String) -> Result<AocPartReturn, AocError> {
         let start_time = Instant::now();
 
         let result = instructions
             .lines()
             .filter(|line| {
-                return check_wovels(line) && check_double_letter(line) && check_no_invalid(line);
+                check_wovels(line) && check_double_letter(line) && check_no_invalid(line)
             })
             .count();
 
-        (result as u32, Instant::now() - start_time)
+        Ok(AocPartReturn {
+            result: AocResult::Usize(result),
+            duration: Instant::now() - start_time,
+        })
     }
 
-    fn solve_part_2(instructions: &String) -> (u32, Duration) {
+    fn solve_part_2(instructions: &String) -> Result<AocPartReturn, AocError> {
         let start_time = Instant::now();
         let result = instructions
             .lines()
-            .filter(|line| {
-                return check_pairs(line) && check_repeat(line);
-            })
+            .filter(|line| check_pairs(line) && check_repeat(line))
             .count();
 
-        (result as u32, Instant::now() - start_time)
+        Ok(AocPartReturn {
+            result: AocResult::Usize(result),
+            duration: Instant::now() - start_time,
+        })
     }
-    fn solve_all(self) -> ((u32, Duration), (u32, Duration)) {
-        let input = Day2015_05::get_input(self.year, self.day, false);
+    fn solve_all(self) -> AocReturn {
+        let input = aoc_utils::read_input(self.year, self.day, false);
         let input = Day2015_05::parse_input(&input);
         let return1 = Day2015_05::solve_part_1(&input);
         let return2 = Day2015_05::solve_part_2(&input);
-        return (return1, return2);
+        AocReturn::from_parts(return1, return2)
     }
 }
 
@@ -107,8 +103,7 @@ fn main() {
 
     let results = day.solve_all();
 
-    aoc_utils::report("Part 1", results.0);
-    aoc_utils::report("Part 2", results.1);
+    aoc_utils::report(results);
 }
 
 #[cfg(test)]
@@ -124,7 +119,7 @@ mod tests {
     #[test]
     fn test_check_wovel_false() {
         let input = "dvszwmarrgswjxmb";
-        assert_eq!(check_wovels(input), false);
+        assert!(!check_wovels(input));
     }
 
     #[test]
@@ -136,19 +131,19 @@ mod tests {
     #[test]
     fn test_check_double_letter_false() {
         let input = "abcabcabc";
-        assert_eq!(check_double_letter(input), false);
+        assert!(!check_double_letter(input));
     }
 
     #[test]
     fn test_check_invalid() {
         let input = "ugknbfddgicrmopn";
-        assert!(check_no_invalid(input) == true);
+        assert!(check_no_invalid(input));
     }
 
     #[test]
     fn test_check_invalid_false() {
         let input = "abhgdi";
-        assert!(check_no_invalid(input) == false);
+        assert!(!check_no_invalid(input));
     }
 
     #[test]
@@ -166,7 +161,7 @@ mod tests {
     #[test]
     fn test_check_pairs_aaa_fail() {
         let input = "aaa";
-        assert_eq!(check_pairs(input), false);
+        assert!(!check_pairs(input));
     }
 
     #[test]
@@ -178,7 +173,7 @@ mod tests {
     #[test]
     fn test_check_double_letter_noregex_fail() {
         let input = "jchzalrnumimnmhp";
-        assert_eq!(check_double_letter(input), false);
+        assert!(!check_double_letter(input));
     }
 
     #[test]
@@ -193,7 +188,7 @@ mod tests {
     fn test_check_repeat_bad() {
         let bad_input_repeat = vec!["uurcxstgmygtbstg"];
         for line in bad_input_repeat {
-            assert_eq!(check_repeat(line), false);
+            assert!(!check_repeat(line));
         }
     }
 }

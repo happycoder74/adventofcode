@@ -1,10 +1,11 @@
-use std::time::{Duration, Instant};
+use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use std::time::Instant;
 
-trait Puzzle<T, U> {
+trait Puzzle<T> {
     fn get_input(year: u32, day: u32) -> String;
     fn parse_input(input: &str) -> T;
-    fn solve_part_1(input: &T) -> U;
-    fn solve_part_2(input: &T) -> U;
+    fn solve_part_1(input: &T) -> Result<AocPartReturn, AocError>;
+    fn solve_part_2(input: &T) -> Result<AocPartReturn, AocError>;
 }
 
 pub struct Day2015_01 {
@@ -12,9 +13,9 @@ pub struct Day2015_01 {
     day: u32,
 }
 
-impl Puzzle<Vec<i32>, (i32, Duration)> for Day2015_01 {
+impl Puzzle<Vec<i32>> for Day2015_01 {
     fn get_input(year: u32, day: u32) -> String {
-        return aoc_utils::read_input(year, day, false);
+        aoc_utils::read_input(year, day, false)
     }
     fn parse_input(input: &str) -> Vec<i32> {
         fn helper(b: u8) -> i32 {
@@ -27,13 +28,17 @@ impl Puzzle<Vec<i32>, (i32, Duration)> for Day2015_01 {
         input.bytes().map(helper).collect()
     }
 
-    fn solve_part_1(input: &Vec<i32>) -> (i32, Duration) {
+    fn solve_part_1(input: &Vec<i32>) -> Result<AocPartReturn, AocError> {
         let start_time = Instant::now();
-        let final_floor = input.iter().sum();
+        let final_floor: i32 = input.iter().sum();
         let duration = Instant::now() - start_time;
-        (final_floor, duration)
+        Ok(AocPartReturn {
+            result: aoc_utils::AocResult::I32(final_floor),
+            duration,
+        })
     }
-    fn solve_part_2(input: &Vec<i32>) -> (i32, Duration) {
+
+    fn solve_part_2(input: &Vec<i32>) -> Result<AocPartReturn, AocError> {
         let start_time = Instant::now();
         let mut level = 0;
 
@@ -41,7 +46,10 @@ impl Puzzle<Vec<i32>, (i32, Duration)> for Day2015_01 {
             level += x;
             if level < 0 {
                 let duration = Instant::now() - start_time;
-                return ((i + 1) as i32, duration);
+                return Ok(AocPartReturn {
+                    result: AocResult::Usize(i + 1),
+                    duration,
+                });
             }
         }
 
@@ -50,12 +58,12 @@ impl Puzzle<Vec<i32>, (i32, Duration)> for Day2015_01 {
 }
 
 impl Day2015_01 {
-    fn solve_all(self) -> ((i32, Duration), (i32, Duration)) {
-        let input = Day2015_01::get_input(self.year, self.day);
-        let input = Day2015_01::parse_input(&input);
-        let return1 = Day2015_01::solve_part_1(&input);
-        let return2 = Day2015_01::solve_part_2(&input);
-        return (return1, return2);
+    fn solve_all(self) -> AocReturn {
+        let input = Self::get_input(self.year, self.day);
+        let input = Self::parse_input(&input);
+        let return1 = Self::solve_part_1(&input);
+        let return2 = Self::solve_part_2(&input);
+        AocReturn::from_parts(return1, return2)
     }
 }
 
@@ -64,8 +72,7 @@ fn main() {
 
     let results = day.solve_all();
 
-    aoc_utils::report("Part 1", results.0);
-    aoc_utils::report("Part 2", results.1);
+    aoc_utils::report(results);
 }
 
 #[cfg(test)]
@@ -76,76 +83,76 @@ mod tests {
     fn test_part_1a() {
         let input = String::from("(())");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(0, result.0);
+        assert_eq!(0, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1b() {
         let input = String::from("()()");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(0, result.0);
+        assert_eq!(0, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1c() {
         let input = String::from("(((");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(3, result.0);
+        assert_eq!(3, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1d() {
         let input = String::from("(()(()(");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(3, result.0);
+        assert_eq!(3, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1e() {
         let input = String::from("))(((((");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(3, result.0);
+        assert_eq!(3, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1f() {
         let input = String::from("())");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(-1, result.0);
+        assert_eq!(-1, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1g() {
         let input = String::from("))(");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(-1, result.0);
+        assert_eq!(-1, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1h() {
         let input = String::from(")))");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(-3, result.0);
+        assert_eq!(-3, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_1i() {
         let input = String::from(")())())");
         let result = Day2015_01::solve_part_1(&Day2015_01::parse_input(&input));
-        assert_eq!(-3, result.0);
+        assert_eq!(-3, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_2a() {
         let input = String::from(")");
         let result = Day2015_01::solve_part_2(&Day2015_01::parse_input(&input));
-        assert_eq!(1, result.0);
+        assert_eq!(1, result.unwrap().result.into());
     }
 
     #[test]
     fn test_part_2b() {
         let input = String::from("()())");
         let result = Day2015_01::solve_part_2(&Day2015_01::parse_input(&input));
-        assert_eq!(5, result.0);
+        assert_eq!(5, result.unwrap().result.into());
     }
 }

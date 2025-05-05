@@ -1,7 +1,12 @@
-use aoc_utils::output::report;
+use aoc_utils::report;
+use aoc_utils::AocError;
+use aoc_utils::AocPartReturn;
+use aoc_utils::AocResult;
+use aoc_utils::AocReturn;
 use std::collections::HashMap;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
+#[allow(clippy::search_is_some)]
 fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     let res_first: Vec<_> = digit_map
         .iter()
@@ -21,7 +26,7 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     )
 }
 
-fn solve_part_1(input: &str) -> (i32, Duration) {
+fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
     let start_time = Instant::now();
     let map = HashMap::from_iter([
         ("1", 1),
@@ -34,15 +39,18 @@ fn solve_part_1(input: &str) -> (i32, Duration) {
         ("8", 8),
         ("9", 9),
     ]);
-    let result = input
+    let result: i32 = input
         .lines()
         .map(|line| get_numbers(line, &map))
         .map(|(f, l)| f * 10 + l)
         .sum();
-    (result, Instant::now() - start_time)
+    Ok(AocPartReturn {
+        result: AocResult::U32(result as u32),
+        duration: Instant::now() - start_time,
+    })
 }
 
-fn solve_part_2(input: &str) -> (i32, Duration) {
+fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
     let map_p2: HashMap<&str, i32> = HashMap::from_iter([
         ("1", 1),
         ("2", 2),
@@ -64,18 +72,23 @@ fn solve_part_2(input: &str) -> (i32, Duration) {
         ("nine", 9),
     ]);
     let start_time = Instant::now();
-    let result = input
+    let result: i32 = input
         .lines()
         .map(|line| get_numbers(line, &map_p2))
         .map(|(f, l)| f * 10 + l)
         .sum();
-    (result, Instant::now() - start_time)
+    Ok(AocPartReturn {
+        result: AocResult::U32(result as u32),
+        duration: Instant::now() - start_time,
+    })
 }
 
 pub fn main() {
     let input = aoc_utils::read_input(2023, 1, false);
-    report("Part 1", solve_part_1(&input));
-    report("Part 2", solve_part_2(&input));
+    report(AocReturn::from_parts(
+        solve_part_1(&input),
+        solve_part_2(&input),
+    ));
 }
 
 #[cfg(test)]
@@ -85,6 +98,6 @@ mod tests {
     #[test]
     fn test_part_1() {
         let input = aoc_utils::read_input(2023, 4, true);
-        assert_eq!(142, solve_part_1(&input).0)
+        assert_eq!(142u32, solve_part_1(&input).unwrap().result.into())
     }
 }
