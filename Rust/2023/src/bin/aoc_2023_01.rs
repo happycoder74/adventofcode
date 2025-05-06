@@ -11,14 +11,7 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     let res_first: Vec<_> = digit_map
         .iter()
         .filter(|(k, _)| (input.find(*k).is_some()))
-        .map(|(k, v)| {
-            let value = input.find(k);
-            match value {
-                Some(x) => x as i32,
-                None => -1,
-            };
-            (value, v)
-        })
+        .map(|(k, v)| (input.find(k).unwrap(), v))
         .collect();
 
     let res_last: Vec<_> = digit_map
@@ -35,20 +28,14 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
 
 fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
     let start_time = Instant::now();
-    let map = HashMap::from_iter([
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4),
-        ("5", 5),
-        ("6", 6),
-        ("7", 7),
-        ("8", 8),
-        ("9", 9),
-    ]);
-    let result: i32 = input
+    let result: u32 = input
         .lines()
-        .map(|line| get_numbers(line, &map))
+        .map(|line| {
+            let mut digits = line.chars().filter(|c| c.is_digit(10));
+            let first = digits.nth(0).unwrap();
+            let last = digits.nth_back(0).unwrap_or(first);
+            (first.to_digit(10).unwrap(), last.to_digit(10).unwrap())
+        })
         .map(|(f, l)| f * 10 + l)
         .sum();
     Ok(AocPartReturn {
