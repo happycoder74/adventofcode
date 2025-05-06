@@ -34,13 +34,10 @@ fn check_pairs(input: &str) -> bool {
     let zipped: Vec<_> = input.chars().zip(input.chars().skip(1)).collect();
     for p in zipped.iter().rev().skip(2).rev().enumerate() {
         let (i, pair) = p;
-        match zipped.iter().rposition(|item| item == pair) {
-            Some(x) => {
-                if x > i + 1 {
-                    return true;
-                }
+        if let Some(x) = zipped.iter().rposition(|item| item == pair) {
+            if x > i + 1 {
+                return true;
             }
-            _ => {}
         }
     }
     false
