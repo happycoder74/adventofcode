@@ -15,27 +15,25 @@ pub fn solve_part(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
         if let Some(dir) = comm.next() {
             let steps_str: String = comm.collect();
             let steps = steps_str.parse::<i32>()?;
-            direction = match dir {
-                'R' => match direction {
-                    Direction::North => Direction::East,
-                    Direction::West => Direction::North,
-                    Direction::South => Direction::West,
-                    Direction::East => Direction::South,
-                },
-                'L' => match direction {
-                    Direction::North => Direction::West,
-                    Direction::West => Direction::South,
-                    Direction::South => Direction::East,
-                    Direction::East => Direction::North,
-                },
-                _ => panic!("FAIL"),
+            match (dir, direction) {
+                ('R', Direction::North) | ('L', Direction::South) => {
+                    position = (position.0 + steps, position.1);
+                    direction = Direction::East;
+                }
+                ('R', Direction::South) | ('L', Direction::North) => {
+                    position = (position.0 - steps, position.1);
+                    direction = Direction::West;
+                }
+                ('R', Direction::West) | ('L', Direction::East) => {
+                    position = (position.0, position.1 + steps);
+                    direction = Direction::North;
+                }
+                ('R', Direction::East) | ('L', Direction::West) => {
+                    position = (position.0, position.1 - steps);
+                    direction = Direction::South;
+                }
+                _ => panic!(),
             };
-            match direction {
-                Direction::North => position = (position.0, position.1 + steps),
-                Direction::South => position = (position.0, position.1 - steps),
-                Direction::East => position = (position.0 + steps, position.1),
-                Direction::West => position = (position.0 - steps, position.1),
-            }
         }
     }
     Ok(position.0.abs() + position.1.abs())

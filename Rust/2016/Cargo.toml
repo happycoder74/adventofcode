@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = [
+members = ["aoc_utils",
     "day01"
 ]
 
