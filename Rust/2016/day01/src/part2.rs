@@ -1,3 +1,5 @@
+use crate::{Instruction, Position};
+
 pub enum Direction {
     North,
     West,
@@ -6,47 +8,58 @@ pub enum Direction {
 }
 
 pub fn solve_part(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
-    let commands: Vec<_> = input.trim().split(", ").collect();
+    let commands: Vec<Instruction> = input
+        .trim()
+        .split(", ")
+        .map(|l| l.parse().unwrap())
+        .collect();
     let mut direction = Direction::North;
-    let mut position: (i32, i32) = (0, 0);
+    let mut position: Position = Position::default();
     let mut visited = std::collections::HashSet::new();
-    visited.insert(position);
+    visited.insert(position.clone());
     for command in commands {
-        let mut comm = command.chars();
-        if let Some(dir) = comm.next() {
-            let steps_str: String = comm.collect();
-            let steps = steps_str.parse::<i32>()?;
-            direction = match dir {
-                'R' => match direction {
-                    Direction::North => Direction::East,
-                    Direction::West => Direction::North,
-                    Direction::South => Direction::West,
-                    Direction::East => Direction::South,
-                },
-                'L' => match direction {
-                    Direction::North => Direction::West,
-                    Direction::West => Direction::South,
-                    Direction::South => Direction::East,
-                    Direction::East => Direction::North,
-                },
-                _ => panic!("FAIL"),
-            };
-            for _ in 1..=steps {
-                match direction {
-                    Direction::North => position = (position.0, position.1 + 1),
-                    Direction::South => position = (position.0, position.1 - 1),
-                    Direction::East => position = (position.0 + 1, position.1),
-                    Direction::West => position = (position.0 - 1, position.1),
+        match (command, direction) {
+            (Instruction::Right(v), Direction::North)
+            | (Instruction::Left(v), Direction::South) => {
+                direction = Direction::East;
+                for _ in 1..=v {
+                    position.x += 1;
+                    if !visited.insert(position.clone()) {
+                        return Ok(position.manhattan_distance());
+                    }
                 }
-                let result = visited.insert(position);
-                if !result {
-                    return Ok(position.0.abs() + position.1.abs());
+            }
+            (Instruction::Right(v), Direction::South)
+            | (Instruction::Left(v), Direction::North) => {
+                direction = Direction::West;
+                for _ in 1..=v {
+                    position.x -= 1;
+                    if !visited.insert(position.clone()) {
+                        return Ok(position.manhattan_distance());
+                    }
+                }
+            }
+            (Instruction::Right(v), Direction::West) | (Instruction::Left(v), Direction::East) => {
+                direction = Direction::North;
+                for _ in 1..=v {
+                    position.y += 1;
+                    if !visited.insert(position.clone()) {
+                        return Ok(position.manhattan_distance());
+                    }
+                }
+            }
+            (Instruction::Right(v), Direction::East) | (Instruction::Left(v), Direction::West) => {
+                direction = Direction::South;
+                for _ in 1..=v {
+                    position.y -= 1;
+                    if !visited.insert(position.clone()) {
+                        return Ok(position.manhattan_distance());
+                    }
                 }
             }
         }
     }
-    println!("Ends up here");
-    Ok(position.0.abs() + position.1.abs())
+    Ok(position.manhattan_distance())
 }
 
 #[cfg(test)]
