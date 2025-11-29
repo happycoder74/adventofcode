@@ -1,6 +1,6 @@
-use aoc_utils::types::Puzzle;
+use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
 use std::collections::HashSet;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 struct Agent {
     x: i32,
@@ -42,23 +42,26 @@ pub struct Day2015_03 {
     day: u32,
 }
 
-impl Puzzle<String, (u32, Duration)> for Day2015_03 {
+impl Puzzle<String> for Day2015_03 {
     fn parse_input(input: &str) -> String {
         String::from(input)
     }
 
-    fn solve_part_1(instructions: &String) -> (u32, Duration) {
+    fn solve_part_1(instructions: &String) -> Result<AocPartReturn, AocError> {
         let start_time = Instant::now();
         let mut santa: Agent = Agent::new();
 
         for c in instructions.split("") {
-            santa.make_step(&c);
+            santa.make_step(c);
         }
 
-        (santa.get_locations() as u32, Instant::now() - start_time)
+        Ok(AocPartReturn {
+            result: AocResult::Usize(santa.get_locations()),
+            duration: Instant::now() - start_time,
+        })
     }
 
-    fn solve_part_2(instructions: &String) -> (u32, Duration) {
+    fn solve_part_2(instructions: &String) -> Result<AocPartReturn, AocError> {
         let start_time = Instant::now();
         let mut santa: Agent = Agent::new();
         let mut robosanta: Agent = Agent::new();
@@ -80,14 +83,17 @@ impl Puzzle<String, (u32, Duration)> for Day2015_03 {
             santa.coords.insert(*location);
         }
 
-        (santa.get_locations() as u32, Instant::now() - start_time)
+        Ok(AocPartReturn {
+            result: AocResult::Usize(santa.get_locations()),
+            duration: Instant::now() - start_time,
+        })
     }
-    fn solve_all(self) -> ((u32, Duration), (u32, Duration)) {
-        let input = Day2015_03::get_input(self.year, self.day, false);
+    fn solve_all(self) -> AocReturn {
+        let input = aoc_utils::read_input(self.year, self.day, false);
         let input = Day2015_03::parse_input(&input);
         let return1 = Day2015_03::solve_part_1(&input);
         let return2 = Day2015_03::solve_part_2(&input);
-        return (return1, return2);
+        AocReturn::from_parts(return1, return2)
     }
 }
 
@@ -96,8 +102,7 @@ fn main() {
 
     let results = day.solve_all();
 
-    aoc_utils::report("Part 1", results.0);
-    aoc_utils::report("Part 2", results.1);
+    aoc_utils::report(results);
 }
 
 #[cfg(test)]
@@ -154,36 +159,78 @@ mod tests {
     #[test]
     fn test_part_1a() {
         let input = String::from(">");
-        assert_eq!(2, Day2015_03::solve_part_1(&input).0);
+        assert_eq!(
+            2,
+            Day2015_03::solve_part_1(&input)
+                .unwrap()
+                .result
+                .try_into()
+                .unwrap()
+        );
     }
 
     #[test]
     fn test_part_1b() {
         let input = String::from("^>v<");
-        assert_eq!(4, Day2015_03::solve_part_1(&input).0);
+        assert_eq!(
+            4,
+            Day2015_03::solve_part_1(&input)
+                .unwrap()
+                .result
+                .try_into()
+                .unwrap()
+        );
     }
 
     #[test]
     fn test_part_1c() {
         let input = String::from("^v^v^v^v^v");
-        assert_eq!(2, Day2015_03::solve_part_1(&input).0);
+        assert_eq!(
+            2,
+            Day2015_03::solve_part_1(&input)
+                .unwrap()
+                .result
+                .try_into()
+                .unwrap()
+        );
     }
 
     #[test]
     fn test_part_2a() {
         let input = String::from("^v");
-        assert_eq!(3, Day2015_03::solve_part_2(&input).0);
+        assert_eq!(
+            3,
+            Day2015_03::solve_part_2(&input)
+                .unwrap()
+                .result
+                .try_into()
+                .unwrap()
+        );
     }
 
     #[test]
     fn test_part_2b() {
         let input = String::from("^>v<");
-        assert_eq!(3, Day2015_03::solve_part_2(&input).0);
+        assert_eq!(
+            3,
+            Day2015_03::solve_part_2(&input)
+                .unwrap()
+                .result
+                .try_into()
+                .unwrap()
+        );
     }
 
     #[test]
     fn test_part_2c() {
         let input = String::from("^v^v^v^v^v");
-        assert_eq!(11, Day2015_03::solve_part_2(&input).0);
+        assert_eq!(
+            11,
+            Day2015_03::solve_part_2(&input)
+                .unwrap()
+                .result
+                .try_into()
+                .unwrap()
+        );
     }
 }
