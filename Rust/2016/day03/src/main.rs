@@ -11,8 +11,8 @@ fn main() {
         }
         let instructions = part2::parse_input(&input);
         match part1::solve_part(&instructions) {
-            Ok(x) => println!("Part 1: {}", x),
-            Err(e) => println!("Part 1: Error {e:?}"),
+            Ok(x) => println!("Part 2: {}", x),
+            Err(e) => println!("Part 2: Error {e:?}"),
         }
     } else {
         println!("Could not read input file");
