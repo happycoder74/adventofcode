@@ -11,9 +11,14 @@ pub fn solve_part(input: &str) -> Result<u64, NotImplementedError> {
         let start: u64 = r.next().unwrap();
         let end: u64 = r.next().unwrap();
         for val in start..=end {
-            let val_str = val.to_string();
-            let parts = val_str.split_at(val_str.len() / 2);
-            if parts.0 == parts.1 {
+            let n_digits = val.ilog10() + 1;
+            let upper = val / 10u64.pow(n_digits / 2);
+            let lower = val - upper * 10u64.pow(n_digits / 2);
+            if lower < upper {
+                continue;
+            }
+
+            if upper == lower {
                 result += val;
             }
         }
