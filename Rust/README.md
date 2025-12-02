@@ -1,14 +1,14 @@
 # Advent of Code in Rust
 
-First baby steps in trying to learn Rust...
+Rust solutions to the Advent of Code problems.
 
-Some solutions are overly complicated, since this "project" is not about
-competing, but more about learning the Rust programming language and its
-features.
 
-Inspirational credits to
+## 2025
 
-- [believer](https://github.com/believer)
+| Day | Stars            | Comment                                |
+|:---:|:-----------------|:---------------------------------------|
+|  1  | &#11088;&#11088; |                                        |
+|  2  | &#11088;&#11088; |                                        |
 
 ## 2024
 
@@ -47,6 +47,16 @@ Inspirational credits to
 |  1  | &#11088;&#11088; | Why make it too hard...|
 |  2  | &#11088;&#11088; | quite fun and fast |
 |  3  | &#11088;&#11088; | |
+
+## 2016
+
+| Day | Stars            | Comment                                |
+|:---:|:-----------------|:---------------------------------------|
+|  1  | &#11088;&#11088; | |
+|  2  | &#11088;&#11088; | |
+|  3  | &#11088;&#11088; | |
+|  4  | &#11088;&#11088; | |
+|  5  | &#11088;&#11088; | |
 
 ## 2015
 
