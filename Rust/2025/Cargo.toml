@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = ["aoc_utils", "day01"]
+
+[workspace.package]
+description = "Solutions for Advent of Code 2025"
+version = "0.1.0"
+authors = ["Christian Lundh <christianlundh1974@gmail.com"]
+edition = "2024"
+

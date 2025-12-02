@@ -8,7 +8,8 @@ members = [
 exclude = [
     "2016",
     "2019",
-    "2024"
+    "2024",
+    "2025"
 ]
 
 [workspace.package]
