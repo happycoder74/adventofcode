@@ -1,6 +1,8 @@
 use crate::Instruction;
+use aoc_utils::NotImplementedError;
 
-pub fn solve_part(input: &Vec<&str>) -> Result<i32, ()> {
+#[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
+pub fn solve_part(input: &Vec<&str>) -> Result<i32, NotImplementedError> {
     let mut current_value = 50;
     let mut num_zeros = 0;
 

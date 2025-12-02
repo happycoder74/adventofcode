@@ -1,4 +1,4 @@
-use crate::NotImplementedError;
+use aoc_utils::NotImplementedError;
 
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<u64, NotImplementedError> {
