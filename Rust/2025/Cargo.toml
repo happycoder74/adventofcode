@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["aoc_utils", "day01"]
+members = ["aoc_utils", "day01", "day02"]
 
 [workspace.package]
 description = "Solutions for Advent of Code 2025"
