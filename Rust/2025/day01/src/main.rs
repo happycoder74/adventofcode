@@ -9,11 +9,11 @@ fn main() {
         Ok(x) => {
             let commands = x.lines().map(str::trim).collect();
             match part1::solve_part(&commands) {
-                Ok(result) => println!("Part 1: {}", result),
+                Ok(result) => println!("Part 1: {result}"),
                 Err(e) => println!("Part1: Error '{e:?}'"),
             }
             match part2::solve_part(&commands) {
-                Ok(result) => println!("Part 2: {}", result),
+                Ok(result) => println!("Part 2: {result}"),
                 Err(e) => println!("Part2: Error '{e:?}'"),
             }
         }
