@@ -1,30 +1,32 @@
 use aoc_utils::NotImplementedError;
-use itertools::Itertools;
 
 #[allow(clippy::missing_panics_doc, clippy::missing_errors_doc)]
 pub fn solve_part(input: &str) -> Result<u64, NotImplementedError> {
     let mut result = 0;
-    let ranges = input
-        .trim()
-        .split(',')
-        .map(|s| s.split('-').map(|r| r.parse::<u64>().unwrap()));
-    for mut r in ranges {
-        let start: u64 = r.next().unwrap();
-        let end: u64 = r.next().unwrap();
+    let ranges = input.trim().split(|c| c == ',').map(|s| {
+        let mut iter = s.splitn(2, |c| c == '-').map(|r| r.parse::<u64>().unwrap());
+        (iter.next().unwrap(), iter.next().unwrap())
+    });
+    for (start, end) in ranges {
         for val in start..=end {
-            let val_str = val.to_string();
-            for sizes in 1..=(val_str.len() / 2) {
-                // let mut parts = val_str.chars().chunks(sizes).into_iter();
-                let check = val_str
-                    .chars()
-                    .chunks(sizes)
-                    .into_iter()
-                    .map(std::iter::Iterator::collect::<Vec<char>>)
-                    .all_equal();
-                if check {
-                    result += val;
-                    break;
+            let check = match val {
+                10..=99 => val % 11 == 0,
+                100..=999 => val % 111 == 0,
+                1_000..=9_999 => val % 101 == 0 || val % 1_111 == 0,
+                10_000..=99_999 => val % 11_111 == 0,
+                100_000..=999_999 => val % 1_001 == 0 || val % 10_101 == 0 || val % 111_111 == 0,
+                1_000_000..=9_999_999 => val % 1_111_111 == 0,
+                10_000_000..=99_999_999 => {
+                    val % 10_001 == 0 || val % 1_010_101 == 0 || val % 11_111_111 == 0
                 }
+                100_000_000..=999_999_999 => val % 1_001_001 == 0 || val % 111_111_111 == 0,
+                1_000_000_000..=9_999_999_999 => {
+                    val % 100_001 == 0 || val % 101_010_101 == 0 || val % 1_111_111_111 == 0
+                }
+                _ => false,
+            };
+            if check {
+                result += val;
             }
         }
     }
