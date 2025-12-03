@@ -8,12 +8,20 @@ fn main() {
     match input {
         Ok(x) => {
             let commands = x.lines().map(str::trim).collect();
+            let start = std::time::Instant::now();
             match part1::solve_part(&commands) {
-                Ok(result) => println!("Part 1: {result}"),
+                Ok(result) => {
+                    let duration = std::time::Instant::now() - start;
+                    println!("Part 1: {result} - {duration:?}");
+                }
                 Err(e) => println!("Part1: Error '{e:?}'"),
             }
+            let start = std::time::Instant::now();
             match part2::solve_part(&commands) {
-                Ok(result) => println!("Part 2: {result}"),
+                Ok(result) => {
+                    let duration = std::time::Instant::now() - start;
+                    println!("Part 2: {result} - {duration:?}");
+                }
                 Err(e) => println!("Part2: Error '{e:?}'"),
             }
         }
