@@ -3,17 +3,20 @@ use aoc_utils::NotImplementedError;
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<u64, NotImplementedError> {
     let mut result = 0;
-    let ranges = input
-        .trim()
-        .split(',')
-        .map(|s| s.split('-').map(|r| r.parse::<u64>().unwrap()));
-    for mut r in ranges {
-        let start: u64 = r.next().unwrap();
-        let end: u64 = r.next().unwrap();
+    let ranges = input.trim().split(|c| c == ',').map(|s| {
+        let mut iter = s.splitn(2, |c| c == '-').map(|r| r.parse::<u64>().unwrap());
+        (iter.next().unwrap(), iter.next().unwrap())
+    });
+    for (start, end) in ranges {
         for val in start..=end {
-            let val_str = val.to_string();
-            let parts = val_str.split_at(val_str.len() / 2);
-            if parts.0 == parts.1 {
+            if match val {
+                10..=99 => val % 11 == 0,
+                1_000..=9_999 => val % 101 == 0,
+                100_000..=999_999 => val % 1_001 == 0,
+                10_000_000..=99_999_999 => val % 10_001 == 0,
+                1_000_000_000..=9_999_999_999 => val % 100_001 == 0,
+                _ => false,
+            } {
                 result += val;
             }
         }
