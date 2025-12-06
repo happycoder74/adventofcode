@@ -16,6 +16,14 @@ impl NotImplementedError {
     }
 }
 
+impl Default for NotImplementedError {
+    fn default() -> Self {
+        Self {
+            text: String::from("Not implemented"),
+        }
+    }
+}
+
 impl Error for NotImplementedError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         None
