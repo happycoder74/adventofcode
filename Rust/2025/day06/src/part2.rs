@@ -27,8 +27,8 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
         let column = reversed_text.iter().map(|row| row[col]).collect::<Vec<_>>();
         columns.push(column);
     }
-    let operands = columns
-        .split(|v| v == &vec![' '; reversed_text.len()])
+    let result = columns
+        .split(|v| v == &vec![' '; rows.len() - 1])
         .map(|v| {
             v.iter()
                 .map(|vv| {
@@ -40,15 +40,13 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
                 })
                 .collect::<Vec<_>>()
         })
-        .collect::<Vec<_>>();
+        .enumerate()
+        .map(|(i, op)| match operators[i] {
+            Operator::Multiply(x) => op.iter().fold(x, |acc, v| acc * v),
+            Operator::Add(x) => op.iter().fold(x, |acc, v| acc + v),
+        })
+        .sum::<usize>();
 
-    let mut result = 0;
-    for operation_index in 0..operands.len() {
-        result += match operators[operation_index] {
-            Operator::Multiply => operands[operation_index].iter().fold(1, |acc, v| acc * v),
-            Operator::Add => operands[operation_index].iter().fold(0, |acc, v| acc + v),
-        };
-    }
     Ok(result)
 }
 
