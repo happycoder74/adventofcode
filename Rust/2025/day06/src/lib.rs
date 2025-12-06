@@ -3,18 +3,21 @@ pub mod part2;
 
 #[derive(Debug)]
 pub enum Operator {
-    Multiply,
-    Add,
+    Multiply(usize),
+    Add(usize),
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub struct ParseOperatorError;
+
 impl std::str::FromStr for Operator {
-    type Err = ();
+    type Err = ParseOperatorError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(match s {
-            "*" => Operator::Multiply,
-            "+" => Operator::Add,
-            _ => unreachable!("Invalid operator '{s}'"),
-        })
+        match s {
+            "*" => Ok(Operator::Multiply(1)),
+            "+" => Ok(Operator::Add(0)),
+            _ => Err(ParseOperatorError),
+        }
     }
 }

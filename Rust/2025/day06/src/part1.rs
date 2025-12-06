@@ -24,18 +24,11 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
 
     let mut result = 0usize;
     for icol in 0..operands[0].len() {
-        let column: Vec<_> = operands.iter().map(|v| v[icol]).collect();
-        let operator = &operators[icol];
-        result += column.iter().fold(
-            match operator {
-                Operator::Multiply => 1,
-                Operator::Add => 0,
-            },
-            |acc, v| match operator {
-                Operator::Multiply => acc * v,
-                Operator::Add => acc + v,
-            },
-        );
+        let column = operands.iter().map(|v| v[icol]);
+        result += match &operators[icol] {
+            Operator::Multiply(x) => column.fold(*x, |acc, v| acc * v),
+            Operator::Add(x) => column.fold(*x, |acc, v| acc * v),
+        }
     }
 
     Ok(result)
