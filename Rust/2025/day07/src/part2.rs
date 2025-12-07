@@ -11,10 +11,8 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
     let mut beams = HashMap::new();
     beams.insert(start, 1usize);
     for line in lines {
-        println!("line = {line}");
         let mut new_beams = HashMap::new();
         for (beam, count) in &mut beams {
-            println!("beam = {}", &beam);
             if line.chars().nth(*beam).unwrap() == '.' {
                 *new_beams.entry(*beam).or_insert(0) += *count;
             } else {
