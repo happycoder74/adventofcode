@@ -21,18 +21,17 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
             match grid.grid.get(&loc) {
                 Some(x) => match x {
                     '^' => {
-                        let loc_left = loc.step(-1, 0);
-                        to_visit.push_back(loc_left);
-                        let loc_right = loc.step(1, 0);
-                        to_visit.push_back(loc_right);
+                        if let Some(loc_left) = loc.step(-1, 0) {
+                            to_visit.push_back(loc_left);
+                        }
+                        if let Some(loc_right) = loc.step(1, 0) {
+                            to_visit.push_back(loc_right);
+                        }
                         split_counter += 1;
                     }
                     '.' => {
                         grid.grid.insert(loc, '|');
                         to_visit.push_back(loc.step_down());
-                    }
-                    '|' => {
-                        println!("Hmmmm ({loc})");
                     }
                     _ => unreachable!(),
                 },

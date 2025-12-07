@@ -15,15 +15,21 @@ impl std::fmt::Display for Location {
 }
 
 impl Location {
-    fn step(&self, x_steps: i32, y_steps: i32) -> Self {
-        Self {
+    fn step(&self, x_steps: i32, y_steps: i32) -> Option<Self> {
+        if self.x == 0 && x_steps < 0 {
+            return None;
+        }
+        if self.y == 0 && y_steps < 0 {
+            return None;
+        }
+        Some(Self {
             x: (self.x as i32 + x_steps) as u32,
             y: (self.y as i32 + y_steps) as u32,
-        }
+        })
     }
 
     fn step_down(&self) -> Self {
-        self.step(0, 1)
+        self.step(0, 1).unwrap()
     }
 }
 struct Grid {
