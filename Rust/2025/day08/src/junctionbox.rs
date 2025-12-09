@@ -32,8 +32,8 @@ impl std::fmt::Debug for JunctionBox {
 }
 
 impl JunctionBox {
-    fn new() -> Self {
-        Self::default()
+    pub fn get_x(&self) -> usize {
+        self.x
     }
 
     fn from(x: usize, y: usize, z: usize) -> Self {

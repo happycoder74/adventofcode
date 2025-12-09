@@ -8,7 +8,7 @@ use std::num::ParseIntError;
 
 use aoc_utils::NotImplementedError;
 
-use crate::{Circuit, Connection, JunctionBox};
+use crate::{Connection, JunctionBox};
 
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str, number_of_pairs: usize) -> Result<usize, NotImplementedError> {
