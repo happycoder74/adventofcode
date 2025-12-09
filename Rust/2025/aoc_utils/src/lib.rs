@@ -49,3 +49,20 @@ pub fn read_input(day: u32) -> Result<String, Box<dyn std::error::Error>> {
     let content = std::fs::read_to_string(path)?;
     Ok(content)
 }
+
+#[derive(Debug, Eq, Hash, PartialEq)]
+pub struct Location<T> {
+    pub x: T,
+    pub y: T,
+}
+
+impl<T: std::str::FromStr> std::str::FromStr for Location<T> {
+    type Err = T::Err;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut loc = s.split(',');
+        let x: T = loc.next().unwrap().parse::<T>()?;
+        let y: T = loc.next().unwrap().parse()?;
+
+        Ok(Self { x, y })
+    }
+}

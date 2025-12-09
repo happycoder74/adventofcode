@@ -1,30 +1,13 @@
 #![allow(unused_variables)]
+use aoc_utils::Location;
 use aoc_utils::NotImplementedError;
 use itertools::Itertools;
-use std::num::ParseIntError;
-
-#[derive(Debug, Eq, Hash, PartialEq)]
-struct Location {
-    x: usize,
-    y: usize,
-}
-
-impl std::str::FromStr for Location {
-    type Err = ParseIntError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut loc = s.split(',');
-        let x: usize = loc.next().unwrap().parse()?;
-        let y: usize = loc.next().unwrap().parse()?;
-
-        Ok(Self { x, y })
-    }
-}
 
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
     let parsed = input
         .lines()
-        .map(|line| line.trim().parse::<Location>().unwrap())
+        .map(|line| line.trim().parse::<Location<usize>>().unwrap())
         .collect::<Vec<_>>();
 
     let combos = parsed
