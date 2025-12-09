@@ -5,7 +5,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 ## Year 2025
 Rust will be the primary language of choice this year.
 
-+ 16 &#11088; in [Rust](Rust/README.md)
++ 17 &#11088; in [Rust](Rust/README.md)
 
 ## Year 2024
 
