@@ -2,7 +2,6 @@
 
 Rust solutions to the Advent of Code problems.
 
-
 ## 2025
 
 | Day | Stars            | Comment                                |
@@ -15,6 +14,7 @@ Rust solutions to the Advent of Code problems.
 |  6  | &#11088;&#11088; |                                        |
 |  7  | &#11088;&#11088; |                                        |
 |  8  | &#11088;&#11088; |                                        |
+|  9  | &#11088;&#11088; |                                        |
 
 ## 2024
 
