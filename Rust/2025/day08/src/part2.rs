@@ -22,11 +22,7 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
 
     let mut circuits: Vec<HashSet<JunctionBox>> = vec![];
     let mut last_connection = Connection::default();
-    loop {
-        let conn = match connections.pop() {
-            Some(x) => x,
-            None => break,
-        };
+    while let Some(conn) = connections.pop() {
         let box1 = conn.j1;
         let box2 = conn.j2;
         let mut a = circuits
