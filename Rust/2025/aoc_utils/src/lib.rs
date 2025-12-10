@@ -1,3 +1,4 @@
+use num::Integer;
 use std::error::Error;
 use std::fmt::Display;
 use std::path::PathBuf;
@@ -45,18 +46,17 @@ pub fn read_input(day: u32) -> Result<String, Box<dyn std::error::Error>> {
     path.push(format!("{day:02}"));
     path.push("input.txt");
 
-    // println!("Read from '{}'", path.display());
     let content = std::fs::read_to_string(path)?;
     Ok(content)
 }
 
-#[derive(Debug, Eq, Hash, PartialEq)]
-pub struct Location<T> {
+#[derive(Debug, Eq, Hash, PartialEq, Clone)]
+pub struct Location<T: Integer> {
     pub x: T,
     pub y: T,
 }
 
-impl<T: std::str::FromStr> std::str::FromStr for Location<T> {
+impl<T: std::str::FromStr + Integer> std::str::FromStr for Location<T> {
     type Err = T::Err;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut loc = s.split(',');
