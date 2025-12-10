@@ -14,8 +14,8 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
         .map(|line| line.trim().parse::<JunctionBox>().unwrap())
         .combinations(2)
         .map(|c| Connection {
-            j1: c[0].clone(),
-            j2: c[1].clone(),
+            j1: c[0],
+            j2: c[1],
             d: c[0].distance(&c[1]),
         })
         .collect::<BinaryHeap<_>>();
