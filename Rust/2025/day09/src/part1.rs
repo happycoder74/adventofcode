@@ -5,24 +5,19 @@ use itertools::Itertools;
 
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
-    let parsed = input
+    let result = input
         .lines()
         .map(|line| line.trim().parse::<Location<usize>>().unwrap())
-        .collect::<Vec<_>>();
-
-    let combos = parsed
-        .iter()
         .combinations(2)
         .map(|v| {
-            let l1 = v[0];
-            let l2 = v[1];
-            let area = (l1.x.abs_diff(l2.x) + 1) * (l1.y.abs_diff(l2.y) + 1);
-            area
+            let l1 = &v[0];
+            let l2 = &v[1];
+            (l1.x.abs_diff(l2.x) + 1) * (l1.y.abs_diff(l2.y) + 1)
         })
         .max()
         .unwrap();
 
-    Ok(combos)
+    Ok(result)
 }
 
 #[cfg(test)]
