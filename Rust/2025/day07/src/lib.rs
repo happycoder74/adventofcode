@@ -62,9 +62,9 @@ impl Grid {
             for x in 0..=self.x_size {
                 print!("{}", self.grid.get(&Location { x, y }).unwrap());
             }
-            print!("\n");
+            println!();
         }
-        print!("\n");
+        println!();
     }
 
     fn import(input: &str) -> Self {

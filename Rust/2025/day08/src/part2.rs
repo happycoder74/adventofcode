@@ -14,19 +14,15 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
         .map(|line| line.trim().parse::<JunctionBox>().unwrap())
         .combinations(2)
         .map(|c| Connection {
-            j1: c[0].clone(),
-            j2: c[1].clone(),
+            j1: c[0],
+            j2: c[1],
             d: c[0].distance(&c[1]),
         })
         .collect::<BinaryHeap<_>>();
 
     let mut circuits: Vec<HashSet<JunctionBox>> = vec![];
     let mut last_connection = Connection::default();
-    loop {
-        let conn = match connections.pop() {
-            Some(x) => x,
-            None => break,
-        };
+    while let Some(conn) = connections.pop() {
         let box1 = conn.j1;
         let box2 = conn.j2;
         let mut a = circuits
