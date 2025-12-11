@@ -5,7 +5,24 @@ use crate::parse_input;
 
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<usize, Box<dyn std::error::Error>> {
-    Err(Box::new(NotImplementedError::default()))
+    if let Ok(instructions) = parse_input(input) {
+        let mut to_visit = vec![];
+        to_visit.push("svr".to_string());
+        let mut paths = 0usize;
+        while let Some(node) = to_visit.pop() {
+            if let Some(destinations) = instructions.get(&node) {
+                for destination in destinations {
+                    if destination == "dac" {
+                        paths += 1;
+                    } else {
+                        to_visit.push(destination.clone());
+                    }
+                }
+            }
+        }
+        return Ok(paths);
+    }
+    Err(Box::new(NotImplementedError))
 }
 
 #[cfg(test)]

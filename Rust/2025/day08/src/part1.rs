@@ -1,4 +1,3 @@
-#![allow(unused)]
 #![allow(dead_code, unused)]
 #![allow(unused_variables)]
 use itertools::Itertools;
@@ -17,8 +16,8 @@ pub fn solve_part(input: &str, number_of_pairs: usize) -> Result<usize, NotImple
         .map(|line| line.trim().parse::<JunctionBox>().unwrap())
         .combinations(2)
         .map(|c| Connection {
-            j1: c[0].clone(),
-            j2: c[1].clone(),
+            j1: c[0],
+            j2: c[1],
             d: c[0].distance(&c[1]),
         })
         .collect::<BinaryHeap<_>>();
@@ -42,8 +41,8 @@ pub fn solve_part(input: &str, number_of_pairs: usize) -> Result<usize, NotImple
             .filter(|(_, c)| c.contains(&box2));
 
         match a.next() {
-            Some((index_a, c_a)) => match b.next() {
-                Some((index_b, c_b)) => {
+            Some((index_a, c_a)) => {
+                if let Some((index_b, c_b)) = b.next() {
                     // Do nothing if index_a == index_b (Same circuit)
                     // Merge circuits if index_a != index_b (Both connected, but to different circuits)
                     if index_a != index_b {
@@ -51,25 +50,21 @@ pub fn solve_part(input: &str, number_of_pairs: usize) -> Result<usize, NotImple
                         let mut circuit: HashSet<JunctionBox> = c_b.union(c_a).copied().collect();
                         circuits[index_a] = circuit;
                         circuits.remove(index_b);
-                    } else {
-                        //println!("In same circuit. Do nothing!");
                     }
-                }
-                None => {
+                } else {
                     // Add b to a's circuit.
                     circuits[index_a].insert(box2);
                     //println!("Adding box {box2} to circuit {index_a}");
                     counter += 1;
                 }
-            },
-            None => match b.next() {
-                Some((index_b, c_b)) => {
+            }
+            None => {
+                if let Some((index_b, c_b)) = b.next() {
                     // Add a to b's circuit
                     circuits[index_b].insert(box1);
                     //println!("Adding box {box1} to circuit {index_b}");
                     counter += 1;
-                }
-                None => {
+                } else {
                     // Add a & b to new circuit
                     let mut circuit = HashSet::new();
                     circuit.insert(box1);
@@ -78,7 +73,7 @@ pub fn solve_part(input: &str, number_of_pairs: usize) -> Result<usize, NotImple
                     counter += 1;
                     //println!("Adding {box1} and {box2} to new circuit");
                 }
-            },
+            }
         }
         //println!("{} circuits", circuits.len());
         // circuits
@@ -86,7 +81,10 @@ pub fn solve_part(input: &str, number_of_pairs: usize) -> Result<usize, NotImple
         //     .enumerate()
         //     .for_each(|(i, c)| println!("{}: {c:?}", i));
     }
-    let mut heap: BinaryHeap<usize> = circuits.iter().map(|c| c.len()).collect();
+    let mut heap: BinaryHeap<usize> = circuits
+        .iter()
+        .map(std::collections::HashSet::len)
+        .collect();
     let result = (0..3).map(|_| heap.pop().unwrap()).product::<usize>();
     Ok(result)
 }

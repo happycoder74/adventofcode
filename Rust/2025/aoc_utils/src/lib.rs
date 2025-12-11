@@ -4,36 +4,13 @@ use std::fmt::Display;
 use std::path::PathBuf;
 
 #[derive(Debug)]
-pub struct NotImplementedError {
-    text: String,
-}
+pub struct NotImplementedError;
 
-impl NotImplementedError {
-    #[allow(clippy::must_use_candidate)]
-    pub fn new(value: &str) -> Self {
-        Self {
-            text: value.to_string(),
-        }
-    }
-}
-
-impl Default for NotImplementedError {
-    fn default() -> Self {
-        Self {
-            text: String::from("Not implemented"),
-        }
-    }
-}
-
-impl Error for NotImplementedError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        None
-    }
-}
+impl Error for NotImplementedError {}
 
 impl Display for NotImplementedError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.text)
+        write!(f, "NotImplementedError")
     }
 }
 

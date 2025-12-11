@@ -3,8 +3,8 @@ use aoc_utils::NotImplementedError;
 #[allow(clippy::missing_panics_doc, clippy::missing_errors_doc)]
 pub fn solve_part(input: &str) -> Result<u64, NotImplementedError> {
     let mut result = 0;
-    let ranges = input.trim().split(|c| c == ',').map(|s| {
-        let mut iter = s.splitn(2, |c| c == '-').map(|r| r.parse::<u64>().unwrap());
+    let ranges = input.trim().split(',').map(|s| {
+        let mut iter = s.splitn(2, '-').map(|r| r.parse::<u64>().unwrap());
         (iter.next().unwrap(), iter.next().unwrap())
     });
     for (start, end) in ranges {
