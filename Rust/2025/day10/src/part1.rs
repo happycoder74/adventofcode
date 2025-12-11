@@ -1,20 +1,11 @@
 #![allow(unused_variables)]
+use std::collections::HashMap;
+use std::collections::VecDeque;
+
 use crate::Instruction;
+use crate::Lights;
 use crate::Result;
-use crate::State;
-use aoc_utils::NotImplementedError;
 
-struct Lights {
-    lights: Vec<State>,
-}
-
-impl Lights {
-    fn init(instruction: &Instruction) -> Self {
-        Self {
-            lights: instruction.lights.iter().map(|_| State::Off).collect(),
-        }
-    }
-}
 fn parse_input(input: &str) -> Result<Vec<Instruction>> {
     let instructions: Result<Vec<Instruction>> = input
         .lines()
@@ -24,19 +15,37 @@ fn parse_input(input: &str) -> Result<Vec<Instruction>> {
     instructions
 }
 
-fn minimum_presses(instruction: &Instruction, target: Lights) -> usize {
-    0usize
+fn minimum_presses(instruction: &Instruction) -> usize {
+    let mut to_visit = VecDeque::new();
+    let current_lights = Lights::init(instruction);
+    to_visit.push_back((current_lights, 0));
+
+    let mut seen_states: HashMap<Lights, usize> = HashMap::new();
+
+    while let Some((state, pushes)) = to_visit.pop_front() {
+        for button in &instruction.buttons {
+            let next_state = button.apply(&state);
+            if next_state.lights == *instruction.lights {
+                return pushes + 1;
+            } else if seen_states.contains_key(&next_state) {
+                continue;
+            }
+
+            seen_states.insert(next_state.clone(), pushes);
+            to_visit.push_back((next_state, pushes + 1))
+        }
+    }
+
+    0
 }
 
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<usize> {
     let parsed_input = parse_input(input)?;
-    let mut result = 0usize;
+    let mut result = 0;
 
     for instruction in &parsed_input {
-        let lights = Lights::init(instruction);
-        let sub_result = minimum_presses(instruction, lights);
-        result += sub_result;
+        result += minimum_presses(instruction);
     }
     Ok(result)
 }

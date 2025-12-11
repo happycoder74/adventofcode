@@ -9,7 +9,7 @@ pub mod part2;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq, Clone, Copy, Hash)]
 pub enum State {
     On,
     #[default]
@@ -141,5 +141,40 @@ impl FromStr for Instruction {
             buttons,
             joltage,
         })
+    }
+}
+
+#[derive(Eq, Hash, PartialEq, Clone)]
+pub struct Lights {
+    lights: Vec<State>,
+}
+
+impl Lights {
+    fn init(instruction: &Instruction) -> Self {
+        Self {
+            lights: instruction.lights.iter().map(|_| State::Off).collect(),
+        }
+    }
+}
+
+impl Button {
+    fn apply(&self, lights: &Lights) -> Lights {
+        let mut return_lights: Vec<State> = lights.lights.clone();
+        self.toggles
+            .iter()
+            .for_each(|b| return_lights[*b as usize].toggle());
+
+        Lights {
+            lights: return_lights,
+        }
+    }
+}
+
+impl State {
+    fn toggle(&mut self) {
+        *self = match *self {
+            State::On => State::Off,
+            State::Off => State::On,
+        }
     }
 }
