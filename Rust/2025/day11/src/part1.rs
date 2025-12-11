@@ -26,7 +26,7 @@ pub fn solve_part(input: &str) -> Result<usize, Box<dyn std::error::Error>> {
         return Ok(paths);
     }
 
-    Err(Box::new(NotImplementedError::default()))
+    Err(Box::new(NotImplementedError))
 }
 
 #[cfg(test)]

@@ -1,6 +1,7 @@
 use aoc_utils::NotImplementedError;
 
 #[allow(clippy::missing_panics_doc, clippy::missing_errors_doc)]
+#[allow(clippy::cast_possible_truncation)]
 pub fn solve_part(input: &str) -> Result<u64, NotImplementedError> {
     let mut result = 0usize;
     let data = input
@@ -42,6 +43,6 @@ mod tests {
 234234234234278
 818181911112111";
 
-        assert_eq!(super::solve_part(input).unwrap(), 3121910778619);
+        assert_eq!(super::solve_part(input).unwrap(), 3_121_910_778_619);
     }
 }

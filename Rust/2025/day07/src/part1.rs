@@ -7,7 +7,7 @@ use aoc_utils::NotImplementedError;
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
     let mut grid = Grid::import(input);
-    let start = grid.grid.iter().find(|&(k, &v)| v == 'S').unwrap().0;
+    let start = grid.locations.iter().find(|&(k, &v)| v == 'S').unwrap().0;
 
     let mut visited = HashSet::new();
     let mut to_visit = VecDeque::new();
@@ -18,8 +18,8 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
         let loc = to_visit.pop_back().unwrap();
         if !visited.contains(&loc) {
             visited.insert(loc);
-            match grid.grid.get(&loc) {
-                Some(x) => match x {
+            if let Some(x) = grid.locations.get(&loc) {
+                match x {
                     '^' => {
                         if let Some(loc_left) = loc.step(-1, 0) {
                             to_visit.push_back(loc_left);
@@ -30,12 +30,11 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
                         split_counter += 1;
                     }
                     '.' => {
-                        grid.grid.insert(loc, '|');
+                        grid.insert(loc, '|');
                         to_visit.push_back(loc.step_down());
                     }
                     _ => unreachable!(),
-                },
-                None => (),
+                }
             }
         }
     }

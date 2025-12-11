@@ -7,7 +7,7 @@ use std::collections::HashMap;
 #[allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
     let lines = input.lines().map(str::trim).collect::<Vec<_>>();
-    let start = lines[0].find(|c| c == 'S').unwrap();
+    let start = lines[0].find('S').unwrap();
     let mut beams = HashMap::new();
     beams.insert(start, 1usize);
     for line in lines {

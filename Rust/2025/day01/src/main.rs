@@ -11,7 +11,7 @@ fn main() {
             let start = std::time::Instant::now();
             match part1::solve_part(&commands) {
                 Ok(result) => {
-                    let duration = std::time::Instant::now() - start;
+                    let duration = start.elapsed();
                     println!("Part 1: {result} - {duration:?}");
                 }
                 Err(e) => println!("Part1: Error '{e:?}'"),
@@ -19,7 +19,7 @@ fn main() {
             let start = std::time::Instant::now();
             match part2::solve_part(&commands) {
                 Ok(result) => {
-                    let duration = std::time::Instant::now() - start;
+                    let duration = start.elapsed();
                     println!("Part 2: {result} - {duration:?}");
                 }
                 Err(e) => println!("Part2: Error '{e:?}'"),

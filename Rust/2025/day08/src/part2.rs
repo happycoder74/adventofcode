@@ -35,8 +35,8 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
             .filter(|(_, c)| c.contains(&box2));
 
         match a.next() {
-            Some((index_a, c_a)) => match b.next() {
-                Some((index_b, c_b)) => {
+            Some((index_a, c_a)) => {
+                if let Some((index_b, c_b)) = b.next() {
                     // Do nothing if index_a == index_b (Same circuit)
                     // Merge circuits if index_a != index_b (Both connected, but to different circuits)
                     if index_a != index_b {
@@ -44,32 +44,28 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
                         let circuit: HashSet<JunctionBox> = c_b.union(c_a).copied().collect();
                         circuits[index_a] = circuit;
                         circuits.remove(index_b);
-                    } else {
-                        //println!("In same circuit. Do nothing!");
                     }
-                }
-                None => {
+                } else {
                     // Add b to a's circuit.
                     circuits[index_a].insert(box2);
                     last_connection = conn;
                     //println!("Adding box {box2} to circuit {index_a}");
                 }
-            },
-            None => match b.next() {
-                Some((index_b, c_b)) => {
+            }
+            None => {
+                if let Some((index_b, c_b)) = b.next() {
                     // Add a to b's circuit
                     circuits[index_b].insert(box1);
                     last_connection = conn;
                     //println!("Adding box {box1} to circuit {index_b}");
-                }
-                None => {
+                } else {
                     // Add a & b to new circuit
                     let mut circuit = HashSet::new();
                     circuit.insert(box1);
                     circuit.insert(box2);
                     circuits.push(circuit);
                 }
-            },
+            }
         }
         //println!("{} circuits", circuits.len());
         // circuits

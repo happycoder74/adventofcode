@@ -32,6 +32,7 @@ impl std::fmt::Debug for JunctionBox {
 }
 
 impl JunctionBox {
+    #[must_use]
     pub fn get_x(&self) -> usize {
         self.x
     }
@@ -40,6 +41,7 @@ impl JunctionBox {
         Self { x, y, z }
     }
 
+    #[must_use]
     pub fn distance(&self, other: &JunctionBox) -> usize {
         self.x.abs_diff(other.x).pow(2)
             + self.y.abs_diff(other.y).pow(2)
