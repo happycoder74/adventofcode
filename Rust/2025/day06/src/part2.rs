@@ -55,11 +55,11 @@ mod tests {
     // Unit tests below
     #[test]
     fn test_solve_part() {
-        let input = "123 328  51 64 
- 45 64  387 23 
+        let input = "123 328  51 64
+ 45 64  387 23
   6 98  215 314
 *   +   *   +  ";
 
-        assert_eq!(super::solve_part(input).unwrap(), 3263827);
+        assert_eq!(super::solve_part(input).unwrap(), 3_263_827);
     }
 }

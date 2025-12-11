@@ -10,7 +10,10 @@ fn parse_input(input: &str) -> Result<Vec<Instruction>> {
     let instructions: Result<Vec<Instruction>> = input
         .lines()
         .map(str::trim)
-        .map(|line| line.parse::<Instruction>().map_err(|e| e.into()))
+        .map(|line| {
+            line.parse::<Instruction>()
+                .map_err(std::convert::Into::into)
+        })
         .collect();
     instructions
 }
@@ -32,7 +35,7 @@ fn minimum_presses(instruction: &Instruction) -> usize {
             }
 
             seen_states.insert(next_state.clone(), pushes);
-            to_visit.push_back((next_state, pushes + 1))
+            to_visit.push_back((next_state, pushes + 1));
         }
     }
 

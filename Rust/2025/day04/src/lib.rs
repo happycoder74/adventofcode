@@ -12,7 +12,7 @@ impl Grid {
             grid: HashSet::new(),
         }
     }
-    fn neighbours(&self, location: &(i32, i32)) -> usize {
+    fn neighbours(&self, location: (i32, i32)) -> usize {
         let (r, c) = location;
         let mut count: usize = 0;
         for dr in -1..=1 {
@@ -28,7 +28,7 @@ impl Grid {
     fn accessible(&self) -> usize {
         self.grid
             .iter()
-            .filter(|location| self.neighbours(location) < 4)
+            .filter(|location| self.neighbours(**location) < 4)
             .count()
     }
 
@@ -37,7 +37,7 @@ impl Grid {
         let mut removable = self
             .grid
             .iter()
-            .filter(|location| self.neighbours(location) < 4)
+            .filter(|location| self.neighbours(**location) < 4)
             .map(|(r, c)| (*r, *c))
             .collect::<Vec<_>>();
 

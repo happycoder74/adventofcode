@@ -56,7 +56,7 @@ pub fn solve_part(input: &str) -> Result<usize, NotImplementedError> {
         }
     }
 
-    Ok(result.iter().map(|i| i.len()).sum::<usize>())
+    Ok(result.iter().map(crate::Entry::len).sum::<usize>())
 }
 
 #[cfg(test)]
