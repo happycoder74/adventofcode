@@ -1,3 +1,4 @@
+use anyhow::Result;
 use num::Integer;
 use std::error::Error;
 use std::fmt::Display;
@@ -15,7 +16,7 @@ impl Display for NotImplementedError {
 }
 
 #[allow(clippy::missing_errors_doc)]
-pub fn read_input(day: u32) -> Result<String, Box<dyn std::error::Error>> {
+pub fn read_input(day: u32) -> Result<String> {
     let aoc_path = std::env::var("AOC_DATA_LOCATION")?;
     let mut path = PathBuf::new();
     path.push(aoc_path);

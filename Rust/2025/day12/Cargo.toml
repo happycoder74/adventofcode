@@ -1,5 +1,5 @@
 [package]
-name = "aoc_utils"
+name = "day12"
 description.workspace = true
 version.workspace = true
 authors.workspace = true
@@ -7,5 +7,4 @@ edition.workspace = true
 
 [dependencies]
 anyhow = "1.0.100"
-num = "0.4.3"
-thiserror = "2.0.17"
+aoc_utils = { version = "0.1.0", path = "../aoc_utils" }
