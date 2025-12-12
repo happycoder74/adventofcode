@@ -5,18 +5,7 @@ use std::collections::VecDeque;
 use crate::Instruction;
 use crate::Lights;
 use crate::Result;
-
-fn parse_input(input: &str) -> Result<Vec<Instruction>> {
-    let instructions: Result<Vec<Instruction>> = input
-        .lines()
-        .map(str::trim)
-        .map(|line| {
-            line.parse::<Instruction>()
-                .map_err(std::convert::Into::into)
-        })
-        .collect();
-    instructions
-}
+use crate::parse_input;
 
 fn minimum_presses(instruction: &Instruction) -> usize {
     let mut to_visit = VecDeque::new();
