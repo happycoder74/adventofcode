@@ -16,8 +16,8 @@ Rust solutions to the Advent of Code problems.
 |  8  | &#11088;&#11088; |                                        |
 |  9  | &#11088;&#11088; | Help needed on part two on this one    |
 | 10  | &#11088;&#11088; | The same for part 2 here too           |
-| 11  | &#11088;         |                                        |
-| 12  | &#11088;         |                                        |
+| 11  | &#11088;&#11088; | And again for part 2                   |
+| 12  | &#11088;&#11088; | What a surprise...                     |
 
 ## 2024
 
