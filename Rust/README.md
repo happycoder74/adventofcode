@@ -17,6 +17,7 @@ Rust solutions to the Advent of Code problems.
 |  9  | &#11088;         |                                        |
 | 10  | &#11088;         |                                        |
 | 11  | &#11088;         |                                        |
+| 12  | &#11088;         |                                        |
 
 ## 2024
 
