@@ -2,7 +2,6 @@
 use aoc_utils::read_input;
 use day12::parse_packages;
 use day12::part1;
-use day12::part2;
 use std::time::Instant;
 
 fn main() -> anyhow::Result<()> {
