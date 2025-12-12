@@ -6,7 +6,7 @@ Solutions for [Advent of Code](https://adventofcode.com) in different languages.
 
 Rust will be the primary language of choice this year.
 
-+ 20 &#11088; in [Rust](Rust/README.md)
++ 21 &#11088; in [Rust](Rust/README.md)
 
 ## Year 2024
 
