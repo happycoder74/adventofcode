@@ -178,3 +178,15 @@ impl State {
         }
     }
 }
+
+pub fn parse_input(input: &str) -> Result<Vec<Instruction>> {
+    let instructions: Result<Vec<Instruction>> = input
+        .lines()
+        .map(str::trim)
+        .map(|line| {
+            line.parse::<Instruction>()
+                .map_err(std::convert::Into::into)
+        })
+        .collect();
+    instructions
+}

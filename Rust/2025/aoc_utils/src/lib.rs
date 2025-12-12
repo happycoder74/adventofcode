@@ -28,7 +28,7 @@ pub fn read_input(day: u32) -> Result<String> {
     Ok(content)
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone)]
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Copy)]
 pub struct Location<T: Integer> {
     pub x: T,
     pub y: T,
