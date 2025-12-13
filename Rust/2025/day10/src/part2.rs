@@ -75,7 +75,11 @@ fn minimum_presses(buttons: &[u16], joltage: &[u16]) -> u64 {
     }
 
     let solution = problem.solve().expect("Any solution");
-    solution.objective().round() as u64
+    #[expect(clippy::cast_possible_truncation)]
+    #[expect(clippy::cast_sign_loss)]
+    {
+        solution.objective().round() as u64
+    }
 }
 
 fn parse(input: &str) -> Result<Vec<Machine>, ParseError> {
