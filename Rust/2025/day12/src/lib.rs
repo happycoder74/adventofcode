@@ -1,3 +1,4 @@
+#![allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![allow(unused)]
 use std::{
     collections::HashSet,
