@@ -55,22 +55,21 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] auto get_input_list(const std::string &fn, int year, int day) -> std::vector<T> {
+[[nodiscard]] auto get_input_list(const std::string &filename, int year, int day) -> std::vector<T> {
     std::ifstream  ifs;
     std::vector<T> return_data;
     std::string    line;
     std::string    datapath_str;
 
     std::filesystem::path datapath;
-    std::filesystem::path path(std::filesystem::current_path());
 
     char *env    = std::getenv("AOC_DATA_LOCATION");
     datapath_str = std::string(env ? env : "");
     if (datapath_str.length()) {
-        datapath = std::filesystem::path(datapath_str) / std::format("{:4d}", year) / std::format("{:02d}", day) / fn;
+        datapath = std::filesystem::path(datapath_str) / std::format("{:4d}", year) / std::format("{:02d}", day) / filename;
         ifs.open(datapath);
     } else {
-        ifs.open(fn);
+        ifs.open(filename);
     }
     if (ifs.fail()) {
         std::cerr << "Something went wrong" << '\n';
@@ -85,22 +84,21 @@ template <typename T>
 }
 
 template <>
-[[nodiscard]] inline auto get_input_list(const std::string &fn, int year, int day) -> std::vector<int> {
+[[nodiscard]] inline auto get_input_list(const std::string &filename, int year, int day) -> std::vector<int> {
     std::ifstream    ifs;
     std::string      line;
     std::vector<int> result;
     std::string      datapath_str;
 
     std::filesystem::path datapath;
-    std::filesystem::path path(std::filesystem::current_path());
 
     datapath_str = std::string(std::getenv("AOC_DATA_LOCATION"));
-    if (datapath_str.length()) {
+    if (datapath_str.length() > 0) {
         datapath = datapath_str;
-        datapath = datapath / std::format("{:4d}", year) / std::format("{:02d}", day) / fn;
+        datapath = datapath / std::format("{:4d}", year) / std::format("{:02d}", day) / filename;
         ifs.open(datapath);
     } else {
-        ifs.open(fn);
+        ifs.open(filename);
     }
 
     while (std::getline(ifs, line)) {
