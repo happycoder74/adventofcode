@@ -1,14 +1,26 @@
 # Advent of Code in Rust
 
-First baby steps in trying to learn Rust...
+Rust solutions to the Advent of Code problems.
 
-Some solutions are overly complicated, since this "project" is not about competing, but more about learning the Rust programming language and its features.
+## 2025
 
-Inspirational credits to
-- [believer](https://github.com/believer)
+| Day | Stars            | Comment                                |
+|:---:|:-----------------|:---------------------------------------|
+|  1  | &#11088;&#11088; |                                        |
+|  2  | &#11088;&#11088; |                                        |
+|  3  | &#11088;&#11088; |                                        |
+|  4  | &#11088;&#11088; |                                        |
+|  5  | &#11088;&#11088; |                                        |
+|  6  | &#11088;&#11088; |                                        |
+|  7  | &#11088;&#11088; |                                        |
+|  8  | &#11088;&#11088; |                                        |
+|  9  | &#11088;&#11088; | Help needed on part two on this one    |
+| 10  | &#11088;&#11088; | The same for part 2 here too           |
+| 11  | &#11088;&#11088; | And again for part 2                   |
+| 12  | &#11088;&#11088; | What a surprise...                     |
 
+## 2024
 
-## 2024:
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
 |  1  | &#11088;&#11088; |                                        |
@@ -16,40 +28,53 @@ Inspirational credits to
 |  3  | &#11088;&#11088; |                                        |
 |  4  | &#11088;&#11088; |                                        |
 
-
 ## 2023
+
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
-|  4  | &#11088;         | First try a translation from my first C++ solution.<br/>Second try with inspiration from other [repo](https://github.com/believer/advent-of-code/blob/master/rust/2023/) |
+|  1  | &#11088;&#11088; |                                        |
+|  4  | &#11088;         |                                        |
 
+## 2021
 
-## 2021:
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
 |  1  | &#11088;&#11088; | This one was fairly straightforward... |
 |  2  | &#11088;&#11088; |                                        |
 |  3  | &#11088;         |                                        |
 
+## 2019
 
-## 2019:
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
 |  1  | &#11088;&#11088; |                                        |
 
+## 2017
 
-## 2017:
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
-|  1  | &#11088;&#11088; | Why make it too hard...|
-|  2  | &#11088;&#11088; | quite fun and fast |
-|  3  | &#11088;&#11088; | |
+|  1  | &#11088;&#11088; | Why make it too hard...                |
+|  2  | &#11088;&#11088; | quite fun and fast                     |
+|  3  | &#11088;&#11088; |                                        |
 
+## 2016
 
-## 2015:
 | Day | Stars            | Comment                                |
 |:---:|:-----------------|:---------------------------------------|
-|  1  | &#11088;&#11088; | Overly complicated structure for a very simple problem.<br/>Trying to understand traits and their implementation. |
+|  1  | &#11088;&#11088; |                                        |
+|  2  | &#11088;&#11088; |                                        |
+|  3  | &#11088;&#11088; |                                        |
+|  4  | &#11088;&#11088; |                                        |
+|  5  | &#11088;&#11088; |                                        |
+
+## 2015
+
+| Day | Stars            | Comment                                |
+|:---:|:-----------------|:---------------------------------------|
+|  1  | &#11088;&#11088; | Overly complicated structure for a very simple problem. Trying to understand traits and their implementation. |
 |  2  | &#11088;&#11088; |                                        |
 |  3  | &#11088;&#11088; |                                        |
 |  5  | &#11088;&#11088; |                                        |
-
+|  6  | &#11088;         |                                        |
+|  7  | &#11088;&#11088; |                                        |
+|  8  | &#11088;&#11088; |                                        |
