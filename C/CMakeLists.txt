@@ -25,7 +25,8 @@ set(AOC_YEARS
     2021
     2022
     2023
-    2024)
+    2024
+    2025)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(CURL REQUIRED libcurl)
