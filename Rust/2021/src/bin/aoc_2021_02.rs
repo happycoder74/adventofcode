@@ -1,15 +1,19 @@
+use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
 use std::time::Instant;
-use aoc_utils::output::report;
 
 struct Commands {
     forward: i32,
     down: i32,
-    up: i32
+    up: i32,
 }
 
-fn solve_part_1(x: &str) -> (i32, std::time::Duration) {
+fn solve_part_1(x: &str) -> Result<AocPartReturn, AocError> {
     let start_time = Instant::now();
-    let mut commands = Commands{forward: 0, down: 0, up: 0};
+    let mut commands = Commands {
+        forward: 0,
+        down: 0,
+        up: 0,
+    };
 
     for line in x.lines() {
         let parts = line.split_once(" ").unwrap();
@@ -18,14 +22,17 @@ fn solve_part_1(x: &str) -> (i32, std::time::Duration) {
             "forward" => commands.forward += value,
             "down" => commands.down += value,
             "up" => commands.up += value,
-            _ => ()
+            _ => (),
         }
     }
-
-    (commands.forward * (commands.down - commands.up), Instant::now() - start_time)
+    let result = commands.forward * (commands.down - commands.up);
+    Ok(AocPartReturn {
+        result: AocResult::I32(result),
+        duration: Instant::now() - start_time,
+    })
 }
 
-fn solve_part_2(input: &str) -> (i32, std::time::Duration) {
+fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
     let start_time = Instant::now();
     let mut horizontal = 0;
     let mut aim = 0;
@@ -38,19 +45,23 @@ fn solve_part_2(input: &str) -> (i32, std::time::Duration) {
             "forward" => {
                 horizontal += value;
                 depth += aim * value;
-            },
+            }
             "down" => aim += value,
             "up" => aim -= value,
-            _ => ()
+            _ => (),
         }
     }
-    (horizontal * depth, Instant::now() - start_time)
+    Ok(AocPartReturn {
+        result: AocResult::I32(horizontal * depth),
+        duration: Instant::now() - start_time,
+    })
 }
 
 fn main() {
     let contents = aoc_utils::read_input(2021, 2, false);
-    report("Part 1", solve_part_1(&contents));
-    report("Part 2", solve_part_2(&contents));
+    let part1 = solve_part_1(&contents);
+    let part2 = solve_part_2(&contents);
+    aoc_utils::report(AocReturn::from_parts(part1, part2));
 }
 
 #[cfg(test)]
@@ -58,7 +69,7 @@ mod tests {
     use crate::solve_part_1;
     use crate::solve_part_2;
     fn get_input() -> &'static str {
-"forward 5
+        "forward 5
 down 5
 forward 8
 up 3
@@ -70,12 +81,12 @@ forward 2
     #[test]
     fn test_part_1() {
         let input = get_input();
-        assert_eq!(150, solve_part_1(&input).0);
+        assert_eq!(150, solve_part_1(input).unwrap().result.try_into().unwrap());
     }
 
     #[test]
     fn test_part_2() {
         let input = get_input();
-        assert_eq!(900, solve_part_2(&input).0);
+        assert_eq!(900, solve_part_2(input).unwrap().result.try_into().unwrap());
     }
 }
