@@ -53,7 +53,7 @@ Rust will be the primary language of choice this year.
 
 + 2 &#11088; in [C](C/README.md)
 + 2 &#11088; in [Python](python/README.md)
-+ 2 &#11088; in [Rust](Rust/README.md)
++ 4 &#11088; in [Rust](Rust/README.md)
 
 ## Year 2017
 
