@@ -37,30 +37,30 @@ inline auto convert_duration(std::chrono::duration<C, R> duration) -> const std:
 
 template <typename F, typename... Args>
 void timer(int part, F func, Args &&...args) {
-    auto              t1              = Clock::now();
+    auto              start_time      = Clock::now();
     auto              result          = func(std::forward<Args>(args)...);
-    auto              t2              = Clock::now();
-    const std::string duration_string = convert_duration(t2 - t1);
+    auto              end_time        = Clock::now();
+    const std::string duration_string = convert_duration(end_time - start_time);
     std::cout << std::format("Part {} answer: {:<20}{:>20}\n", part, result, duration_string);
 }
 
 template <typename F, typename U>
 void timer(F func, U data) {
-    auto t1 = Clock::now();
+    auto start_time = Clock::now();
     func(data);
-    auto t2 = Clock::now();
+    auto end_time = Clock::now();
 
-    const std::string duration_string = convert_duration(t2 - t1);
+    const std::string duration_string = convert_duration(end_time - start_time);
     std::cout << std::format("Time elapsed : {:>40}\n", duration_string);
 }
 
 template <typename F, typename U>
 decltype(auto) timer(F func, U data, const std::string &&message) {
-    auto t1     = Clock::now();
-    auto result = func(data);
-    auto t2     = Clock::now();
+    auto start_time = Clock::now();
+    auto result     = func(data);
+    auto end_time   = Clock::now();
 
-    const std::string duration_string = convert_duration(t2 - t1);
+    const std::string duration_string = convert_duration(end_time - start_time);
     std::cout << std::format("{:20}{:>35}\n", message, duration_string);
     return result;
 }

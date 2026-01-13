@@ -22,7 +22,7 @@ class AocRunner(object):
         if year is not None:
             self.year = year
         else:
-            self.year = "2023"
+            self.year = "2025"
         self.days: list[Any] = []
         if day:
             for d in day.split(","):
@@ -78,12 +78,12 @@ class AocRunner(object):
                 if day in self.exclude_day:
                     continue
                 module = f"aoc_{year}_{day:02d}"
-                source_path = os.path.join(f"y{year}", f"d{day:02d}")
+                source_path = f"y{year}"
                 source_file = os.path.join(source_path, f"{module}.py")
                 if os.path.exists(source_file):
                     try:
                         sys.path.append(source_path)
-                        puzzle = importlib.import_module(f"y{year}.d{day:02d}.{module}")
+                        puzzle = importlib.import_module(f"y{year}.{module}")
                         try:
                             class_in_module = getattr(puzzle, f"Day{day:02d}")
                             class_list.append((year, class_in_module))
