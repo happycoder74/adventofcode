@@ -1,0 +1,9 @@
+[package]
+name = "day04"
+description.workspace = true
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+thiserror = "2.0.17"
