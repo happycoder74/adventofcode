@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display, num::ParseIntError, str::FromStr};
+use std::{fmt::Display, str::FromStr};
 
 #[derive(Debug, PartialEq, Eq)]
 struct ParseDimensionError;
@@ -41,6 +41,24 @@ struct Spec {
     id: u32,
     location: Point,
     dimensions: Dimensions,
+}
+
+impl Spec {
+    fn top(&self) -> u32 {
+        self.location.y
+    }
+
+    fn bottom(&self) -> u32 {
+        self.location.y + self.dimensions.height - 1
+    }
+
+    fn left(&self) -> u32 {
+        self.location.x
+    }
+
+    fn right(&self) -> u32 {
+        self.location.x + self.dimensions.width - 1
+    }
 }
 
 impl FromStr for Point {
@@ -107,14 +125,13 @@ fn parse_data(input: &str) -> Result<Vec<Spec>, ParseSpecError> {
     input.lines().map(str::parse).collect()
 }
 
-fn populate_map(input: &[Spec]) -> HashMap<Point, u32> {
-    let mut m = std::collections::HashMap::new();
+fn populate_map(input: &[Spec]) -> Vec<u32> {
+    let mut m = vec![0; 1000 * 1000];
 
     for spec in input {
-        for x in spec.location.x..spec.location.x + spec.dimensions.width {
-            for y in spec.location.y..spec.location.y + spec.dimensions.height {
-                let count = m.entry(Point { x, y }).or_insert(0u32);
-                *count += 1;
+        for x in spec.left()..=spec.right() {
+            for y in spec.top()..=spec.bottom() {
+                m[(1000 * y + x) as usize] += 1;
             }
         }
     }
@@ -124,15 +141,13 @@ fn populate_map(input: &[Spec]) -> HashMap<Point, u32> {
 
 fn part1(input: &[Spec]) -> u32 {
     let m = populate_map(input);
-    m.values().filter(|v| v >= &&2u32).count() as u32
+    m.iter().filter(|v| *v > &1u32).count() as u32
 }
 
-fn check_claims(spec: &Spec, m: &HashMap<Point, u32>) -> bool {
-    for x in spec.location.x..spec.location.x + spec.dimensions.width {
-        for y in spec.location.y..spec.location.y + spec.dimensions.height {
-            if let Some(v) = m.get(&Point { x, y })
-                && v != &1
-            {
+fn check_claims(spec: &Spec, m: &[u32]) -> bool {
+    for x in spec.left()..=spec.right() {
+        for y in spec.top()..=spec.bottom() {
+            if m[(1000 * y + x) as usize] != 1 {
                 return false;
             }
         }
