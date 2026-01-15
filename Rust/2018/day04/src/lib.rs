@@ -31,6 +31,7 @@ pub struct Time {
 
 impl Time {
     #[cfg(test)]
+    #[must_use]
     pub const fn new(year: u32, month: u32, day: u32, hour: u32, minute: u32) -> Self {
         Self {
             year,
@@ -131,12 +132,13 @@ impl FromStr for LogEntry {
 pub fn parse_data(input: &str) -> Result<Vec<LogEntry>, ParseError> {
     let mut parsed: Vec<LogEntry> = input
         .lines()
-        .map(|s| s.parse::<LogEntry>())
+        .map(str::parse::<LogEntry>)
         .collect::<Result<_, _>>()?;
     parsed.sort_by_key(|l| l.time);
     Ok(parsed)
 }
 
+#[must_use]
 pub fn calculate_stats(logs: &[LogEntry]) -> Vec<Guard> {
     let mut guards = HashMap::new();
     let mut guard: &mut Guard = &mut Guard::new(0);
@@ -160,6 +162,7 @@ pub fn calculate_stats(logs: &[LogEntry]) -> Vec<Guard> {
     guards.into_values().collect()
 }
 
+#[must_use]
 pub fn part1(input: &[LogEntry]) -> u32 {
     let guards = calculate_stats(input);
     let max_guard = guards.iter().max_by_key(|g| g.minutes_asleep).unwrap();
@@ -167,6 +170,7 @@ pub fn part1(input: &[LogEntry]) -> u32 {
     max_guard.id * max_freq
 }
 
+#[must_use]
 pub fn part2(input: &[LogEntry]) -> u32 {
     let guards = calculate_stats(input);
     let (id, minute) = guards
@@ -250,12 +254,12 @@ mod tests {
     #[test]
     fn test_part1() {
         let logs = parse_data(DATA).unwrap();
-        assert_eq!(part1(&logs), 240)
+        assert_eq!(part1(&logs), 240);
     }
 
     #[test]
     fn test_part2() {
         let logs = parse_data(DATA).unwrap();
-        assert_eq!(part2(&logs), 4455)
+        assert_eq!(part2(&logs), 4455);
     }
 }
