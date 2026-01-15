@@ -23,7 +23,7 @@ struct Dimensions {
 impl FromStr for Dimensions {
     type Err = ParseDimensionError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (w, h) = s.split_once("x").ok_or(ParseDimensionError)?;
+        let (w, h) = s.split_once('x').ok_or(ParseDimensionError)?;
         Ok(Dimensions {
             width: w.parse::<u32>().map_err(|_| ParseDimensionError)?,
             height: h.parse::<u32>().map_err(|_| ParseDimensionError)?,
@@ -85,8 +85,8 @@ impl FromStr for Spec {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let line = s
             .strip_prefix("#")
-            .and_then(|s| Some(s.replace('@', "")))
-            .and_then(|s| Some(s.replace(":", "")))
+            .map(|s| s.replace('@', ""))
+            .map(|s| s.replace(':', ""))
             .ok_or(ParseSpecError)?;
 
         let mut line_items = line.split_whitespace();
@@ -139,9 +139,9 @@ fn populate_map(input: &[Spec]) -> Vec<u32> {
     m
 }
 
-fn part1(input: &[Spec]) -> u32 {
+fn part1(input: &[Spec]) -> usize {
     let m = populate_map(input);
-    m.iter().filter(|v| *v > &1u32).count() as u32
+    m.iter().filter(|v| *v > &1u32).count()
 }
 
 fn check_claims(spec: &Spec, m: &[u32]) -> bool {
@@ -157,12 +157,7 @@ fn check_claims(spec: &Spec, m: &[u32]) -> bool {
 
 fn part2(input: &[Spec]) -> u32 {
     let m = populate_map(input);
-    input
-        .iter()
-        .filter(|s| check_claims(s, &m))
-        .next()
-        .unwrap()
-        .id
+    input.iter().find(|s| check_claims(s, &m)).unwrap().id
 }
 
 fn main() {
