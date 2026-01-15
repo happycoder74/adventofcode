@@ -1,5 +1,6 @@
 #![allow(dead_code, unused)]
 
+use itertools::Itertools;
 use std::{num::ParseIntError, str::FromStr};
 
 #[derive(Debug)]
@@ -40,14 +41,23 @@ impl Coord {
     }
 }
 
+#[derive(Eq, PartialEq, Debug)]
+pub struct GridSize {
+    x: u32,
+    y: u32,
+}
+
+impl GridSize {
+    fn new(x: u32, y: u32) -> Self {
+        Self { x, y }
+    }
+}
+
 pub fn parse(input: &str) -> Result<Vec<Coord>, ParseError> {
     input.lines().map(str::parse).collect()
 }
 
-pub fn part1(coordinates: &[Coord]) -> Result<usize, AocError> {
-    let mut sizes = vec![0usize; coordinates.len()];
-    let mut infinite = vec![false; coordinates.len()];
-
+pub fn calc_grid_size(coordinates: &[Coord]) -> Result<GridSize, AocError> {
     let max_x = coordinates
         .iter()
         .max_by_key(|c| c.x)
@@ -59,24 +69,29 @@ pub fn part1(coordinates: &[Coord]) -> Result<usize, AocError> {
         .map(|c| c.y)
         .ok_or(AocError::EmptyRange)?;
 
-    for y in 0..=max_y {
-        for x in 0..=max_x {
-            let distances = coordinates
-                .iter()
-                .map(|c| c.distance(x, y))
-                .enumerate()
-                .collect::<Vec<_>>();
-            let (min_index, minimum) = distances
-                .iter()
-                .min_by_key(|p| p.1)
-                .ok_or(AocError::EmptyRange)?;
-            let count = distances.iter().filter(|p| p.1 == *minimum).count();
-            if count == 1 {
-                if x == 0 || x == max_x || y == 0 || y == max_y {
-                    infinite[*min_index] = true;
-                }
-                sizes[*min_index] += 1;
+    Ok(GridSize { x: max_x, y: max_y })
+}
+
+pub fn part1(coordinates: &[Coord], grid_size: &GridSize) -> Result<usize, AocError> {
+    let mut sizes = vec![0usize; coordinates.len()];
+    let mut infinite = vec![false; coordinates.len()];
+
+    for (y, x) in (0..=grid_size.x).cartesian_product(0..=grid_size.x) {
+        let distances = coordinates
+            .iter()
+            .map(|c| c.distance(x, y))
+            .enumerate()
+            .collect::<Vec<_>>();
+        let (min_index, minimum) = distances
+            .iter()
+            .min_by_key(|p| p.1)
+            .ok_or(AocError::EmptyRange)?;
+        let count = distances.iter().filter(|p| p.1 == *minimum).count();
+        if count == 1 {
+            if x == 0 || x == grid_size.x || y == 0 || y == grid_size.y {
+                infinite[*min_index] = true;
             }
+            sizes[*min_index] += 1;
         }
     }
 
@@ -90,26 +105,18 @@ pub fn part1(coordinates: &[Coord]) -> Result<usize, AocError> {
 
     Ok(*result)
 }
-pub fn part2(coordinates: &[Coord], safe_distance: u32) -> Result<usize, AocError> {
+
+pub fn part2(
+    coordinates: &[Coord],
+    grid_size: &GridSize,
+    safe_distance: u32,
+) -> Result<usize, AocError> {
     let mut count = 0usize;
-    let max_x = coordinates
-        .iter()
-        .max_by_key(|c| c.x)
-        .map(|c| c.x)
-        .ok_or(AocError::EmptyRange)?;
-    let max_y = coordinates
-        .iter()
-        .max_by_key(|c| c.y)
-        .map(|c| c.y)
-        .ok_or(AocError::EmptyRange)?;
+    for (y, x) in (0..=grid_size.y).cartesian_product(0..=grid_size.x) {
+        let distance: u32 = coordinates.iter().map(|c| c.distance(x, y)).sum();
 
-    for y in 0..=max_y {
-        for x in 0..=max_x {
-            let distance: u32 = coordinates.iter().map(|c| c.distance(x, y)).sum();
-
-            if distance < safe_distance {
-                count += 1;
-            }
+        if distance < safe_distance {
+            count += 1;
         }
     }
 
@@ -118,6 +125,8 @@ pub fn part2(coordinates: &[Coord], safe_distance: u32) -> Result<usize, AocErro
 
 #[cfg(test)]
 mod tests {
+    use crate::{GridSize, calc_grid_size};
+
     use super::{Coord, parse, part1, part2};
 
     const DATA: &str = "1, 1
@@ -142,16 +151,25 @@ mod tests {
     }
 
     #[test]
+    fn test_grid_size() {
+        let input = parse(DATA).unwrap();
+        let result = calc_grid_size(&input).unwrap();
+        assert_eq!(result, GridSize::new(8, 9));
+    }
+
+    #[test]
     fn test_part_1() {
         let input = parse(DATA).unwrap();
-        let result = part1(&input).unwrap();
+        let gs = calc_grid_size(&input).unwrap();
+        let result = part1(&input, &gs).unwrap();
         assert_eq!(17, result);
     }
 
     #[test]
     fn test_part_2() {
         let input = parse(DATA).unwrap();
-        let result = part2(&input, 32).unwrap();
+        let gs = calc_grid_size(&input).unwrap();
+        let result = part2(&input, &gs, 32).unwrap();
         assert_eq!(16, result);
     }
 }
