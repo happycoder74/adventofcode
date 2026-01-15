@@ -9,21 +9,12 @@ fn part1(data: &str) -> u32 {
                 let count = m.entry(c).or_insert(0);
                 *count += 1;
             }
-            (
-                m.iter().find(|&x| x.1 == &2).is_some(),
-                m.iter().find(|&x| x.1 == &3).is_some(),
-            )
+            (m.iter().any(|x| x.1 == &2), m.iter().any(|x| x.1 == &3))
         })
         .fold((0, 0), |acc, val| {
             (
-                match val.0 {
-                    true => acc.0 + 1,
-                    false => acc.0,
-                },
-                match val.1 {
-                    true => acc.1 + 1,
-                    false => acc.1,
-                },
+                if val.0 { acc.0 + 1 } else { acc.0 },
+                if val.1 { acc.1 + 1 } else { acc.1 },
             )
         });
     result.0 * result.1
@@ -34,15 +25,7 @@ fn part2(data: &str) -> String {
         .lines()
         .combinations(2)
         .map(|a| a[0].chars().zip(a[1].chars()))
-        .filter(|b| {
-            b.clone()
-                .map(|val| match val.0 != val.1 {
-                    true => 1,
-                    false => 0,
-                })
-                .sum::<i32>()
-                == 1
-        });
+        .filter(|b| b.clone().map(|val| i32::from(val.0 != val.1)).sum::<i32>() == 1);
 
     combinations
         .next()
