@@ -57,6 +57,7 @@ Rust solutions to the Advent of Code problems.
 |  2  | &#11088;&#11088; |                                        |
 |  3  | &#11088;&#11088; | Grid/Vector version 10x faster than HashMap                                       |
 |  4  | &#11088;&#11088; |                                        |
+|  5  | &#11088;&#11088; |                                        |
 
 ## 2017
 
