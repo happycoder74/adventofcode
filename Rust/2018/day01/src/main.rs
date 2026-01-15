@@ -1,19 +1,13 @@
-use std::{fs, num::ParseIntError};
+use std::num::ParseIntError;
 
-fn read_data() -> std::io::Result<Vec<String>> {
-    let data_location = env!("AOC_DATA_LOCATION");
-    let mut path = std::path::PathBuf::new();
-    path.push(data_location);
-    path.push("2018");
-    path.push("01");
-    path.push("input.txt");
+use aoc_utils::aoc_get_data;
 
-    let file_content = fs::read_to_string(path)?;
-    Ok(file_content.lines().map(str::to_string).collect::<Vec<_>>())
-}
-
-fn parse_data(input: &[String]) -> Result<Vec<i32>, ParseIntError> {
-    input.iter().map(|s| s.parse::<i32>()).collect()
+fn parse_data(input: &str) -> Result<Vec<i32>, ParseIntError> {
+    input
+        .lines()
+        .map(str::to_string)
+        .map(|s| s.parse::<i32>())
+        .collect()
 }
 
 fn part1(input: &[i32]) -> i32 {
@@ -38,9 +32,8 @@ fn part2(input: &[i32]) -> i32 {
 }
 
 fn main() {
-    if let Ok(content) = read_data()
-        && let Ok(parsed) = parse_data(&content)
-    {
+    let content = aoc_get_data!("2018", "01");
+    if let Ok(parsed) = parse_data(content) {
         let start = std::time::Instant::now();
         println!("Part1: {:<20} [{:?}]", part1(&parsed), start.elapsed());
         let start = std::time::Instant::now();
