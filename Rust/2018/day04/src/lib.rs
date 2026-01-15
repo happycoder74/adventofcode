@@ -45,11 +45,11 @@ impl FromStr for Time {
     type Err = ParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self {
-            year: s[0..4].parse().map_err(|_| ParseError::ParseTimeError)?,
-            month: s[5..7].parse().map_err(|_| ParseError::ParseTimeError)?,
-            day: s[8..10].parse().map_err(|_| ParseError::ParseTimeError)?,
-            hour: s[11..13].parse().map_err(|_| ParseError::ParseTimeError)?,
-            minute: s[14..16].parse().map_err(|_| ParseError::ParseTimeError)?,
+            year: s[0..4].parse()?,
+            month: s[5..7].parse()?,
+            day: s[8..10].parse()?,
+            hour: s[11..13].parse()?,
+            minute: s[14..16].parse()?,
         })
     }
 }
@@ -157,8 +157,7 @@ pub fn calculate_stats(logs: &[LogEntry]) -> Vec<Guard> {
             }
         }
     }
-    let guard_vec: Vec<Guard> = guards.values().map(|v| *v).collect();
-    guard_vec
+    guards.into_values().collect()
 }
 
 pub fn part1(input: &[LogEntry]) -> u32 {
