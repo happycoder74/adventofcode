@@ -34,33 +34,45 @@ pub fn part2(input: &str) -> usize {
 mod tests {
     use super::*;
 
-    const DATA: [(&str, usize); 6] = [("Aa", 0), ("aA", 0), ("abBA", 0), ("abAB", 4), ("aabAAB", 6), ("dabAcCaCBAcCcaDA", 10)];
+    const DATA: [(&str, usize); 6] = [
+        ("Aa", 0),
+        ("aA", 0),
+        ("abBA", 0),
+        ("abAB", 4),
+        ("aabAAB", 6),
+        ("dabAcCaCBAcCcaDA", 10),
+    ];
 
     #[test]
+    #[allow(non_snake_case)]
     fn test_Aa() {
         let result = part1(DATA[0].0);
         assert_eq!(DATA[0].1, result);
     }
 
     #[test]
+    #[allow(non_snake_case)]
     fn test_aA() {
         let result = part1(DATA[1].0);
         assert_eq!(DATA[1].1, result);
     }
 
     #[test]
+    #[allow(non_snake_case)]
     fn test_abBa() {
         let result = part1(DATA[2].0);
         assert_eq!(DATA[2].1, result);
     }
 
     #[test]
+    #[allow(non_snake_case)]
     fn test_abAB() {
         let result = part1(DATA[3].0);
         assert_eq!(DATA[3].1, result);
     }
 
     #[test]
+    #[allow(non_snake_case)]
     fn test_aabAAB() {
         let result = reductions(DATA[4].0);
         assert_eq!(DATA[4].1, result);
