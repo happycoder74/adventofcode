@@ -1,9 +1,8 @@
 #include "aoc_io.hpp"
 #include "aoc_timer.hpp"
 
+#include <algorithm>
 #include <numeric>
-#include <print>
-#include <ranges>
 #include <string>
 #include <vector>
 
@@ -25,7 +24,7 @@ auto solve_part_1(const std::vector<std::string> &instructions) -> size_t {
     const auto positions      = 100;
     const auto start_position = 50;
 
-    auto result = std::accumulate(begin(commands), end(commands), std::pair{0, start_position}, [&](const auto &acc, const auto &command) -> std::pair<int, int> {
+    auto dial_op = [&](const auto &acc, const auto &command) -> std::pair<int, int> {
         auto position = acc.second;
         if (command.first == 'L') {
             position -= command.second;
@@ -37,7 +36,9 @@ auto solve_part_1(const std::vector<std::string> &instructions) -> size_t {
             return {acc.first + 1, position};
         }
         return {acc.first, position};
-    });
+    };
+    auto result = std::ranges::fold_left(commands, std::pair{0, start_position}, dial_op);
+
     return result.first;
 }
 
