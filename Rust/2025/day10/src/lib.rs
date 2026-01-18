@@ -179,7 +179,6 @@ impl State {
         }
     }
 }
-
 pub fn parse_input(input: &str) -> Result<Vec<Instruction>> {
     let instructions: Result<Vec<Instruction>> = input
         .lines()

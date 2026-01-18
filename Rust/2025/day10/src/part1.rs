@@ -2,10 +2,10 @@
 use std::collections::HashMap;
 use std::collections::VecDeque;
 
+use crate::parse_input;
 use crate::Instruction;
 use crate::Lights;
 use crate::Result;
-use crate::parse_input;
 
 fn minimum_presses(instruction: &Instruction) -> usize {
     let mut to_visit = VecDeque::new();

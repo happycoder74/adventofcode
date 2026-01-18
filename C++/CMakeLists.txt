@@ -21,7 +21,8 @@ set(AOC_YEARS
     2021
     2022
     2023
-    2024)
+    2024
+    2025)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)
