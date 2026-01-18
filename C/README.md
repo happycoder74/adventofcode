@@ -110,6 +110,11 @@ Replace ```make``` above with whatever build system you choose to use in CMake
 |  5  | &#11088;&#11088; |               |               |
 |  6  | &#11088;&#11088; |               |               |
 
+## 2018:
+| Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
+|:---:|:-----------------|--------------:|--------------:|:----------------
+|  1  | &#11088;&#11088; |               |               |
+
 ## 2017:
 | Day | Stars            | Timing Part 1 | Timing Part 2 | Comment
 |:---:|:-----------------|--------------:|--------------:|:----------------

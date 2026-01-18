@@ -1,0 +1,10 @@
+[package]
+name = "day12"
+description.workspace = true
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+anyhow = "1.0.100"
+aoc_utils = { version = "0.1.0", path = "../aoc_utils" }

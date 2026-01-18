@@ -7,3 +7,5 @@ edition.workspace = true
 
 [dependencies]
 aoc_utils = { version = "0.1.0", path = "../aoc_utils" }
+microlp = "0.2.11"
+thiserror = "2.0.17"

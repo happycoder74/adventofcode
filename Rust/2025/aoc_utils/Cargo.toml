@@ -6,4 +6,6 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
+anyhow = "1.0.100"
 num = "0.4.3"
+thiserror = "2.0.17"

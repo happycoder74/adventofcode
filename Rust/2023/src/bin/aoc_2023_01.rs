@@ -68,6 +68,7 @@ fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
     let start_time = Instant::now();
     let result: i32 = input
         .lines()
+        // .map(|line| get_numbers(line, &map_p2))
         .map(|line| get_numbers(line, &map_p2))
         .map(|(f, l)| f * 10 + l)
         .sum();

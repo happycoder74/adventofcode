@@ -1,3 +1,4 @@
+#![allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 use std::{
     error::Error,
     fmt::{Debug, Display},
@@ -73,7 +74,7 @@ impl FromStr for Button {
 }
 
 #[derive(Debug, Clone)]
-struct ParseInstructionError;
+pub struct ParseInstructionError;
 
 impl Display for ParseInstructionError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -83,7 +84,7 @@ impl Display for ParseInstructionError {
 
 impl Error for ParseInstructionError {}
 
-struct Instruction {
+pub struct Instruction {
     lights: Vec<State>,
     buttons: Vec<Button>,
     #[allow(unused)]
@@ -177,4 +178,15 @@ impl State {
             State::Off => State::On,
         }
     }
+}
+pub fn parse_input(input: &str) -> Result<Vec<Instruction>> {
+    let instructions: Result<Vec<Instruction>> = input
+        .lines()
+        .map(str::trim)
+        .map(|line| {
+            line.parse::<Instruction>()
+                .map_err(std::convert::Into::into)
+        })
+        .collect();
+    instructions
 }
