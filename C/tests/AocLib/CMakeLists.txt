@@ -14,7 +14,7 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(CHECKLIB REQUIRED check)
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(PCRE2 REQUIRED libpcre2-posix)
+pkg_search_module(PCRE2POSIX REQUIRED libpcre2-posix)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(CURL REQUIRED libcurl)
@@ -43,21 +43,16 @@ target_include_directories(
     PRIVATE ${CMAKE_SOURCE_DIR}/../../include
     PRIVATE ${CMAKE_SOURCE_DIR}
     PUBLIC ${CHECKLIB_INCLUDE_DIRS}
-    PUBLIC ${PCRE2_INCLUDE_DIRS}
+    PUBLIC ${PCRE2POSIX_INCLUDE_DIRS}
 )
 
-
-target_link_directories(
-    aoc_lib_test
-    PRIVATE ${CMAKE_SOURCE_DIR}/../../debug/lib
-)
 
 target_link_libraries(aoc_lib_test
     PRIVATE ${CMAKE_SOURCE_DIR}/../../debug/lib/libaoc.a
     ${GLIB_LINK_LIBRARIES}
     ${CURL_LINK_LIBRARIES}
     ${CHECKLIB_LINK_LIBRARIES}
-    ${PCRE2_LINK_LIBRARIES}
+    ${PCRE2POSIX_LINK_LIBRARIES}
     pthread
     m
 )

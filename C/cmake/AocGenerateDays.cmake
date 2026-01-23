@@ -1,9 +1,11 @@
 function(aoc_generate YEAR DAY)
   add_executable(aoc_${YEAR}_${DAY} aoc_${YEAR}_${DAY}.c)
   target_include_directories(aoc_${YEAR}_${DAY}
-                             PRIVATE ${CMAKE_SOURCE_DIR}/include)
+                             PRIVATE ${CMAKE_SOURCE_DIR}/include
+			     PRIVATE ${CURL_INCLUDE_DIRS}
+		     )
   target_link_libraries(aoc_${YEAR}_${DAY} aoc m)
-  target_link_libraries(aoc_${YEAR}_${DAY} ${CURL_LIBRARIES})
+  target_link_libraries(aoc_${YEAR}_${DAY} ${CURL_LINK_LIBRARIES})
   if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
     target_link_libraries(aoc_${YEAR}_${DAY} $<$<CONFIG:MEMDEBUG>:dl>
                           $<$<CONFIG:DEBUGVERBOSE>:dl>)
