@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include "aoc_hash.h"
 #include <check.h>
 #include <stdint.h>
@@ -23,25 +24,25 @@ END_TEST
 START_TEST(test_hash_table_insert_lookup) {
     ck_assert_ptr_nonnull(hash_table);
     int32_t *value = (int32_t *)malloc(sizeof(int32_t));
-    *value = 5;
+    *value         = 5;
     aoc_hash_table_insert(hash_table, "KEY1", value);
-    value = (int32_t *)malloc(sizeof(int32_t));
+    value  = (int32_t *)malloc(sizeof(int32_t));
     *value = 10;
     aoc_hash_table_insert(hash_table, "KEY2", value);
 
-    int32_t *data = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY1");
+    int32_t *data     = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY1");
     int32_t  expected = 5;
-    int32_t  actual = *data;
+    int32_t  actual   = *data;
     ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", expected, actual);
 
-    data = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY2");
+    data     = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY2");
     expected = 10;
-    actual = *data;
+    actual   = *data;
     ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", expected, actual);
 
-    data = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY1");
+    data     = (int32_t *)aoc_hash_table_lookup(hash_table, "KEY1");
     expected = 5;
-    actual = *data;
+    actual   = *data;
     ck_assert_msg(actual == expected, "Expected value to be [%d] but got [%d]", expected, actual);
 }
 END_TEST
