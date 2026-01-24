@@ -26,28 +26,21 @@ impl Display for AocError {
     }
 }
 
-pub struct AocReturn {
-    pub part1: Result<AocPartReturn, AocError>,
-    pub part2: Result<AocPartReturn, AocError>,
+pub struct AocReturn<T, U> {
+    pub part1: Result<AocPartResult<T>, AocError>,
+    pub part2: Result<AocPartResult<U>, AocError>,
 }
 
-impl AocReturn {
+impl<T, U> AocReturn<T, U> {
     pub fn from_parts(
-        part1: Result<AocPartReturn, AocError>,
-        part2: Result<AocPartReturn, AocError>,
+        part1: Result<AocPartResult<T>, AocError>,
+        part2: Result<AocPartResult<U>, AocError>,
     ) -> Self {
         AocReturn { part1, part2 }
     }
 }
 
-pub struct AocPartReturn {
-    pub result: AocResult,
+pub struct AocPartResult<T> {
+    pub result: AocResult<T>,
     pub duration: Duration,
-}
-
-pub trait Puzzle<T> {
-    fn parse_input(input: &str) -> T;
-    fn solve_part_1(input: &T) -> Result<AocPartReturn, AocError>;
-    fn solve_part_2(input: &T) -> Result<AocPartReturn, AocError>;
-    fn solve_all(self) -> AocReturn;
 }
