@@ -45,8 +45,8 @@ fn solve_part_2(_input: &[(Cards, Cards)]) -> Result<AocPartReturn, AocError> {
     Err(AocError::new("Not yet implemented"))
 }
 
-pub fn run(test_case: bool) {
-    let input = aoc_utils::read_input(2023, 4, test_case);
+pub fn main() {
+    let input = aoc_utils::read_input(2023, 4, false);
     let data = parse_input(&input);
     let part1 = solve_part_1(&data);
     let part2 = solve_part_2(&data);

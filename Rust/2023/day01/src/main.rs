@@ -10,13 +10,13 @@ use std::time::Instant;
 fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     let res_first: Vec<_> = digit_map
         .iter()
-        .filter(|(k, _)| (input.find(*k).is_some()))
+        .filter(|(k, _)| input.find(*k).is_some() )
         .map(|(k, v)| (input.find(k).unwrap(), v))
         .collect();
 
     let res_last: Vec<_> = digit_map
         .iter()
-        .filter(|(k, _)| (input.rfind(*k).is_some()))
+        .filter(|(k, _)| input.rfind(*k).is_some() )
         .map(|(k, v)| (input.rfind(k).unwrap(), v))
         .collect();
 
@@ -31,15 +31,15 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
     let result: u32 = input
         .lines()
         .map(|line| {
-            let mut digits = line.chars().filter(|c| c.is_digit(10));
-            let first = digits.nth(0).unwrap();
+            let mut digits = line.chars().filter(|c| c.is_ascii_digit());
+            let first = digits.next().unwrap();
             let last = digits.nth_back(0).unwrap_or(first);
             (first.to_digit(10).unwrap(), last.to_digit(10).unwrap())
         })
         .map(|(f, l)| f * 10 + l)
         .sum();
     Ok(AocPartReturn {
-        result: AocResult::U32(result as u32),
+        result: AocResult::U32(result),
         duration: Instant::now() - start_time,
     })
 }
