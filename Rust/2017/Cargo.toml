@@ -1,12 +1,12 @@
-[package]
-name = "aoc_2017"
-description.workspace = true
-version.workspace = true
-authors.workspace = true
-edition.workspace = true
+[workspace]
+resolver = "2"
+members = ["day01", "day02", "day03"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace.package]
+description = "Solutions for Advent of Code 2017"
+version = "0.1.0"
+authors = ["Christian Lundh <christianlundh1974@gmail.com"]
+edition = "2024"
 
-[dependencies]
-aoc_utils.workspace = true
-itertools = "0.12.1"
+[workspace.dependencies]
+aoc_utils = { version = "0.1.0", path = "../aoc_utils" }

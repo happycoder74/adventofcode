@@ -1,0 +1,10 @@
+[package]
+name = "day02"
+description.workspace = true
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+aoc_utils.workspace = true
+itertools = "0.14.0"

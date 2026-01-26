@@ -1,0 +1,10 @@
+[package]
+name = "day01"
+description.workspace = true
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+aoc_utils.workspace = true
+
