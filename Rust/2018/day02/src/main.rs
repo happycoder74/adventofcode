@@ -1,15 +1,19 @@
 use itertools::Itertools;
 
 fn part1(data: &str) -> u32 {
-    let result = data
+    let letter_count = data
         .lines()
-        .map(|s| {
-            let mut m = std::collections::HashMap::new();
-            for c in s.chars() {
-                let count = m.entry(c).or_insert(0);
-                *count += 1;
-            }
-            (m.iter().any(|x| x.1 == &2), m.iter().any(|x| x.1 == &3))
+        .map(str::as_bytes)
+        .map(|arr| {
+            let char_array = &mut [0; 30];
+            arr.iter().for_each(|b| {
+                let ind = usize::from(b - b'a');
+                char_array[ind] += 1
+            });
+            (
+                arr.iter().any(|x| char_array[usize::from(x - b'a')] == 2),
+                arr.iter().any(|x| char_array[usize::from(x - b'a')] == 3),
+            )
         })
         .fold((0, 0), |acc, val| {
             (
@@ -17,7 +21,8 @@ fn part1(data: &str) -> u32 {
                 if val.1 { acc.1 + 1 } else { acc.1 },
             )
         });
-    result.0 * result.1
+
+    letter_count.0 * letter_count.1
 }
 
 fn part2(data: &str) -> String {
