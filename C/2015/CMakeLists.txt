@@ -1,5 +1,8 @@
 aoc_generate_year(2015)
-target_link_libraries(aoc_2015_05 pcre2-posix)
+target_include_directories(aoc_2015_05
+	PRIVATE ${PCRE2POSIX_INCLUDE_DIRS})
+target_link_libraries(aoc_2015_05
+	${PCRE2POSIX_LINK_LIBRARIES})
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLIB REQUIRED glib-2.0)

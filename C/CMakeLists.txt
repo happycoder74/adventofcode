@@ -30,6 +30,7 @@ set(AOC_YEARS
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(CURL REQUIRED libcurl)
+pkg_search_module(PCRE2POSIX REQUIRED libpcre2-posix)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(AocGenerateDays)

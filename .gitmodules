@@ -1,0 +1,4 @@
+[submodule "data"]
+	path = data
+	url = https://gitea.strandkarr.org/christian/adventofcode-data
+	branch = github-data

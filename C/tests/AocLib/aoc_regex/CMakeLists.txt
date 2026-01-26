@@ -14,6 +14,6 @@ target_include_directories(
 
 target_link_libraries(
     aoc_regex
-    pcre2-posix
+    ${PCRE2POSIX_LINK_LIBRARIES}
 )
 
