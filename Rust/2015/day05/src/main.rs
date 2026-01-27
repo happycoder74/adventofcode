@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::time::Instant;
 
 pub struct Day2015_05 {
@@ -53,12 +53,12 @@ fn check_repeat(input: &str) -> bool {
     false
 }
 
-impl Puzzle<String> for Day2015_05 {
+impl Puzzle<String, usize, usize> for Day2015_05 {
     fn parse_input(input: &str) -> String {
         String::from(input)
     }
 
-    fn solve_part_1(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(instructions: &String) -> Result<AocPartResult<usize>, AocError> {
         let start_time = Instant::now();
 
         let result = instructions
@@ -68,25 +68,25 @@ impl Puzzle<String> for Day2015_05 {
             })
             .count();
 
-        Ok(AocPartReturn {
-            result: AocResult::Usize(result),
+        Ok(AocPartResult {
+            result: AocResult::new(result),
             duration: Instant::now() - start_time,
         })
     }
 
-    fn solve_part_2(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(instructions: &String) -> Result<AocPartResult<usize>, AocError> {
         let start_time = Instant::now();
         let result = instructions
             .lines()
             .filter(|line| check_pairs(line) && check_repeat(line))
             .count();
 
-        Ok(AocPartReturn {
-            result: AocResult::Usize(result),
+        Ok(AocPartResult {
+            result: AocResult::new(result),
             duration: Instant::now() - start_time,
         })
     }
-    fn solve_all(self) -> AocReturn {
+    fn solve_all(self) -> AocReturn<usize, usize> {
         let input = aoc_utils::read_input(self.year, self.day, false);
         let input = Day2015_05::parse_input(&input);
         let return1 = Day2015_05::solve_part_1(&input);

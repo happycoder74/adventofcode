@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::time::Instant;
 
 pub struct Day2015_06 {
@@ -43,7 +43,7 @@ impl Action {
     }
 }
 
-impl Puzzle<Vec<Action>> for Day2015_06 {
+impl Puzzle<Vec<Action>, usize, usize> for Day2015_06 {
     fn parse_input(input: &str) -> Vec<Action> {
         let mut return_data: Vec<Action> = vec![];
         for line in input.split('\n') {
@@ -69,7 +69,7 @@ impl Puzzle<Vec<Action>> for Day2015_06 {
         return_data
     }
 
-    fn solve_part_1(instructions: &Vec<Action>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(instructions: &Vec<Action>) -> Result<AocPartResult<usize>, AocError> {
         const DIMENSION: usize = 1000;
         let start_time = Instant::now();
         let mut grid: [[bool; DIMENSION]; DIMENSION] = [[false; DIMENSION]; DIMENSION];
@@ -96,17 +96,17 @@ impl Puzzle<Vec<Action>> for Day2015_06 {
             .iter()
             .map(|row| row.iter().filter(|&&col| col).count())
             .sum();
-        Ok(AocPartReturn {
-            result: AocResult::Usize(result),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(result),
+            duration: start_time.elapsed(),
         })
     }
 
-    fn solve_part_2(_instructions: &Vec<Action>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(_instructions: &Vec<Action>) -> Result<AocPartResult<usize>, AocError> {
         Err(AocError::new("Not implemented"))
     }
 
-    fn solve_all(self) -> AocReturn {
+    fn solve_all(self) -> AocReturn<usize, usize> {
         let input = aoc_utils::read_input(self.year, self.day, false);
         let input = Day2015_06::parse_input(&input);
         let return1 = Day2015_06::solve_part_1(&input);

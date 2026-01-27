@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use std::time::Instant;
 
 struct Commands {
@@ -7,7 +7,7 @@ struct Commands {
     up: i32,
 }
 
-fn solve_part_1(x: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(x: &str) -> Result<AocPartResult<i32>, AocError> {
     let start_time = Instant::now();
     let mut commands = Commands {
         forward: 0,
@@ -26,13 +26,13 @@ fn solve_part_1(x: &str) -> Result<AocPartReturn, AocError> {
         }
     }
     let result = commands.forward * (commands.down - commands.up);
-    Ok(AocPartReturn {
-        result: AocResult::I32(result),
-        duration: Instant::now() - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
-fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &str) -> Result<AocPartResult<i32>, AocError> {
     let start_time = Instant::now();
     let mut horizontal = 0;
     let mut aim = 0;
@@ -51,14 +51,14 @@ fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
             _ => (),
         }
     }
-    Ok(AocPartReturn {
-        result: AocResult::I32(horizontal * depth),
-        duration: Instant::now() - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(horizontal * depth),
+        duration: start_time.elapsed(),
     })
 }
 
 fn main() {
-    let contents = aoc_utils::read_input(2021, 2, false);
+    let contents = aoc_utils::aoc_get_data!("2021", "02");
     let part1 = solve_part_1(&contents);
     let part2 = solve_part_2(&contents);
     aoc_utils::report(AocReturn::from_parts(part1, part2));

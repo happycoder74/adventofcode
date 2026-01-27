@@ -1,8 +1,8 @@
-use aoc_utils::report;
 use aoc_utils::AocError;
-use aoc_utils::AocPartReturn;
+use aoc_utils::AocPartResult;
 use aoc_utils::AocResult;
 use aoc_utils::AocReturn;
+use aoc_utils::report;
 use std::collections::HashMap;
 use std::time::Instant;
 
@@ -10,13 +10,13 @@ use std::time::Instant;
 fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     let res_first: Vec<_> = digit_map
         .iter()
-        .filter(|(k, _)| input.find(*k).is_some() )
+        .filter(|(k, _)| input.find(*k).is_some())
         .map(|(k, v)| (input.find(k).unwrap(), v))
         .collect();
 
     let res_last: Vec<_> = digit_map
         .iter()
-        .filter(|(k, _)| input.rfind(*k).is_some() )
+        .filter(|(k, _)| input.rfind(*k).is_some())
         .map(|(k, v)| (input.rfind(k).unwrap(), v))
         .collect();
 
@@ -26,7 +26,7 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     )
 }
 
-fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &str) -> Result<AocPartResult<u32>, AocError> {
     let start_time = Instant::now();
     let result: u32 = input
         .lines()
@@ -38,13 +38,13 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
         })
         .map(|(f, l)| f * 10 + l)
         .sum();
-    Ok(AocPartReturn {
-        result: AocResult::U32(result),
-        duration: Instant::now() - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
-fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &str) -> Result<AocPartResult<i32>, AocError> {
     let map_p2: HashMap<&str, i32> = HashMap::from_iter([
         ("1", 1),
         ("2", 2),
@@ -72,14 +72,14 @@ fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
         .map(|line| get_numbers(line, &map_p2))
         .map(|(f, l)| f * 10 + l)
         .sum();
-    Ok(AocPartReturn {
-        result: AocResult::U32(result as u32),
-        duration: Instant::now() - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
 pub fn main() {
-    let input = aoc_utils::read_input(2023, 1, false);
+    let input = aoc_utils::aoc_get_data!("2023", "01");
     report(AocReturn::from_parts(
         solve_part_1(&input),
         solve_part_2(&input),

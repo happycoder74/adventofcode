@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 
 pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)> {
     input
@@ -16,20 +16,20 @@ pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)> {
         .collect()
 }
 
-pub fn solve_part_1(input: &[(u32, u32, u32)]) -> Result<AocPartReturn, AocError> {
+pub fn solve_part_1(input: &[(u32, u32, u32)]) -> Result<AocPartResult<u32>, AocError> {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
         .fold(0, |s, (l, w, h)| 2 * (l * w + w * h + h * l) + l * w + s);
     let duration = std::time::Instant::now() - start_time;
 
-    Ok(AocPartReturn {
-        result: AocResult::U32(result),
+    Ok(AocPartResult {
+        result: AocResult::new(result),
         duration,
     })
 }
 
-pub fn solve_part_2(input: &[(u32, u32, u32)]) -> Result<AocPartReturn, AocError> {
+pub fn solve_part_2(input: &[(u32, u32, u32)]) -> Result<AocPartResult<u32>, AocError> {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
@@ -37,13 +37,13 @@ pub fn solve_part_2(input: &[(u32, u32, u32)]) -> Result<AocPartReturn, AocError
         .sum();
     let duration = std::time::Instant::now() - start_time;
 
-    Ok(AocPartReturn {
-        result: AocResult::U32(result),
+    Ok(AocPartResult {
+        result: AocResult::new(result),
         duration,
     })
 }
 
-fn solve_all() -> AocReturn {
+fn solve_all() -> AocReturn<u32, u32> {
     let input = aoc_utils::read_input(2015, 2, false);
     let parsed = parse_input(&input);
 
@@ -64,7 +64,7 @@ mod tests {
         let input = "2x3x4\n1x1x10";
         let parsed = parse_input(input);
         assert_eq!(
-            101,
+            101u32,
             solve_part_1(&parsed).unwrap().result.try_into().unwrap()
         );
     }
@@ -76,7 +76,7 @@ mod tests {
 ";
         let parsed = parse_input(input);
         assert_eq!(
-            14 + 34,
+            14 + 34 as u32,
             solve_part_2(&parsed).unwrap().result.try_into().unwrap()
         );
     }

@@ -1,8 +1,8 @@
 use aoc_utils::report;
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use std::time::Instant;
 
-fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &str) -> Result<AocPartResult<u32>, AocError> {
     let start_time = Instant::now();
     let width = input.find("\n").unwrap();
     let count = input.len() / (width + 1);
@@ -23,18 +23,18 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
         .sum::<u32>();
 
     let result = gamma * (!gamma & ((1 << width) - 1));
-    Ok(AocPartReturn {
-        result: AocResult::U32(result),
+    Ok(AocPartResult {
+        result: AocResult::new(result),
         duration: Instant::now() - start_time,
     })
 }
 
-fn solve_part_2(_input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(_input: &str) -> Result<AocPartResult<usize>, AocError> {
     Err(AocError::new("Not implemented"))
 }
 
 fn main() {
-    let contents = aoc_utils::read_input(2021, 3, false);
+    let contents = aoc_utils::aoc_get_data!("2021", "03");
     let part1 = solve_part_1(&contents);
     let part2 = solve_part_2(&contents);
     report(AocReturn::from_parts(part1, part2));
@@ -50,14 +50,14 @@ mod tests {
     fn test_part_1() {
         let input = aoc_utils::read_input(2021, 3, true);
         let result = solve_part_1(&input).unwrap().result.try_into().unwrap();
-        assert_eq!(198, result);
+        assert_eq!(198u32, result);
     }
 
     #[test]
     fn test_part_2() {
         let input = aoc_utils::read_input(2021, 3, true);
         assert_eq!(
-            230,
+            230usize,
             solve_part_2(&input).unwrap().result.try_into().unwrap()
         );
     }
