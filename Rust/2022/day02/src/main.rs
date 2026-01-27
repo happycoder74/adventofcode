@@ -1,4 +1,4 @@
-use std::{fmt::Display, str::FromStr};
+use std::str::FromStr;
 
 use aoc_utils::aoc_get_data;
 
@@ -25,22 +25,44 @@ impl FromStr for Player {
     }
 }
 
-fn play(p1: &Player, p2: &Player) -> u32 {
+fn play_part_1(p1: &Player, p2: &Player) -> u32 {
     let result = u32::from(match p1 {
-        Player::Rock(f) => match p2 {
+        Player::Rock(_) => match p2 {
             Player::Rock(s) => *s + 3,
             Player::Paper(s) => *s + 6,
             Player::Scissors(s) => *s,
         },
-        Player::Paper(f) => match p2 {
+        Player::Paper(_) => match p2 {
             Player::Rock(s) => *s,
             Player::Paper(s) => *s + 3,
             Player::Scissors(s) => s + 6,
         },
-        Player::Scissors(f) => match p2 {
+        Player::Scissors(_) => match p2 {
             Player::Rock(s) => *s + 6,
             Player::Paper(s) => *s,
             Player::Scissors(s) => *s + 3,
+        },
+    });
+
+    result
+}
+
+fn play_part_2(p1: &Player, p2: &Player) -> u32 {
+    let result = u32::from(match p2 {
+        Player::Rock(_) => match p1 {
+            Player::Rock(_) => 3u32,
+            Player::Paper(_) => 1u32,
+            Player::Scissors(_) => 2u32,
+        },
+        Player::Paper(_) => match p1 {
+            Player::Rock(_) => 1u32 + 3u32,
+            Player::Paper(_) => 2u32 + 3u32,
+            Player::Scissors(_) => 3u32 + 3u32,
+        },
+        Player::Scissors(_) => match p1 {
+            Player::Rock(_) => 2u32 + 6u32,
+            Player::Paper(_) => 3u32 + 6u32,
+            Player::Scissors(_) => 1u32 + 6u32,
         },
     });
 
@@ -62,12 +84,13 @@ fn parse_input(input: &str) -> Result<Vec<(Player, Player)>, GameError> {
 }
 
 fn solve_part_1(input: &Vec<(Player, Player)>) -> Result<u32, String> {
-    let result = input.iter().map(|(p1, p2)| play(p1, p2)).sum();
+    let result = input.iter().map(|(p1, p2)| play_part_1(p1, p2)).sum();
     Ok(result)
 }
 
 fn solve_part_2(input: &Vec<(Player, Player)>) -> Result<u32, String> {
-    Err("Not implemented".to_string())
+    let result = input.iter().map(|(p1, p2)| play_part_2(p1, p2)).sum();
+    Ok(result)
 }
 
 fn main() {
@@ -113,6 +136,6 @@ C Z";
     fn test_part_2() {
         let input = parse_input(DATA).unwrap();
         let result = solve_part_2(&input).unwrap();
-        assert_eq!(45_000, result);
+        assert_eq!(12, result);
     }
 }
