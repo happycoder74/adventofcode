@@ -24,8 +24,14 @@ fn solve_part_1(input: &[(Assignment, Assignment)]) -> Result<usize, NumberError
         .count())
 }
 
-fn solve_part_2(input: &[(Assignment, Assignment)]) -> Result<u32, String> {
-    Err(String::from("Not implemented"))
+fn solve_part_2(input: &[(Assignment, Assignment)]) -> Result<usize, String> {
+    Ok(input
+        .iter()
+        .filter(|(a1, a2)| {
+            (a1.start <= a2.start && a2.start <= a1.end)
+                || (a2.start <= a1.start && a1.start <= a2.end)
+        })
+        .count())
 }
 
 fn parse_input(input: &str) -> Vec<(Assignment, Assignment)> {
@@ -94,6 +100,6 @@ mod tests {
     fn test_part_2() {
         let input = parse_input(DATA);
         let result = solve_part_2(&input).unwrap();
-        assert_eq!(0, result);
+        assert_eq!(4, result);
     }
 }
