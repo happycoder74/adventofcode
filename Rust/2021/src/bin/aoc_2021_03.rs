@@ -1,8 +1,8 @@
 use aoc_utils::report;
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use std::time::Instant;
 
-fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &str) -> Result<AocPartResult, AocError> {
     let start_time = Instant::now();
     let width = input.find("\n").unwrap();
     let count = input.len() / (width + 1);
@@ -23,13 +23,13 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
         .sum::<u32>();
 
     let result = gamma * (!gamma & ((1 << width) - 1));
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result),
         duration: Instant::now() - start_time,
     })
 }
 
-fn solve_part_2(_input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(_input: &str) -> Result<AocPartResult, AocError> {
     Err(AocError::new("Not implemented"))
 }
 

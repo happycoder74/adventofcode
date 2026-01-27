@@ -3,7 +3,7 @@ use std::{
     time::Instant,
 };
 
-use aoc_utils::{read_input, AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{read_input, AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 
 struct Instructions {
     operation: String,
@@ -134,20 +134,20 @@ impl Puzzle<VecDeque<Instructions>> for Day {
             .collect()
     }
 
-    fn solve_part_1(input: &VecDeque<Instructions>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(input: &VecDeque<Instructions>) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let result = Self::solver(input, "a", None);
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::U32(result),
             duration: Instant::now() - start_time,
         })
     }
 
-    fn solve_part_2(input: &VecDeque<Instructions>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(input: &VecDeque<Instructions>) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let preset = ("b", Self::solve_part_1(input).unwrap().result.into());
         let result = Self::solver(input, "a", Some(preset));
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::U32(result),
             duration: Instant::now() - start_time,
         })

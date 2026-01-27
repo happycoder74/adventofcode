@@ -1,4 +1,4 @@
-use aoc_utils::{generate_day, AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{generate_day, AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::time::Instant;
 
 generate_day!();
@@ -8,7 +8,7 @@ impl Puzzle<Vec<String>> for Day {
         input.lines().map(|line| line.to_string()).collect()
     }
 
-    fn solve_part_1(input: &Vec<String>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(input: &Vec<String>) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let line_count = input.iter().map(|line| {
             let (_, cc) = line
@@ -23,13 +23,13 @@ impl Puzzle<Vec<String>> for Day {
         });
 
         let result = line_count.sum::<u32>();
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::U32(result),
             duration: Instant::now() - start_time,
         })
     }
 
-    fn solve_part_2(input: &Vec<String>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(input: &Vec<String>) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let line_count = input.iter().map(|line| {
             line.chars()
@@ -42,7 +42,7 @@ impl Puzzle<Vec<String>> for Day {
         });
         let result = line_count.sum::<u32>();
 
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::U32(result),
             duration: Instant::now() - start_time,
         })

@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::time::Instant;
 
 pub struct Day2015_06 {
@@ -69,7 +69,7 @@ impl Puzzle<Vec<Action>> for Day2015_06 {
         return_data
     }
 
-    fn solve_part_1(instructions: &Vec<Action>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(instructions: &Vec<Action>) -> Result<AocPartResult, AocError> {
         const DIMENSION: usize = 1000;
         let start_time = Instant::now();
         let mut grid: [[bool; DIMENSION]; DIMENSION] = [[false; DIMENSION]; DIMENSION];
@@ -96,13 +96,13 @@ impl Puzzle<Vec<Action>> for Day2015_06 {
             .iter()
             .map(|row| row.iter().filter(|&&col| col).count())
             .sum();
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::Usize(result),
             duration: Instant::now() - start_time,
         })
     }
 
-    fn solve_part_2(_instructions: &Vec<Action>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(_instructions: &Vec<Action>) -> Result<AocPartResult, AocError> {
         Err(AocError::new("Not implemented"))
     }
 

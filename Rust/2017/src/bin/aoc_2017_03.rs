@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use itertools::Itertools;
 use std::collections::HashMap;
 
@@ -37,7 +37,7 @@ fn sum_neighbours(pos: Pos, grid: &HashMap<Pos, u32>) -> u32 {
         .sum()
 }
 
-fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &str) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let target: i32 = input.trim().parse().unwrap();
     let mut pos = Pos { x: 0, y: 0 };
@@ -47,13 +47,13 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
     }
     let result = pos.x.abs() + pos.y.abs();
     let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::I32(result),
         duration: end_time - start_time,
     })
 }
 
-fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &str) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let target: u32 = input.trim().parse().unwrap();
     let mut pos = Pos { x: 0, y: 0 };
@@ -70,7 +70,7 @@ fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
     };
 
     let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result),
         duration: end_time - start_time,
     })

@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::time::Instant;
 
 pub struct Day2015_05 {
@@ -58,7 +58,7 @@ impl Puzzle<String> for Day2015_05 {
         String::from(input)
     }
 
-    fn solve_part_1(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(instructions: &String) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
 
         let result = instructions
@@ -68,20 +68,20 @@ impl Puzzle<String> for Day2015_05 {
             })
             .count();
 
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::Usize(result),
             duration: Instant::now() - start_time,
         })
     }
 
-    fn solve_part_2(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(instructions: &String) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let result = instructions
             .lines()
             .filter(|line| check_pairs(line) && check_repeat(line))
             .count();
 
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::Usize(result),
             duration: Instant::now() - start_time,
         })

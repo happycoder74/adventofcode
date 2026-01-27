@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use itertools::Itertools;
 
 fn main() {
@@ -21,20 +21,20 @@ fn parse_input(input: &str) -> Vec<Vec<u32>> {
         .collect()
 }
 
-fn solve_part_1(input: &[Vec<u32>]) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &[Vec<u32>]) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
         .map(|v| v.iter().max().unwrap() - v.iter().min().unwrap())
         .sum();
     let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: aoc_utils::AocResult::U32(result),
         duration: end_time - start_time,
     })
 }
 
-fn solve_part_2(input: &Vec<Vec<u32>>) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &Vec<Vec<u32>>) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let mut result: u32 = 0;
 
@@ -46,7 +46,7 @@ fn solve_part_2(input: &Vec<Vec<u32>>) -> Result<AocPartReturn, AocError> {
         }
     }
     let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result),
         duration: end_time - start_time,
     })

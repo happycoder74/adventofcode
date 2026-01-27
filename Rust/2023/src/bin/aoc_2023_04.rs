@@ -1,5 +1,5 @@
 use aoc_utils::report;
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use std::collections::HashSet;
 use std::time::Instant;
 
@@ -25,7 +25,7 @@ pub fn parse_input(input: &str) -> Vec<(Cards, Cards)> {
     numbers
 }
 
-fn solve_part_1(input: &[(Cards, Cards)]) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &[(Cards, Cards)]) -> Result<AocPartResult, AocError> {
     let start_time = Instant::now();
     let result = input
         .iter()
@@ -35,13 +35,13 @@ fn solve_part_1(input: &[(Cards, Cards)]) -> Result<AocPartReturn, AocError> {
             n => 1 << (n - 1),
         })
         .sum();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result),
         duration: Instant::now() - start_time,
     })
 }
 
-fn solve_part_2(_input: &[(Cards, Cards)]) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(_input: &[(Cards, Cards)]) -> Result<AocPartResult, AocError> {
     Err(AocError::new("Not yet implemented"))
 }
 

@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 
 pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)> {
     input
@@ -16,20 +16,20 @@ pub fn parse_input(input: &str) -> Vec<(u32, u32, u32)> {
         .collect()
 }
 
-pub fn solve_part_1(input: &[(u32, u32, u32)]) -> Result<AocPartReturn, AocError> {
+pub fn solve_part_1(input: &[(u32, u32, u32)]) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
         .fold(0, |s, (l, w, h)| 2 * (l * w + w * h + h * l) + l * w + s);
     let duration = std::time::Instant::now() - start_time;
 
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result),
         duration,
     })
 }
 
-pub fn solve_part_2(input: &[(u32, u32, u32)]) -> Result<AocPartReturn, AocError> {
+pub fn solve_part_2(input: &[(u32, u32, u32)]) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
@@ -37,7 +37,7 @@ pub fn solve_part_2(input: &[(u32, u32, u32)]) -> Result<AocPartReturn, AocError
         .sum();
     let duration = std::time::Instant::now() - start_time;
 
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result),
         duration,
     })

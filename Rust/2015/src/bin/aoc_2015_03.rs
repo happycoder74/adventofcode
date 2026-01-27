@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::collections::HashSet;
 use std::time::Instant;
 
@@ -47,7 +47,7 @@ impl Puzzle<String> for Day2015_03 {
         String::from(input)
     }
 
-    fn solve_part_1(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(instructions: &String) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let mut santa: Agent = Agent::new();
 
@@ -55,13 +55,13 @@ impl Puzzle<String> for Day2015_03 {
             santa.make_step(c);
         }
 
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::Usize(santa.get_locations()),
             duration: Instant::now() - start_time,
         })
     }
 
-    fn solve_part_2(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(instructions: &String) -> Result<AocPartResult, AocError> {
         let start_time = Instant::now();
         let mut santa: Agent = Agent::new();
         let mut robosanta: Agent = Agent::new();
@@ -83,7 +83,7 @@ impl Puzzle<String> for Day2015_03 {
             santa.coords.insert(*location);
         }
 
-        Ok(AocPartReturn {
+        Ok(AocPartResult {
             result: AocResult::Usize(santa.get_locations()),
             duration: Instant::now() - start_time,
         })

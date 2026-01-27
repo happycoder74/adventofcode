@@ -7,3 +7,4 @@ authors.workspace = true
 
 [dependencies]
 aoc_utils.workspace = true
+md5 = "0.8.0"

@@ -1,20 +1,20 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 
-fn solve_part_1(x: &[usize]) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(x: &[usize]) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let result = x.iter().zip(&x[1..]).filter(|(a, b)| b > a).count();
     let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::Usize(result),
         duration: end_time - start_time,
     })
 }
 
-fn solve_part_2(x: &[usize]) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(x: &[usize]) -> Result<AocPartResult, AocError> {
     let start_time = std::time::Instant::now();
     let result = x.iter().zip(&x[3..]).filter(|(a, b)| b > a).count();
     let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::Usize(result),
         duration: end_time - start_time,
     })

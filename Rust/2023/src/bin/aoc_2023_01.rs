@@ -1,6 +1,6 @@
 use aoc_utils::report;
 use aoc_utils::AocError;
-use aoc_utils::AocPartReturn;
+use aoc_utils::AocPartResult;
 use aoc_utils::AocResult;
 use aoc_utils::AocReturn;
 use std::collections::HashMap;
@@ -26,7 +26,7 @@ fn get_numbers(input: &str, digit_map: &HashMap<&str, i32>) -> (i32, i32) {
     )
 }
 
-fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &str) -> Result<AocPartResult, AocError> {
     let start_time = Instant::now();
     let result: u32 = input
         .lines()
@@ -38,13 +38,13 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
         })
         .map(|(f, l)| f * 10 + l)
         .sum();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result as u32),
         duration: Instant::now() - start_time,
     })
 }
 
-fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &str) -> Result<AocPartResult, AocError> {
     let map_p2: HashMap<&str, i32> = HashMap::from_iter([
         ("1", 1),
         ("2", 2),
@@ -72,7 +72,7 @@ fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
         .map(|line| get_numbers(line, &map_p2))
         .map(|(f, l)| f * 10 + l)
         .sum();
-    Ok(AocPartReturn {
+    Ok(AocPartResult {
         result: AocResult::U32(result as u32),
         duration: Instant::now() - start_time,
     })
