@@ -1,6 +1,7 @@
 use crate::AocReturn;
+use std::fmt::Display;
 
-pub fn report(result: AocReturn) {
+pub fn report<T: Display, U: Display>(result: AocReturn<T, U>) {
     print!("Part 1: ");
     match result.part1 {
         Ok(x) => println!("{:<10}{:>20?}", x.result, x.duration),

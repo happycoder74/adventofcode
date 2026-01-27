@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use itertools::Itertools;
 use std::collections::HashMap;
 
@@ -37,7 +37,7 @@ fn sum_neighbours(pos: Pos, grid: &HashMap<Pos, u32>) -> u32 {
         .sum()
 }
 
-fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &str) -> Result<AocPartResult<i32>, AocError> {
     let start_time = std::time::Instant::now();
     let target: i32 = input.trim().parse().unwrap();
     let mut pos = Pos { x: 0, y: 0 };
@@ -46,14 +46,13 @@ fn solve_part_1(input: &str) -> Result<AocPartReturn, AocError> {
         pos = next_step(pos);
     }
     let result = pos.x.abs() + pos.y.abs();
-    let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
-        result: AocResult::I32(result),
-        duration: end_time - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
-fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &str) -> Result<AocPartResult<u32>, AocError> {
     let start_time = std::time::Instant::now();
     let target: u32 = input.trim().parse().unwrap();
     let mut pos = Pos { x: 0, y: 0 };
@@ -69,10 +68,9 @@ fn solve_part_2(input: &str) -> Result<AocPartReturn, AocError> {
         }
     };
 
-    let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
-        result: AocResult::U32(result),
-        duration: end_time - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
@@ -122,16 +120,22 @@ mod tests {
 
     #[test]
     fn test_part_2_1() {
-        assert_eq!(2, solve_part_2("1").unwrap().result.try_into().unwrap());
+        assert_eq!(2u32, solve_part_2("1").unwrap().result.try_into().unwrap());
     }
 
     #[test]
     fn test_part_2_2() {
-        assert_eq!(59, solve_part_2("57").unwrap().result.try_into().unwrap());
+        assert_eq!(
+            59u32,
+            solve_part_2("57").unwrap().result.try_into().unwrap()
+        );
     }
 
     #[test]
     fn test_part_2_3() {
-        assert_eq!(747, solve_part_2("362").unwrap().result.try_into().unwrap());
+        assert_eq!(
+            747u32,
+            solve_part_2("362").unwrap().result.try_into().unwrap()
+        );
     }
 }

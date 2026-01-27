@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle};
 use std::collections::HashSet;
 use std::time::Instant;
 
@@ -42,12 +42,12 @@ pub struct Day2015_03 {
     day: u32,
 }
 
-impl Puzzle<String> for Day2015_03 {
+impl Puzzle<String, usize, usize> for Day2015_03 {
     fn parse_input(input: &str) -> String {
         String::from(input)
     }
 
-    fn solve_part_1(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(instructions: &String) -> Result<AocPartResult<usize>, AocError> {
         let start_time = Instant::now();
         let mut santa: Agent = Agent::new();
 
@@ -55,13 +55,13 @@ impl Puzzle<String> for Day2015_03 {
             santa.make_step(c);
         }
 
-        Ok(AocPartReturn {
-            result: AocResult::Usize(santa.get_locations()),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(santa.get_locations()),
+            duration: start_time.elapsed(),
         })
     }
 
-    fn solve_part_2(instructions: &String) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(instructions: &String) -> Result<AocPartResult<usize>, AocError> {
         let start_time = Instant::now();
         let mut santa: Agent = Agent::new();
         let mut robosanta: Agent = Agent::new();
@@ -83,12 +83,12 @@ impl Puzzle<String> for Day2015_03 {
             santa.coords.insert(*location);
         }
 
-        Ok(AocPartReturn {
-            result: AocResult::Usize(santa.get_locations()),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(santa.get_locations()),
+            duration: start_time.elapsed(),
         })
     }
-    fn solve_all(self) -> AocReturn {
+    fn solve_all(self) -> AocReturn<usize, usize> {
         let input = aoc_utils::read_input(self.year, self.day, false);
         let input = Day2015_03::parse_input(&input);
         let return1 = Day2015_03::solve_part_1(&input);
@@ -160,7 +160,7 @@ mod tests {
     fn test_part_1a() {
         let input = String::from(">");
         assert_eq!(
-            2,
+            2usize,
             Day2015_03::solve_part_1(&input)
                 .unwrap()
                 .result
@@ -173,7 +173,7 @@ mod tests {
     fn test_part_1b() {
         let input = String::from("^>v<");
         assert_eq!(
-            4,
+            4usize,
             Day2015_03::solve_part_1(&input)
                 .unwrap()
                 .result
@@ -186,7 +186,7 @@ mod tests {
     fn test_part_1c() {
         let input = String::from("^v^v^v^v^v");
         assert_eq!(
-            2,
+            2usize,
             Day2015_03::solve_part_1(&input)
                 .unwrap()
                 .result
@@ -199,7 +199,7 @@ mod tests {
     fn test_part_2a() {
         let input = String::from("^v");
         assert_eq!(
-            3,
+            3usize,
             Day2015_03::solve_part_2(&input)
                 .unwrap()
                 .result
@@ -212,7 +212,7 @@ mod tests {
     fn test_part_2b() {
         let input = String::from("^>v<");
         assert_eq!(
-            3,
+            3usize,
             Day2015_03::solve_part_2(&input)
                 .unwrap()
                 .result
@@ -225,7 +225,7 @@ mod tests {
     fn test_part_2c() {
         let input = String::from("^v^v^v^v^v");
         assert_eq!(
-            11,
+            11usize,
             Day2015_03::solve_part_2(&input)
                 .unwrap()
                 .result

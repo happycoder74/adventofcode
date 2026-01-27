@@ -1,14 +1,14 @@
-use aoc_utils::{generate_day, AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle, generate_day};
 use std::time::Instant;
 
 generate_day!();
 
-impl Puzzle<Vec<String>> for Day {
+impl Puzzle<Vec<String>, u32, u32> for Day {
     fn parse_input(input: &str) -> Vec<String> {
         input.lines().map(|line| line.to_string()).collect()
     }
 
-    fn solve_part_1(input: &Vec<String>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(input: &Vec<String>) -> Result<AocPartResult<u32>, AocError> {
         let start_time = Instant::now();
         let line_count = input.iter().map(|line| {
             let (_, cc) = line
@@ -23,13 +23,13 @@ impl Puzzle<Vec<String>> for Day {
         });
 
         let result = line_count.sum::<u32>();
-        Ok(AocPartReturn {
-            result: AocResult::U32(result),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(result),
+            duration: start_time.elapsed(),
         })
     }
 
-    fn solve_part_2(input: &Vec<String>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(input: &Vec<String>) -> Result<AocPartResult<u32>, AocError> {
         let start_time = Instant::now();
         let line_count = input.iter().map(|line| {
             line.chars()
@@ -42,13 +42,13 @@ impl Puzzle<Vec<String>> for Day {
         });
         let result = line_count.sum::<u32>();
 
-        Ok(AocPartReturn {
-            result: AocResult::U32(result),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(result),
+            duration: start_time.elapsed(),
         })
     }
 
-    fn solve_all(self) -> AocReturn {
+    fn solve_all(self) -> AocReturn<u32, u32> {
         let parsed_input = Self::parse_input(&self.input);
         let part1_result = Self::solve_part_1(&parsed_input);
         let part2_result = Self::solve_part_2(&parsed_input);
