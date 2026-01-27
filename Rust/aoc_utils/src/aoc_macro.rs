@@ -1,3 +1,4 @@
+#![allow(unused)]
 #[macro_export]
 macro_rules! generate_day {
     () => {
@@ -38,6 +39,7 @@ macro_rules! aoc_get_data {
         ))
     };
 }
+#[macro_export]
 #[cfg(unix)]
 macro_rules! aoc_get_data {
     ($year:tt, $day:tt) => {
@@ -86,6 +88,7 @@ macro_rules! aoc_get_bytes{
         ))
     };
 }
+#[macro_export]
 #[cfg(unix)]
 macro_rules! aoc_get_bytes{
     ($year:tt, $day:tt) => {

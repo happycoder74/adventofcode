@@ -3,7 +3,7 @@ use std::{
     time::Instant,
 };
 
-use aoc_utils::{read_input, AocError, AocPartReturn, AocResult, AocReturn, Puzzle};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn, Puzzle, read_input};
 
 struct Instructions {
     operation: String,
@@ -120,7 +120,7 @@ impl Day {
     }
 }
 
-impl Puzzle<VecDeque<Instructions>> for Day {
+impl Puzzle<VecDeque<Instructions>, u32, u32> for Day {
     fn parse_input(input: &str) -> VecDeque<Instructions> {
         input
             .lines()
@@ -134,26 +134,26 @@ impl Puzzle<VecDeque<Instructions>> for Day {
             .collect()
     }
 
-    fn solve_part_1(input: &VecDeque<Instructions>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_1(input: &VecDeque<Instructions>) -> Result<AocPartResult<u32>, AocError> {
         let start_time = Instant::now();
         let result = Self::solver(input, "a", None);
-        Ok(AocPartReturn {
-            result: AocResult::U32(result),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(result),
+            duration: start_time.elapsed(),
         })
     }
 
-    fn solve_part_2(input: &VecDeque<Instructions>) -> Result<AocPartReturn, AocError> {
+    fn solve_part_2(input: &VecDeque<Instructions>) -> Result<AocPartResult<u32>, AocError> {
         let start_time = Instant::now();
         let preset = ("b", Self::solve_part_1(input).unwrap().result.into());
         let result = Self::solver(input, "a", Some(preset));
-        Ok(AocPartReturn {
-            result: AocResult::U32(result),
-            duration: Instant::now() - start_time,
+        Ok(AocPartResult {
+            result: AocResult::new(result),
+            duration: start_time.elapsed(),
         })
     }
 
-    fn solve_all(self) -> AocReturn {
+    fn solve_all(self) -> AocReturn<u32, u32> {
         let parsed_input = Self::parse_input(&self.input);
         let part1_result = Self::solve_part_1(&parsed_input);
         let part2_result = Self::solve_part_2(&parsed_input);

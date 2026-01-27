@@ -7,4 +7,4 @@ pub mod types;
 pub use aoc_result::AocResult;
 pub use input::read_input;
 pub use output::report;
-pub use types::{AocError, AocPartReturn, AocReturn, Puzzle};
+pub use types::{AocError, AocPartResult, AocReturn, Puzzle};

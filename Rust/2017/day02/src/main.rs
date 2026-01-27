@@ -1,4 +1,4 @@
-use aoc_utils::{AocError, AocPartReturn, AocResult, AocReturn};
+use aoc_utils::{AocError, AocPartResult, AocResult, AocReturn};
 use itertools::Itertools;
 
 fn main() {
@@ -21,20 +21,19 @@ fn parse_input(input: &str) -> Vec<Vec<u32>> {
         .collect()
 }
 
-fn solve_part_1(input: &[Vec<u32>]) -> Result<AocPartReturn, AocError> {
+fn solve_part_1(input: &[Vec<u32>]) -> Result<AocPartResult<u32>, AocError> {
     let start_time = std::time::Instant::now();
     let result = input
         .iter()
         .map(|v| v.iter().max().unwrap() - v.iter().min().unwrap())
         .sum();
-    let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
-        result: aoc_utils::AocResult::U32(result),
-        duration: end_time - start_time,
+    Ok(AocPartResult {
+        result: aoc_utils::AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
-fn solve_part_2(input: &Vec<Vec<u32>>) -> Result<AocPartReturn, AocError> {
+fn solve_part_2(input: &Vec<Vec<u32>>) -> Result<AocPartResult<u32>, AocError> {
     let start_time = std::time::Instant::now();
     let mut result: u32 = 0;
 
@@ -45,10 +44,9 @@ fn solve_part_2(input: &Vec<Vec<u32>>) -> Result<AocPartReturn, AocError> {
             }
         }
     }
-    let end_time = std::time::Instant::now();
-    Ok(AocPartReturn {
-        result: AocResult::U32(result),
-        duration: end_time - start_time,
+    Ok(AocPartResult {
+        result: AocResult::new(result),
+        duration: start_time.elapsed(),
     })
 }
 
@@ -65,7 +63,10 @@ mod tests {
 ",
         ));
 
-        assert_eq!(18, solve_part_1(&input).unwrap().result.try_into().unwrap());
+        assert_eq!(
+            18u32,
+            solve_part_1(&input).unwrap().result.try_into().unwrap()
+        );
     }
 
     #[test]
@@ -76,6 +77,9 @@ mod tests {
 3 8 6 5
 ",
         ));
-        assert_eq!(9, solve_part_2(&input).unwrap().result.try_into().unwrap());
+        assert_eq!(
+            9u32,
+            solve_part_2(&input).unwrap().result.try_into().unwrap()
+        );
     }
 }

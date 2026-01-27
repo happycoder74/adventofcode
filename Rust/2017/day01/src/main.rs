@@ -1,5 +1,7 @@
+use aoc_utils::aoc_get_data;
+
 fn main() {
-    let input = aoc_utils::read_input(2017, 1, false);
+    let input = aoc_get_data!("2017", "01");
     let parsed = parse_input(&input);
 
     println!("Part 1: {}", solve_part_1(&parsed));
@@ -12,7 +14,12 @@ fn parse_input(input: &str) -> Vec<u32> {
     //     .filter(|c| char::is_digit(*c, 10))
     //     .map(|c| c.to_digit(10).unwrap())
     //     .collect()
-    input.trim().split("").filter(|l| !l.is_empty()).map(|l| l.parse().unwrap()).collect()
+    input
+        .trim()
+        .split("")
+        .filter(|l| !l.is_empty())
+        .map(|l| l.parse().unwrap())
+        .collect()
 }
 
 fn solver(input: &[u32], skip: usize) -> u32 {
@@ -35,7 +42,7 @@ fn solve_part_2(input: &[u32]) -> u32 {
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
 
     #[test]
