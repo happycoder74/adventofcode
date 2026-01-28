@@ -20,8 +20,7 @@ macro_rules! generate_day {
 macro_rules! aoc_get_data {
     ($year:tt, $day:tt) => {
         include_str!(concat!(
-            env!("USERPROFILE"),
-            "/src/adventofcode/data/",
+            "/Local/msys64/home/yy11510/projects/adventofcode/data/",
             $year,
             "/",
             $day,
@@ -69,8 +68,7 @@ macro_rules! aoc_get_data {
 macro_rules! aoc_get_bytes{
     ($year:tt, $day:tt) => {
         include_bytes!(concat!(
-            env!("USERPROFILE"),
-            "/src/adventofcode/data/",
+            "/Local/msys64/home/yy11510/projects/adventofcode/data/",
             $year,
             "/",
             $day,
