@@ -1,5 +1,5 @@
 use aoc_utils::aoc_get_data;
-use std::{error::Error, fmt::Display};
+use std::{collections::VecDeque, error::Error, fmt::Display};
 
 #[derive(Debug)]
 enum AocError {
@@ -120,8 +120,29 @@ fn solve_part_1(input: &(Vec<Vec<BoxDef>>, Vec<Instruction>)) -> Result<String, 
     Ok(result)
 }
 
-fn solve_part_2(input: &(Vec<Vec<BoxDef>>, Vec<Instruction>)) -> Result<usize, Box<dyn Error>> {
-    Err(AocError::NotImplementedError.into())
+fn solve_part_2(input: &(Vec<Vec<BoxDef>>, Vec<Instruction>)) -> Result<String, Box<dyn Error>> {
+    let mut stacks = input.0.clone();
+    let mut offload = VecDeque::new();
+    for instruction in input.1.clone() {
+        for _ in 0..instruction.number {
+            let source_stack = stacks
+                .get_mut((instruction.source - 1) as usize)
+                .ok_or(AocError::StackIndexError)?;
+            let b = source_stack.pop().ok_or(AocError::EmptyStack)?;
+            offload.push_front(b);
+        }
+        while let Some(bb) = offload.pop_front() {
+            let dest_stack = stacks
+                .get_mut((instruction.destination - 1) as usize)
+                .ok_or(AocError::StackIndexError)?;
+            dest_stack.push(bb);
+        }
+    }
+    let result = stacks
+        .iter_mut()
+        .map(|stack| stack.pop().unwrap().id as char)
+        .collect::<String>();
+    Ok(result)
 }
 
 fn main() {
@@ -196,10 +217,10 @@ move 1 from 1 to 2";
         assert_eq!("CMZ", result);
     }
 
-    // #[test]
-    // fn test_part_2() {
-    //     let input = parse_input(DATA).unwrap();
-    //     let result = solve_part_2(&input).unwrap();
-    //     assert_eq!(4, result);
-    // }
+    #[test]
+    fn test_part_2() {
+        let input = parse_input(DATA).unwrap();
+        let result = solve_part_2(&input).unwrap();
+        assert_eq!("MCD", result);
+    }
 }
