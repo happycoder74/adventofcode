@@ -27,7 +27,7 @@ Rust will be the primary language of choice this year.
 + 36 &#11088; in [Python](python/README.md)
 + 4 &#11088; in [C](C/README.md)
 + 5 &#11088; in [C++](C++/README.md)
-+ 12 &#11088; in [Rust](Rust/README.md)
++ 14 &#11088; in [Rust](Rust/README.md)
 
 ## Year 2021
 
