@@ -10,6 +10,63 @@ struct Forest {
     max_col: usize,
 }
 
+impl Forest {
+    fn viewing_distance(&self, tree: (usize, usize)) -> usize {
+        match tree {
+            (0, _) | (_, 0) => {
+                return 0;
+            }
+            (val_r, _) if val_r == self.max_row => {
+                return 0;
+            }
+            (_, val_c) if val_c == self.max_col => {
+                return 0;
+            }
+            _ => (),
+        }
+        let (r, c) = tree;
+        let vp = self.grid.get(&tree).unwrap();
+        let mut add_left = 0usize;
+        for ci in (0..c).rev() {
+            if let Some(x) = self.grid.get(&(r, ci)) {
+                add_left += 1;
+                if x >= vp {
+                    break;
+                }
+            }
+        }
+        let mut add_right = 0usize;
+        for ci in (c + 1)..=self.max_col {
+            if let Some(x) = self.grid.get(&(r, ci)) {
+                add_right += 1;
+                if x >= vp {
+                    break;
+                }
+            }
+        }
+        let mut add_up = 0usize;
+        for ri in (0..r).rev() {
+            if let Some(x) = self.grid.get(&(ri, c)) {
+                add_up += 1;
+                if x >= vp {
+                    break;
+                }
+            }
+        }
+        let mut add_down = 0usize;
+        for ri in (r + 1)..=self.max_row {
+            if let Some(x) = self.grid.get(&(ri, c)) {
+                add_down += 1;
+                if x >= vp {
+                    break;
+                }
+            }
+        }
+
+        add_left * add_right * add_up * add_down
+    }
+}
+
 fn parse_input(input: &str) -> Result<Forest, AocError> {
     let mut grid = HashMap::new();
     input.lines().enumerate().for_each(|(irow, row)| {
@@ -112,7 +169,16 @@ fn solve_part_1(f: &Forest) -> Result<usize, AocError> {
 }
 
 fn solve_part_2(f: &Forest) -> Result<usize, AocError> {
-    Err(AocError::new("Not implemented"))
+    let mut max_viewing_distance = 0usize;
+    for r in 1..f.max_row {
+        for c in 1..f.max_col {
+            let vd = f.viewing_distance((r, c));
+            if vd > max_viewing_distance {
+                max_viewing_distance = vd;
+            }
+        }
+    }
+    Ok(max_viewing_distance)
 }
 
 fn main() {
@@ -186,7 +252,23 @@ mod tests {
     #[test]
     fn test_part_1() {
         let forest = parse_input(DATA).unwrap();
-        let visible = solve_part_1(&forest);
+        let visible = solve_part_1(&forest).unwrap();
         assert_eq!(21, visible);
+    }
+
+    #[test]
+    fn test_viewing_distance() {
+        let forest = parse_input(DATA).unwrap();
+        let tree: (usize, usize) = (1, 2);
+        assert_eq!(4, forest.viewing_distance(tree));
+        let tree: (usize, usize) = (3, 2);
+        assert_eq!(8, forest.viewing_distance(tree));
+    }
+
+    #[test]
+    fn test_solve_part_2() {
+        let forest = parse_input(DATA).unwrap();
+        let max_vd = solve_part_2(&forest).unwrap();
+        assert_eq!(8, max_vd);
     }
 }
