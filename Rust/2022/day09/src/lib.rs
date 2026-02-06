@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, str::FromStr};
 
 use aoc_utils::AocError;
 
@@ -10,75 +10,96 @@ pub enum Instruction {
     Right(u32),
 }
 
+impl FromStr for Instruction {
+    type Err = AocError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.split_once(' ') {
+            Some(("R", x)) => Ok(Instruction::Right(
+                x.parse::<u32>().map_err(|_| AocError::new("ParseError"))?,
+            )),
+            Some(("L", x)) => Ok(Instruction::Left(
+                x.parse::<u32>().map_err(|_| AocError::new("ParseError"))?,
+            )),
+            Some(("U", x)) => Ok(Instruction::Up(
+                x.parse::<u32>().map_err(|_| AocError::new("ParseError"))?,
+            )),
+            Some(("D", x)) => Ok(Instruction::Down(
+                x.parse::<u32>().map_err(|_| AocError::new("ParseError"))?,
+            )),
+            Some(_) | None => Err(AocError::new("ParseError")),
+        }
+    }
+}
+
 pub fn parse_input(input: &str) -> Result<Vec<Instruction>, AocError> {
-    let instructions = input
-        .lines()
-        .map(|line| match line.split_once(' ') {
-            Some(("R", x)) => Instruction::Right(x.parse::<u32>().unwrap()),
-            Some(("L", x)) => Instruction::Left(x.parse::<u32>().unwrap()),
-            Some(("U", x)) => Instruction::Up(x.parse::<u32>().unwrap()),
-            Some(("D", x)) => Instruction::Down(x.parse::<u32>().unwrap()),
-            Some(_) | None => unreachable!(),
-        })
-        .collect::<Vec<_>>();
-
-    Ok(instructions)
+    input.lines().map(str::parse).collect()
 }
 
-fn adjust_snake(positions: &mut Vec<(i32, i32)>) {
-    for segment in 1..positions.len() {
-        let (dx, dy) = (
-            positions[segment - 1].0 - positions[segment].0,
-            positions[segment - 1].1 - positions[segment].1,
-        );
-        if (dx.abs() + dy.abs()) > 2 {
-            // Move diagonally
-            positions[segment].0 += dx / dx.abs();
-            positions[segment].1 += dy / dy.abs();
-        } else if dy == 0 && dx.abs() > 1 {
-            positions[segment].0 += dx / dx.abs();
-        } else if dx == 0 && dy.abs() > 1 {
-            positions[segment].1 += dy / dy.abs();
-        }
-    }
+type Coord = (i32, i32);
+
+struct Snake {
+    segments: Vec<Coord>,
+    tail_positions: HashSet<Coord>,
 }
 
-fn solver(input: &[Instruction], segments: usize) -> Result<usize, AocError> {
-    let mut tail_positions: HashSet<(i32, i32)> = HashSet::new();
-    let head = 0usize;
-    let tail: usize = segments - 1;
-    let mut positions = vec![(0, 0); segments];
-
-    tail_positions.insert(positions[tail]);
-    if segments > 2 {
-        //     println!("== Initial State ==\n\n");
-        // print_snake(&positions, 30, 30);
-    }
-    for instruction in input {
-        let (x, delta) = match instruction {
-            Instruction::Up(x) => (x, (0, 1)),
-
-            Instruction::Down(x) => (x, (0, -1)),
-            Instruction::Left(x) => (x, (1, 0)),
-            Instruction::Right(x) => (x, (-1, 0)),
-        };
-        for _ in 0..*x {
-            positions[head].0 += delta.0;
-            positions[head].1 += delta.1;
-            adjust_snake(&mut positions);
-            tail_positions.insert(positions[tail]);
+impl Snake {
+    fn new(segments: usize) -> Self {
+        Self {
+            segments: vec![(0, 0); segments],
+            tail_positions: HashSet::new(),
         }
     }
 
-    Ok(tail_positions.len())
+    fn adjust_snake(&mut self) {
+        for segment in 1..self.segments.len() {
+            let (dx, dy) = (
+                self.segments[segment - 1].0 - self.segments[segment].0,
+                self.segments[segment - 1].1 - self.segments[segment].1,
+            );
+            if (dx.abs() + dy.abs()) > 2 {
+                self.segments[segment].0 += dx.signum();
+                self.segments[segment].1 += dy.signum();
+            } else if dy == 0 && dx.abs() > 1 {
+                self.segments[segment].0 += dx.signum();
+            } else if dx == 0 && dy.abs() > 1 {
+                self.segments[segment].1 += dy.signum();
+            }
+        }
+    }
+
+    fn solve(&mut self, input: &[Instruction]) -> Result<usize, AocError> {
+        let head = 0usize;
+        let tail: usize = self.segments.len() - 1;
+        self.tail_positions.insert(self.segments[tail]);
+        for instruction in input {
+            let (x, delta) = match instruction {
+                Instruction::Up(x) => (x, (0, 1)),
+
+                Instruction::Down(x) => (x, (0, -1)),
+                Instruction::Left(x) => (x, (1, 0)),
+                Instruction::Right(x) => (x, (-1, 0)),
+            };
+            for _ in 0..*x {
+                self.segments[head].0 += delta.0;
+                self.segments[head].1 += delta.1;
+                self.adjust_snake();
+                self.tail_positions.insert(self.segments[tail]);
+            }
+        }
+
+        Ok(self.tail_positions.len())
+    }
 }
 
 pub fn solve_part_1(input: &[Instruction]) -> Result<usize, AocError> {
-    solver(input, 2)
+    let mut snake = Snake::new(2);
+    snake.solve(input)
 }
 
 pub fn solve_part_2(input: &[Instruction]) -> Result<usize, AocError> {
-    solver(input, 10)
+    let mut snake = Snake::new(10);
+    snake.solve(input)
 }
 
 #[cfg(test)]
