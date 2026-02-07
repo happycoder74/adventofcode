@@ -57,12 +57,8 @@ impl Snake {
                 self.segments[segment - 1].0 - self.segments[segment].0,
                 self.segments[segment - 1].1 - self.segments[segment].1,
             );
-            if (dx.abs() + dy.abs()) > 2 {
+            if dx.abs() > 1 || dy.abs() > 1 {
                 self.segments[segment].0 += dx.signum();
-                self.segments[segment].1 += dy.signum();
-            } else if dy == 0 && dx.abs() > 1 {
-                self.segments[segment].0 += dx.signum();
-            } else if dx == 0 && dy.abs() > 1 {
                 self.segments[segment].1 += dy.signum();
             }
         }
